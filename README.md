@@ -8,7 +8,7 @@ It will be available soon.
 
 You can find main algorithm in `eye.d`.
 
-Depedencies
+Dependencies
 -----------
 https://github.com/9il/matrix
 
