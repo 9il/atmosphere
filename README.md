@@ -1,5 +1,6 @@
 atmosphere_gm
 =============
+Functionality deprecated.
 
 statistical library
 -------------
