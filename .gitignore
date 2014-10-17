@@ -3,5 +3,9 @@ package.sublime-project
 __dummy.html
 docs.json
 /docs
-/.dub
+/**/.dub/
 *.a
+*.o
+/examples/**/build/
+example
+

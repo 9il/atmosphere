@@ -1,0 +1,13 @@
+{
+	"name": "example",
+	"description": "Statistical package atmosphere_gm, example",
+	"homepage": "http://github.com/9il/atmosphere_gm",
+	"copyright": "Copyright © 2014 Ilya Yaroshenko",
+	"authors": [
+		"Ilya Yaroshenko"
+	],
+	"dependencies": {
+		"atmosphere_gm": ">=0.0.0-alpha"
+	},
+	"license": "Subject to the terms of the MIT license, as written in the included LICENSE.md file."
+}
