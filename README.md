@@ -19,5 +19,5 @@ Use [dub package manager](https://github.com/D-Programming-Language/dub) for ins
 2. [D cblas header](https://github.com/9il/cblas)
 3. BLAS library
 
-#C interface
+##C interface
 You can find C header file [here](include).
