@@ -1,6 +1,6 @@
 atmosphere
 =============
-Statistical library.
+Statistical package.
 
 Testing in progress.
 
