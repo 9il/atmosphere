@@ -114,7 +114,10 @@ body
 			auto column = WT[i];
 			//up to a constant
 			foreach(j, x; sample)
-				column[j] = exp2(((x - alpha * u) / sqrtu)^^2/-2) / sqrtu;
+			{
+				immutable y = (x - alpha * u) / sqrtu;
+				column[j] = exp2(y*y/-2) / sqrtu;
+			}
 		}
 		static if(Algorithm == SNVMMAlgorithm.ExpectationMaximization)
 		{
