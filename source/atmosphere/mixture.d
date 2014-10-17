@@ -359,32 +359,32 @@ T gRoot
 	T g(T theta)
 	{
 		T ret0 = 0;
-	    T ret1 = 0;
-	    T ret2 = 0;
-	    T ret3 = 0;
+		T ret1 = 0;
+		T ret2 = 0;
+		T ret3 = 0;
 
-	    immutable L1= pi.length & -4;
+		immutable L1= pi.length & -4;
 		size_t i;
 	 
-	    for(; i < L1; i += 4)
-	    {
+		for(; i < L1; i += 4)
+		{
 			immutable pi0 = pi[i+0];
 			immutable pi1 = pi[i+1];
 			immutable pi2 = pi[i+2];
 			immutable pi3 = pi[i+3];
-	        ret0 += pi0 * simpleGrad(chi[i+0] + theta * pi0);
-	        ret1 += pi1 * simpleGrad(chi[i+1] + theta * pi1);
-	        ret2 += pi2 * simpleGrad(chi[i+2] + theta * pi2);
-	        ret3 += pi3 * simpleGrad(chi[i+3] + theta * pi3);
-	    }
+			ret0 += pi0 * simpleGrad(chi[i+0] + theta * pi0);
+			ret1 += pi1 * simpleGrad(chi[i+1] + theta * pi1);
+			ret2 += pi2 * simpleGrad(chi[i+2] + theta * pi2);
+			ret3 += pi3 * simpleGrad(chi[i+3] + theta * pi3);
+		}
 
-	    for(; i < pi.length; i++)
-	    {
+		for(; i < pi.length; i++)
+		{
 			immutable pi0 = pi[i+0];
-	        ret0 += pi0 * simpleGrad(chi[i+0] + theta * pi0);
-	    }
+			ret0 += pi0 * simpleGrad(chi[i+0] + theta * pi0);
+		}
 
-	    return (ret0+ret1)+(ret2+ret3);
+		return (ret0+ret1)+(ret2+ret3);
 	}
 
 	T g0 = void, g1 = void;
