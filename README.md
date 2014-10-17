@@ -22,4 +22,4 @@ Use [dub package manager](https://github.com/D-Programming-Language/dub) for ins
 3. BLAS library
 
 ##C interface
-You can find C header file [here](include).
+C header file cab be found [here](https://github.com/9il/atmosphere_gm/include).
