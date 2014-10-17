@@ -2,8 +2,8 @@ atmosphere_gm
 =============
 Testing in progress.
 
-Numeric methods
--------------
+# Numeric methods
+
 
 1. Solvs optimization problem f(p) -> min, 
 where p is discrete probability distribution with k elements.
@@ -12,8 +12,12 @@ W - matrix(n rows, k columns),
 u - convex function.
 2. Separating normal variance mean mixture.
 
-Dependencies
------------
-https://github.com/9il/simple_matrix
+#Instalation
+Use [dub package manager](https://github.com/D-Programming-Language/dub) for instalation.
+## Dependencies
+1. [D Simple Matrix](https://github.com/9il/simple_matrix)
+2. [D cblas header](https://github.com/9il/cblas)
+3. BLAS library
 
-https://github.com/9il/cblas
+#C interface
+You can find C header file [here](include).
