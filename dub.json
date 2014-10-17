@@ -1,0 +1,15 @@
+{
+	"name": "atmosphere_gm",
+	"targetType": "library",
+	"description": "",
+	"homepage": "http://github.com/9il/atmosphere_gm",
+	"copyright": "Copyright © 2014 Ilya Yaroshenko",
+	"authors": [
+		"Ilya Yaroshenko"
+	],
+	"dependencies": {
+		"simple_matrix": ">=0.1.0",
+		"cblas": ">=0.0.2"
+	},
+	"license": "Subject to the terms of the MIT license, as written in the included LICENSE.txt file."
+}
