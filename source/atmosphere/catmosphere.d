@@ -15,7 +15,7 @@ extern(C):
 /**
 One iteration of gradient descent optimization algorithm.
 Params:
-	grad = ∇u(𝛚)
+	grad = ∇u(ω)
 	WTptr = transposed version of W.
 	k = number of rows.
 	n = number of columns.
@@ -158,7 +158,7 @@ k iterations of coordinate descent optimization algorithm.
 For better performance permute rows of WT rows and corresponding elements of p.
 Similar rows (in context of u) of WT should be held far from each other.
 Params:
-	grad = ∇u(𝛚)
+	grad = ∇u(ω)
 	WTptr = transposed version of W.
 	k = number of rows.
 	n = number of columns.
@@ -205,7 +205,7 @@ k iterations of coordinate descent optimization algorithm.
 For better performance permute rows of WT rows and corresponding elements of p.
 Similar rows (in context of u) of WT should be held far from each other.
 Params:
-	grad = ∇u(𝛚)
+	simpleGrad = du/dω_1, where du/dω_j = du/dω_1, 1 <= j <= n.
 	WTptr = transposed version of W.
 	k = number of rows.
 	n = number of columns.
@@ -250,7 +250,6 @@ du/dω_j, where du/dω_j = -1/ω_j, 1 <= j <= n.
 For better performance permute rows of WT rows and corresponding elements of p.
 Similar rows (in context of u) of WT should be held far from each other.
 Params:
-	grad = ∇u(𝛚)
 	WTptr = transposed version of W.
 	k = number of rows.
 	n = number of columns.
@@ -288,7 +287,7 @@ void catmosphere_minusSumOfLogs_coordinateDescentIteration
 /**
 One iteration of gradient descent optimization algorithm.
 Params:
-	grad = ∇u(𝛚)
+	grad = ∇u(ω)
 	WTptr = transposed version of W.
 	k = number of rows.
 	n = number of columns.
