@@ -1,16 +1,19 @@
 atmosphere_gm
 =============
-Functionality deprecated.
+Testing in progress.
 
-statistical library
+Numeric methods
 -------------
-There is no any documentation.
-It will be available soon.
 
-You can find main algorithm in `eye.d`.
+1. Solvs optimization problem f(p) -> min, 
+where p is discrete probability distribution with k elements.
+f = u(Wp),
+W - matrix(n rows, k columns),
+u - convex function.
+2. Separating normal variance mean mixture.
 
 Dependencies
 -----------
-https://github.com/9il/matrix
+https://github.com/9il/simple_matrix
 
 https://github.com/9il/cblas
