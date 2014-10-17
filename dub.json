@@ -11,5 +11,5 @@
 		"simple_matrix": ">=0.1.0",
 		"cblas": ">=0.0.2"
 	},
-	"license": "Subject to the terms of the MIT license, as written in the included LICENSE.txt file."
+	"license": "Subject to the terms of the MIT license, as written in the included LICENSE.md file."
 }
