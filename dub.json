@@ -1,7 +1,7 @@
 {
 	"name": "atmosphere_gm",
 	"targetType": "library",
-	"description": "",
+	"description": "Statistical library.",
 	"homepage": "http://github.com/9il/atmosphere_gm",
 	"copyright": "Copyright © 2014 Ilya Yaroshenko",
 	"authors": [
