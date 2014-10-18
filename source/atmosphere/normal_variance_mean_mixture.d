@@ -34,6 +34,31 @@ enum SNVMMAlgorithm
 	CoordinateDescent,
 }
 
+import std.range, std.traits, std.math : frexp;
+/**
+Computes accurate sum of binary logarithms of input range $(D r).
+ */
+ElementType!Range sumOfLog2s(Range)(Range r) 
+    if (isInputRange!Range && isFloatingPoint!(ElementType!Range))
+{
+    long exp = 0;
+    Unqual!(typeof(return)) x = 1; 
+    foreach (e; r)
+    {
+        if (e < 0)
+            return typeof(return).nan;
+        int lexp = void;
+        x *= frexp(e, lexp);
+        exp += lexp;
+        if (x < 0.5) 
+        {
+            x *= 2;
+            exp--;
+        }
+    }
+    return exp + log2(x); 
+}
+
 /**
 Separates normal variance mean mixture.
 */
@@ -111,6 +136,7 @@ body
 	}
 	do
 	{
+
 		probabilitySave[] = probability[];
 		alphaSave = alpha;
 		foreach(i, u; grid)
@@ -126,6 +152,12 @@ body
 				assert(column[j] > 0, column[j].to!string);
 			}
 		}
+
+		import std.stdio;
+		auto v = new T[sample.length];
+		gemv(WT.transposed, probability, v);
+		writefln("L = %s", v.sumOfLog2s);
+
 		static if(Algorithm == SNVMMAlgorithm.ExpectationMaximization)
 			simpleExpectationMaximizationIteration !(a => 1/a)(cast(Matrix!(const double))WT, probability, xi, c);
 		static if(Algorithm == SNVMMAlgorithm.GradientDescent)
@@ -133,6 +165,9 @@ body
 		static if(Algorithm == SNVMMAlgorithm.CoordinateDescent)
 			simpleCoordinateDescentIteration!(a => -1/a)(cast(Matrix!(const double))WT, probability, chi, pi, findRootTolerance);
 		alpha = sampleAvg / dot(probability, grid);
+
+
+		writeln(alphaSave, ' ', alpha);
 	}
 	while(!tolerance(alphaSave, alpha, probabilitySave, probability));
 

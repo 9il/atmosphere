@@ -302,28 +302,18 @@ in
 }
 body
 {
-	import std.stdio, std.conv;
-
-	writeln(p.sum);
-
 	gemv(WT.transposed, p, xi);
 	foreach(ref elem; xi)
-		elem = 1/(elem);
+		elem = simpleGrad(elem);
 	gemv(WT, xi, c);
-	c[] /= c.length;
  	foreach(i, ref elem; p)
 	{
 		assert(c[i] >= 0);
 		assert(c[i].isFinite);
 		elem *= c[i];
 	}
-	//p[] /= p.length;
-
-	writeln(p.sum);
-	assert(p.sum < 2, p.to!string);
-	//p.normalize;
+	p.normalize;
 }
-
 
 private:
 

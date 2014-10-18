@@ -2,17 +2,20 @@ atmosphere
 =============
 Statistical package.
 
-Testing in progress.
+Testing in progress. NOT READY FOR PRODUCTION!
 
 # Numeric methods
 
 
 1. Solvs optimization problem f(p) -> min, 
 where p is discrete probability distribution with k elements.
+```
+f(p) -> min
 f = u(Wp),
 W - matrix(n rows, k columns),
 u - convex function.
-2. Separating normal variance mean mixture.
+```
+2. Separates normal variance mean mixtures.
 
 #Instalation
 Use [dub package manager](https://github.com/D-Programming-Language/dub) for instalation.

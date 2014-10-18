@@ -4,11 +4,13 @@ import atmosphere.normal_variance_mean_mixture;
 void main() 
 {
 	const begin = 0.1;
-	const end = 15.0;
+	const end = 12.0;
 	const count = 50;
 	const step = (end-begin)/count;
 	const grid = iota(begin, end+step/2, step).array;
 	const eps = 1e-5;
+
+	writeln(grid);
 	
 	bool tolerance(double alphaSave, double alpha, in double[] pSave, in double[] p) @nogc nothrow
 	out(result)
