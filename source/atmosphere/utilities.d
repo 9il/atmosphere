@@ -145,17 +145,11 @@ body {
 
 unittest
 {
-	//debug 
-	//{
-		import std.stdio;
-		writeln("gemv test");
-
-	//}
 	const ar = [
-	1.000, 6.000, 2.000,
-	8.000, 3.000, 7.000,
-	3.000, 5.000, 2.000,
-	53, 23, 123
+	 1.000,  6.000,   2.000,
+	 8.000,  3.000,   7.000,
+	 3.000,  5.000,   2.000,
+	53.000, 23.000, 123.000,
 	];
 	auto m = Matrix!(const double)(ar.ptr, 4, 3);
 	const a = [
@@ -165,6 +159,31 @@ unittest
 	];
 	auto b = new double[4];
 	gemv(m, a, b);
+	assert(b == [ 
+	 276.000,
+	 525.000,
+	 325.000,
+	4507.000,
+	]);
+
+}
+
+
+unittest
+{
+	const ar = [
+  	1.000,   8.000,  3.000,  53.000,
+  	6.000,   3.000,  5.000,  23.000,
+  	2.000,   7.000,  2.000, 123.000,
+	];
+	auto m = Matrix!(const double)(ar.ptr, 3, 4);
+	const a = [
+	42.000,
+	35.000,
+	12.000,
+	];
+	auto b = new double[4];
+	gemv(m.transposed, a, b);
 	assert(b == [ 
 	 276.000,
 	 525.000,

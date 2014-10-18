@@ -312,7 +312,8 @@ body
 		assert(c[i].isFinite);
 		elem *= c[i];
 	}
-	p.normalize;
+	p[] /= p.length;
+	//p.normalize;
 }
 
 
