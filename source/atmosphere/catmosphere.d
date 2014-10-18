@@ -48,7 +48,7 @@ void catmosphere_gradientDescentIteration
 {
 	gradientDescentIteration!((in a, b) => grad(a.length, a.ptr, b.ptr))
 	(
-		Matrix!(double, false)(cast(double*)WTptr, k, n, WTshift),
+		Matrix!(const double)(cast(double*)WTptr, k, n, WTshift),
 		p[0..k],
 		chi[0..n],
 		pi[0..n],
@@ -94,7 +94,7 @@ void catmosphere_simpleGradientDescentIteration
 {
 	simpleGradientDescentIteration!simpleGrad
 	(
-		Matrix!(double, false)(cast(double*)WTptr, k, n, WTshift),
+		Matrix!(const double)(cast(double*)WTptr, k, n, WTshift),
 		p[0..k],
 		chi[0..n],
 		pi[0..n],
@@ -140,7 +140,7 @@ void catmosphere_minusSumOfLogs_gradientDescentIteration
 {
 	simpleGradientDescentIteration!(a => -1/a)
 	(
-		Matrix!(double, false)(cast(double*)WTptr, k, n, WTshift),
+		Matrix!(const double)(cast(double*)WTptr, k, n, WTshift),
 		p[0..k],
 		chi[0..n],
 		pi[0..n],
@@ -189,7 +189,7 @@ void catmosphere_coordinateDescentIteration
 {
 	coordinateDescentIteration!((in a, b) => grad(a.length, a.ptr, b.ptr))
 	(
-		Matrix!(double, false)(cast(double*)WTptr, k, n, WTshift),
+		Matrix!(const double)(cast(double*)WTptr, k, n, WTshift),
 		p[0..k],
 		chi[0..n],
 		pi[0..n],
@@ -232,7 +232,7 @@ void catmosphere_simpleCoordinateDescentIteration
 {
 	simpleCoordinateDescentIteration!simpleGrad
 	(
-		Matrix!(double, false)(cast(double*)WTptr, k, n, WTshift),
+		Matrix!(const double)(cast(double*)WTptr, k, n, WTshift),
 		p[0..k],
 		chi[0..n],
 		pi[0..n],
@@ -275,7 +275,7 @@ void catmosphere_minusSumOfLogs_coordinateDescentIteration
 {
 	simpleCoordinateDescentIteration!(a => -1/a)
 	(
-		Matrix!(double, false)(cast(double*)WTptr, k, n, WTshift),
+		Matrix!(const double)(cast(double*)WTptr, k, n, WTshift),
 		p[0..k],
 		chi[0..n],
 		pi[0..n],
@@ -297,7 +297,7 @@ Params:
 	xi = temporary array, length = n.
 	c = temporary array, length = k.
 */
-void catmosphere_EMLikeDescentIteration
+void catmosphere_ExpectationMaximizationIteration
 	(
 		in void function(size_t, in double*, double*) @nogc nothrow grad,
 		in double* WTptr,
@@ -310,9 +310,9 @@ void catmosphere_EMLikeDescentIteration
 		double* c,
 	)
 {
-	EMLikeDescentIteration!((in a, b) => grad(a.length, a.ptr, b.ptr))
+	ExpectationMaximizationIteration!((in a, b) => grad(a.length, a.ptr, b.ptr))
 	(
-		Matrix!(double, false)(cast(double*)WTptr, k, n, WTshift),
+		Matrix!(const double)(cast(double*)WTptr, k, n, WTshift),
 		p[0..k],
 		chi[0..n],
 		xi[0..n],
@@ -333,7 +333,7 @@ Params:
 	xi = temporary array, length = n.
 	c = temporary array, length = k.
 */
-void catmosphere_simpleEMLikeDescentIteration
+void catmosphere_simpleExpectationMaximizationIteration
 	(
 		in double function(double) @nogc nothrow simpleGrad,
 		in double* WTptr,
@@ -345,9 +345,9 @@ void catmosphere_simpleEMLikeDescentIteration
 		double* c,
 	)
 {
-	simpleEMLikeDescentIteration!simpleGrad
+	simpleExpectationMaximizationIteration!simpleGrad
 	(
-		Matrix!(double, false)(cast(double*)WTptr, k, n, WTshift),
+		Matrix!(const double)(cast(double*)WTptr, k, n, WTshift),
 		p[0..k],
 		xi[0..n],
 		c[0..k],
@@ -369,7 +369,7 @@ Params:
 	xi = temporary array, length = n.
 	c = temporary array, length = k.
 */
-void catmosphere_minusSumOfLogs_EMLikeDescentIteration
+void catmosphere_minusSumOfLogs_ExpectationMaximizationIteration
 	(
 		in double* WTptr,
 		size_t k,
@@ -380,9 +380,9 @@ void catmosphere_minusSumOfLogs_EMLikeDescentIteration
 		double* c,
 	)
 {
-	simpleEMLikeDescentIteration!(a => -1/a)
+	simpleExpectationMaximizationIteration!(a => -1/a)
 	(
-		Matrix!(double, false)(cast(double*)WTptr, k, n, WTshift),
+		Matrix!(const double)(cast(double*)WTptr, k, n, WTshift),
 		p[0..k],
 		xi[0..n],
 		c[0..k],

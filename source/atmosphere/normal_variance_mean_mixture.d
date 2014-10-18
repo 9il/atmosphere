@@ -7,7 +7,7 @@ module atmosphere.normal_variance_mean_mixture;
 //@nogc nothrow:
 
 
-import core.stdc.stdlib : free;
+import core.stdc.stdlib;
 import core.stdc.tgmath;
 
 import simple_matrix;
@@ -54,7 +54,8 @@ out(alpha)
 	assert(isFinite(alpha));
 	foreach(p; probability)
 	{
-		assert(p >= 0);
+		import std.conv;
+		assert(p >= 0, p.to!string);
 		assert(p <= 1);
 	}
 }
@@ -71,13 +72,17 @@ in
 }
 body
 {
-	alias createArray = createAlignedArray!(T, false);
+	T[] createArray(size_t length)
+	{
+		return (cast(T*)malloc(double.sizeof * length))[0..length];
+	}
 	const sampleAvg = sample.avg;
 
 	T alpha = sampleAvg / dot(probability, grid);
 	T alphaSave = void;
 
-	auto WT = Matrix!(double, false)(grid.length, sample.length);
+	auto ptr = createArray(grid.length * sample.length).ptr;
+	auto WT = Matrix!(double)(ptr, grid.length, sample.length);
 	auto probabilitySave = createArray(grid.length);
 	scope(exit)	
 	{
@@ -117,23 +122,19 @@ body
 			{
 				immutable y = (x - alpha * u) / sqrtu;
 				column[j] = exp2(y*y/-2) / sqrtu;
+				import std.conv;
+				assert(column[j] > 0, column[j].to!string);
 			}
 		}
 		static if(Algorithm == SNVMMAlgorithm.ExpectationMaximization)
-		{
-			simpleEMLikeDescentIteration!(a => -1/a)(WT, probability, xi, c);
-		}
+			simpleExpectationMaximizationIteration !(a => 1/a)(cast(Matrix!(const double))WT, probability, xi, c);
 		static if(Algorithm == SNVMMAlgorithm.GradientDescent)
-		{
-			simpleGradientDescentIteration!(a => -1/a)(WT, probability, chi, pi, xi, c, findRootTolerance);
-		}
+			simpleGradientDescentIteration  !(a => -1/a)(cast(Matrix!(const double))WT, probability, chi, pi, xi, c, findRootTolerance);
 		static if(Algorithm == SNVMMAlgorithm.CoordinateDescent)
-		{
-			simpleCoordinateDescentIteration!(a => -1/a)(WT, probability, chi, pi, findRootTolerance);
-		}
+			simpleCoordinateDescentIteration!(a => -1/a)(cast(Matrix!(const double))WT, probability, chi, pi, findRootTolerance);
 		alpha = sampleAvg / dot(probability, grid);
 	}
-	while(tolerance(alphaSave, alpha, probabilitySave, probability));
+	while(!tolerance(alphaSave, alpha, probabilitySave, probability));
 
 	return alpha;
 }

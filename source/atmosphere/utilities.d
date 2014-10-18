@@ -69,6 +69,13 @@ F sum(F)(in F[] a)
 	return (ret0+ret1)+(ret2+ret3);
 }
 
+unittest {
+	import std.range : iota, array;
+	foreach(i; 0.0..30.0)
+		assert(iota(i).sum == iota(i).array.sum);
+}
+
+
 auto avg(Range)(Range range)
 {
 	return range.sum / range.length;
@@ -77,7 +84,11 @@ auto avg(Range)(Range range)
 
 void normalize(F)(F[] range)
 {
-	range[] /= range.sum;
+	immutable s = range.sum;
+	assert(s.isFinite);
+	assert(s > 0);
+	foreach(ref elem; range)
+		elem /= s;
 }
 
 
@@ -88,7 +99,7 @@ in {
 }
 body {
 
-	static if(is(M : Matrix!(F, GCAddRoot), bool GCAddRoot))
+	static if(is(M : Matrix!(T), T))
 	{
 		assert(m.ptr);
 		assert(m.shift >= m.width);
@@ -107,7 +118,7 @@ body {
 			1);
 	}
 	else
-	static if(is(M : Transposed!(F, GCAddRoot), bool GCAddRoot))
+	static if(is(M : Transposed!(T), T))
 	{
 		assert(m.matrix.ptr);
 		assert(m.matrix.shift >= m.matrix.width);
@@ -130,6 +141,31 @@ body {
 		import std.string : format;
 		static assert(0, format("gemv for %s not implimented", M.stringof));
 	}
+}
+
+unittest
+{
+	const ar = [
+	1.000, 6.000, 2.000,
+	8.000, 3.000, 7.000,
+	3.000, 5.000, 2.000,
+	53, 23, 123
+	];
+	auto m = Matrix!(const double)(ar.ptr, 4, 3);
+	const a = [
+	42.000,
+	35.000,
+	12.000,
+	];
+	auto b = new double[4];
+	gemv(m, a, b);
+	assert(b == [ 
+	 276.000,
+	 525.000,
+	 325.000,
+	4507.000,
+	]);
+
 }
 
 
