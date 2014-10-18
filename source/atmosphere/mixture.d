@@ -291,7 +291,7 @@ void simpleExpectationMaximizationIteration(alias simpleGrad, T, Matrix)
 		T[] xi,
 		T[] c,
 	)
-	@nogc nothrow
+	//@nogc nothrow
 in
 {
 	assert(WT.height);
@@ -302,17 +302,25 @@ in
 }
 body
 {
+	import std.stdio, std.conv;
+
+	writeln(p.sum);
+
 	gemv(WT.transposed, p, xi);
 	foreach(ref elem; xi)
-		elem = simpleGrad(elem);
+		elem = 1/(elem);
 	gemv(WT, xi, c);
-	foreach(i, ref elem; p)
+	c[] /= c.length;
+ 	foreach(i, ref elem; p)
 	{
 		assert(c[i] >= 0);
 		assert(c[i].isFinite);
 		elem *= c[i];
 	}
-	p[] /= p.length;
+	//p[] /= p.length;
+
+	writeln(p.sum);
+	assert(p.sum < 2, p.to!string);
 	//p.normalize;
 }
 
