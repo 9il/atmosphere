@@ -6,16 +6,26 @@ Testing in progress. NOT READY FOR PRODUCTION!
 
 # Numeric methods
 
+## General nonparametric algorithms
 
-1. Solvs optimization problem f(p) -> min, 
+Each algorithm solvs optimization problem f(p) -> min, 
 where p is discrete probability distribution with k elements.
+
 ```
 f(p) -> min
 f = u(Wp),
 W - matrix(n rows, k columns),
 u - convex function.
 ```
-2. Separates normal variance mean mixtures.
+
+## Separates normal variance mean mixtures.
+```
+///normal variance mean mixtures
+f_sample(p, alpha) -> max
+f_sample = u(W_sample(alpha)p),
+W_sample(alpha) - matrix(n rows, k columns) of posterior probabilities,
+u(ω) =  Σ_j log(ω_j).
+```
 
 #Instalation
 Use [dub package manager](https://github.com/D-Programming-Language/dub) for instalation.
