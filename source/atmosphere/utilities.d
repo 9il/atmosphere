@@ -145,6 +145,7 @@ body {
 
 unittest
 {
+	debug writeln("gemv test");
 	const ar = [
 	1.000, 6.000, 2.000,
 	8.000, 3.000, 7.000,
