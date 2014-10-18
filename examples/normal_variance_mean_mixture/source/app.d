@@ -44,13 +44,13 @@ void main()
 		alpha = separateNormalVarianceMeanMixture!(ExpectationMaximization)(sample, grid, p, &tolerance, &findRootTolerance);
 		writeln(alpha, ' ', p);
 
-		//p[] = 1.0/p.length;
-		//alpha = separateNormalVarianceMeanMixture!(GradientDescent)(sample, grid, p, &tolerance, &findRootTolerance);
-		//writeln(alpha, ' ', p);
+		p[] = 1.0/p.length;
+		alpha = separateNormalVarianceMeanMixture!(GradientDescent)(sample, grid, p, &tolerance, &findRootTolerance);
+		writeln(alpha, ' ', p);
 
-		//p[] = 1.0/p.length;
-		//alpha = separateNormalVarianceMeanMixture!(CoordinateDescent)(sample, grid, p, &tolerance, &findRootTolerance);
-		//writeln(alpha, ' ', p);
+		p[] = 1.0/p.length;
+		alpha = separateNormalVarianceMeanMixture!(CoordinateDescent)(sample, grid, p, &tolerance, &findRootTolerance);
+		writeln(alpha, ' ', p);
 
 		writeln("========================");
 		writeln("========================");

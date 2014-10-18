@@ -59,9 +59,10 @@ body
 	grad(chi, xi); // xi = grad(chi);
 	gemv(WT, xi, c);
 	immutable i = c.length - c.minPos.length;
-	foreach(j, w; WT[i])
+	const columni = WT[i];
+	foreach(j, w; columni)
 		pi[j] = w - chi[j];
-	immutable theta = gRoot!grad(chi, pi, xi, gamma, tolerance);
+	immutable theta = gRoot!grad(chi, pi, columni, xi, gamma, tolerance);
 	immutable onemtheta = 1 - theta;
 	p.scal(onemtheta);
 	p[i] += theta;
@@ -110,9 +111,10 @@ body
 		xi[j] = simpleGrad(chi[j]);
 	gemv(WT, xi, c);
 	immutable i = c.length - c.minPos.length;
-	foreach(j, w; WT[i])
+	const columni = WT[i];
+	foreach(j, w; columni)
 		pi[j] = w - chi[j];
-	immutable theta = gRoot!simpleGrad(chi, pi, WT[i], tolerance);
+	immutable theta = gRoot!simpleGrad(chi, pi, columni, tolerance);
 	immutable onemtheta = 1 - theta;
 	p.scal(onemtheta);
 	p[i] += theta;
@@ -161,17 +163,17 @@ body
 	gemv(WT.transposed, p, chi);
 	foreach(i; 0..p.length)
 	{
-		auto column = WT[i];
+		auto columni = WT[i];
 		foreach(j; 0..chi.length)
-			pi[j] = column[j] - chi[j];
-		immutable theta = gRoot!grad(chi, pi, xi, gamma, tolerance);
+			pi[j] = columni[j] - chi[j];
+		immutable theta = gRoot!grad(chi, pi, columni, xi, gamma, tolerance);
 		immutable onemtheta = 1 - theta;
 		if(theta)
 		{
 			p.scal(onemtheta);
 			p[i] += theta;
 			foreach(j; 0..chi.length)
-				chi[j] = onemtheta * chi[j] - theta * column[j];
+				chi[j] = onemtheta * chi[j] - theta * columni[j];
 		}
 	}
 	p.normalize;
@@ -214,17 +216,17 @@ body
 	gemv(WT.transposed, p, chi);
 	foreach(i; 0..p.length)
 	{
-		auto column = WT[i];
+		auto columni = WT[i];
 		foreach(j; 0..chi.length)
-			pi[j] = column[j] - chi[j];
-		immutable theta = gRoot!simpleGrad(chi, pi, column, tolerance);
-		immutable onemtheta = 1 - theta;
-		if(theta)
+			pi[j] = columni[j] - chi[j];
+		immutable theta = gRoot!simpleGrad(chi, pi, columni, tolerance);
+		if(!tolerance(0, theta))
 		{
+			immutable onemtheta = 1 - theta;
 			p.scal(onemtheta);
 			p[i] += theta;
 			foreach(j; 0..chi.length)
-				chi[j] = onemtheta * chi[j] - theta * column[j];
+				chi[j] = onemtheta * chi[j] + theta * columni[j];
 		}
 	}
 	p.normalize;
@@ -326,6 +328,7 @@ T gRoot
 	(
 		in T[] chi,
 		in T[] pi,
+		in T[] columni,
 		T[] xi,
 		T[] gamma,
 		in bool delegate(T, T) @nogc nothrow tolerance = (a, b) => false,
@@ -339,14 +342,23 @@ T gRoot
 		return dot(gamma, pi);
 	}
 
-	T g0 = void, g1 = void;
-	g0 = g(0);
-	if(g0 < T.min_normal || tolerance(g0, 0))
+	T g_01(in T[] vec)
+	{
+		grad(vec, gamma);
+		return dot(gamma, pi);
+	}
+
+	immutable g0 = g_01(chi);
+	if(g0 > -T.min_normal)
 		return 0;
-	g1 = g(1);
-	if(g1 >= 1           || tolerance(g1, 1))
+	immutable g1 = g_01(columni);
+	if(g1 < +T.min_normal)
 		return 1;
-	auto r = findRoot(&g, cast(T)0, cast(T)1, g0, g1, tolerance);
+	auto r = findRoot(&g, cast(T)0.0, cast(T)1.0, g0, g1, tolerance);
+	debug {
+		import std.stdio;
+		writeln(r);
+	}
 	return !(fabs(r[2]) > fabs(r[3])) ? r[0] : r[1];
 }
 
@@ -378,91 +390,65 @@ body
 		T ret3 = 0;
 
 		immutable L1= pi.length & -4;
-		size_t i;
+		size_t j;
 	 
-		for(; i < L1; i += 4)
+		for(; j < L1; j += 4)
 		{
-			immutable pi0 = pi[i+0];
-			immutable pi1 = pi[i+1];
-			immutable pi2 = pi[i+2];
-			immutable pi3 = pi[i+3];
-			ret0 += pi0 * simpleGrad(chi[i+0] + theta * pi0);
-			ret1 += pi1 * simpleGrad(chi[i+1] + theta * pi1);
-			ret2 += pi2 * simpleGrad(chi[i+2] + theta * pi2);
-			ret3 += pi3 * simpleGrad(chi[i+3] + theta * pi3);
+			immutable pi0 = pi[j+0];
+			immutable pi1 = pi[j+1];
+			immutable pi2 = pi[j+2];
+			immutable pi3 = pi[j+3];
+			ret0 += pi0 * simpleGrad(chi[j+0] + theta * pi0);
+			ret1 += pi1 * simpleGrad(chi[j+1] + theta * pi1);
+			ret2 += pi2 * simpleGrad(chi[j+2] + theta * pi2);
+			ret3 += pi3 * simpleGrad(chi[j+3] + theta * pi3);
 		}
 
-		for(; i < pi.length; i++)
+		for(; j < pi.length; j++)
 		{
-			immutable pi0 = pi[i+0];
-			ret0 += pi0 * simpleGrad(chi[i+0] + theta * pi0);
+			immutable pi0 = pi[j+0];
+			ret0 += pi0 * simpleGrad(chi[j+0] + theta * pi0);
 		}
 
 		return (ret0+ret1)+(ret2+ret3);
 	}
 
-	T[2] g_01()
+	T g_01(in T[] vec)
 	{
-		T ret00 = 0, ret10 = 0;
-		T ret01 = 0, ret11 = 0;
-		T ret02 = 0, ret12 = 0;
-		T ret03 = 0, ret13 = 0;
+		T ret0 = 0;
+		T ret1 = 0;
+		T ret2 = 0;
+		T ret3 = 0;
 
 		immutable L1= pi.length & -4;
-		size_t i;
+		size_t j;
 	 
-		for(; i < L1; i += 4)
+		for(; j < L1; j += 4)
 		{
-			immutable pi0 = pi[i+0];
-			immutable pi1 = pi[i+1];
-			immutable pi2 = pi[i+2];
-			immutable pi3 = pi[i+3];
-			immutable chi0 = chi[i+0];
-			immutable chi1 = chi[i+1];
-			immutable chi2 = chi[i+2];
-			immutable chi3 = chi[i+3];
-
-			ret00 += pi0 * simpleGrad(chi0);
-			ret01 += pi1 * simpleGrad(chi1);
-			ret02 += pi2 * simpleGrad(chi2);
-			ret03 += pi3 * simpleGrad(chi3);
-
-			assert(columni[i+0] > 0);
-			assert(columni[i+1] > 0);
-			assert(columni[i+2] > 0);
-			assert(columni[i+3] > 0);
-
-			ret10 += pi0 * simpleGrad(columni[i+0]);
-			ret11 += pi1 * simpleGrad(columni[i+1]);
-			ret12 += pi2 * simpleGrad(columni[i+2]);
-			ret13 += pi3 * simpleGrad(columni[i+3]);
-
+			ret0 += pi[j+0] * simpleGrad(vec[j+0]);
+			ret1 += pi[j+1] * simpleGrad(vec[j+1]);
+			ret2 += pi[j+2] * simpleGrad(vec[j+2]);
+			ret3 += pi[j+3] * simpleGrad(vec[j+3]);
 		}
 
-		for(; i < pi.length; i++)
+		for(; j < pi.length; j++)
 		{
-			immutable pi0 = pi[i+0];
-			immutable chi0 = chi[i+0];
-			ret00 += pi0 * simpleGrad(chi0);
-			ret10 += pi0 * simpleGrad(chi0 + pi0);
+			ret0 += pi[j+0] * simpleGrad(vec[j+0]);
 		}
 
-		return [(ret00+ret01)+(ret02+ret03), (ret10+ret11)+(ret12+ret13)];
+		return (ret0+ret1)+(ret2+ret3);
 	}
-	auto g01 = g_01;
-	//assert(g01[0] <= g01[1]);
-	debug {
-		import std.stdio;
-		writeln(g01);
-	}
-	if(g01[0] >= 0)
+
+	immutable g0 = g_01(chi);
+	if(g0 > -T.min_normal)
 		return 0;
-	if(g01[1] <= 0)
+	immutable g1 = g_01(columni);
+	if(g1 < +T.min_normal)
 		return 1;
-	auto r = findRoot(&g, cast(T)0.0, cast(T)1.0, g01[0], g01[1], tolerance);
-	debug {
-		import std.stdio;
-		writeln(r);
-	}
+	auto r = findRoot(&g, cast(T)0.0, cast(T)1.0, g0, g1, tolerance);
+	//debug {
+	//	import std.stdio;
+	//	writeln(r);
+	//}
 	return !(fabs(r[2]) > fabs(r[3])) ? r[0] : r[1];
 }

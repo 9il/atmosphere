@@ -153,10 +153,10 @@ body
 			}
 		}
 
-		import std.stdio;
-		auto v = new T[sample.length];
-		gemv(WT.transposed, probability, v);
-		writefln("L = %s", v.sumOfLog2s);
+		//import std.stdio;
+		//auto v = new T[sample.length];
+		//gemv(WT.transposed, probability, v);
+		//writefln("L = %s", v.sumOfLog2s);
 
 		static if(Algorithm == SNVMMAlgorithm.ExpectationMaximization)
 			simpleExpectationMaximizationIteration !(a => 1/a)(cast(Matrix!(const double))WT, probability, xi, c);
@@ -166,8 +166,9 @@ body
 			simpleCoordinateDescentIteration!(a => -1/a)(cast(Matrix!(const double))WT, probability, chi, pi, findRootTolerance);
 		alpha = sampleAvg / dot(probability, grid);
 
+		//d f/ d alpha = Ju(W(alpha)p)W'(alpha)p
 
-		writeln(alphaSave, ' ', alpha);
+		//writeln(alphaSave, ' ', alpha);
 	}
 	while(!tolerance(alphaSave, alpha, probabilitySave, probability));
 
