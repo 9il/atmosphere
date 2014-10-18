@@ -18,7 +18,8 @@ W - matrix(n rows, k columns),
 u - convex function.
 ```
 
-## Separates normal variance mean mixtures.
+## Normal variance mean mixtures
+Each algorithm separates normal variance mean mixtures.
 ```
 ///normal variance mean mixtures
 f_sample(p, alpha) -> max
