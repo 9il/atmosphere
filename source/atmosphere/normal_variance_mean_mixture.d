@@ -21,10 +21,6 @@ Algorithm for saparating normal variance mean mixture.
 enum SNVMMAlgorithm
 {
 	/**
-	Expectation–maximization algorithm.
-	*/
-	ExpectationMaximization,
-	/**
 	Gradient descent optimization algorithm.
 	*/	
 	GradientDescent,
@@ -109,22 +105,16 @@ body
 	auto ptr = createArray(grid.length * sample.length).ptr;
 	auto WT = Matrix!(double)(ptr, grid.length, sample.length);
 	auto probabilitySave = createArray(grid.length);
+	auto chi = createArray(sample.length);
+	auto pi = createArray(sample.length);
 	scope(exit)	
 	{
 		WT.ptr.free;
 		probabilitySave.ptr.free;
+		chi.ptr.free;
+		pi.ptr.free;
 	}
-	static if(Algorithm == SNVMMAlgorithm.GradientDescent || Algorithm == SNVMMAlgorithm.CoordinateDescent)
-	{
-		auto chi = createArray(sample.length);
-		auto pi = createArray(sample.length);
-		scope(exit)
-		{
-			chi.ptr.free;
-			pi.ptr.free;
-		}
-	}
-	static if(Algorithm == SNVMMAlgorithm.GradientDescent || Algorithm == SNVMMAlgorithm.ExpectationMaximization)
+	static if(Algorithm == SNVMMAlgorithm.GradientDescent)
 	{
 		auto xi = createArray(sample.length);
 		auto c = createArray(grid.length);
@@ -136,7 +126,6 @@ body
 	}
 	do
 	{
-
 		probabilitySave[] = probability[];
 		alphaSave = alpha;
 		foreach(i, u; grid)
@@ -158,8 +147,6 @@ body
 		//gemv(WT.transposed, probability, v);
 		//writefln("L = %s", v.sumOfLog2s);
 
-		static if(Algorithm == SNVMMAlgorithm.ExpectationMaximization)
-			simpleExpectationMaximizationIteration !(a => 1/a)(cast(Matrix!(const double))WT, probability, xi, c);
 		static if(Algorithm == SNVMMAlgorithm.GradientDescent)
 			simpleGradientDescentIteration  !(a => -1/a)(cast(Matrix!(const double))WT, probability, chi, pi, xi, c, findRootTolerance);
 		static if(Algorithm == SNVMMAlgorithm.CoordinateDescent)
@@ -178,7 +165,6 @@ body
 
 unittest
 {
-	alias SNVMMA_EM = separateNormalVarianceMeanMixture!(SNVMMAlgorithm.ExpectationMaximization, double);
 	alias SNVMMA_GD = separateNormalVarianceMeanMixture!(SNVMMAlgorithm.GradientDescent, double);
 	alias SNVMMA_CD = separateNormalVarianceMeanMixture!(SNVMMAlgorithm.CoordinateDescent, double);
 }

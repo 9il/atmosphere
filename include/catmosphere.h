@@ -102,44 +102,6 @@ void catmosphere_minusSumOfLogs_coordinateDescentIteration
 		bool (*tolerance)(double, double)
 	);
 
-
-void catmosphere_EMLikeDescentIteration
-	(
-		void (*grad)(size_t, const double* arg, double* result),
-		const double* WTptr,
-		size_t k,
-		size_t n,
-		size_t WTshift,
-		double* p,
-		double* chi,
-		double* xi
-	);
-
-
-void catmosphere_simpleEMLikeDescentIteration
-	(
-		double (*simpleGrad)(double),
-		const double* WTptr,
-		size_t k,
-		size_t n,
-		size_t WTshift,
-		double* p,
-		double* xi,
-		double* c
-	);
-
-
-void catmosphere_minusSumOfLogs_EMLikeDescentIteration
-	(
-		const double* WTptr,
-		size_t k,
-		size_t n,
-		size_t WTshift,
-		double* p,
-		double* xi,
-		double* c
-	);
-
 #ifdef __cplusplus
 }
 #endif

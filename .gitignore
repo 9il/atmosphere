@@ -9,3 +9,7 @@ docs.json
 /examples/**/build/
 example
 
+
+__test__library__
+
+include/catmosphere

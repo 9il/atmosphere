@@ -173,7 +173,7 @@ body
 			p.scal(onemtheta);
 			p[i] += theta;
 			foreach(j; 0..chi.length)
-				chi[j] = onemtheta * chi[j] - theta * columni[j];
+				chi[j] = onemtheta * chi[j] + theta * columni[j];
 		}
 	}
 	p.normalize;
@@ -232,90 +232,6 @@ body
 	p.normalize;
 }
 
-
-/**
-EM like optimization algorithm.
-Params:
-	grad = ∇u(ω)
-	WT = transposed version of W. n columns, k rows.
-	p = discrete probability distribution with, length = k.
-	chi = temporary array, length = n.
-	xi = temporary array, length = n.
-	c = temporary array, length = k.
-*/
-void ExpectationMaximizationIteration(alias grad, T)
-	(
-		Matrix!(const T) WT,
-		T[] p,
-		T[] chi,
-		T[] xi,
-		T[] c,
-	)
-	@nogc nothrow
-in
-{
-	assert(WT.height);
-	assert(WT.width);
-	assert(WT.height == p.length);
-	assert(WT.height == c.length);
-	assert(WT.width == chi.length);
-	assert(WT.width == xi.length);
-}
-body
-{
-	gemv(WT.transposed, p, chi);
-	grad(chi, xi);
-	gemv(WT, xi, c);
-	foreach(i, ref elem; p)
-	{
-		assert(c[i] >= 0);
-		assert(c[i].isFinite);
-		elem *= c[i];
-	}
-	p.normalize;
-}
-
-
-
-/**
-EM like descent optimization algorithm.
-Params:
-	simpleGrad = du/dω_1, where du/dω_j = du/dω_1, 1 <= j <= n.
-	WT = transposed version of W. n columns, k rows.
-	p = discrete probability distribution with, length = k.
-	xi = temporary array, length = n.
-	c = temporary array, length = k.
-*/
-void simpleExpectationMaximizationIteration(alias simpleGrad, T, Matrix)  
-	(
-		Matrix WT,
-		T[] p,
-		T[] xi,
-		T[] c,
-	)
-	//@nogc nothrow
-in
-{
-	assert(WT.height);
-	assert(WT.width);
-	assert(WT.height == p.length);
-	assert(WT.height == c.length);
-	assert(WT.width == xi.length);
-}
-body
-{
-	gemv(WT.transposed, p, xi);
-	foreach(ref elem; xi)
-		elem = simpleGrad(elem);
-	gemv(WT, xi, c);
- 	foreach(i, ref elem; p)
-	{
-		assert(c[i] >= 0);
-		assert(c[i].isFinite);
-		elem *= c[i];
-	}
-	p.normalize;
-}
 
 private:
 
