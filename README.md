@@ -34,6 +34,3 @@ Use [dub package manager](https://github.com/D-Programming-Language/dub) for ins
 1. [D Simple Matrix](https://github.com/9il/simple_matrix)
 2. [D cblas header](https://github.com/9il/cblas)
 3. BLAS library
-
-##C interface
-C header file can be found [here](https://github.com/9il/atmosphere_gm/tree/master/include).
