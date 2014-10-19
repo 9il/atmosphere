@@ -1,6 +1,21 @@
 import std.file, std.path, std.stdio, std.conv, std.algorithm, std.range, std.math;
 import atmosphere.normal_variance_mean_mixture;
 
+//class A
+//{
+//	this(uint i)
+//	{
+
+//	}
+//}
+
+//class B : A {
+//}
+
+//void ttt (){
+//	auto b = new B(8);
+//}
+
 void main() 
 {
 	const begin = 0.1;

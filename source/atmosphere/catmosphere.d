@@ -13,6 +13,28 @@ extern(C):
 
 
 /**
+
+*/
+void catmosphere_mix
+	(
+		in double* WTptr,
+		size_t k,
+		size_t n,
+		size_t WTshift,
+		in double* p,
+		double* mixture,
+	)
+{
+	mix!double
+	(
+		Matrix!(const double)(cast(double*)WTptr, k, n, WTshift),
+		p[0..k],
+		mixture[0..n],
+	);
+}
+
+
+/**
 One iteration of gradient descent optimization algorithm.
 Params:
 	grad = ∇u(ω)
@@ -21,7 +43,7 @@ Params:
 	n = number of columns.
 	WTshift = count of elements between adjacent rows.
 	p = discrete probability distribution with, length = k.
-	chi = temporary array, length = n.
+	mixture = Wp, length = n.
 	pi = temporary array, length = n.
 	xi = temporary array, length = n.
 	gamma = temporary array, length = n.
@@ -30,7 +52,7 @@ Params:
 				Receives the current upper and lower bounds on the root. 
 				The delegate must return true when these bounds are acceptable. 
 */
-void catmosphere_gradientDescentIteration
+void catmosphere_gradientDescentIterationGr
 	(
 		in void function(size_t, in double*, double*) @nogc nothrow grad,
 		in double* WTptr,
@@ -38,7 +60,7 @@ void catmosphere_gradientDescentIteration
 		size_t n,
 		size_t WTshift,
 		double* p,
-		double* chi,
+		double* mixture,
 		double* pi,
 		double* xi,
 		double* gamma,
@@ -46,11 +68,11 @@ void catmosphere_gradientDescentIteration
 		in bool function(double, double) @nogc nothrow tolerance,
 	)
 {
-	gradientDescentIteration!((in a, b) => grad(a.length, a.ptr, b.ptr))
+	gradientDescentIterationGr!((in a, b) => grad(a.length, a.ptr, b.ptr))
 	(
 		Matrix!(const double)(cast(double*)WTptr, k, n, WTshift),
 		p[0..k],
-		chi[0..n],
+		mixture[0..n],
 		pi[0..n],
 		xi[0..n],
 		gamma[0..n],
@@ -69,7 +91,7 @@ Params:
 	n = number of columns.
 	WTshift = count of elements between adjacent rows.
 	p = discrete probability distribution with, length = k.
-	chi = temporary array, length = n.
+	mixture = Wp, length = n.
 	pi = temporary array, length = n.
 	xi = temporary array, length = n.
 	c = temporary array, length = k.
@@ -77,7 +99,7 @@ Params:
 				Receives the current upper and lower bounds on the root. 
 				The delegate must return true when these bounds are acceptable. 
 */
-void catmosphere_simpleGradientDescentIteration
+void catmosphere_gradientDescentIterationPD
 	(
 		in double function(double) @nogc nothrow simpleGrad,
 		in double* WTptr,
@@ -85,24 +107,25 @@ void catmosphere_simpleGradientDescentIteration
 		size_t n,
 		size_t WTshift,
 		double* p,
-		double* chi,
+		double* mixture,
 		double* pi,
 		double* xi,
 		double* c,
 		in bool function(double, double) @nogc nothrow tolerance,
 	)
 {
-	simpleGradientDescentIteration!simpleGrad
+	gradientDescentIterationPD!simpleGrad
 	(
 		Matrix!(const double)(cast(double*)WTptr, k, n, WTshift),
 		p[0..k],
-		chi[0..n],
+		mixture[0..n],
 		pi[0..n],
 		xi[0..n],
 		c[0..k],
 		cast(bool delegate(double, double) @nogc nothrow)(a, b) => tolerance(a, b),
 	);
 }
+
 
 /**
 One iteration of gradient descent optimization algorithm.
@@ -116,7 +139,7 @@ Params:
 	n = number of columns.
 	WTshift = count of elements between adjacent rows.
 	p = discrete probability distribution with, length = k.
-	chi = temporary array, length = n.
+	mixture = Wp, length = n.
 	pi = temporary array, length = n.
 	xi = temporary array, length = n.
 	c = temporary array, length = k.
@@ -124,32 +147,31 @@ Params:
 				Receives the current upper and lower bounds on the root. 
 				The delegate must return true when these bounds are acceptable. 
 */
-void catmosphere_minusSumOfLogs_gradientDescentIteration
+void catmosphere_gradientDescentIterationPD_minusSumOfLogs
 	(
 		in double* WTptr,
 		size_t k,
 		size_t n,
 		size_t WTshift,
 		double* p,
-		double* chi,
+		double* mixture,
 		double* pi,
 		double* xi,
 		double* c,
 		in bool function(double, double) @nogc nothrow tolerance,
 	)
 {
-	simpleGradientDescentIteration!(a => -1/a)
+	gradientDescentIterationPD!(a => -1/a)
 	(
 		Matrix!(const double)(cast(double*)WTptr, k, n, WTshift),
 		p[0..k],
-		chi[0..n],
+		mixture[0..n],
 		pi[0..n],
 		xi[0..n],
 		c[0..k],
 		cast(bool delegate(double, double) @nogc nothrow)(a, b) => tolerance(a, b),
 	);
 }
-
 
 
 /**
@@ -164,7 +186,7 @@ Params:
 	n = number of columns.
 	WTshift = count of elements between adjacent rows.
 	p = discrete probability distribution with, length = k.
-	chi = temporary array, length = n.
+	mixture = Wp, length = n.
 	pi = temporary array, length = n.
 	xi = temporary array, length = n.
 	gamma = temporary array, length = n.
@@ -172,7 +194,7 @@ Params:
 				Receives the current upper and lower bounds on the root. 
 				The delegate must return true when these bounds are acceptable. 
 */
-void catmosphere_coordinateDescentIteration
+void catmosphere_coordinateDescentIterationGr
 	(
 		in void function(size_t, in double*, double*) @nogc nothrow grad,
 		in double* WTptr,
@@ -180,24 +202,25 @@ void catmosphere_coordinateDescentIteration
 		size_t n,
 		size_t WTshift,
 		double* p,
-		double* chi,
+		double* mixture,
 		double* pi,
 		double* xi,
 		double* gamma,
 		in bool function(double, double) @nogc nothrow tolerance,
 	)
 {
-	coordinateDescentIteration!((in a, b) => grad(a.length, a.ptr, b.ptr))
+	coordinateDescentIterationGr!((in a, b) => grad(a.length, a.ptr, b.ptr))
 	(
 		Matrix!(const double)(cast(double*)WTptr, k, n, WTshift),
 		p[0..k],
-		chi[0..n],
+		mixture[0..n],
 		pi[0..n],
 		xi[0..n],
 		gamma[0..n],
 		cast(bool delegate(double, double) @nogc nothrow)(a, b) => tolerance(a, b),
 	);
 }
+
 
 /**
 k iterations of coordinate descent optimization algorithm.
@@ -211,13 +234,13 @@ Params:
 	n = number of columns.
 	WTshift = count of elements between adjacent rows.
 	p = discrete probability distribution with, length = k.
-	chi = temporary array, length = n.
+	mixture = Wp, length = n.
 	pi = temporary array, length = n.
 	tolerance = Defines an early termination condition. 
 				Receives the current upper and lower bounds on the root. 
 				The delegate must return true when these bounds are acceptable. 
 */
-void catmosphere_simpleCoordinateDescentIteration
+void catmosphere_coordinateDescentIterationPD
 	(
 		in double function(double) @nogc nothrow simpleGrad,
 		in double* WTptr,
@@ -225,16 +248,16 @@ void catmosphere_simpleCoordinateDescentIteration
 		size_t n,
 		size_t WTshift,
 		double* p,
-		double* chi,
+		double* mixture,
 		double* pi,
 		in bool function(double, double) @nogc nothrow tolerance,
 	)
 {
-	simpleCoordinateDescentIteration!simpleGrad
+	coordinateDescentIterationPD!simpleGrad
 	(
 		Matrix!(const double)(cast(double*)WTptr, k, n, WTshift),
 		p[0..k],
-		chi[0..n],
+		mixture[0..n],
 		pi[0..n],
 		cast(bool delegate(double, double) @nogc nothrow)(a, b) => tolerance(a, b),
 	);
@@ -255,29 +278,29 @@ Params:
 	n = number of columns.
 	WTshift = count of elements between adjacent rows.
 	p = discrete probability distribution with, length = k.
-	chi = temporary array, length = n.
+	mixture = Wp, length = n.
 	pi = temporary array, length = n.
 	tolerance = Defines an early termination condition. 
 				Receives the current upper and lower bounds on the root. 
 				The delegate must return true when these bounds are acceptable. 
 */
-void catmosphere_minusSumOfLogs_coordinateDescentIteration
+void catmosphere_coordinateDescentIterationPD_minusSumOfLogs
 	(
 		in double* WTptr,
 		size_t k,
 		size_t n,
 		size_t WTshift,
 		double* p,
-		double* chi,
+		double* mixture,
 		double* pi,
 		in bool function(double, double) @nogc nothrow tolerance,
 	)
 {
-	simpleCoordinateDescentIteration!(a => -1/a)
+	coordinateDescentIterationPD!(a => -1/a)
 	(
 		Matrix!(const double)(cast(double*)WTptr, k, n, WTshift),
 		p[0..k],
-		chi[0..n],
+		mixture[0..n],
 		pi[0..n],
 		cast(bool delegate(double, double) @nogc nothrow)(a, b) => tolerance(a, b),
 	);

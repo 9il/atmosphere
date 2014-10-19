@@ -15,14 +15,31 @@ import core.stdc.tgmath : fabs;
 
 import atmosphere.utilities;
 
+public import simple_matrix;
+
+/**
+mixture = Wp
+*/
+void mix(T)(Matrix!(const T) WTransposed, in T[] p, T[] mixture)
+in
+{
+	assert(WTransposed.height);
+	assert(WTransposed.width);
+	assert(WTransposed.height == p.length);
+	assert(WTransposed.width == mixture.length);
+}
+body
+{
+	gemv(WTransposed.transposed, p, mixture);
+}
 
 /**
 One iteration of gradient descent optimization algorithm.
 Params:
 	grad = ∇u(ω)
-	WT = transposed version of W. k rows, n columns.
+	WTransposed = transposed version of W. k rows, n columns.
 	p = discrete probability distribution with, length = k.
-	chi = temporary array, length = n.
+	mixture = temporary array, length = n.
 	pi = temporary array, length = n.
 	xi = temporary array, length = n.
 	gamma = temporary array, length = n.
@@ -31,11 +48,11 @@ Params:
 				Receives the current upper and lower bounds on the root. 
 				The delegate must return true when these bounds are acceptable. 
 */
-void gradientDescentIteration(alias grad, T)
+void gradientDescentIterationGr(alias grad, T)
 	(
-		Matrix!(const T) WT,
+		Matrix!(const T) WTransposed,
 		T[] p,
-		T[] chi,
+		T[] mixture,
 		T[] pi,
 		T[] xi,
 		T[] gamma,
@@ -44,25 +61,25 @@ void gradientDescentIteration(alias grad, T)
 	)
 in
 {
-	assert(WT.height);
-	assert(WT.width);
-	assert(WT.height == p.length);
-	assert(WT.height == c.length);
-	assert(WT.width == chi.length);
-	assert(WT.width == pi.length);
-	assert(WT.width == xi.length);
-	assert(WT.width == gamma.length);
+	assert(WTransposed.height);
+	assert(WTransposed.width);
+	assert(WTransposed.height == p.length);
+	assert(WTransposed.height == c.length);
+	assert(WTransposed.width == mixture.length);
+	assert(WTransposed.width == pi.length);
+	assert(WTransposed.width == xi.length);
+	assert(WTransposed.width == gamma.length);
 }
 body
 {
-	gemv(WT.transposed, p, chi);
-	grad(chi, xi); // xi = grad(chi);
-	gemv(WT, xi, c);
+	//gemv(WTransposed.transposed, p, mixture);
+	grad(mixture, xi); // xi = grad(mixture);
+	gemv(WTransposed, xi, c);
 	immutable i = c.length - c.minPos.length;
-	const columni = WT[i];
+	const columni = WTransposed[i];
 	foreach(j, w; columni)
-		pi[j] = w - chi[j];
-	immutable theta = gRoot!grad(chi, pi, columni, xi, gamma, tolerance);
+		pi[j] = w - mixture[j];
+	immutable theta = gRoot!grad(mixture, pi, columni, xi, gamma, tolerance);
 	immutable onemtheta = 1 - theta;
 	p.scal(onemtheta);
 	p[i] += theta;
@@ -73,10 +90,10 @@ body
 /**
 One iteration of gradient descent optimization algorithm.
 Params:
-	simpleGrad = du/dω_1, where du/dω_j = du/dω_1, 1 <= j <= n.
-	WT = transposed version of W. n columns, k rows.
+	PartialDerivative = du/dω_1, where du/dω_j = du/dω_1, 1 <= j <= n.
+	WTransposed = transposed version of W. n columns, k rows.
 	p = discrete probability distribution with, length = k.
-	chi = temporary array, length = n.
+	mixture = temporary array, length = n.
 	pi = temporary array, length = n.
 	xi = temporary array, length = n.
 	c = temporary array, length = k.
@@ -84,11 +101,11 @@ Params:
 				Receives the current upper and lower bounds on the root. 
 				The delegate must return true when these bounds are acceptable. 
 */
-void simpleGradientDescentIteration(alias simpleGrad, T)
+void gradientDescentIterationPD(alias PartialDerivative, T)
 	(
-		Matrix!(const T) WT,
+		Matrix!(const T) WTransposed,
 		T[] p,
-		T[] chi,
+		T[] mixture,
 		T[] pi,
 		T[] xi,
 		T[] c,
@@ -96,25 +113,25 @@ void simpleGradientDescentIteration(alias simpleGrad, T)
 	)
 in
 {
-	assert(WT.height);
-	assert(WT.width);
-	assert(WT.height == p.length);
-	assert(WT.height == c.length);
-	assert(WT.width == chi.length);
-	assert(WT.width == pi.length);
-	assert(WT.width == xi.length);
+	assert(WTransposed.height);
+	assert(WTransposed.width);
+	assert(WTransposed.height == p.length);
+	assert(WTransposed.height == c.length);
+	assert(WTransposed.width == mixture.length);
+	assert(WTransposed.width == pi.length);
+	assert(WTransposed.width == xi.length);
 }
 body
 {
-	gemv(WT.transposed, p, chi);
-	foreach(j; 0..chi.length)
-		xi[j] = simpleGrad(chi[j]);
-	gemv(WT, xi, c);
+	//gemv(WTransposed.transposed, p, mixture);
+	foreach(j; 0..mixture.length)
+		xi[j] = PartialDerivative(mixture[j]);
+	gemv(WTransposed, xi, c);
 	immutable i = c.length - c.minPos.length;
-	const columni = WT[i];
+	const columni = WTransposed[i];
 	foreach(j, w; columni)
-		pi[j] = w - chi[j];
-	immutable theta = gRoot!simpleGrad(chi, pi, columni, tolerance);
+		pi[j] = w - mixture[j];
+	immutable theta = gRoot!PartialDerivative(mixture, pi, columni, tolerance);
 	immutable onemtheta = 1 - theta;
 	p.scal(onemtheta);
 	p[i] += theta;
@@ -124,13 +141,13 @@ body
 /**
 k iterations of coordinate descent optimization algorithm.
 
-For better performance permute rows of WT rows and corresponding elements of p.
-Similar rows (in context of u) of WT should be held far from each other.
+For better performance permute rows of WTransposed rows and corresponding elements of p.
+Similar rows (in context of u) of WTransposed should be held far from each other.
 Params:
 	grad = ∇u(ω)
-	WT = transposed version of W. n columns, k rows.
+	WTransposed = transposed version of W. n columns, k rows.
 	p = discrete probability distribution with, length = k.
-	chi = temporary array, length = n.
+	mixture = temporary array, length = n.
 	pi = temporary array, length = n.
 	xi = temporary array, length = n.
 	gamma = temporary array, length = n.
@@ -138,11 +155,11 @@ Params:
 				Receives the current upper and lower bounds on the root. 
 				The delegate must return true when these bounds are acceptable. 
 */
-void coordinateDescentIteration(alias grad, T)
+void coordinateDescentIterationGr(alias grad, T)
 	(
-		Matrix!(const T) WT,
+		Matrix!(const T) WTransposed,
 		T[] p,
-		T[] chi,
+		T[] mixture,
 		T[] pi,
 		T[] xi,
 		T[] gamma,
@@ -150,88 +167,365 @@ void coordinateDescentIteration(alias grad, T)
 	)
 in
 {
-	assert(WT.height);
-	assert(WT.width);
-	assert(WT.height == p.length);
-	assert(WT.width == chi.length);
-	assert(WT.width == pi.length);
-	assert(WT.width == xi.length);
-	assert(WT.width == gamma.length);
+	assert(WTransposed.height);
+	assert(WTransposed.width);
+	assert(WTransposed.height == p.length);
+	assert(WTransposed.width == mixture.length);
+	assert(WTransposed.width == pi.length);
+	assert(WTransposed.width == xi.length);
+	assert(WTransposed.width == gamma.length);
 }
 body
 {
-	gemv(WT.transposed, p, chi);
+	//gemv(WTransposed.transposed, p, mixture);
 	foreach(i; 0..p.length)
 	{
-		auto columni = WT[i];
-		foreach(j; 0..chi.length)
-			pi[j] = columni[j] - chi[j];
-		immutable theta = gRoot!grad(chi, pi, columni, xi, gamma, tolerance);
-		immutable onemtheta = 1 - theta;
-		if(theta)
-		{
-			p.scal(onemtheta);
-			p[i] += theta;
-			foreach(j; 0..chi.length)
-				chi[j] = onemtheta * chi[j] + theta * columni[j];
-		}
-	}
-	p.normalize;
-}
-
-
-/**
-k iterations of coordinate descent optimization algorithm.
-
-For better performance permute rows of WT rows and corresponding elements of p.
-Similar rows (in context of u) of WT should be held far from each other.
-Params:
-	simpleGrad = du/dω_1, where du/dω_j = du/dω_1, 1 <= j <= n.
-	WT = transposed version of W. n columns, k rows.
-	p = discrete probability distribution with, length = k.
-	chi = temporary array, length = n.
-	pi = temporary array, length = n.
-	tolerance = Defines an early termination condition. 
-				Receives the current upper and lower bounds on the root. 
-				The delegate must return true when these bounds are acceptable. 
-*/
-void simpleCoordinateDescentIteration(alias simpleGrad, T)
-	(
-		Matrix!(const T) WT,
-		T[] p,
-		T[] chi,
-		T[] pi,
-		in bool delegate(T, T) @nogc nothrow tolerance = (a, b) => false,
-	)
-in
-{
-	assert(WT.height);
-	assert(WT.width);
-	assert(WT.height == p.length);
-	assert(WT.width == chi.length);
-	assert(WT.width == pi.length);
-}
-body
-{
-	gemv(WT.transposed, p, chi);
-	foreach(i; 0..p.length)
-	{
-		auto columni = WT[i];
-		foreach(j; 0..chi.length)
-			pi[j] = columni[j] - chi[j];
-		immutable theta = gRoot!simpleGrad(chi, pi, columni, tolerance);
+		auto columni = WTransposed[i];
+		foreach(j; 0..mixture.length)
+			pi[j] = columni[j] - mixture[j];
+		immutable theta = gRoot!grad(mixture, pi, columni, xi, gamma, tolerance);
 		if(!tolerance(0, theta))
 		{
 			immutable onemtheta = 1 - theta;
 			p.scal(onemtheta);
 			p[i] += theta;
-			foreach(j; 0..chi.length)
-				chi[j] = onemtheta * chi[j] + theta * columni[j];
+			foreach(j; 0..mixture.length)
+				mixture[j] = onemtheta * mixture[j] + theta * columni[j];
 		}
 	}
 	p.normalize;
 }
 
+
+/**
+k iterations of coordinate descent optimization algorithm.
+
+For better performance permute rows of WTransposed rows and corresponding elements of p.
+Similar rows (in context of u) of WTransposed should be held far from each other.
+Params:
+	PartialDerivative = du/dω_1, where du/dω_j = du/dω_1, 1 <= j <= n.
+	WTransposed = transposed version of W. n columns, k rows.
+	p = discrete probability distribution with, length = k.
+	mixture = temporary array, length = n.
+	pi = temporary array, length = n.
+	tolerance = Defines an early termination condition. 
+				Receives the current upper and lower bounds on the root. 
+				The delegate must return true when these bounds are acceptable. 
+*/
+void coordinateDescentIterationPD(alias PartialDerivative, T)
+	(
+		Matrix!(const T) WTransposed,
+		T[] p,
+		T[] mixture,
+		T[] pi,
+		in bool delegate(T, T) @nogc nothrow tolerance = (a, b) => false,
+	)
+in
+{
+	assert(WTransposed.height);
+	assert(WTransposed.width);
+	assert(WTransposed.height == p.length);
+	assert(WTransposed.width == mixture.length);
+	assert(WTransposed.width == pi.length);
+}
+body
+{
+	//gemv(WTransposed.transposed, p, mixture);
+	foreach(i; 0..p.length)
+	{
+		auto columni = WTransposed[i];
+		foreach(j; 0..mixture.length)
+			pi[j] = columni[j] - mixture[j];
+		immutable theta = gRoot!PartialDerivative(mixture, pi, columni, tolerance);
+		if(!tolerance(0, theta))
+		{
+			immutable onemtheta = 1 - theta;
+			p.scal(onemtheta);
+			p[i] += theta;
+			foreach(j; 0..mixture.length)
+				mixture[j] = onemtheta * mixture[j] + theta * columni[j];
+		}
+	}
+	p.normalize;
+}
+
+
+/**
+*/
+abstract class MixtureOptimizer(T)
+{
+
+private:
+
+	bool delegate(T, T) @nogc nothrow _tolerance;
+	void updateMixture;
+
+public:
+
+	///
+	Matrix!(const T) WTransposed() @property const;
+
+	///
+	const(T)[] mixture() @property const;
+
+	///
+	const(T)[] distribution() @property const;
+
+	///
+	void distribution(in T[] _distribution) @property;
+
+	///
+	void eval();
+
+	///
+	bool delegate(T, T) @nogc nothrow tolerance() @property const 
+	{
+		return _tolerance; 
+	}
+
+	///
+	void tolerance(bool delegate(T, T) @nogc nothrow _tolerance) @property
+	{
+		this._tolerance = _tolerance;
+	}
+
+	///
+	this()
+	{
+		this._tolerance = (a, b) => false;
+	}
+}
+
+
+/**
+*/
+abstract class StationaryOptimizer(T) : MixtureOptimizer!T
+{
+
+private:
+
+	Matrix!(const T) _WTransposed;
+	T[] _distribution;
+	T[] _mixture;
+	T[] pi;
+
+	void updateMixture()
+	{
+		mix(_WTransposed, _distribution, mixture);
+	}
+
+public:
+
+	///
+	this(size_t k, size_t n)
+	{
+		_WTransposed = Matrix!(const T)(k, n);
+		_distribution = new T[k];
+		_mixture = new T[n];
+		pi = new T[n];
+	}
+
+	///
+	~this()
+	{
+		pi.destroy();
+	}
+
+final:
+
+	///
+	void WTransposed(Matrix!(const T) _WTransposed) @property
+	{
+		this.distribution = distribution;
+		updateMixture;
+	}
+
+	///
+	void WTransposed(T[][] W) @property
+	{
+		auto m = Matrix!T(W[0].length, W.length);
+		foreach(j, w; W)
+			foreach(i, e; w)
+				m[i, j] = e;
+		WTransposed(cast(Matrix!(const T))m);
+	}
+
+	/**
+	*/
+	void WTransposed(Range)(Range kernels, T[] x) @property
+		if(isInputRange!Range && hasLength!Range)
+	{
+		auto m = Matrix!T(kernels.length, x.length);
+		auto ms = m.save;
+		foreach(kernel; kernels)
+		{
+			auto r = m.front;
+			foreach(i, e; x)
+				r[i] = kernel(e);
+			m.popFront;
+		}
+		WTransposed(cast(Matrix!(const T))ms);
+	}
+
+override:
+
+	Matrix!(const T) WTransposed() @property const
+	{
+		return _WTransposed;
+	}
+
+	const(T)[] mixture() @property const
+	{
+		return _mixture;
+	}
+
+	const(T)[] distribution() @property const
+	{
+		return _distribution;
+	}
+
+	void distribution(in T[] _distribution) @property
+	{
+		this._distribution[] = _distribution[];
+	}
+}
+
+
+/**
+*/
+final class CoordinateDescentFull(alias Gradient, T) : StationaryOptimizer!T
+{
+
+private:
+
+	T[] xi;
+	T[] gamma;
+
+public:
+
+	this(size_t k, size_t n)
+	{
+		super(k, n);
+		xi = new T[n];
+		gamma = new T[n];
+	}
+
+	~this()
+	{
+		xi.destroy();
+		gamma.destroy();
+	}
+
+override:
+
+	void eval()
+	{
+		coordinateDescentIterationGr!(Gradient, T)(WT, _distribution, _mixture, xi, gamma, tolerance);
+		updateMixture;
+	}
+}
+
+
+/**
+*/
+final class GradientDescentFull(alias Gradient, T) : StationaryOptimizer!T
+{
+
+private:
+
+	T[] xi;
+	T[] gamma;
+	T[] c;
+
+public:
+
+	this(size_t k, size_t n)
+	{
+		super(k, n);
+		xi = new T[n];
+		gamma = new T[n];
+		c = new T[k];
+	}
+
+	~this()
+	{
+		xi.destroy();
+		gamma.destroy();
+		c.destroy();
+	}
+
+override:
+
+	void eval()
+	{
+		gradientDescentIterationGr!(Gradient, T)(WT, _distribution, _mixture, xi, gamma, c, tolerance);
+		updateMixture;
+	}
+}
+
+
+/**
+*/
+final class CoordinateDescentPartial(alias PartialDerivative, T) : StationaryOptimizer!T
+{
+	this(size_t k, size_t n)
+	{
+		super(k, n);
+	}
+
+override:
+
+	void eval()
+	{
+		coordinateDescentIterationPD!(PartialDerivative, T)(WT, _distribution, _mixture, tolerance);
+		updateMixture;
+	}
+}
+
+
+/**
+*/
+final class GradientDescentPartial(alias PartialDerivative, T) : StationaryOptimizer!T
+{
+
+private:
+
+	T[] gamma;
+	T[] c;
+
+public:
+
+	this(size_t k, size_t n)
+	{
+		super(k, n);
+		gamma = new T[n];
+		c = new T[k];
+	}
+
+	~this()
+	{
+		gamma.destroy();
+		c.destroy();
+	}
+
+override:
+
+	void eval()
+	{
+		gradientDescentIterationPD!(PartialDerivative, T)(WT, _distribution, _mixture, gamma, c, tolerance);
+		updateMixture;
+	}
+}
+
+
+
+unittest {
+	void grad(in double[] a, double[] b)
+	{
+		foreach(i, e; a)
+			b[i] = -1 / e;
+	}
+}
 
 private:
 
@@ -242,7 +536,7 @@ T gRoot
 		T, 
 	)
 	(
-		in T[] chi,
+		in T[] mixture,
 		in T[] pi,
 		in T[] columni,
 		T[] xi,
@@ -252,8 +546,8 @@ T gRoot
 {
 	T g(T theta)
 	{
-		foreach(j; 0..chi.length)
-			xi[j] = chi[j] + theta * pi[j];
+		foreach(j; 0..mixture.length)
+			xi[j] = mixture[j] + theta * pi[j];
 		grad(xi, gamma);
 		return dot(gamma, pi);
 	}
@@ -264,17 +558,13 @@ T gRoot
 		return dot(gamma, pi);
 	}
 
-	immutable g0 = g_01(chi);
+	immutable g0 = g_01(mixture);
 	if(g0 > -T.min_normal)
 		return 0;
 	immutable g1 = g_01(columni);
 	if(g1 < +T.min_normal)
 		return 1;
 	auto r = findRoot(&g, cast(T)0.0, cast(T)1.0, g0, g1, tolerance);
-	debug {
-		import std.stdio;
-		writeln(r);
-	}
 	return !(fabs(r[2]) > fabs(r[3])) ? r[0] : r[1];
 }
 
@@ -282,11 +572,11 @@ T gRoot
 ///
 T gRoot
 	(
-		alias simpleGrad,
+		alias PartialDerivative,
 		T, 
 	)
 	(
-		in T[] chi,
+		in T[] mixture,
 		in T[] pi,
 		in T[] columni,
 		in bool delegate(T, T) @nogc nothrow tolerance = (a, b) => false,
@@ -314,16 +604,16 @@ body
 			immutable pi1 = pi[j+1];
 			immutable pi2 = pi[j+2];
 			immutable pi3 = pi[j+3];
-			ret0 += pi0 * simpleGrad(chi[j+0] + theta * pi0);
-			ret1 += pi1 * simpleGrad(chi[j+1] + theta * pi1);
-			ret2 += pi2 * simpleGrad(chi[j+2] + theta * pi2);
-			ret3 += pi3 * simpleGrad(chi[j+3] + theta * pi3);
+			ret0 += pi0 * PartialDerivative(mixture[j+0] + theta * pi0);
+			ret1 += pi1 * PartialDerivative(mixture[j+1] + theta * pi1);
+			ret2 += pi2 * PartialDerivative(mixture[j+2] + theta * pi2);
+			ret3 += pi3 * PartialDerivative(mixture[j+3] + theta * pi3);
 		}
 
 		for(; j < pi.length; j++)
 		{
 			immutable pi0 = pi[j+0];
-			ret0 += pi0 * simpleGrad(chi[j+0] + theta * pi0);
+			ret0 += pi0 * PartialDerivative(mixture[j+0] + theta * pi0);
 		}
 
 		return (ret0+ret1)+(ret2+ret3);
@@ -341,30 +631,26 @@ body
 	 
 		for(; j < L1; j += 4)
 		{
-			ret0 += pi[j+0] * simpleGrad(vec[j+0]);
-			ret1 += pi[j+1] * simpleGrad(vec[j+1]);
-			ret2 += pi[j+2] * simpleGrad(vec[j+2]);
-			ret3 += pi[j+3] * simpleGrad(vec[j+3]);
+			ret0 += pi[j+0] * PartialDerivative(vec[j+0]);
+			ret1 += pi[j+1] * PartialDerivative(vec[j+1]);
+			ret2 += pi[j+2] * PartialDerivative(vec[j+2]);
+			ret3 += pi[j+3] * PartialDerivative(vec[j+3]);
 		}
 
 		for(; j < pi.length; j++)
 		{
-			ret0 += pi[j+0] * simpleGrad(vec[j+0]);
+			ret0 += pi[j+0] * PartialDerivative(vec[j+0]);
 		}
 
 		return (ret0+ret1)+(ret2+ret3);
 	}
 
-	immutable g0 = g_01(chi);
+	immutable g0 = g_01(mixture);
 	if(g0 > -T.min_normal)
 		return 0;
 	immutable g1 = g_01(columni);
 	if(g1 < +T.min_normal)
 		return 1;
 	auto r = findRoot(&g, cast(T)0.0, cast(T)1.0, g0, g1, tolerance);
-	//debug {
-	//	import std.stdio;
-	//	writeln(r);
-	//}
 	return !(fabs(r[2]) > fabs(r[3])) ? r[0] : r[1];
 }

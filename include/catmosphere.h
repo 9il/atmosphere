@@ -4,15 +4,35 @@ Extern C bindings.
 
 
 #ifdef __cplusplus
-#include <cstdlib>
-extern "C" {
+
+
+	#include <cstdlib>
+
+
+	extern "C" {
+
+
 #else
-#include <stdlib.h>
-#include <stdbool.h>
+
+	#include <stdlib.h>
+	#include <stdbool.h>
+
+
 #endif
 
 
-void catmosphere_gradientDescentIteration
+void catmosphere_mix
+	(
+		const double* WTptr,
+		size_t k,
+		size_t n,
+		size_t WTshift,
+		const double* p,
+		double* mixture
+	);
+
+
+void catmosphere_gradientDescentIterationGr
 	(
 		void (*grad)(size_t, const double* arg, double* result),
 		const double* WTptr,
@@ -20,7 +40,7 @@ void catmosphere_gradientDescentIteration
 		size_t n,
 		size_t WTshift,
 		double* p,
-		double* chi,
+		double* mixture,
 		double* pi,
 		double* xi,
 		double* gamma,
@@ -29,15 +49,15 @@ void catmosphere_gradientDescentIteration
 	);
 
 
-void catmosphere_simpleGradientDescentIteration
+void catmosphere_gradientDescentIterationPD
 	(
-		double (*simpleGrad)(double),
+		double (*partialDerivative)(double),
 		const double* WTptr,
 		size_t k,
 		size_t n,
 		size_t WTshift,
 		double* p,
-		double* chi,
+		double* mixture,
 		double* pi,
 		double* xi,
 		double* c,
@@ -45,14 +65,14 @@ void catmosphere_simpleGradientDescentIteration
 	);
 
 
-void catmosphere_minusSumOfLogs_gradientDescentIteration
+void catmosphere_gradientDescentIterationPD_minusSumOfLogs
 	(
 		const double* WTptr,
 		size_t k,
 		size_t n,
 		size_t WTshift,
 		double* p,
-		double* chi,
+		double* mixture,
 		double* pi,
 		double* xi,
 		double* c,
@@ -60,7 +80,7 @@ void catmosphere_minusSumOfLogs_gradientDescentIteration
 	);
 
 
-void catmosphere_coordinateDescentIteration
+void catmosphere_coordinateDescentIterationGr
 	(
 		void (*grad)(size_t, const double* arg, double* result),
 		const double* WTptr,
@@ -68,7 +88,7 @@ void catmosphere_coordinateDescentIteration
 		size_t n,
 		size_t WTshift,
 		double* p,
-		double* chi,
+		double* mixture,
 		double* pi,
 		double* xi,
 		double* gamma,
@@ -76,32 +96,37 @@ void catmosphere_coordinateDescentIteration
 	);
 
 
-void catmosphere_simpleCoordinateDescentIteration
+void catmosphere_coordinateDescentIterationPD
 	(
-		double (*simpleGrad)(double),
+		double (*partialDerivative)(double),
 		const double* WTptr,
 		size_t k,
 		size_t n,
 		size_t WTshift,
 		double* p,
-		double* chi,
+		double* mixture,
 		double* pi,
 		bool (*tolerance)(double, double)
 	);
 
 
-void catmosphere_minusSumOfLogs_coordinateDescentIteration
+void catmosphere_coordinateDescentIterationPD_minusSumOfLogs
 	(
 		const double* WTptr,
 		size_t k,
 		size_t n,
 		size_t WTshift,
 		double* p,
-		double* chi,
+		double* mixture,
 		double* pi,
 		bool (*tolerance)(double, double)
 	);
+
 
 #ifdef __cplusplus
-}
+
+
+	}
+
+
 #endif

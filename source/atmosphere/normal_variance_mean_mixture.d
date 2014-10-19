@@ -148,9 +148,9 @@ body
 		//writefln("L = %s", v.sumOfLog2s);
 
 		static if(Algorithm == SNVMMAlgorithm.GradientDescent)
-			simpleGradientDescentIteration  !(a => -1/a)(cast(Matrix!(const double))WT, probability, chi, pi, xi, c, findRootTolerance);
+			gradientDescentIterationPD  !(a => -1/a)(cast(Matrix!(const double))WT, probability, chi, pi, xi, c, findRootTolerance);
 		static if(Algorithm == SNVMMAlgorithm.CoordinateDescent)
-			simpleCoordinateDescentIteration!(a => -1/a)(cast(Matrix!(const double))WT, probability, chi, pi, findRootTolerance);
+			coordinateDescentIterationPD!(a => -1/a)(cast(Matrix!(const double))WT, probability, chi, pi, findRootTolerance);
 		alpha = sampleAvg / dot(probability, grid);
 
 		//d f/ d alpha = Ju(W(alpha)p)W'(alpha)p
