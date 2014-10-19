@@ -32,7 +32,7 @@ void catmosphere_mix
 	);
 
 
-void catmosphere_gradientDescentIterationGr
+void catmosphere_gradientDescentIteration
 	(
 		void (*grad)(size_t, const double* arg, double* result),
 		const double* WTptr,
@@ -49,38 +49,7 @@ void catmosphere_gradientDescentIterationGr
 	);
 
 
-void catmosphere_gradientDescentIterationPD
-	(
-		double (*partialDerivative)(double),
-		const double* WTptr,
-		size_t k,
-		size_t n,
-		size_t WTshift,
-		double* p,
-		double* mixture,
-		double* pi,
-		double* xi,
-		double* c,
-		bool (*tolerance)(double, double)
-	);
-
-
-void catmosphere_gradientDescentIterationPD_minusSumOfLogs
-	(
-		const double* WTptr,
-		size_t k,
-		size_t n,
-		size_t WTshift,
-		double* p,
-		double* mixture,
-		double* pi,
-		double* xi,
-		double* c,
-		bool (*tolerance)(double, double)
-	);
-
-
-void catmosphere_coordinateDescentIterationGr
+void catmosphere_coordinateDescentIteration
 	(
 		void (*grad)(size_t, const double* arg, double* result),
 		const double* WTptr,
@@ -96,7 +65,7 @@ void catmosphere_coordinateDescentIterationGr
 	);
 
 
-void catmosphere_coordinateDescentIterationPD
+void catmosphere_coordinateDescentIterationPartial
 	(
 		double (*partialDerivative)(double),
 		const double* WTptr,
@@ -110,7 +79,7 @@ void catmosphere_coordinateDescentIterationPD
 	);
 
 
-void catmosphere_coordinateDescentIterationPD_minusSumOfLogs
+void catmosphere_coordinateDescentIterationPartial_minusSumOfLogs
 	(
 		const double* WTptr,
 		size_t k,

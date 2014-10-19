@@ -10,6 +10,11 @@ module atmosphere.normal_variance_mean_mixture;
 import core.stdc.stdlib;
 import core.stdc.tgmath;
 
+
+import std.math : PI;
+
+import std.algorithm;
+
 import simple_matrix;
 import atmosphere.utilities;
 
@@ -117,10 +122,12 @@ body
 	static if(Algorithm == SNVMMAlgorithm.GradientDescent)
 	{
 		auto xi = createArray(sample.length);
+		auto gamma = createArray(sample.length);
 		auto c = createArray(grid.length);
 		scope(exit) 
 		{
 			xi.ptr.free;
+			gamma.ptr.free;
 			c.ptr.free;
 		}
 	}
@@ -131,14 +138,14 @@ body
 		foreach(i, u; grid)
 		{
 			const sqrtu = sqrt(u);
-			auto column = WT[i];
+			auto cl = WT[i];
 			//up to a constant
 			foreach(j, x; sample)
 			{
 				immutable y = (x - alpha * u) / sqrtu;
-				column[j] = exp2(y*y/-2) / sqrtu;
-				import std.conv;
-				assert(column[j] > 0, column[j].to!string);
+				cl[j] = exp(y*y/-2) / sqrtu;
+				import std.string;
+				//assert(cl[j] > 0, format("u = %s, sqrtu = %s, alpha = %s, x = %s, y = %s, y*y/-2 = %s, c = %s", u, sqrtu, alpha, x, y, y*y/-2, cl[j]));
 			}
 		}
 
@@ -147,10 +154,12 @@ body
 		//gemv(WT.transposed, probability, v);
 		//writefln("L = %s", v.sumOfLog2s);
 
+		mix(cast(Matrix!(const double))WT, probability, chi);
+
 		static if(Algorithm == SNVMMAlgorithm.GradientDescent)
-			gradientDescentIterationPD  !(a => -1/a)(cast(Matrix!(const double))WT, probability, chi, pi, xi, c, findRootTolerance);
+			gradientDescentIteration!((a, b){foreach(i, e; a) b[i] = -1/e;})(cast(Matrix!(const double))WT, probability, chi, pi, xi, gamma, c, findRootTolerance);
 		static if(Algorithm == SNVMMAlgorithm.CoordinateDescent)
-			coordinateDescentIterationPD!(a => -1/a)(cast(Matrix!(const double))WT, probability, chi, pi, findRootTolerance);
+			coordinateDescentIterationPartial!(a => -1/a)(cast(Matrix!(const double))WT, probability, chi, pi, findRootTolerance);
 		alpha = sampleAvg / dot(probability, grid);
 
 		//d f/ d alpha = Ju(W(alpha)p)W'(alpha)p

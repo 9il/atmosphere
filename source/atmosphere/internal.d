@@ -8,9 +8,8 @@ f = u(Wp),
 W - matrix(n rows, k columns),
 u - convex function.
 */
-module atmosphere.mixture;
+module atmosphere.internal;
 
-import core.stdc.stdlib : free;
 import core.stdc.tgmath : fabs;
 
 import atmosphere.utilities;
@@ -48,7 +47,7 @@ Params:
 				Receives the current upper and lower bounds on the root. 
 				The delegate must return true when these bounds are acceptable. 
 */
-void gradientDescentIterationGr(alias grad, T)
+void gradientDescentIteration(alias grad, T)
 	(
 		Matrix!(const T) WTransposed,
 		T[] p,
@@ -87,29 +86,14 @@ body
 }
 
 
-/**
-One iteration of gradient descent optimization algorithm.
-Params:
-	PartialDerivative = du/dω_1, where du/dω_j = du/dω_1, 1 <= j <= n.
-	WTransposed = transposed version of W. n columns, k rows.
-	p = discrete probability distribution with, length = k.
-	mixture = temporary array, length = n.
-	pi = temporary array, length = n.
-	xi = temporary array, length = n.
-	c = temporary array, length = k.
-	tolerance = Defines an early termination condition. 
-				Receives the current upper and lower bounds on the root. 
-				The delegate must return true when these bounds are acceptable. 
-*/
-void gradientDescentIterationPD(alias PartialDerivative, T)
+//Magic staff
+void EMIteration(alias grad, T)
 	(
 		Matrix!(const T) WTransposed,
 		T[] p,
 		T[] mixture,
 		T[] pi,
-		T[] xi,
 		T[] c,
-		in bool delegate(T, T) @nogc nothrow tolerance = (a, b) => false,
 	)
 in
 {
@@ -119,24 +103,16 @@ in
 	assert(WTransposed.height == c.length);
 	assert(WTransposed.width == mixture.length);
 	assert(WTransposed.width == pi.length);
-	assert(WTransposed.width == xi.length);
 }
 body
 {
 	//gemv(WTransposed.transposed, p, mixture);
-	foreach(j; 0..mixture.length)
-		xi[j] = PartialDerivative(mixture[j]);
-	gemv(WTransposed, xi, c);
-	immutable i = c.length - c.minPos.length;
-	const columni = WTransposed[i];
-	foreach(j, w; columni)
-		pi[j] = w - mixture[j];
-	immutable theta = gRoot!PartialDerivative(mixture, pi, columni, tolerance);
-	immutable onemtheta = 1 - theta;
-	p.scal(onemtheta);
-	p[i] += theta;
+	grad(mixture, pi); // xi = grad(mixture);
+	gemv(WTransposed, pi, c);
+	p[] *= c[];
 	p.normalize;
 }
+
 
 /**
 k iterations of coordinate descent optimization algorithm.
@@ -155,7 +131,7 @@ Params:
 				Receives the current upper and lower bounds on the root. 
 				The delegate must return true when these bounds are acceptable. 
 */
-void coordinateDescentIterationGr(alias grad, T)
+void coordinateDescentIteration(alias grad, T)
 	(
 		Matrix!(const T) WTransposed,
 		T[] p,
@@ -212,7 +188,7 @@ Params:
 				Receives the current upper and lower bounds on the root. 
 				The delegate must return true when these bounds are acceptable. 
 */
-void coordinateDescentIterationPD(alias PartialDerivative, T)
+void coordinateDescentIterationPartial(alias PartialDerivative, T)
 	(
 		Matrix!(const T) WTransposed,
 		T[] p,
@@ -247,284 +223,6 @@ body
 		}
 	}
 	p.normalize;
-}
-
-
-/**
-*/
-abstract class MixtureOptimizer(T)
-{
-
-private:
-
-	bool delegate(T, T) @nogc nothrow _tolerance;
-	void updateMixture;
-
-public:
-
-	///
-	Matrix!(const T) WTransposed() @property const;
-
-	///
-	const(T)[] mixture() @property const;
-
-	///
-	const(T)[] distribution() @property const;
-
-	///
-	void distribution(in T[] _distribution) @property;
-
-	///
-	void eval();
-
-	///
-	bool delegate(T, T) @nogc nothrow tolerance() @property const 
-	{
-		return _tolerance; 
-	}
-
-	///
-	void tolerance(bool delegate(T, T) @nogc nothrow _tolerance) @property
-	{
-		this._tolerance = _tolerance;
-	}
-
-	///
-	this()
-	{
-		this._tolerance = (a, b) => false;
-	}
-}
-
-
-/**
-*/
-abstract class StationaryOptimizer(T) : MixtureOptimizer!T
-{
-
-private:
-
-	Matrix!(const T) _WTransposed;
-	T[] _distribution;
-	T[] _mixture;
-	T[] pi;
-
-	void updateMixture()
-	{
-		mix(_WTransposed, _distribution, mixture);
-	}
-
-public:
-
-	///
-	this(size_t k, size_t n)
-	{
-		_WTransposed = Matrix!(const T)(k, n);
-		_distribution = new T[k];
-		_mixture = new T[n];
-		pi = new T[n];
-	}
-
-	///
-	~this()
-	{
-		pi.destroy();
-	}
-
-final:
-
-	///
-	void WTransposed(Matrix!(const T) _WTransposed) @property
-	{
-		this.distribution = distribution;
-		updateMixture;
-	}
-
-	///
-	void WTransposed(T[][] W) @property
-	{
-		auto m = Matrix!T(W[0].length, W.length);
-		foreach(j, w; W)
-			foreach(i, e; w)
-				m[i, j] = e;
-		WTransposed(cast(Matrix!(const T))m);
-	}
-
-	/**
-	*/
-	void WTransposed(Range)(Range kernels, T[] x) @property
-		if(isInputRange!Range && hasLength!Range)
-	{
-		auto m = Matrix!T(kernels.length, x.length);
-		auto ms = m.save;
-		foreach(kernel; kernels)
-		{
-			auto r = m.front;
-			foreach(i, e; x)
-				r[i] = kernel(e);
-			m.popFront;
-		}
-		WTransposed(cast(Matrix!(const T))ms);
-	}
-
-override:
-
-	Matrix!(const T) WTransposed() @property const
-	{
-		return _WTransposed;
-	}
-
-	const(T)[] mixture() @property const
-	{
-		return _mixture;
-	}
-
-	const(T)[] distribution() @property const
-	{
-		return _distribution;
-	}
-
-	void distribution(in T[] _distribution) @property
-	{
-		this._distribution[] = _distribution[];
-	}
-}
-
-
-/**
-*/
-final class CoordinateDescentFull(alias Gradient, T) : StationaryOptimizer!T
-{
-
-private:
-
-	T[] xi;
-	T[] gamma;
-
-public:
-
-	this(size_t k, size_t n)
-	{
-		super(k, n);
-		xi = new T[n];
-		gamma = new T[n];
-	}
-
-	~this()
-	{
-		xi.destroy();
-		gamma.destroy();
-	}
-
-override:
-
-	void eval()
-	{
-		coordinateDescentIterationGr!(Gradient, T)(WT, _distribution, _mixture, xi, gamma, tolerance);
-		updateMixture;
-	}
-}
-
-
-/**
-*/
-final class GradientDescentFull(alias Gradient, T) : StationaryOptimizer!T
-{
-
-private:
-
-	T[] xi;
-	T[] gamma;
-	T[] c;
-
-public:
-
-	this(size_t k, size_t n)
-	{
-		super(k, n);
-		xi = new T[n];
-		gamma = new T[n];
-		c = new T[k];
-	}
-
-	~this()
-	{
-		xi.destroy();
-		gamma.destroy();
-		c.destroy();
-	}
-
-override:
-
-	void eval()
-	{
-		gradientDescentIterationGr!(Gradient, T)(WT, _distribution, _mixture, xi, gamma, c, tolerance);
-		updateMixture;
-	}
-}
-
-
-/**
-*/
-final class CoordinateDescentPartial(alias PartialDerivative, T) : StationaryOptimizer!T
-{
-	this(size_t k, size_t n)
-	{
-		super(k, n);
-	}
-
-override:
-
-	void eval()
-	{
-		coordinateDescentIterationPD!(PartialDerivative, T)(WT, _distribution, _mixture, tolerance);
-		updateMixture;
-	}
-}
-
-
-/**
-*/
-final class GradientDescentPartial(alias PartialDerivative, T) : StationaryOptimizer!T
-{
-
-private:
-
-	T[] gamma;
-	T[] c;
-
-public:
-
-	this(size_t k, size_t n)
-	{
-		super(k, n);
-		gamma = new T[n];
-		c = new T[k];
-	}
-
-	~this()
-	{
-		gamma.destroy();
-		c.destroy();
-	}
-
-override:
-
-	void eval()
-	{
-		gradientDescentIterationPD!(PartialDerivative, T)(WT, _distribution, _mixture, gamma, c, tolerance);
-		updateMixture;
-	}
-}
-
-
-
-unittest {
-	void grad(in double[] a, double[] b)
-	{
-		foreach(i, e; a)
-			b[i] = -1 / e;
-	}
 }
 
 private:
