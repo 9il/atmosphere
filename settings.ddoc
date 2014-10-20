@@ -1,0 +1,13 @@
+PROJECTNAME = Atmosphere GM
+REFERENCETOP = http://9il.github.io/atmosphere_gm
+REPOSRCTREE = http://github.com/9il/atmosphere_gm
+TITLEBARTEXT = <a href="http://9il.github.io/atmosphere_gm">Atmosphere GM</a>
+RESOURCEROOT =
+DEFAULTPACKAGE = atmosphere
+PACKAGESEP = .
+FAVICON = $(RESOURCEROOT)assets/ico/favicon.ico
+LOGOSRC = $(RESOURCEROOT)assets/img/icon-github.png
+LOGOALT = $(PROJECTNAME)
+LOGOLINK = $(REFERENCETOP)
+COPYRIGHT = Ilya Yaroshenko
+COPYRIGHTFOOTER = &copy; $(COPYRIGHT) 2014-$(YEAR)

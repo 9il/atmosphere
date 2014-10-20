@@ -1,0 +1,3 @@
+MODULES = 
+	$(MODULE atmosphere)
+	$(MODULE atmosphere.internal)
