@@ -1,3 +1,6 @@
 [submodule "project"]
 	path = project
 	url = git@github.com:9il/atmosphere_gm.git
+[submodule "bootDoc"]
+	path = bootDoc
+	url = git://github.com/9il/bootDoc.git
