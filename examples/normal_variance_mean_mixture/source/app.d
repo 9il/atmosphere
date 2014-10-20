@@ -40,7 +40,8 @@ void main()
 
 		const sample = file.readText.splitter.map!(to!double).array;
 		auto kernels = grid.map!(u => Kernel(alpha*u, sqrt(u)));
-		auto cheater = new LikelihoodMaximizationCoordinate!double(kernels.length, sample.length);
+		auto cheater = new LikelihoodMaximizationGradient!double(kernels.length, sample.length);
+		//auto cheater = new LikelihoodMaximizationCoordinate!double(kernels.length, sample.length);
 		cheater.components(kernels, sample);
 		foreach(i; 0..1000)
 			cheater.eval;

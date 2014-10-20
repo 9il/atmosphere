@@ -51,7 +51,7 @@ void gradientDescentIteration(alias grad, T)
 	(
 		Matrix!(const T) WTransposed,
 		T[] p,
-		T[] mixture,
+		in T[] mixture,
 		T[] pi,
 		T[] xi,
 		T[] gamma,
@@ -100,7 +100,7 @@ void EMIteration(alias grad, T)
 	(
 		Matrix!(const T) WTransposed,
 		T[] p,
-		T[] mixture,
+		in T[] mixture,
 		T[] pi,
 		T[] c,
 	)
