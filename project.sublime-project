@@ -1,0 +1,42 @@
+{
+	"build_systems":
+	[
+		{
+			"cmd":
+			[
+				"dub build --build=unittest"
+			],
+			"file_regex": "^(.*?)\\(([0-9]+)\\)",
+			"name": "dub package",
+			"selector": "source.d",
+			"shell": true,
+			"variants":
+			[
+				{
+					"cmd":
+					[
+						"dub --build=unittest"
+					],
+					"name": "Run",
+					"shell": true
+				},
+				{
+					"cmd":
+					[
+						"dub build --build=docs"
+					],
+					"name": "Docs",
+					"shell": true
+				}
+			],
+			"working_dir": "${project_path:${folder}}"
+		}
+	],
+	"folders":
+	[
+		{
+			"follow_symlinks": true,
+			"path": "./"
+		}
+	]
+}
