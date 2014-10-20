@@ -83,12 +83,12 @@ public:
 		super(_grid.length, _sample.length);
 		this._grid = _grid.dup;
 		this._sample = new T[_sample.length];
-		sample = _sample;
+		sample(_sample);
 	}
 
 	/**
 	Returns:
-		α
+		$(D alpha = mean / dotProduct(distribution, grid))
 	*/
 	T alpha() @property const
 	{
@@ -115,6 +115,15 @@ public:
 
 	/**
 	Sets sample and recalculate α.
+	-------
+	double[] newSample = new double[optimizer.sample.length];
+	///init newSample
+	...
+
+	optimizer.sample = newSample;
+	-------
+	Params:
+		_sample = new sample with the same length
 	*/
 	void sample(in T[] _sample) @property
 	in

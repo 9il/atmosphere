@@ -15,3 +15,7 @@ __test__library__
 include/catmosphere
 
 *.sublime-project
+
+modules.ddoc
+
+settings.ddoc

@@ -133,7 +133,7 @@ override:
 
 /**
 Params:
-	Gradient = Gradient of the objective function. $(D Gradient(a, b) equals b = grad_f(a)).
+	Gradient = Gradient of the objective function. $(D Gradient(a, b) should perfrom b = grad_f(a)).
 	T = floating point type
 */
 final class GradientDescent(alias Gradient, T) : StationaryOptimizer!T
@@ -171,7 +171,7 @@ final class GradientDescent(alias Gradient, T) : StationaryOptimizer!T
 
 /**
 Params:
-	Gradient = Gradient of the objective function. $(D Gradient(a, b) equals b = grad_f(a)).
+	Gradient = Gradient of the objective function. $(D Gradient(a, b) should perfrom b = grad_f(a)).
 	T = floating point type
 */
 final class CoordinateDescent(alias Gradient, T) : StationaryOptimizer!T
