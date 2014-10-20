@@ -7,7 +7,7 @@
 		"Ilya Yaroshenko"
 	],
 	"dependencies": {
-		"atmosphere_gm": ">=0.0.0-alpha"
+		"atmosphere_gm": "~master"
 	},
 	"license": "Subject to the terms of the MIT license, as written in the included LICENSE.md file."
 }
