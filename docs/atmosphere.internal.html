@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+	<meta charset="utf-8">
+	<title>atmosphere.internal - Atmosphere GM documentation</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<!-- styles -->
+	<link href="../bootDoc/assets/css/bootstrap.css" rel="stylesheet">
+	<style type="text/css">
+		body {
+		padding-top: 60px;
+		padding-bottom: 40px;
+		}
+		.sidebar-nav {
+		padding: 9px 0;
+		}
+	</style>
+	<link href="../bootDoc/assets/css/bootstrap-responsive.css" rel="stylesheet">
+	<link href="../bootDoc/bootdoc.css" rel="stylesheet">
+
+	<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+	<!--[if lt IE 9]>
+		<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+
+	<!-- fav and touch icons -->
+	<link rel="shortcut icon" href="../bootDoc/assets/ico/favicon.ico">
+	<link rel="apple-touch-icon-precomposed" sizes="114x114" href="../bootDoc/assets/ico/apple-touch-icon-114-precomposed.png">
+	<link rel="apple-touch-icon-precomposed" sizes="72x72" href="../bootDoc/assets/ico/apple-touch-icon-72-precomposed.png">
+	<link rel="apple-touch-icon-precomposed" href="../bootDoc/assets/ico/apple-touch-icon-57-precomposed.png">
+	
+	<!-- Introduce DDoc settings required by JavaScript -->
+	<script type="text/javascript">
+		var Title = 'atmosphere.internal';
+		var SourceRepository = 'http://github.com/9il/atmosphere_gm/tree/master/source';
+		var PackageSeparator = '.';
+	</script>
+	
+	<style type="text/css">
+		.ddoc-icon-variable { background-image: url('../bootDoc/ddoc-icons/var.png'); }
+		.ddoc-icon-function { background-image: url('../bootDoc/ddoc-icons/func.png'); }
+		.ddoc-icon-property { background-image: url('../bootDoc/ddoc-icons/property.png'); }
+		.ddoc-icon-struct { background-image: url('../bootDoc/ddoc-icons/struct.png'); }
+		.ddoc-icon-class { background-image: url('../bootDoc/ddoc-icons/class.png'); }
+		.ddoc-icon-enum { background-image: url('../bootDoc/ddoc-icons/enum.png'); }
+		.ddoc-icon-template { background-image: url('../bootDoc/ddoc-icons/template.png'); }
+	</style>
+	</head>
+
+	<body>
+	<!--
+	JavaScript reaps the module list from this element.
+	This is required for the MODULES macro to be reusable
+	in a noscript element later.
+	-->
+	<ul id="module-list-source" class="hidden">
+		
+	<li class="sidebar-list-entry tree-leaf"><a href="atmosphere.package.html" title="atmosphere.package"><i class="icon-th"></i>atmosphere.package</a></li>
+	<li class="sidebar-list-entry tree-leaf"><a href="atmosphere.mixtureoptimizer.html" title="atmosphere.mixtureoptimizer"><i class="icon-th"></i>atmosphere.mixtureoptimizer</a></li>
+	<li class="sidebar-list-entry tree-leaf"><a href="atmosphere.stationary.html" title="atmosphere.stationary"><i class="icon-th"></i>atmosphere.stationary</a></li>
+	<li class="sidebar-list-entry tree-leaf"><a href="atmosphere.sliding.html" title="atmosphere.sliding"><i class="icon-th"></i>atmosphere.sliding</a></li>
+	<li class="sidebar-list-entry tree-leaf"><a href="atmosphere.normalvariancemeanmixture.html" title="atmosphere.normalvariancemeanmixture"><i class="icon-th"></i>atmosphere.normalvariancemeanmixture</a></li>
+	<li class="sidebar-list-entry tree-leaf"><a href="atmosphere.internal.html" title="atmosphere.internal"><i class="icon-th"></i>atmosphere.internal</a></li>
+	</ul>
+	
+	<div class="navbar navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container-fluid">
+				<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</a>
+				<a class="brand" href="http://9il.github.io/atmosphere_gm">Atmosphere GM</a>
+				<div class="nav-collapse">
+					<ul class="nav">
+						<li class="active"><a href="http://9il.github.io/atmosphere_gm">Reference</a></li>
+					</ul>
+					
+					<form id="gotosymbol" class="navbar-search pull-left hidden">
+						<input type="text" class="search-query" placeholder="Go to symbol in atmosphere.internal" data-provide="typeahead" data-items="4">
+					</form>
+					
+					<p class="navbar-text pull-right"><a href="http://9il.github.io/atmosphere_gm">Atmosphere GM</a></p>
+				</div><!--/.nav-collapse -->
+			</div>
+		</div>
+	</div>
+
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div class="span2">
+				<div class="well sidebar-nav">
+				<ul class="nav nav-list">
+					<li id="module-list" class="nav-header sidebar-list-entry">Modules<li>
+					<noscript>
+						
+	<li class="sidebar-list-entry tree-leaf"><a href="atmosphere.package.html" title="atmosphere.package"><i class="icon-th"></i>atmosphere.package</a></li>
+	<li class="sidebar-list-entry tree-leaf"><a href="atmosphere.mixtureoptimizer.html" title="atmosphere.mixtureoptimizer"><i class="icon-th"></i>atmosphere.mixtureoptimizer</a></li>
+	<li class="sidebar-list-entry tree-leaf"><a href="atmosphere.stationary.html" title="atmosphere.stationary"><i class="icon-th"></i>atmosphere.stationary</a></li>
+	<li class="sidebar-list-entry tree-leaf"><a href="atmosphere.sliding.html" title="atmosphere.sliding"><i class="icon-th"></i>atmosphere.sliding</a></li>
+	<li class="sidebar-list-entry tree-leaf"><a href="atmosphere.normalvariancemeanmixture.html" title="atmosphere.normalvariancemeanmixture"><i class="icon-th"></i>atmosphere.normalvariancemeanmixture</a></li>
+	<li class="sidebar-list-entry tree-leaf"><a href="atmosphere.internal.html" title="atmosphere.internal"><i class="icon-th"></i>atmosphere.internal</a></li>
+					</noscript>
+					<li id="symbol-list" class="nav-header sidebar-list-entry hidden">atmosphere.internal</li>
+				</ul>
+				</div><!--/.well -->
+			</div><!--/span-->
+			
+			<div class="span10">
+				<div class="row-fluid">
+					<div class="span11">
+						<ul id="module-breadcrumb" class="breadcrumb">
+							<noscript><h1>atmosphere.internal</h1></noscript>
+						</ul>
+						
+					</div>
+					<div class="span1 offset11">
+						<a href="http://9il.github.io/atmosphere_gm"><img src="../bootDoc/assets/img/icon-github.png" alt="Atmosphere GM"/></a>
+					</div>
+				</div>
+				<div id="declaration-list">
+					<!-- Generated by Ddoc from source//atmosphere/internal.d -->
+<dl><p>This module contains numeric methods.
+Each method aims to do one iteration over the task.
+</p>
+<p>Optimization problem f(p) -&gt; min,
+where p is discrete probability distribution with k elements.
+f = u(Wp),
+W - matrix(n rows, k columns),
+u - convex function.</p>
+</dl>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="mix">&nbsp;</span><a class="symbol-link" href="#mix">mix</a>(T)(Matrix!(const(T)) <i>WTransposed</i>, in T[] <i>p</i>, T[] <i>mixture</i>);
+</h3></div>
+<div class="declaration-content"><dl><p>mixture = Wp</p>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="gradientDescentIteration">&nbsp;</span><a class="symbol-link" href="#gradientDescentIteration">gradientDescentIteration</a>(alias grad, T)(Matrix!(const(T)) <i>WTransposed</i>, T[] <i>p</i>, in T[] <i>mixture</i>, T[] <i>pi</i>, T[] <i>xi</i>, T[] <i>gamma</i>, T[] <i>c</i>, in bool delegate(T, T) nothrow @nogc <i>tolerance</i> = (a, b) =&gt; false);
+</h3></div>
+<div class="declaration-content"><dl><p>One iteration of gradient descent optimization algorithm.
+</p>
+<dt>Parameters</dt><dd><table class="table table-condensed table-bordered"><tr><td>grad</td>
+<td>∇u(ω)</td></tr>
+<tr><td>Matrix!(const(T)) WTransposed</td>
+<td>transposed version of W. k rows, n columns.</td></tr>
+<tr><td>T[] p</td>
+<td>discrete probability distribution with, length = k.</td></tr>
+<tr><td>T[] mixture</td>
+<td>Wp, length = n.</td></tr>
+<tr><td>T[] pi</td>
+<td>temporary array, length = n.</td></tr>
+<tr><td>T[] xi</td>
+<td>temporary array, length = n.</td></tr>
+<tr><td>T[] gamma</td>
+<td>temporary array, length = n.</td></tr>
+<tr><td>T[] c</td>
+<td>temporary array, length = k.</td></tr>
+<tr><td>bool delegate(T, T) nothrow @nogc tolerance</td>
+<td>Defines an early termination condition.
+				Receives the current upper and lower bounds on the root.
+				The delegate must return <span class="d_keyword">true</span> when these bounds are acceptable.</td></tr>
+</table></dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="EMIteration">&nbsp;</span><a class="symbol-link" href="#EMIteration">EMIteration</a>(alias grad, T)(Matrix!(const(T)) <i>WTransposed</i>, T[] <i>p</i>, in T[] <i>mixture</i>, T[] <i>pi</i>, T[] <i>c</i>);
+</h3></div>
+<div class="declaration-content"><dl><p>One iteration of Expectation Maximization algorithm.
+</p>
+<dt>Parameters</dt><dd><table class="table table-condensed table-bordered"><tr><td>grad</td>
+<td>∇u(ω)</td></tr>
+<tr><td>Matrix!(const(T)) WTransposed</td>
+<td>transposed version of W. k rows, n columns. W[i, j] &gt;= 0.</td></tr>
+<tr><td>T[] p</td>
+<td>discrete probability distribution with, length = k.</td></tr>
+<tr><td>T[] mixture</td>
+<td>Wp, length = n.</td></tr>
+<tr><td>T[] pi</td>
+<td>temporary array, length = n.</td></tr>
+<tr><td>T[] c</td>
+<td>temporary array, length = k.</td></tr>
+</table></dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="coordinateDescentIteration">&nbsp;</span><a class="symbol-link" href="#coordinateDescentIteration">coordinateDescentIteration</a>(alias grad, T)(Matrix!(const(T)) <i>WTransposed</i>, T[] <i>p</i>, T[] <i>mixture</i>, T[] <i>pi</i>, T[] <i>xi</i>, T[] <i>gamma</i>, in bool delegate(T, T) nothrow @nogc <i>tolerance</i> = (a, b) =&gt; false);
+</h3></div>
+<div class="declaration-content"><dl><p>k iterations of coordinate descent optimization algorithm.
+</p>
+<p>For better performance permute rows of WTransposed rows and corresponding elements of p.
+Similar rows (in context of u) of WTransposed should be held far from each other.
+</p>
+<dt>Parameters</dt><dd><table class="table table-condensed table-bordered"><tr><td>grad</td>
+<td>∇u(ω)</td></tr>
+<tr><td>Matrix!(const(T)) WTransposed</td>
+<td>transposed version of W. n columns, k rows.</td></tr>
+<tr><td>T[] p</td>
+<td>discrete probability distribution with, length = k.</td></tr>
+<tr><td>T[] mixture</td>
+<td>Wp, length = n.</td></tr>
+<tr><td>T[] pi</td>
+<td>temporary array, length = n.</td></tr>
+<tr><td>T[] xi</td>
+<td>temporary array, length = n.</td></tr>
+<tr><td>T[] gamma</td>
+<td>temporary array, length = n.</td></tr>
+<tr><td>bool delegate(T, T) nothrow @nogc tolerance</td>
+<td>Defines an early termination condition.
+				Receives the current upper and lower bounds on the root.
+				The delegate must return <span class="d_keyword">true</span> when these bounds are acceptable.</td></tr>
+</table></dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="coordinateDescentIterationPartial">&nbsp;</span><a class="symbol-link" href="#coordinateDescentIterationPartial">coordinateDescentIterationPartial</a>(alias PartialDerivative, T)(Matrix!(const(T)) <i>WTransposed</i>, T[] <i>p</i>, T[] <i>mixture</i>, T[] <i>pi</i>, in bool delegate(T, T) nothrow @nogc <i>tolerance</i> = (a, b) =&gt; false);
+</h3></div>
+<div class="declaration-content"><dl><p>k iterations of coordinate descent optimization algorithm.
+</p>
+<p>For better performance permute rows of WTransposed rows and corresponding elements of p.
+Similar rows (in context of u) of WTransposed should be held far from each other.
+</p>
+<dt>Parameters</dt><dd><table class="table table-condensed table-bordered"><tr><td>PartialDerivative</td>
+<td>du/dω_1, where du/dω_j = du/dω_1, 1 &lt;= j &lt;= n.</td></tr>
+<tr><td>Matrix!(const(T)) WTransposed</td>
+<td>transposed version of W. n columns, k rows.</td></tr>
+<tr><td>T[] p</td>
+<td>discrete probability distribution with, length = k.</td></tr>
+<tr><td>T[] mixture</td>
+<td>Wp, length = n.</td></tr>
+<tr><td>T[] pi</td>
+<td>temporary array, length = n.</td></tr>
+<tr><td>bool delegate(T, T) nothrow @nogc tolerance</td>
+<td>Defines an early termination condition.
+				Receives the current upper and lower bounds on the root.
+				The delegate must return <span class="d_keyword">true</span> when these bounds are acceptable.</td></tr>
+</table></dd>
+</dl>
+</div>
+
+
+				</div>
+				
+				<hr>
+				
+				<footer class="pull-left">
+					<p>Page generated with <a href="https://github.com/JakobOvrum/bootDoc">bootDoc</a>.</p>
+				</footer>
+				
+				<footer class="pull-right">
+					<p>&copy; Ilya Yaroshenko 2014-2014</p>
+				</footer>
+			</div>
+		</div>
+	</div><!--/.fluid-container-->
+
+	<!-- Bootstrap javascript
+	================================================== -->
+	<!-- Placed at the end of the document so the pages load faster -->
+	<script src="../bootDoc/assets/js/jquery.min.js"></script>
+	<script src="../bootDoc/assets/js/bootstrap.min.js"></script>
+	
+	<!-- bootDoc javascript
+	================================================== -->
+	<script src="../bootDoc/bootdoc.js"></script>
+	
+	</body>
+</html>
