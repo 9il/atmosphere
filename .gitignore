@@ -13,3 +13,5 @@ example
 __test__library__
 
 include/catmosphere
+
+*.sublime-project
