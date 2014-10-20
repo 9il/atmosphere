@@ -38,7 +38,7 @@ Params:
 	grad = ∇u(ω)
 	WTransposed = transposed version of W. k rows, n columns.
 	p = discrete probability distribution with, length = k.
-	mixture = temporary array, length = n.
+	mixture = Wp, length = n.
 	pi = temporary array, length = n.
 	xi = temporary array, length = n.
 	gamma = temporary array, length = n.
@@ -86,8 +86,15 @@ body
 }
 
 
-//Magic staff
-void EMIteration(alias grad, T)
+/**
+One iteration of Expectation Maximization algorithm.
+Params:
+	grad = ∇u(ω)
+	WTransposed = transposed version of W. k rows, n columns. W[i, j] >= 0.
+	p = discrete probability distribution with, length = k.
+	mixture = Wp, length = n.
+	c = temporary array, length = k.
+*/void EMIteration(alias grad, T)
 	(
 		Matrix!(const T) WTransposed,
 		T[] p,
@@ -103,6 +110,11 @@ in
 	assert(WTransposed.height == c.length);
 	assert(WTransposed.width == mixture.length);
 	assert(WTransposed.width == pi.length);
+	foreach(row; WTransposed)
+		foreach(elem; row)
+		{
+			assert(elem >= 0, "Components must be non negative.");
+		}
 }
 body
 {
@@ -123,7 +135,7 @@ Params:
 	grad = ∇u(ω)
 	WTransposed = transposed version of W. n columns, k rows.
 	p = discrete probability distribution with, length = k.
-	mixture = temporary array, length = n.
+	mixture = Wp, length = n.
 	pi = temporary array, length = n.
 	xi = temporary array, length = n.
 	gamma = temporary array, length = n.
@@ -182,7 +194,7 @@ Params:
 	PartialDerivative = du/dω_1, where du/dω_j = du/dω_1, 1 <= j <= n.
 	WTransposed = transposed version of W. n columns, k rows.
 	p = discrete probability distribution with, length = k.
-	mixture = temporary array, length = n.
+	mixture = Wp, length = n.
 	pi = temporary array, length = n.
 	tolerance = Defines an early termination condition. 
 				Receives the current upper and lower bounds on the root. 
@@ -227,7 +239,7 @@ body
 
 private:
 
-///
+///Returns: estimation of θ.
 T gRoot
 	(
 		alias grad,
@@ -247,13 +259,15 @@ T gRoot
 		foreach(j; 0..mixture.length)
 			xi[j] = mixture[j] + theta * pi[j];
 		grad(xi, gamma);
-		return dot(gamma, pi);
+		auto ret = dot(gamma, pi);
+		return gCorrectioin(ret);
 	}
 
 	T g_01(in T[] vec)
 	{
 		grad(vec, gamma);
-		return dot(gamma, pi);
+		auto ret = dot(gamma, pi);
+		return gCorrectioin(ret);
 	}
 
 	immutable g0 = g_01(mixture);
@@ -267,7 +281,7 @@ T gRoot
 }
 
 
-///
+///ditto
 T gRoot
 	(
 		alias PartialDerivative,
@@ -314,7 +328,8 @@ body
 			ret0 += pi0 * PartialDerivative(mixture[j+0] + theta * pi0);
 		}
 
-		return (ret0+ret1)+(ret2+ret3);
+		auto ret = (ret0+ret1)+(ret2+ret3);
+		return gCorrectioin(ret);
 	}
 
 	T g_01(in T[] vec)
@@ -340,7 +355,8 @@ body
 			ret0 += pi[j+0] * PartialDerivative(vec[j+0]);
 		}
 
-		return (ret0+ret1)+(ret2+ret3);
+		auto ret = (ret0+ret1)+(ret2+ret3);
+		return gCorrectioin(ret);
 	}
 
 	immutable g0 = g_01(mixture);
@@ -351,4 +367,18 @@ body
 		return 1;
 	auto r = findRoot(&g, cast(T)0.0, cast(T)1.0, g0, g1, tolerance);
 	return !(fabs(r[2]) > fabs(r[3])) ? r[0] : r[1];
+}
+
+
+/**
+Returns:
+	±T.max for ±∞ and x otherwise.
+*/
+T gCorrectioin(T)(T x)
+{
+	if(x == +T.infinity)
+		x = +T.max;
+	if(x == -T.infinity)
+		x = -T.max;
+	return x;
 }

@@ -10,6 +10,7 @@ import std.traits : isFloatingPoint, Unqual;
 
 import atmosphere.internal;
 
+
 /**
 */
 abstract class MixtureOptimizer(T)
@@ -111,6 +112,7 @@ public:
 		foreach(j, w; _components)
 			foreach(i, e; w)
 				_componentsT[i, j] = e;
+		updateMixture;
 	}
 
 	/**
@@ -126,6 +128,7 @@ public:
 				r[i] = kernel(e);
 			m.popFront;
 		}
+		updateMixture;
 	}
 
 override:
@@ -150,8 +153,6 @@ override:
 		this._distribution[] = _distribution[];
 	}
 }
-
-
 
 
 /**
@@ -181,6 +182,57 @@ override:
 	void eval(scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null)
 	{
 		gradientDescentIteration!(Gradient, T)(cast(Matrix!(const T))_componentsT, _distribution, _mixture, pi, xi, gamma, c, findRootTolerance is null ? (a, b) => false : findRootTolerance);
+		updateMixture;
+	}
+}
+
+
+/**
+*/
+final class CoordinateDescent(alias Gradient, T) : StationaryOptimizer!T
+{
+
+private:
+
+	scope T[] xi;
+	scope T[] gamma;
+
+public:
+
+	///
+	this(size_t k, size_t n)
+	{
+		super(k, n);
+		xi = new T[n];
+		gamma = new T[n];
+	}
+
+override:
+
+	void eval(scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null)
+	{
+		coordinateDescentIteration!(Gradient, T)(cast(Matrix!(const T))_componentsT, _distribution, _mixture, pi, xi, gamma, findRootTolerance is null ? (a, b) => false : findRootTolerance);
+		updateMixture;
+	}
+}
+
+
+/**
+
+*/
+final class CoordinateDescentPartial(alias PartialDerivative, T) : StationaryOptimizer!T
+{
+	///
+	this(size_t k, size_t n)
+	{
+		super(k, n);
+	}
+
+override:
+
+	void eval(scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null)
+	{
+		coordinateDescentIterationPartial!(PartialDerivative, T)(cast(Matrix!(const T))_componentsT, _distribution, _mixture, pi, findRootTolerance is null ? (a, b) => false : findRootTolerance);
 		updateMixture;
 	}
 }
@@ -246,7 +298,7 @@ private:
 	{
 		updateAlpha;
 		updateComponents;
-		updateMixture;
+		//updateMixture;
 		updateSumOfLog2s;
 	}
 
@@ -375,6 +427,7 @@ override:
 	}
 }
 
+
 /**
 */
 final class NormalVarianceMeanMixtureEMAndGradientSeparator(T) : NormalVarianceMeanMixtureSeparator!T
@@ -407,6 +460,7 @@ override:
 	}
 }
 
+
 /**
 */
 final class NormalVarianceMeanMixtureEMAndCoordinateSeparator(T) : NormalVarianceMeanMixtureSeparator!T
@@ -433,56 +487,6 @@ override:
 unittest
 {
 	alias C = NormalVarianceMeanMixtureEMAndCoordinateSeparator!double;
-}
-
-/**
-*/
-final class CoordinateDescent(alias Gradient, T) : StationaryOptimizer!T
-{
-
-private:
-
-	scope T[] xi;
-	scope T[] gamma;
-
-public:
-
-	///
-	this(size_t k, size_t n)
-	{
-		super(k, n);
-		xi = new T[n];
-		gamma = new T[n];
-	}
-
-override:
-
-	void eval(scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null)
-	{
-		coordinateDescentIteration!(Gradient, T)(cast(Matrix!(const T))_componentsT, _distribution, _mixture, pi, xi, gamma, findRootTolerance is null ? (a, b) => false : findRootTolerance);
-		updateMixture;
-	}
-}
-
-
-/**
-
-*/
-final class CoordinateDescentPartial(alias PartialDerivative, T) : StationaryOptimizer!T
-{
-	///
-	this(size_t k, size_t n)
-	{
-		super(k, n);
-	}
-
-override:
-
-	void eval(scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null)
-	{
-		coordinateDescentIterationPartial!(PartialDerivative, T)(cast(Matrix!(const T))_componentsT, _distribution, _mixture, pi, findRootTolerance is null ? (a, b) => false : findRootTolerance);
-		updateMixture;
-	}
 }
 
 

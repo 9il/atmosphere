@@ -214,7 +214,7 @@ void scal(Range, T)(Range r, T alpha)
 
 /**
 Struct that represent flat matrix.
-Useful for sliding.
+Useful for sliding windows.
 */
 struct MatrixColumnsSlider(F)
 {

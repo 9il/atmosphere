@@ -1,4 +1,4 @@
-import std.file, std.path, std.stdio, std.conv, std.algorithm, std.range, std.math;
+import std.file, std.path, std.stdio, std.conv, std.algorithm, std.range, std.math, std.functional;
 import atmosphere;
 
 const begin = 0.1;
@@ -7,16 +7,16 @@ const count = 50;
 const step = (end-begin)/count;
 const eps = 1e-5;
 
-size_t[] index = [1, 2, 46, 48, 20, 44, 38, 17, 25, 41, 22, 10, 19, 15, 4, 28, 37, 23, 26, 43, 21, 24, 42, 30, 13, 27, 8, 40, 32, 14, 31, 6, 0, 35, 33, 12, 47, 7, 34, 11, 18, 29, 49, 36, 39, 3, 45, 5, 16, 9, ];
 void main() 
 {
-	writeln("ε = %s", eps);
-	const grid = iota(begin, end+step/2, step).indexed(index).array;
+	writefln("ε = %s", eps);
+	const grid = iota(begin, end+step/2, step).array;
 	writeln(grid);
-	foreach(file; ["data/0.8.txt"])//"data".dirEntries("*.txt", SpanMode.shallow).take(1))
+	foreach(file; "data".dirEntries("*.txt", SpanMode.shallow))
+
 	{
 		size_t counter;
-
+		const alpha = file.baseName(".txt").to!double;
 		auto fout = File("coordinate.txt", "w");
 
 		bool tolerance 
@@ -29,42 +29,85 @@ void main()
 				in double[] distribution,
 			)
 		{
-
 			counter++;
-
-			double s = 0;
-			foreach(i; 0..distributionPrev.length)
-				s += (distributionPrev[i]-distribution[i])^^2;
-
-			fout.writeln(sumOfLog2sValue);
-			//return s <= eps^^2;
-			return sumOfLog2sValue >= -1381.84;
+			return sumOfLog2sValue - sumOfLog2sValuePrev <= 10*eps;
 		}
-
 
 		writeln("===========================");
 		writeln(file);
+		writefln("α in sample = %s", alpha);
 		writeln("===========================");
-		const sample = file.readText.splitter.map!(to!double).array;
 
-		auto optimizer = new NormalVarianceMeanMixtureEMSeparator!double(grid, sample);
+		const sample = file.readText.splitter.map!(to!double).array;
+		auto kernels = grid.map!(u => Kernel(alpha*u, sqrt(u)));
+		auto cheater = new LikelihoodMaximizationCoordinate!double(kernels.length, sample.length);
+		cheater.components(kernels, sample);
+		foreach(i; 0..1000)
+			cheater.eval;
+		writefln("cheater's sumOfLog2s = %s", cheater.mixture.sumOfLog2s);
+		writefln("cheater's distribution = %s", cheater.distribution);
+		writeln;
+
+		//auto optimizer = new NormalVarianceMeanMixtureEMSeparator!double(grid, sample);
+		//auto optimizer = new NormalVarianceMeanMixtureEMAndGradientSeparator!double(grid, sample);
+		auto optimizer = new NormalVarianceMeanMixtureEMAndCoordinateSeparator!double(grid, sample);
+
 		writefln("mean = %s", optimizer.mean);
 		writefln("α = %s", optimizer.alpha);
 		writefln("sumOfLog2s = %s", optimizer.sumOfLog2s);
 		writeln;
 		
-		//writeln("one iteration...");
-		//optimizer.eval;
-		//writefln("α = %s", optimizer.alpha);
-		//writefln("sumOfLog2s = %s", optimizer.sumOfLog2s);
-		//writeln;
-		
 		writeln("optimize...");
-		optimizer.optimize(&tolerance);
+		optimizer.optimize(toDelegate(&tolerance));
 		writefln("α = %s", optimizer.alpha);
 		writefln("sumOfLog2s = %s", optimizer.sumOfLog2s);
 		writefln("distribution = %s", optimizer.distribution);
 		writefln("total iterations: %s", counter);
 		writeln;
+	}
+}
+
+/**
+Computes accurate sum of binary logarithms of input range $(D r).
+TODO: Delete this with DMD 2.068.
+ */
+ElementType!Range sumOfLog2s(Range)(Range r) 
+    if (isInputRange!Range && isFloatingPoint!(ElementType!Range))
+{
+	import std.math : frexp; 
+
+    long exp = 0;
+    Unqual!(typeof(return)) x = 1; 
+    foreach (e; r)
+    {
+        if (e < 0)
+            return typeof(return).nan;
+        int lexp = void;
+        x *= frexp(e, lexp);
+        exp += lexp;
+        if (x < 0.5) 
+        {
+            x *= 2;
+            exp--;
+        }
+    }
+    return exp + log2(x); 
+}
+
+struct Kernel
+{
+	double alphau;
+	double sqrtu;
+
+	this(double alphau, double sqrtu)
+	{
+		this.alphau = alphau;
+		this.sqrtu = sqrtu;
+	}
+
+	double opCall(double x) const
+	{
+		immutable y = (x - alphau) / sqrtu;
+		return exp(y * y / -2) / sqrtu;
 	}
 }
