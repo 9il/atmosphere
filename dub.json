@@ -11,5 +11,10 @@
 		"simple_matrix": ">=0.2.1",
 		"cblas": ">=0.0.2"
 	},
-	"license": "Subject to the terms of the MIT license, as written in the included LICENSE.md file."
+	"license": "Subject to the terms of the MIT license, as written in the included LICENSE.md file.",
+	"buildTypes": {
+		"docs": {
+			"dflags": ["-c", "-Dddocs", "-Xfdocs.json"]
+		}
+	}
 }

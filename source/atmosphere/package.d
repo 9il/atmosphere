@@ -1,5 +1,15 @@
 module atmosphere;
+/**
+This module contains hight level implementation of separating mixtures numeric methods.
 
+You can create derived classes from non-abstract classes.
+
+Copyright: Ilya Yaroshenko 2014.
+
+License: MIT.
+
+Authors: Ilya Yaroshenko
+*/
 import core.stdc.tgmath;
 
 
@@ -12,6 +22,7 @@ import atmosphere.internal;
 
 
 /**
+Abstract class. It is a base class for all optimization algorithms in this module.
 */
 abstract class MixtureOptimizer(T)
 	if(isFloatingPoint!T)
@@ -23,22 +34,36 @@ private:
 
 public:
 
-	///
+	/**
+	Returns:
+		Components of mixture.
+	*/
 	abstract T[][] components() @property const;
 
-	///
+	/**
+	Returns:
+
+	*/
 	abstract const(T)[] mixture() @property const;
 
-	///
+	/**
+	
+	*/
 	abstract const(T)[] distribution() @property const;
 
-	///
+	/**
+	
+	*/
 	abstract void distribution(in T[] _distribution) @property;
 
-	///
+	/**
+	
+	*/
 	abstract void eval(scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null);
 
-	///
+	/**
+	
+	*/
 	void optimize(
 			scope bool delegate(in T[] mixturePrev, in T[] mixture, in T[] distributionPrev, in T[] distribution) tolerance,
 			scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null,
@@ -55,7 +80,9 @@ public:
 		while(!tolerance(mixturePrev, mixture, distributionPrev, distribution));
 	}
 
-	///
+	/**
+	
+	*/
 	void optimize(
 			scope T delegate(in T[] mixture) objectiveFunction, 
 			scope bool delegate (T objectiveFunctionValuePrev, T objectiveFunctionValue, in T[] distributionPrev, in T[] distribution) tolerance,
@@ -96,7 +123,9 @@ private:
 
 public:
 
-	///
+	/**
+	
+	*/
 	this(size_t k, size_t n)
 	{
 		_componentsT = Matrix!T(k, n);
@@ -106,7 +135,9 @@ public:
 		pi = new T[n];
 	}
 
-	///
+	/**
+	
+	*/
 	void components(in T[][] _components) @property
 	{
 		foreach(j, w; _components)
@@ -168,7 +199,9 @@ private:
 
 public:
 
-	///
+	/**
+	
+	*/
 	this(size_t k, size_t n)
 	{
 		super(k, n);
@@ -199,7 +232,9 @@ private:
 
 public:
 
-	///
+	/**
+	
+	*/
 	this(size_t k, size_t n)
 	{
 		super(k, n);
@@ -222,7 +257,9 @@ override:
 */
 class CoordinateDescentPartial(alias PartialDerivative, T) : StationaryOptimizer!T
 {
-	///
+	/**
+	
+	*/
 	this(size_t k, size_t n)
 	{
 		super(k, n);
@@ -263,9 +300,11 @@ private:
 		_alpha =  _mean / dotProduct(_distribution, _grid);
 	}
 
-	void updateSumOfLog2s()
+	void updateMixture()
 	{
+		super.updateMixture;
 		_sumOfLog2s = _mixture.sumOfLog2s;
+		updateAlpha;
 	}
 
 	void updateComponents()
@@ -289,22 +328,16 @@ private:
 				return exp(y * y / -2) / sqrtu;
 			}
 		}
-
 		auto kernels = _grid.map!(u => Kernel(alpha*u, sqrt(u)));
 		components(kernels, _sample);
-	}
-
-	void updateAll()
-	{
-		updateAlpha;
-		updateComponents;
-		//updateMixture;
-		updateSumOfLog2s;
+		updateMixture;
 	}
 
 public:
 
-	///
+	/**
+	
+	*/
 	this(in T[] _grid, in T[] _sample)
 	in
 	{
@@ -321,45 +354,60 @@ public:
 
 final:
 
-	///
+	/**
+	
+	*/
 	T alpha() @property const
 	{
 		return _alpha;
 	}
 
-	///
+	/**
+	
+	*/
 	T mean() @property const
 	{
 		return _mean;
 	}
 
-	///
+	/**
+	
+	*/
 	T sumOfLog2s() @property const
 	{
 		return _sumOfLog2s;
 	}
 
-	///
+	/**
+	
+	*/
 	void sample(in T[] _sample) @property
 	{
 		this._sample[] = _sample[];
 		_mean = sample.sum/sample.length;
-		updateAll;
+		updateAlpha;
+		updateComponents;
 	}
 
-	///
+	/**
+	
+	*/
 	const(T)[] sample() @property const
 	{
 		return _sample;
 	}
 
-	///
+	/**
+	
+	*/
 	const(T)[] grid() @property const
 	{
 		return _grid;
 	}
 
-	///
+	/**
+	
+	*/
 	void optimize(
 			scope bool delegate (
 				T alphaPrev, 
@@ -368,7 +416,8 @@ final:
 				T sumOfLog2sValue, 
 				in T[] distributionPrev, 
 				in T[] distribution) 
-			tolerance
+			tolerance,
+			scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null,
 		)
 	{
 		T sumOfLog2sPrev, alphaPrev;
@@ -379,7 +428,7 @@ final:
 			alphaPrev = _alpha;
 			assert(distribution.length == distributionPrev.length);
 			distributionPrev[] = _distribution[];
-			eval;
+			eval(findRootTolerance);
 		}
 		while(!tolerance(alphaPrev, _alpha, sumOfLog2sPrev, _sumOfLog2s, distributionPrev, _distribution));
 	}
@@ -394,7 +443,7 @@ override:
 	void distribution(in T[] _distribution) @property
 	{
 		super.distribution(_distribution);
-		updateAll;
+		updateMixture;
 	}
 }
 
@@ -408,7 +457,9 @@ private:
 	scope T[] c;
 
 public:
-	///
+	/**
+	
+	*/
 	this(in T[] _grid, in T[] _sample)
 	{
 		super(_grid, _sample);
@@ -417,13 +468,12 @@ public:
 
 override:
 	
-	///
 	void eval(scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null)
 	{
 		EMIteration!
 			((a, b) {foreach(i, ai; a) b[i] = 1/ai;}, T)
 			(cast(Matrix!(const T))_componentsT, _distribution, _mixture, pi, c);
-		updateAll;
+		updateComponents;
 	}
 }
 
@@ -439,7 +489,9 @@ private:
 	scope T[] c;
 
 public:
-	///
+	/**
+	
+	*/
 	this(in T[] _grid, in T[] _sample)
 	{
 		super(_grid, _sample);
@@ -450,13 +502,12 @@ public:
 
 override:
 	
-	///
 	void eval(scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null)
 	{
 		gradientDescentIteration!
 			((a, b) {foreach(i, ai; a) b[i] = -1/ai;}, T)
 			(cast(Matrix!(const T))_componentsT, _distribution, _mixture, pi, xi, gamma, c, findRootTolerance is null ? (a, b) => false : findRootTolerance);
-		updateAll;
+		updateComponents;
 	}
 }
 
@@ -465,7 +516,9 @@ override:
 */
 class NormalVarianceMeanMixtureEMAndCoordinateSeparator(T) : NormalVarianceMeanMixtureSeparator!T
 {
-	///
+	/**
+	
+	*/
 	this(in T[] _grid, in T[] _sample)
 	{
 		super(_grid, _sample);
@@ -473,13 +526,12 @@ class NormalVarianceMeanMixtureEMAndCoordinateSeparator(T) : NormalVarianceMeanM
 
 override:
 	
-	///
 	void eval(scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null)
 	{
 		coordinateDescentIterationPartial!
 			(a => -1/a, T)
 			(cast(Matrix!(const T))_componentsT, _distribution, _mixture, pi, findRootTolerance is null ? (a, b) => false : findRootTolerance);
-		updateAll;
+		updateComponents;
 	}
 }
 
@@ -495,7 +547,10 @@ unittest
 alias LikelihoodMaximizationCoordinate(T) = CoordinateDescentPartial!(a => -1/a);
 ----------
 */
-alias LikelihoodMaximizationCoordinate(T) = CoordinateDescentPartial!(a => -1/a, T);
+//class LikelihoodMaximizationCoordinate(T) : CoordinateDescentPartial!(a => -1/a, T)
+//{
+
+//}
 
 
 /**
@@ -515,19 +570,19 @@ template isCoordinateOprimization(Class)
 	is(Class : CoordinateDescentPartial!(PartialDerivative, T), alias PartialDerivative, T);
 }
 
-///
-unittest
-{
-	static assert(isCoordinateOprimization!(LikelihoodMaximizationCoordinate!double) == true);
-	static assert(isCoordinateOprimization!(LikelihoodMaximizationGradient!double) == false);
-}
+/////
+//unittest
+//{
+//	static assert(isCoordinateOprimization!(LikelihoodMaximizationCoordinate!double) == true);
+//	static assert(isCoordinateOprimization!(LikelihoodMaximizationGradient!double) == false);
+//}
 
 
 private:
 
 /**
 Computes accurate sum of binary logarithms of input range $(D r).
-TODO: Delete this with DMD 2.068.
+Will be avalible in std.numeric with with DMD 2.068.
  */
 ElementType!Range sumOfLog2s(Range)(Range r) 
     if (isInputRange!Range && isFloatingPoint!(ElementType!Range))

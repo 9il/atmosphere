@@ -93,8 +93,10 @@ Params:
 	WTransposed = transposed version of W. k rows, n columns. W[i, j] >= 0.
 	p = discrete probability distribution with, length = k.
 	mixture = Wp, length = n.
+	pi = temporary array, length = n.
 	c = temporary array, length = k.
-*/void EMIteration(alias grad, T)
+*/
+void EMIteration(alias grad, T)
 	(
 		Matrix!(const T) WTransposed,
 		T[] p,
