@@ -8,7 +8,7 @@ docs.json
 *.o
 /examples/**/build/
 example
-
+/bootDoc
 
 __test__library__
 
