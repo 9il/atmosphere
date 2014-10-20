@@ -1,3 +1,7 @@
 MODULES = 
 	$(MODULE atmosphere.package)
+	$(MODULE atmosphere.mixtureoptimizer)
+	$(MODULE atmosphere.stationary)
+	$(MODULE atmosphere.sliding)
+	$(MODULE atmosphere.normalvariancemeanmixture)
 	$(MODULE atmosphere.internal)
