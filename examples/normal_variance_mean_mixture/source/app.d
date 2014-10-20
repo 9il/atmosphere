@@ -1,4 +1,5 @@
-import std.file, std.path, std.stdio, std.conv, std.algorithm, std.range, std.math, std.functional;
+import std.file, std.path, std.stdio, std.conv, std.algorithm, 
+std.range, std.math, std.functional;
 import atmosphere;
 
 const begin = 0.1;
@@ -68,9 +69,28 @@ void main()
 	}
 }
 
+
+struct Kernel
+{
+	double alphau;
+	double sqrtu;
+
+	this(double alphau, double sqrtu)
+	{
+		this.alphau = alphau;
+		this.sqrtu = sqrtu;
+	}
+
+	double opCall(double x) const
+	{
+		immutable y = (x - alphau) / sqrtu;
+		return exp(y * y / -2) / sqrtu;
+	}
+}
+
 /**
 Computes accurate sum of binary logarithms of input range $(D r).
-TODO: Delete this with DMD 2.068.
+Will be avalible in std.numeric with DMD 2.068.
  */
 ElementType!Range sumOfLog2s(Range)(Range r) 
     if (isInputRange!Range && isFloatingPoint!(ElementType!Range))
@@ -93,22 +113,4 @@ ElementType!Range sumOfLog2s(Range)(Range r)
         }
     }
     return exp + log2(x); 
-}
-
-struct Kernel
-{
-	double alphau;
-	double sqrtu;
-
-	this(double alphau, double sqrtu)
-	{
-		this.alphau = alphau;
-		this.sqrtu = sqrtu;
-	}
-
-	double opCall(double x) const
-	{
-		immutable y = (x - alphau) / sqrtu;
-		return exp(y * y / -2) / sqrtu;
-	}
 }

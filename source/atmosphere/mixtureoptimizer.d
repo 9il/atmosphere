@@ -18,18 +18,63 @@ public:
 	/**
 	Returns:
 		duplicate of the components
+	Example:
+	-------------
+	auto components = optimizer.components;
+	//do what you whant with mutable copy
+	-------------
 	*/
 	abstract T[][] components() @property const;
 
 	/**
 	Returns:
-		mixture of components corresponding the current mixture distribution
+		Const slice to the internal mixture representation.
+	Example:
+	-------------
+	double objectiveFunction(in double[])
+	{
+	
+	}
+
+	//save slice
+	auto mixture = optimizer.mixture;
+
+	auto value0 = objectiveFunction(mixture);
+	optimizer.eval;
+	auto value1 = objectiveFunction(mixture);
+
+
+	//use $(D .dup) or copy to save current mixture
+
+	//1: .dup
+	auto mixtureSave1 = mixture.dup;
+
+	//2: create array
+	auto mixtureSave2 = new double[mixture.length];
+	//2: copy
+	mixtureSave2[] = mixture[];
+	-------------
 	*/
 	abstract const(T)[] mixture() @property const;
 
 	/**
 	Returns:
-		mixture distribution
+		Const slice to the internal distribution representation.
+	Example:
+	-------------
+	//save slice
+	auto distribution = optimizer.distribution;
+
+	//use $(D .dup) or copy to save current distribution
+
+	//1: .dup
+	auto distributionSave1 = distribution.dup;
+
+	//2: create array
+	auto distributionSave2 = new double[distribution.length];
+	//2: copy
+	distributionSave2[] = distribution[];
+	-------------
 	*/
 	abstract const(T)[] distribution() @property const;
 

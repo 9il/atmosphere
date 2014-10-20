@@ -1,4 +1,4 @@
-module atmosphere.normalvariancemeanmixture;
+module atmosphere.em.normalvariancemeanmixture;
 
 import atmosphere.stationary;
 import atmosphere.internal;
@@ -114,13 +114,28 @@ public:
 	}
 
 	/**
-	Sets sample and recalculate α.
+	Sets sample and recalculate alpha and mixture.
 	-------
+	///use the same length
 	double[] newSample = new double[optimizer.sample.length];
 	///init newSample
 	...
 
 	optimizer.sample = newSample;
+	auto newAlpha = optimizer.alpha;
+	///use dup to save mixture
+	auto newMixture = optimizer.mixture.dup;
+	///use dup to save distribution, the distribution is not changed
+	auto distrubution = optimizer.distribution.dup;
+
+	///performe one iteration
+	optimizer.eval;
+
+	///check new data
+	auto secondAlpha = optimizer.alpha;
+	auto secondMixture = optimizer.mixture.dup;
+	///The distribution has changed after $(D eval).
+	auto newDistribution = optimizer.distribution.dup;
 	-------
 	Params:
 		_sample = new sample with the same length

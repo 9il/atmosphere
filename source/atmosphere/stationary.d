@@ -76,7 +76,7 @@ public:
 
 	/**
 	Compute internal components using kernels and grid. 
-	The pseudocode of this mathod: $(D components[i, j] = kernel[i](sample[j])).
+	The pseudocode of this method: $(D components[i, j] = kernel[i](sample[j])).
 	Params:
 		kernels = Input range of kernels. kernels length equals k. 
 		Element type of kernels can be a $(D function) pointer, $(D delegate), 
@@ -133,7 +133,7 @@ override:
 
 /**
 Params:
-	Gradient = Gradient of the objective function. $(D Gradient(a, b) should perfrom b = grad_f(a)).
+	Gradient = Gradient of the objective function. $(D Gradient(a, b) should perform b = grad_f(a)).
 	T = floating point type
 */
 final class GradientDescent(alias Gradient, T) : StationaryOptimizer!T
@@ -171,7 +171,7 @@ final class GradientDescent(alias Gradient, T) : StationaryOptimizer!T
 
 /**
 Params:
-	Gradient = Gradient of the objective function. $(D Gradient(a, b) should perfrom b = grad_f(a)).
+	Gradient = Gradient of the objective function. $(D Gradient(a, b) should perform b = grad_f(a)).
 	T = floating point type
 */
 final class CoordinateDescent(alias Gradient, T) : StationaryOptimizer!T
@@ -209,7 +209,7 @@ Params:
 	PartialDerivative = Partial derivative of the objective function. 
 		There are optimization reasons for coordinate descent to use partial derivative instead of gradient.
 		It is applicable if and only if all partial derivatives are equal.
-		$(D b = PartialDerivative(a) equals b = (d f/ d x_i)(a)).
+		$(D b = PartialDerivative(a) should perform b = (d f/ d x_i)(a)).
 	T = floating point type
 */
 final class CoordinateDescentPartial(alias PartialDerivative, T) : StationaryOptimizer!T
