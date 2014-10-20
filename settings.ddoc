@@ -1,8 +1,8 @@
 PROJECTNAME = Atmosphere GM
 REFERENCETOP = http://9il.github.io/atmosphere_gm
-REPOSRCTREE = http://github.com/9il/atmosphere_gm
+REPOSRCTREE = http://github.com/9il/atmosphere_gm/tree/master/source
 TITLEBARTEXT = <a href="http://9il.github.io/atmosphere_gm">Atmosphere GM</a>
-RESOURCEROOT =
+RESOURCEROOT = bootDoc/
 DEFAULTPACKAGE = atmosphere
 PACKAGESEP = .
 FAVICON = $(RESOURCEROOT)assets/ico/favicon.ico
