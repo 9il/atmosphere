@@ -9,3 +9,5 @@ docs.json
 example
 /bootDoc
 
+
+*.ddoc
