@@ -157,7 +157,7 @@ override:
 
 /**
 */
-final class GradientDescent(alias Gradient, T) : StationaryOptimizer!T
+class GradientDescent(alias Gradient, T) : StationaryOptimizer!T
 {
 
 private:
@@ -189,7 +189,7 @@ override:
 
 /**
 */
-final class CoordinateDescent(alias Gradient, T) : StationaryOptimizer!T
+class CoordinateDescent(alias Gradient, T) : StationaryOptimizer!T
 {
 
 private:
@@ -220,7 +220,7 @@ override:
 /**
 
 */
-final class CoordinateDescentPartial(alias PartialDerivative, T) : StationaryOptimizer!T
+class CoordinateDescentPartial(alias PartialDerivative, T) : StationaryOptimizer!T
 {
 	///
 	this(size_t k, size_t n)
@@ -401,7 +401,7 @@ override:
 
 /**
 */
-final class NormalVarianceMeanMixtureEMSeparator(T) : NormalVarianceMeanMixtureSeparator!T
+class NormalVarianceMeanMixtureEMSeparator(T) : NormalVarianceMeanMixtureSeparator!T
 {
 
 private:
@@ -430,7 +430,7 @@ override:
 
 /**
 */
-final class NormalVarianceMeanMixtureEMAndGradientSeparator(T) : NormalVarianceMeanMixtureSeparator!T
+class NormalVarianceMeanMixtureEMAndGradientSeparator(T) : NormalVarianceMeanMixtureSeparator!T
 {
 
 private:
@@ -463,7 +463,7 @@ override:
 
 /**
 */
-final class NormalVarianceMeanMixtureEMAndCoordinateSeparator(T) : NormalVarianceMeanMixtureSeparator!T
+class NormalVarianceMeanMixtureEMAndCoordinateSeparator(T) : NormalVarianceMeanMixtureSeparator!T
 {
 	///
 	this(in T[] _grid, in T[] _sample)
