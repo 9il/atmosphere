@@ -1,22 +1,53 @@
-module atmosphere.em.normalvariancemeanmixture;
-
-import atmosphere.stationary;
-import atmosphere.internal;
-import std.algorithm : sum;
-import std.numeric : dotProduct;
-import std.math : isFinite;
-import core.stdc.tgmath : exp, sqrt;
-
-
 /**
 */
-abstract class NormalVarianceMeanMixtureSeparator(T) : StationaryOptimizer!T
-{
+module atmosphere.em.normalvariancemeanmixture;
 
+import atmosphere.mixtureoptimizer;
+import atmosphere.internal;
+import std.algorithm;
+import std.range;
+import std.numeric;
+import std.traits;
+import core.stdc.tgmath;
+
+static import std.math;
+
+/**
+------
+F(x) = ∫_0^∞ Φ((x-αu_i)√u) dG(u) ≈ Σ_i p_i*Φ((x-αu_i)/sqrt(u))
+α - alpha
+Φ - standard normal distribution
+G - mixture distribution
+p - approximation of G
+------
+*/
+abstract class NormalVarianceMeanMixtureSeparator(T) : MixtureOptimizer!T
+{
 private:
+
+	static struct Kernel
+	{
+		T alphau;
+		T sqrtu;
+
+		this(T alpha, T u)
+		{
+			assert(u > 0);
+			this.alphau = alpha*u;
+			this.sqrtu = sqrt(u);
+			assert(sqrtu > 0);
+		}
+
+		T opCall(T x) const
+		{
+			immutable y = (x - alphau) / sqrtu;
+			return exp(y * y / -2) / sqrtu;
+		}
+	}
 
 	T[] _sample;
 	const T[] _grid;
+	Kernel[] kernels;
 
 	T _mean;
 	T _alpha;
@@ -27,43 +58,25 @@ final:
 	void updateAlpha()
 	in
 	{
-		assert(_distribution.length == _grid.length);
+		assert(distribution.length == _grid.length);
 	}
 	body
 	{
-		_alpha =  _mean / dotProduct(_distribution, _grid);
+		_alpha =  _mean / dotProduct(distribution, _grid);
 	}
 
 	void updateMixture()
 	{
 		super.updateMixture;
-		_log2Likelihood = _mixture.sumOfLog2s;
+		_log2Likelihood = mixture.sumOfLog2s;
 		updateAlpha;
 	}
 
 	void updateComponents()
 	{
-		import std.algorithm : map;
-
-		static struct Kernel
-		{
-			T alphau;
-			T sqrtu;
-
-			this(T alphau, T sqrtu)
-			{
-				this.alphau = alphau;
-				this.sqrtu = sqrtu;
-			}
-
-			T opCall(T x) const
-			{
-				immutable y = (x - alphau) / sqrtu;
-				return exp(y * y / -2) / sqrtu;
-			}
-		}
-		auto kernels = _grid.map!(u => Kernel(alpha*u, sqrt(u)));
-		components(kernels, _sample);
+		reset;
+		_grid.map!(u => Kernel(alpha, u)).copy(kernels);
+		put(_sample.map!(a => kernels.map!(k => k(a))));
 		updateMixture;
 	}
 
@@ -83,7 +96,13 @@ public:
 		super(_grid.length, _sample.length);
 		this._grid = _grid.dup;
 		this._sample = new T[_sample.length];
+		this.kernels = new Kernel[_grid.length];
 		sample(_sample);
+	}
+
+	~this()
+	{
+		kernels.destroy;
 	}
 
 	/**
@@ -146,8 +165,7 @@ public:
 		assert(_sample.length == this._sample.length);
 		foreach(s; _sample)
 		{
-			assert(s.isFinite);
-			assert(s > 0);
+			assert(std.math.isFinite(s));
 		}
 	}
 	body
@@ -192,16 +210,16 @@ public:
 		)
 	{
 		T log2LikelihoodPrev, alphaPrev;
-		scope T[] distributionPrev = new T[_distribution.length];
+		scope T[] distributionPrev = new T[distribution.length];
 		do
 		{
 			log2LikelihoodPrev = _log2Likelihood;
 			alphaPrev = _alpha;
 			assert(distribution.length == distributionPrev.length);
-			distributionPrev[] = _distribution[];
+			distributionPrev[] = distribution[];
 			eval(findRootTolerance);
 		}
-		while(!tolerance(alphaPrev, _alpha, log2LikelihoodPrev, _log2Likelihood, distributionPrev, _distribution));
+		while(!tolerance(alphaPrev, _alpha, log2LikelihoodPrev, _log2Likelihood, distributionPrev, distribution));
 	}
 }
 
@@ -232,7 +250,7 @@ final class NormalVarianceMeanMixtureEMSeparator(T) : NormalVarianceMeanMixtureS
 	{
 		EMIteration!
 			((a, b) {foreach(i, ai; a) b[i] = 1/ai;}, T)
-			(cast(Matrix!(const T))_componentsT, _distribution, _mixture, pi, c);
+			(cast(Matrix!(const T))_componentsT.matrix, _distribution, _mixture, pi, c);
 		updateComponents;
 	}
 }
@@ -270,7 +288,7 @@ final class NormalVarianceMeanMixtureEMAndGradientSeparator(T) : NormalVarianceM
 	{
 		gradientDescentIteration!
 			((a, b) {foreach(i, ai; a) b[i] = -1/ai;}, T)
-			(cast(Matrix!(const T))_componentsT, _distribution, _mixture, pi, xi, gamma, c, findRootTolerance is null ? (a, b) => false : findRootTolerance);
+			(cast(Matrix!(const T))_componentsT.matrix, _distribution, _mixture, pi, xi, gamma, c, findRootTolerance is null ? (a, b) => false : findRootTolerance);
 		updateComponents;
 	}
 }
@@ -300,7 +318,7 @@ final class NormalVarianceMeanMixtureEMAndCoordinateSeparator(T) : NormalVarianc
 	{
 		coordinateDescentIterationPartial!
 			(a => -1/a, T)
-			(cast(Matrix!(const T))_componentsT, _distribution, _mixture, pi, findRootTolerance is null ? (a, b) => false : findRootTolerance);
+			(cast(Matrix!(const T))_componentsT.matrix, _distribution, _mixture, pi, findRootTolerance is null ? (a, b) => false : findRootTolerance);
 		updateComponents;
 	}
 }
@@ -315,8 +333,6 @@ unittest {
 
 private:
 
-import std.traits : Unqual;
-import std.math : log2, frexp;
 /*
 Computes accurate sum of binary logarithms of input range $(D r).
 Will be avalible in std.numeric with with DMD 2.068.
@@ -324,6 +340,7 @@ Will be avalible in std.numeric with with DMD 2.068.
 T sumOfLog2s(T)(T[] r) 
 {
 	import std.math : frexp; 
+	import std.traits : Unqual;
 
     long exp = 0;
     Unqual!(typeof(return)) x = 1; 

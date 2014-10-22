@@ -1,102 +1,120 @@
 import std.file, std.path, std.stdio, std.conv, std.algorithm, 
-std.range, std.math, std.functional;
+	std.range, std.math, std.functional;
+
 import atmosphere;
 
 const begin = 0.1;
 const end = 15.0;
 const count = 50;
 const step = (end-begin)/count;
-const eps = 1e-5;
+const eps = 5e-5;
 
-void main() 
+void main()
 {
-	writefln("ε = %s", eps);
-	const grid = iota(begin, end+step/2, step).array;
-	writeln(grid);
+	//uniform grid
+	const double[] grid = iota(begin, end+step/2, step).array;
+
+	//for each *.txt file in data folder
 	foreach(file; "data".dirEntries("*.txt", SpanMode.shallow))
-
 	{
-		size_t counter;
+		///reads alpha from file name
 		const alpha = file.baseName(".txt").to!double;
-		auto fout = File("coordinate.txt", "w");
 
-		bool tolerance 
+		writeln("DATA =========================================");
+		writefln(file);
+		writefln("α in sample = %s", alpha);
+		writeln("==============================================\n");
+
+		//reads sample from file
+		const double[] sample = file.readText.splitter.map!(to!double).array;
+
+		//iteration counter
+		uint counter;
+
+///Common algorithm
+
+		//finds mixture distribution
+		writeln("mixture optimization =========================");
+		//compute range of distributions
+		auto kernels = grid.map!(u => Kernel(alpha, u)).array;
+		///argmax(f(x)) = argmin(-f(x))		
+		///compile time parameters: partial derivative of -Σ_j log(x_j) function, floating point type
+		///runtime parameters: probability density functions (up to a common constant), sample
+		auto optimizer = new CoordinateDescentPartial!(a => -1/a, double)(kernels.length, sample.length);
+		auto components = sample.map!(a => kernels.map!(k => k(a)));
+		optimizer.put(components);
+		optimizer.optimize( ///optimization
+				a => a.sumOfLog2s, //objective function: log2Likelihood(mixture)
+				//tolerance
+				(
+					double objectiveFunctionValuePrev, 
+					double objectiveFunctionValue, 
+				) 
+				{
+					counter++;
+					return objectiveFunctionValue - objectiveFunctionValuePrev <= eps;
+				}
+			);
+		writefln("total iterations: %s", counter);
+		writefln("log2Likelihood = %s", optimizer.mixture.sumOfLog2s);
+		writefln("-----------\ndistribution = %s", optimizer.distribution);
+		writeln("==============================================\n");
+		counter = 0;
+
+///Special α-parametrized EM algorithm:
+
+		///finds good (possibly not the best) value of parameter alpha and mixture distribution
+		auto spacialEMOptimizer = new NormalVarianceMeanMixtureEMAndCoordinateSeparator!double(grid, sample);
+		
+		writeln("α-parametrized EM mixture optimization =======");
+		spacialEMOptimizer.optimize( ///optimization
+			//tolerance
 			(
 				double alphaPrev, 
 				double alpha, 
-				double sumOfLog2sValuePrev, 
-				double sumOfLog2sValue, 
+				double log2LikelihoodPrev, 
+				double log2Likelihood, 
 				in double[] distributionPrev, 
 				in double[] distribution,
 			)
-		{
-			counter++;
-			return sumOfLog2sValue - sumOfLog2sValuePrev <= 10*eps;
-		}
-
-		writeln("===========================");
-		writeln(file);
-		writefln("α in sample = %s", alpha);
-		writeln("===========================");
-
-		const sample = file.readText.splitter.map!(to!double).array;
-		auto kernels = grid.map!(u => Kernel(alpha*u, sqrt(u)));
-		auto cheater = new LikelihoodMaximizationGradient!double(kernels.length, sample.length);
-		//auto cheater = new LikelihoodMaximizationCoordinate!double(kernels.length, sample.length);
-		cheater.components(kernels, sample);
-		foreach(i; 0..1000)
-			cheater.eval;
-		writefln("cheater's sumOfLog2s = %s", cheater.mixture.sumOfLog2s);
-		writefln("cheater's distribution = %s", cheater.distribution);
-		writeln;
-
-		//auto optimizer = new NormalVarianceMeanMixtureEMSeparator!double(grid, sample);
-		//auto optimizer = new NormalVarianceMeanMixtureEMAndGradientSeparator!double(grid, sample);
-		auto optimizer = new NormalVarianceMeanMixtureEMAndCoordinateSeparator!double(grid, sample);
-
-		writefln("mean = %s", optimizer.mean);
-		writefln("α = %s", optimizer.alpha);
-		writefln("sumOfLog2s = %s", optimizer.sumOfLog2s);
-		writeln;
-		
-		writeln("optimize...");
-		optimizer.optimize(toDelegate(&tolerance));
-		writefln("α = %s", optimizer.alpha);
-		writefln("sumOfLog2s = %s", optimizer.sumOfLog2s);
-		writefln("distribution = %s", optimizer.distribution);
+			{
+				counter++;
+				return log2Likelihood - log2LikelihoodPrev <= eps;
+			});
 		writefln("total iterations: %s", counter);
-		writeln;
+		writefln("α = %s", spacialEMOptimizer.alpha);
+		writefln("log2Likelihood = %s", spacialEMOptimizer.log2Likelihood);
+		writefln("-----------\ndistribution = %s", spacialEMOptimizer.distribution);
+		writeln("==============================================\n");
 	}
 }
 
-
+//probability density function
 struct Kernel
 {
 	double alphau;
 	double sqrtu;
 
-	this(double alphau, double sqrtu)
+	this(double alpha, double u)
 	{
-		this.alphau = alphau;
-		this.sqrtu = sqrtu;
+		alphau = alpha * u;
+		sqrtu = sqrt(u);
 	}
 
+	///call operator overloading
 	double opCall(double x) const
 	{
 		immutable y = (x - alphau) / sqrtu;
+		//up to a constant!
 		return exp(y * y / -2) / sqrtu;
 	}
 }
 
-/**
-Computes accurate sum of binary logarithms of input range $(D r).
-Will be avalible in std.numeric with DMD 2.068.
- */
-ElementType!Range sumOfLog2s(Range)(Range r) 
-    if (isInputRange!Range && isFloatingPoint!(ElementType!Range))
-{
-	import std.math : frexp; 
 
+///Computes accurate sum of binary logarithms of input range $(D r).
+//Will be available in std.numeric with DMD 2.068.
+double sumOfLog2s(in double[] r) 
+{
     long exp = 0;
     Unqual!(typeof(return)) x = 1; 
     foreach (e; r)
@@ -114,3 +132,4 @@ ElementType!Range sumOfLog2s(Range)(Range r)
     }
     return exp + log2(x); 
 }
+

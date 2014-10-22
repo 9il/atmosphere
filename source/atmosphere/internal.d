@@ -22,10 +22,11 @@ mixture = Wp
 void mix(T)(Matrix!(const T) WTransposed, in T[] p, T[] mixture)
 in
 {
+	import std.string;
 	assert(WTransposed.height);
 	assert(WTransposed.width);
-	assert(WTransposed.height == p.length);
-	assert(WTransposed.width == mixture.length);
+	assert(WTransposed.height == p.length, format("p.length(%s) != WTransposed.height(%s)", p.length, WTransposed.height));
+	assert(WTransposed.width == mixture.length, format("mixture.length(%s) != WTransposed.height(%s)", mixture.length, WTransposed.width));
 }
 body
 {
