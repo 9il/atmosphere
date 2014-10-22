@@ -4,7 +4,7 @@
 		{
 			"cmd":
 			[
-				"dub build --build=unittest"
+				"dub test"
 			],
 			"file_regex": "^(.*?)\\(([0-9]+)\\)",
 			"name": "dub package",
@@ -15,7 +15,7 @@
 				{
 					"cmd":
 					[
-						"dub --build=unittest"
+						"dub --build=unittest --force"
 					],
 					"name": "Run",
 					"shell": true
@@ -23,7 +23,7 @@
 				{
 					"cmd":
 					[
-						"dub build --build=docs"
+						"dub build --build=docs --force"
 					],
 					"name": "Docs",
 					"shell": true

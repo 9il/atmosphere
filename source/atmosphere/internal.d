@@ -87,48 +87,6 @@ body
 
 
 /**
-One iteration of Expectation Maximization algorithm.
-Params:
-	grad = ∇u(ω)
-	WTransposed = transposed version of W. k rows, n columns. W[i, j] >= 0.
-	p = discrete probability distribution with, length = k.
-	mixture = Wp, length = n.
-	pi = temporary array, length = n.
-	c = temporary array, length = k.
-*/
-void EMIteration(alias grad, T)
-	(
-		Matrix!(const T) WTransposed,
-		T[] p,
-		in T[] mixture,
-		T[] pi,
-		T[] c,
-	)
-in
-{
-	assert(WTransposed.height);
-	assert(WTransposed.width);
-	assert(WTransposed.height == p.length);
-	assert(WTransposed.height == c.length);
-	assert(WTransposed.width == mixture.length);
-	assert(WTransposed.width == pi.length);
-	foreach(row; WTransposed)
-		foreach(elem; row)
-		{
-			assert(elem >= 0, "Components must be non negative.");
-		}
-}
-body
-{
-	//gemv(WTransposed.transposed, p, mixture);
-	grad(mixture, pi); // pi = grad(mixture);
-	gemv(WTransposed, pi, c);
-	p[] *= c[];
-	p.normalize;
-}
-
-
-/**
 k iterations of coordinate descent optimization algorithm.
 
 For better performance permute rows of WTransposed rows and corresponding elements of p.
@@ -239,9 +197,9 @@ body
 	p.normalize;
 }
 
-private:
 
-///Returns: estimation of θ.
+
+//Returns: estimation of θ.
 T gRoot
 	(
 		alias grad,
@@ -283,7 +241,49 @@ T gRoot
 }
 
 
-///ditto
+/**
+One iteration of Expectation Maximization algorithm.
+Params:
+	grad = ∇u(ω)
+	WTransposed = transposed version of W. k rows, n columns. W[i, j] >= 0.
+	p = discrete probability distribution with, length = k.
+	mixture = Wp, length = n.
+	pi = temporary array, length = n.
+	c = temporary array, length = k.
+*/
+void EMIteration(alias grad, T)
+	(
+		Matrix!(const T) WTransposed,
+		T[] p,
+		in T[] mixture,
+		T[] pi,
+		T[] c,
+	)
+in
+{
+	assert(WTransposed.height);
+	assert(WTransposed.width);
+	assert(WTransposed.height == p.length);
+	assert(WTransposed.height == c.length);
+	assert(WTransposed.width == mixture.length);
+	assert(WTransposed.width == pi.length);
+	foreach(row; WTransposed)
+		foreach(elem; row)
+		{
+			assert(elem >= 0, "Components must be non negative.");
+		}
+}
+body
+{
+	//gemv(WTransposed.transposed, p, mixture);
+	grad(mixture, pi); // pi = grad(mixture);
+	gemv(WTransposed, pi, c);
+	p[] *= c[];
+	p.normalize;
+}
+
+
+//ditto
 T gRoot
 	(
 		alias PartialDerivative,
@@ -372,7 +372,7 @@ body
 }
 
 
-/**
+/*
 Returns:
 	±T.max for ±∞ and x otherwise.
 */
@@ -386,94 +386,3 @@ T gCorrectioin(T)(T x)
 }
 
 
-/**
-Struct that represent flat matrix.
-Stack of columns.
-*/
-struct MatrixAllocator(F)
-{
-
-	/**
-	*/
-	Matrix!F _matrix;
-
-	///
-	Matrix!F matrix;
-
-
-	///
-	this(size_t maxHeight, size_t maxWidth, size_t height)
-	{
-		assert(maxHeight > height)
-		_matrix = Matrix!F(maxHeight, maxWidth);
-		_matrix.width = _matrix.shift;
-		matrix.ptr = _matrix.ptr;
-		matrix.shift = _matrix.shift;
-		matrix.height = height;
-	}
-
-
-	///
-	void popFrontN(size_t n)
-	in {
-		assert(n <= matrix.width, "n > matrix.width");
-	}
-	body {
-		if(n < matrix.width)
-		{
-			matrix.width -= n;
-			matrix.ptr += n;
-		}
-		else
-		{ 
-			reset;
-		}
-	}
-
-
-	///	
-	void popFront()
-	{
-		popFrontN(1);
-	}
-
-
-	///
-	void reset()
-	{
-		matrix.ptr = _matrix.ptr;
-		matrix.width = 0;
-	}
-
-
-	///
-	void putBackN(size_t n)
-	in{
-		assert(matrix.shift >= matrix.width+n);
-	}
-	body {
-		if(n > _matrix.ptrEnd-matrix.ptrEnd)
-		{
-			bringToFront();
-		}
-		matrix.width += n;
-	}
-
-
-	///
-	void putBack()
-	{
-		putBackN(1);
-	}
-
-
-	///
-	void bringToFront()
-	{
-		if(matrix.width)
-		{
-			memmove(_matrix.ptr, matrix.ptr, (matrix.shift*matrix.height)*F.sizeof);					
-		}
-		matrix.ptr = _matrix.ptr;
-	}
-}

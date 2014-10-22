@@ -34,9 +34,9 @@ final:
 		_alpha =  _mean / dotProduct(_distribution, _grid);
 	}
 
-	void update()
+	void updateMixture()
 	{
-		updateMixture;
+		super.updateMixture;
 		_log2Likelihood = _mixture.sumOfLog2s;
 		updateAlpha;
 	}
@@ -64,7 +64,7 @@ final:
 		}
 		auto kernels = _grid.map!(u => Kernel(alpha*u, sqrt(u)));
 		components(kernels, _sample);
-		update;
+		updateMixture;
 	}
 
 public:
@@ -232,7 +232,7 @@ final class NormalVarianceMeanMixtureEMSeparator(T) : NormalVarianceMeanMixtureS
 	{
 		EMIteration!
 			((a, b) {foreach(i, ai; a) b[i] = 1/ai;}, T)
-			(componentsT, _distribution, _mixture, pi, c);
+			(cast(Matrix!(const T))_componentsT, _distribution, _mixture, pi, c);
 		updateComponents;
 	}
 }
@@ -270,7 +270,7 @@ final class NormalVarianceMeanMixtureEMAndGradientSeparator(T) : NormalVarianceM
 	{
 		gradientDescentIteration!
 			((a, b) {foreach(i, ai; a) b[i] = -1/ai;}, T)
-			(componentsT, _distribution, _mixture, pi, xi, gamma, c, findRootTolerance is null ? (a, b) => false : findRootTolerance);
+			(cast(Matrix!(const T))_componentsT, _distribution, _mixture, pi, xi, gamma, c, findRootTolerance is null ? (a, b) => false : findRootTolerance);
 		updateComponents;
 	}
 }
@@ -300,7 +300,7 @@ final class NormalVarianceMeanMixtureEMAndCoordinateSeparator(T) : NormalVarianc
 	{
 		coordinateDescentIterationPartial!
 			(a => -1/a, T)
-			(componentsT, _distribution, _mixture, pi, findRootTolerance is null ? (a, b) => false : findRootTolerance);
+			(cast(Matrix!(const T))_componentsT, _distribution, _mixture, pi, findRootTolerance is null ? (a, b) => false : findRootTolerance);
 		updateComponents;
 	}
 }

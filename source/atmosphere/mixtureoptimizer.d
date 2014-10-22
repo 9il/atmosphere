@@ -2,6 +2,8 @@ module atmosphere.mixtureoptimizer;
 
 import std.traits : isFloatingPoint;
 
+import atmosphere.internal;
+
 /**
 Base abstract class for all mixture distribution optimization algorithms.
 */
@@ -9,22 +11,35 @@ abstract class MixtureOptimizer(T)
 	if(isFloatingPoint!T)
 {
 
-package:
+	/**
+	Perform one iteration of optimization.
+	*/
+	abstract void eval(scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null);
 
-	void updateMixture();
+	inout(Matrix!T) _componentsT() inout @property;
+	inout(T)[] _mixture() inout @property;
+	inout(T)[] _distribution() inout @property;
+	void _distribution(T[] _distribution_) @property;
 
-public:
+
+	void updateMixture()
+	{
+		mix(cast(Matrix!(const T))_componentsT, _distribution, _mixture);
+	}
+
+//final:
+
 
 	/**
 	Returns:
-		duplicate of the components
-	Example:
-	-------------
-	auto components = optimizer.components;
-	//do what you whant with mutable copy
-	-------------
+		Const internal components representation.
 	*/
-	abstract T[][] components() @property const;
+	TransposedMatrix!(const(T)) components() const
+	{
+		return cast(typeof(return))_componentsT.transposed;
+	}
+
+
 
 	/**
 	Returns:
@@ -55,7 +70,10 @@ public:
 	mixtureSave2[] = mixture[];
 	-------------
 	*/
-	abstract const(T)[] mixture() @property const;
+	const(T)[] mixture() @property const
+	{
+		return _mixture;
+	}
 
 	/**
 	Returns:
@@ -76,21 +94,21 @@ public:
 	distributionSave2[] = distribution[];
 	-------------
 	*/
-	abstract const(T)[] distribution() @property const;
+	const(T)[] distribution() @property const
+	{
+		return _distribution;
+	}
 
 	/**
-	Set the mixture distribution.
+	Set the mixture distribution and calls $(MREF updateMixture)
 	Params:
 		_distribution = new mixture distribution
 	*/
-	abstract void distribution(in T[] _distribution) @property;
-
-	/**
-	Perfrorm one iteration of optimization.
-	*/
-	abstract void eval(scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null);
-
-final:
+	void distribution(in T[] _distribution) @property
+	{
+		this._distribution[] = _distribution[];
+		updateMixture;
+	}
 
 	/**
 	Performs optimization.

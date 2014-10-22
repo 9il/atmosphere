@@ -13,3 +13,5 @@ example
 *.ddoc
 
 *.html
+
+__test__library__

@@ -8,7 +8,6 @@ import std.range : isInputRange, hasLength;
 
 import atmosphere.mixtureoptimizer;
 import atmosphere.internal;
-import simple_matrix;
 
 
 /**
@@ -17,29 +16,11 @@ Params:
 */
 abstract class StationaryOptimizer(T) : MixtureOptimizer!T
 {
-
-private:
-
-	Matrix!T _componentsT;
-
-package:
-
-	T[] _distribution;
-	T[] _mixture;
+	private Matrix!T _componentsT_;
+	private T[] _distribution_;
+	private T[] _mixture_;
 
 final:
-
-	void updateMixture()
-	{
-		mix(cast(Matrix!(const T))_componentsT, _distribution, _mixture);
-	}
-
-	Matrix!(const T) componentsT()
-	{
-		return cast(typeof(return))_componentsT;
-	}
-
-public:
 
 	/**
 	Params:
@@ -48,18 +29,19 @@ public:
 	*/
 	this(size_t k, size_t n)
 	{
-		_componentsT = Matrix!T(k, n);
-		_distribution = new T[k];
-		_distribution[] = T(1)/k;
-		_mixture = new T[n];
+		_componentsT_ = Matrix!T(k, n);
+		_distribution_ = new T[k];
+		_distribution_[] = T(1)/k;
+		_mixture_ = new T[n];
 	}
 
+	//alias components = super.components;
 	/**
 	This function accept components and store them in internal transposed form.
 	Params:
 		_components = components
 	*/
-	void components(in T[][] _components) @property
+	void components(in T[][] _components)
 	in
 	{
 		assert(_components.length == _componentsT.width);
@@ -86,7 +68,7 @@ public:
 		grid = pointers of components. 
 		In terms of likelihood maximization grid is just a sample of length n.
 	*/
-	void components(Kernels)(Kernels kernels, in T[] grid) @property
+	void components(Kernels)(Kernels kernels, in T[] grid)
 		if(isInputRange!Kernels && hasLength!Kernels)
 	in
 	{
@@ -108,25 +90,24 @@ public:
 
 override:
 
-	T[][] components() @property const
+	inout(Matrix!T) _componentsT() inout @property
 	{
-		return _componentsT.transpose.arrays;
+		return _componentsT_;
 	}
 
-	const(T)[] mixture() @property const
+	inout(T)[] _mixture() inout @property 
 	{
-		return _mixture;
+		return _mixture_;
 	}
 
-	const(T)[] distribution() @property const
+	inout(T)[] _distribution() inout @property 
 	{
-		return _distribution;
+		return _distribution_;
 	}
 
-	void distribution(in T[] _distribution) @property
+	void _distribution(T[] _distribution_) @property
 	{
-		this._distribution[] = _distribution[];
-		updateMixture;
+		this._distribution_ = _distribution_;
 	}
 }
 
@@ -163,7 +144,7 @@ final class GradientDescent(alias Gradient, T) : StationaryOptimizer!T
 
 	override void eval(scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null)
 	{
-		gradientDescentIteration!(Gradient, T)(cast(Matrix!(const T))_componentsT, _distribution, _mixture, pi, xi, gamma, c, findRootTolerance is null ? (a, b) => false : findRootTolerance);
+		gradientDescentIteration!(Gradient, T)(cast(Matrix!(const T))_componentsT_, _distribution_, _mixture_, pi, xi, gamma, c, findRootTolerance is null ? (a, b) => false : findRootTolerance);
 		updateMixture;
 	}
 }
@@ -198,7 +179,7 @@ final class CoordinateDescent(alias Gradient, T) : StationaryOptimizer!T
 
 	override void eval(scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null)
 	{
-		coordinateDescentIteration!(Gradient, T)(cast(Matrix!(const T))_componentsT, _distribution, _mixture, pi, xi, gamma, findRootTolerance is null ? (a, b) => false : findRootTolerance);
+		coordinateDescentIteration!(Gradient, T)(cast(Matrix!(const T))_componentsT_, _distribution_, _mixture_, pi, xi, gamma, findRootTolerance is null ? (a, b) => false : findRootTolerance);
 		updateMixture;
 	}
 }
@@ -230,7 +211,7 @@ final class CoordinateDescentPartial(alias PartialDerivative, T) : StationaryOpt
 
 	override void eval(scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null)
 	{
-		coordinateDescentIterationPartial!(PartialDerivative, T)(cast(Matrix!(const T))_componentsT, _distribution, _mixture, pi, findRootTolerance is null ? (a, b) => false : findRootTolerance);
+		coordinateDescentIterationPartial!(PartialDerivative, T)(cast(Matrix!(const T))_componentsT_, _distribution_, _mixture_, pi, findRootTolerance is null ? (a, b) => false : findRootTolerance);
 		updateMixture;
 	}
 }
@@ -258,3 +239,21 @@ unittest {
 	alias C1 = LikelihoodMaximizationGradient!(double);
 	alias C2 = LikelihoodMaximizationCoordinate!(double);
 }
+
+
+/////Example:
+//unittest {
+//	import std.range;
+
+//	//import atmosphere.stationary;
+//	auto optimizer = new LikelihoodMaximizationCoordinate!double(10, 100);
+
+//	auto components = optimizer.MixtureOptimizer.components;
+//	alias ComponentsType = typeof(components);
+//	alias ComponentType = ElementType!ComponentsType;
+	
+//	static assert(isRandomAccessRange!ComponentType);
+//	static assert(isRandomAccessRange!ComponentsType);
+//	static assert(hasAssignableElements!ComponentType == false);
+//	static assert(hasAssignableElements!ComponentsType == false);
+//}

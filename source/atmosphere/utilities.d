@@ -120,7 +120,7 @@ body {
 			1);
 	}
 	else
-	static if(is(M : Transposed!(T), T))
+	static if(is(M : TransposedMatrix!T, T))
 	{
 		assert(m.matrix.ptr);
 		assert(m.matrix.shift >= m.matrix.width);
