@@ -8,8 +8,8 @@
 		"Ilya Yaroshenko"
 	],
 	"dependencies": {
-		"simple_matrix": ">=0.2.1",
-		"cblas": ">=0.0.2"
+		"simple_matrix": ">=0.3.0",
+		"cblas": ">=0.0.4"
 	},
 	"license": "Subject to the terms of the MIT license, as written in the included LICENSE.md file.",
 	"buildTypes": {
