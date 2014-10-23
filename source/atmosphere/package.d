@@ -35,17 +35,5 @@ Example:
 */
 module atmosphere;
 
-import core.stdc.tgmath;
-
-
-import std.numeric : dotProduct;
-import std.algorithm : sum;
-import std.range : hasLength, isInputRange, ElementType;
-import std.traits : isFloatingPoint, Unqual;
-
-import atmosphere.internal;
-
 public import atmosphere.mixture;
 public import atmosphere.parametrized.nvmm;
-
-
