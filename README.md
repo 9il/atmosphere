@@ -1,36 +1,25 @@
-atmosphere
+Atmosphere GM
 =============
-Statistical package.
+Statistical package. 
+Contains likelihood maximization methods.
 
-Testing in progress. NOT READY FOR PRODUCTION!
+###Features:
+  0. Separating mixtures of probability distributions
+  1. Grid methods
+  2. Parameterized algorithms
+  3. Optimization over sliding window
 
-# Numeric methods
+##Documentation
+Documentation can be found [here](http://9il.github.io/atmosphere_gm/atmosphere.package.html).
 
-## General nonparametric algorithms
-
-Each algorithm solvs optimization problem f(p) -> min, 
-where p is discrete probability distribution with k elements.
-
+##Instalation
+To use [this package](http://code.dlang.org/packages/atmosphere_gm), put the following dependency into your project's
+[dub](http://code.dlang.org/about).json into the dependencies section:
+```json
+{
+	...
+	"dependencies": {
+		"atmosphere_gm": ">=0.0.0"
+	}
+}
 ```
-f(p) -> min
-f = u(Wp),
-W - matrix(n rows, k columns),
-u - convex function.
-```
-
-## Normal variance mean mixtures
-Each algorithm separates normal variance mean mixtures.
-```
-///normal variance mean mixtures
-f_sample(p, alpha) -> max
-f_sample = u(W_sample(alpha)p),
-W_sample(alpha) - matrix(n rows, k columns) of posterior probabilities,
-u(ω) =  Σ_j log(ω_j).
-```
-
-#Instalation
-Use [dub package manager](https://github.com/D-Programming-Language/dub) for instalation.
-## Dependencies
-1. [D Simple Matrix](https://github.com/9il/simple_matrix)
-2. [D cblas header](https://github.com/9il/cblas)
-3. BLAS library
