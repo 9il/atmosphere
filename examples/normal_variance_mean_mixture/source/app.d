@@ -33,9 +33,9 @@ void main()
 
 ///Common algorithm
 
-		//finds mixture distribution
+		//finds mixture weights
 		writeln("mixture optimization =========================");
-		//compute range of distributions
+		//compute range of PDFs
 		auto pdfs = grid.map!(u => PDF(alpha, u)).array;
 		///argmax(f(x)) = argmin(-f(x))		
 		///compile time parameters: partial derivative of -Σ_j log(x_j) function, floating point type
@@ -51,13 +51,13 @@ void main()
 			});
 		writefln("total iterations: %s", counter);
 		writefln("log2Likelihood = %s", optimizer.mixture.sumOfLog2s);
-		writefln("-----------\ndistribution = %s", optimizer.distribution);
+		writefln("-----------\nweights = %s", optimizer.weights);
 		writeln("==============================================\n");
 		counter = 0;
 
 ///Special α-parametrized EM algorithm:
 
-		///finds good (possibly not the best) value of parameter alpha and mixture distribution
+		///finds good (possibly not the best) value of parameter alpha and mixture weights
 		auto spacialEMOptimizer = new NormalVarianceMeanMixtureEMAndCoordinate!double(grid, sample.length);
 		spacialEMOptimizer.sample = sample;
 		writeln("α-parametrized EM mixture optimization =======");
@@ -75,7 +75,7 @@ void main()
 		writefln("total iterations: %s", counter);
 		writefln("α = %s", spacialEMOptimizer.alpha);
 		writefln("log2Likelihood = %s", spacialEMOptimizer.log2Likelihood);
-		writefln("-----------\ndistribution = %s", spacialEMOptimizer.distribution);
+		writefln("-----------\nweights = %s", spacialEMOptimizer.weights);
 		writeln("==============================================\n");
 	}
 }
