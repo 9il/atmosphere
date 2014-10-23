@@ -17,3 +17,5 @@ example
 __test__library__
 
 examples/normal_variance_mean_mixture/coordinate.txt
+
+*.sublime-workspace

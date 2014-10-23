@@ -123,4 +123,3 @@ double sumOfLog2s(in double[] r)
     }
     return exp + log2(x); 
 }
-
