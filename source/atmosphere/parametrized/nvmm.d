@@ -1,4 +1,47 @@
 /**
+Likelihood maximization algorithms for normal variance mean mixture with unknown scale parameter $(D alpha).
+------
+F(x) = ∫_0^∞ Φ((x-αu_i)√u) dG(u) ≈ Σ_i p_i*Φ((x-αu_i)/sqrt(u))
+α - alpha (unknown)
+Φ - standard normal distribution
+G - mixture distribution
+p - approximation of G, mixture weights (unknown)
+------
+
+Example:
+--------
+import atmosphere;
+
+double[] myGrid, mySample, myNewSample;
+//... initialize myGrid and mySample.
+
+auto optimizer = new NormalVarianceMeanMixtureEMAndCoordinate!double(myGrid, mySample.length+1000);
+
+optimizer.sample = mySample;
+optimizer.optimize(
+	(double alphaPrev, double alpha, double likelihoodPrev, double likelihood)
+		=> likelihood - likelihoodPrev <= 1e-3);
+
+double alpha = optimizer.alpha;
+double[] mixtureWeights = optimizer.weights.dup;
+
+
+//remove first 50 elements in sample. 
+optimizer.popFrontN(50);
+
+//... initialize myNewSample.
+//check length <= 1050
+assert(myNewSample.length <= 1050);
+
+// add new sample
+optimizer.sample = optimizer.sample~myNewSample;
+optimizer.optimize(
+	(double alphaPrev, double alpha, double likelihoodPrev, double likelihood)
+		=> likelihood - likelihoodPrev <= 1e-3);
+
+double alpha2 = optimizer.alpha;
+double[] mixtureWeights2 = optimizer.weights.dup;
+--------
 */
 module atmosphere.parametrized.nvmm;
 
@@ -14,15 +57,10 @@ import core.stdc.tgmath;
 static import std.math;
 
 /**
-------
-F(x) = ∫_0^∞ Φ((x-αu_i)√u) dG(u) ≈ Σ_i p_i*Φ((x-αu_i)/sqrt(u))
-α - alpha
-Φ - standard normal distribution
-G - mixture distribution
-p - approximation of G
-------
+Params:
+	T = floating point type
 */
-abstract class NormalVarianceMeanMixtureSeparator(T) : MixtureOptimizer!T
+abstract class NormalVarianceMeanMixture(T) : MixtureOptimizer!T
 {
 
 	override void update()
@@ -39,25 +77,34 @@ abstract class NormalVarianceMeanMixtureSeparator(T) : MixtureOptimizer!T
 	package T _log2Likelihood;
 
 	/**
-	
+	Params:
+		_grid = Array of parameters u. [u_1, ..., u_k]
+		maxLength = maximal length of sample
 	*/
-	this(in T[] _grid, size_t maxN)
+	this(in T[] _grid, size_t maxLength)
 	in
 	{
 		assert(_grid.length);
-		assert(maxN);
+		assert(maxLength);
 	}
 	body
 	{
-		super(_grid.length, maxN);
+		super(_grid.length, maxLength);
 		this._grid = _grid.dup;
-		this._sample = new T[maxN];
+		this._sample = new T[maxLength];
 	}
 
 final:
 
 	/**
-	
+	Performs optimization.
+	Params:
+		tolerance = Defines an early termination condition. 
+			Receives the current and previous versions of various parameters. 
+			The delegate must return true when parameters are acceptable. 
+		findRootTolerance = Tolerance for inner optimization.
+	See_Also:
+		$(STDREF numeric, findRoot)
 	*/
 	void optimize(
 			scope bool delegate (
@@ -65,30 +112,28 @@ final:
 				T alpha, 
 				T log2LikelihoodValuePrev, 
 				T log2LikelihoodValue, 
-				in T[] distributionPrev, 
-				in T[] distribution,
+				in T[] weightsPrev, 
+				in T[] weights,
 			) 
 			tolerance,
 			scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null,
 		)
 	{
 		T log2LikelihoodPrev, alphaPrev;
-		scope T[] distributionPrev = new T[distribution.length];
+		scope T[] weightsPrev = new T[weights.length];
 		do
 		{
 			log2LikelihoodPrev = _log2Likelihood;
 			alphaPrev = _alpha;
-			assert(distribution.length == distributionPrev.length);
-			distributionPrev[] = distribution[];
+			assert(weights.length == weightsPrev.length);
+			weightsPrev[] = weights[];
 			eval(findRootTolerance);
 		}
-		while(!tolerance(alphaPrev, _alpha, log2LikelihoodPrev, _log2Likelihood, distributionPrev, distribution));
+		while(!tolerance(alphaPrev, _alpha, log2LikelihoodPrev, _log2Likelihood, weightsPrev, weights));
 	}
 
 
-	/**
-	
-	*/
+	///ditto
 	void optimize(
 			scope bool delegate (
 				T alphaPrev, 
@@ -110,59 +155,35 @@ final:
 		while(!tolerance(alphaPrev, _alpha, log2LikelihoodPrev, _log2Likelihood));
 	}
 
-	/**
-	
-	*/
+	///ditto
 	void optimize(
 			scope bool delegate (
 				T alphaPrev, 
 				T alpha, 
-				in T[] distributionPrev, 
-				in T[] distribution,
+				in T[] weightsPrev, 
+				in T[] weights,
 			) 
 			tolerance,
 			scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null,
 		)
 	{
 		T alphaPrev;
-		scope T[] distributionPrev = new T[distribution.length];
+		scope T[] weightsPrev = new T[weights.length];
 		do
 		{
 			alphaPrev = _alpha;
-			assert(distribution.length == distributionPrev.length);
-			distributionPrev[] = distribution[];
+			assert(weights.length == weightsPrev.length);
+			weightsPrev[] = weights[];
 			eval(findRootTolerance);
 		}
-		while(!tolerance(alphaPrev, _alpha, distributionPrev, distribution));
+		while(!tolerance(alphaPrev, _alpha, weightsPrev, weights));
 	}
 
 
 	/**
-	Sets sample and recalculate alpha and mixture.
-	-------
-	///use the same length
-	double[] newSample = new double[optimizer.sample.length];
-	///init newSample
-	...
-
-	optimizer.sample = newSample;
-	auto newAlpha = optimizer.alpha;
-	///use dup to save mixture
-	auto newMixture = optimizer.mixture.dup;
-	///use dup to save distribution, the distribution is not changed
-	auto distrubution = optimizer.distribution.dup;
-
-	///performe one iteration
-	optimizer.eval;
-
-	///check new data
-	auto secondAlpha = optimizer.alpha;
-	auto secondMixture = optimizer.mixture.dup;
-	///The distribution has changed after $(D eval).
-	auto newDistribution = optimizer.distribution.dup;
-	-------
+	Sets sample and recalculates alpha and mixture.
 	Params:
-		_sample = new sample with the same length
+		_sample = new sample with length less or equal $(D maxLength)
 	*/
 	void sample(in T[] _sample) @property
 	in
@@ -172,22 +193,22 @@ final:
 		{
 			assert(std.math.isFinite(s));
 		}
-		assert(_componentsT.matrix.shift >= _sample.length);
+		assert(_featuresT.matrix.shift >= _sample.length);
 	}
 	body
 	{
 		reset;
-		_componentsT.reserveBackN(_sample.length);
+		_featuresT.reserveBackN(_sample.length);
 		this._sample[0.._sample.length] = _sample[];
 		_mean = sample.sum/sample.length;
 		updateAlpha;
-		assert(_componentsT.matrix.width == _sample.length);
+		assert(_featuresT.matrix.width == _sample.length);
 		updateComponents;
 	}
 
 	/**
 	Returns:
-		sample
+		Const slice of the internal sample representation.
 	*/
 	const(T)[] sample() @property const
 	{
@@ -215,7 +236,7 @@ final:
 
 	/**
 	Returns:
-		$(D alpha = mean / dotProduct(distribution, grid))
+		alpha
 	*/
 	T alpha() @property const
 	{
@@ -225,7 +246,7 @@ final:
 
 	/**
 	Returns:
-		grid
+		Const slice of the internal grid representation.
 	*/
 	const(T)[] grid() @property const
 	{
@@ -235,23 +256,23 @@ final:
 	package void updateAlpha()
 	in
 	{
-		assert(distribution.length == _grid.length);
+		assert(weights.length == _grid.length);
 	}
 	body
 	{
-		_alpha =  _mean / dotProduct(distribution, _grid);
+		_alpha =  _mean / dotProduct(weights, _grid);
 	}
 
 
 	package void updateComponents()
 	{
-		auto m = _componentsT.matrix;
+		auto m = _featuresT.matrix;
 		assert(m.width == sample.length);
 		version(atmosphere_gm_parallel)
 		{
 			import std.parallelism;
 			//TODO: choice workUnitSize
-			debug pragma(msg, "NormalVarianceMeanMixtureSeparator.updateComponents: parallel");
+			debug pragma(msg, "NormalVarianceMeanMixture.updateComponents: parallel");
 			auto pdfs = _grid.map!(u => PDF(alpha, u)).parallel;
 			foreach(i, pdf; _grid.map!(u => PDF(alpha, u)).parallel)
 			{
@@ -303,21 +324,27 @@ final:
 
 /**
 Expectation–maximization algorithm
+Params:
+	T = floating point type
 */
-final class NormalVarianceMeanMixtureEMSeparator(T) : NormalVarianceMeanMixtureSeparator!T
+final class NormalVarianceMeanMixtureEM(T) : NormalVarianceMeanMixture!T
 {
 	private T[] pi;
 	private T[] c;
 
-	///
-	this(in T[] _grid, size_t maxN)
+	/**
+	Params:
+		_grid = Array of parameters u. [u_1, ..., u_k]
+		maxLength = maximal length of sample
+	*/
+	this(in T[] _grid, size_t maxLength)
 	in
 	{
-		assert(maxN);
+		assert(maxLength);
 	}
 	body
 	{
-		super(_grid, maxN);
+		super(_grid, maxLength);
 		pi = new T[_sample.length];
 		c = new T[_grid.length];
 	}
@@ -332,7 +359,7 @@ final class NormalVarianceMeanMixtureEMSeparator(T) : NormalVarianceMeanMixtureS
 	{
 		EMIteration!
 			((a, b) {foreach(i, ai; a) b[i] = 1/ai;}, T)
-			(components, _distribution, mixture, pi[0..length], c);
+			(features, _weights, mixture, pi[0..length], c);
 		updateComponents;
 	}
 }
@@ -340,18 +367,24 @@ final class NormalVarianceMeanMixtureEMSeparator(T) : NormalVarianceMeanMixtureS
 
 /**
 Expectation–maximization algorithm with inner gradient descend optimization.
+Params:
+	T = floating point type
 */
-final class NormalVarianceMeanMixtureEMAndGradientSeparator(T) : NormalVarianceMeanMixtureSeparator!T
+final class NormalVarianceMeanMixtureEMAndGradient(T) : NormalVarianceMeanMixture!T
 {
 	private T[] pi;
 	private T[] xi;
 	private T[] gamma;
 	private T[] c;
 
-	///
-	this(in T[] _grid, size_t maxN)
+	/**
+	Params:
+		_grid = Array of parameters u. [u_1, ..., u_k]
+		maxLength = maximal length of sample
+	*/
+	this(in T[] _grid, size_t maxLength)
 	{
-		super(_grid, maxN);
+		super(_grid, maxLength);
 		pi = new T[_sample.length];
 		xi = new T[_sample.length];
 		gamma = new T[_sample.length];
@@ -370,7 +403,7 @@ final class NormalVarianceMeanMixtureEMAndGradientSeparator(T) : NormalVarianceM
 	{
 		gradientDescentIteration!
 			((a, b) {foreach(i, ai; a) b[i] = -1/ai;}, T)
-			(components, _distribution, mixture, pi[0..length], xi[0..length], gamma[0..length], c, findRootTolerance is null ? (a, b) => false : findRootTolerance);
+			(features, _weights, mixture, pi[0..length], xi[0..length], gamma[0..length], c, findRootTolerance is null ? (a, b) => false : findRootTolerance);
 		updateComponents;
 	}
 }
@@ -379,15 +412,21 @@ final class NormalVarianceMeanMixtureEMAndGradientSeparator(T) : NormalVarianceM
 /**
 Expectation–maximization algorithm with inner coordinate descend optimization.
 Speed depends on permutation of elements of $(grid).
+Params:
+	T = floating point type
 */
-final class NormalVarianceMeanMixtureEMAndCoordinateSeparator(T) : NormalVarianceMeanMixtureSeparator!T
+final class NormalVarianceMeanMixtureEMAndCoordinate(T) : NormalVarianceMeanMixture!T
 {
 	private T[] pi;
 
-	///
-	this(in T[] _grid, size_t maxN)
+	/**
+	Params:
+		_grid = Array of parameters u. [u_1, ..., u_k]
+		maxLength = maximal length of sample
+	*/
+	this(in T[] _grid, size_t maxLength)
 	{
-		super(_grid, maxN);
+		super(_grid, maxLength);
 		pi = new T[_sample.length];
 	}
 
@@ -400,14 +439,14 @@ final class NormalVarianceMeanMixtureEMAndCoordinateSeparator(T) : NormalVarianc
 	{
 		coordinateDescentIterationPartial!
 			(a => -1/a, T)
-			(components, _distribution, _mixture[0..mixture.length], pi[0..length], findRootTolerance is null ? (a, b) => false : findRootTolerance);
+			(features, _weights, _mixture[0..mixture.length], pi[0..length], findRootTolerance is null ? (a, b) => false : findRootTolerance);
 		updateComponents;
 	}
 }
 
 
 unittest {
-	alias C0 = NormalVarianceMeanMixtureEMSeparator!(double);
-	alias C1 = NormalVarianceMeanMixtureEMAndCoordinateSeparator!(double);
-	alias C2 = NormalVarianceMeanMixtureEMAndGradientSeparator!(double);
+	alias C0 = NormalVarianceMeanMixtureEM!(double);
+	alias C1 = NormalVarianceMeanMixtureEMAndCoordinate!(double);
+	alias C2 = NormalVarianceMeanMixtureEMAndGradient!(double);
 }

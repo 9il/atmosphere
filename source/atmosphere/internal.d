@@ -2,11 +2,16 @@
 This module contains numeric methods.
 Each method aims to do one iteration over the task.
 
-Optimization problem f(p) -> min, 
-where p is discrete probability distribution with k elements.
+------
+problem: p' = argmin f(p), p_i >= 0, Σ_i p_i = 1.
+
+p - mixture weights,
 f = u(Wp),
-W - matrix(n rows, k columns),
-u - convex function.
+u(ω) - convex function,
+W - matrix of features(n rows, k columns),
+k - length of mixture weights,
+n - length of sample, n may vary (sliding window).
+------
 */
 module atmosphere.internal;
 

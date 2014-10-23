@@ -58,7 +58,7 @@ void main()
 ///Special α-parametrized EM algorithm:
 
 		///finds good (possibly not the best) value of parameter alpha and mixture distribution
-		auto spacialEMOptimizer = new NormalVarianceMeanMixtureEMAndCoordinateSeparator!double(grid, sample.length);
+		auto spacialEMOptimizer = new NormalVarianceMeanMixtureEMAndCoordinate!double(grid, sample.length);
 		spacialEMOptimizer.sample = sample;
 		writeln("α-parametrized EM mixture optimization =======");
 		auto sw = StopWatch();

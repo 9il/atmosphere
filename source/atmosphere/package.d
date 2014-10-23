@@ -25,13 +25,15 @@ $(DPREF mixture, MixtureOptimizer) $(BLUE abstract)
 <tr><td>GradientDescent</td><td>~95-99%</td><td>No</td><td> normal </td><td>Yes</td><td>No</td></tr>
 <tr><td>CoordinateDescent</td><td>~10-50%</td><td>No</td><td> fast </td><td>Yes</td><td>No</td></tr>
 <tr><td>CoordinateDescentPartial</td><td>~10-50%</td><td>No</td><td> fast, always faster then CoordinateDescent </td><td>Yes</td><td>No</td></tr>
-<tr><td>NormalVarianceMeanMixtureEM</td><td>~4%</td><td>Yes</td><td> slow </td><td>No</td><td>Yes</td></tr>
-<tr><td>NormalVarianceMeanMixtureEMAndGradient</td><td>~4%</td><td>Yes</td><td> slow </td><td>No</td><td>Yes</td></tr>
-<tr><td>NormalVarianceMeanMixtureEMAndCoordinate</td><td>~1%</td><td>Partial</td><td> slow </td><td>No</td><td>Yes</td></tr>
+<tr><td>NormalVarianceMeanMixtureEM</td><td>~10%</td><td>Yes</td><td> slow </td><td>No</td><td>Yes</td></tr>
+<tr><td>NormalVarianceMeanMixtureEMAndGradient</td><td>~10%</td><td>Yes</td><td> slow </td><td>No</td><td>Yes</td></tr>
+<tr><td>NormalVarianceMeanMixtureEMAndCoordinate</td><td>~5%</td><td>Partial</td><td> slow </td><td>No</td><td>Yes</td></tr>
 </table>
 
 Example: 
-	$(HTTP github.com/9il/atmosphere_gm/blob/master/examples/normal_variance_mean_mixture/source/app.d, normal_variance_mean_mixture) 
+	$(HTTP github.com/9il/atmosphere_gm/blob/master/examples/normal_variance_mean_mixture/source/app.d, GitHub) 
+
+If you want to enable non-BLAS parallelism use $(D atmosphere_gm_parallel) compilation version.
 */
 module atmosphere;
 

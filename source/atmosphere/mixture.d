@@ -1,3 +1,89 @@
+/**
+Module contains classes that perform optimization of mixture weights over sliding window.
+------
+problem: p' = argmin f(p), p_i >= 0, Σ_i p_i = 1.
+
+p - mixture weights,
+f = u(Wp),
+u(ω) - convex function,
+W - matrix of features(n rows, k columns),
+k - length of mixture weights,
+n - length of sample, n may vary (sliding window).
+------
+
+The same for likelihood maximization:
+------
+problem: p' = argmax L(p), p_i >= 0, Σ_i p_i = 1.
+
+L(ω) = u(Wp)
+ω = Wp,
+u(ω) = Σ_j log(ω_j)  (LogLikelihood)
+
+p - mixture weights,
+f_i - mixture components
+W - matrix of posterior probabilities(n rows, k columns),
+W[j, i] = f_i(x_j), 1 <= i <= k, 1 <= j <= n.
+
+k - length of mixture weights (count of ),
+n - length of sample, n may vary (sliding window).
+------
+
+Example:
+-------
+import atmosphere;
+
+import std.math;
+
+//probability density function
+static struct PDF
+{
+	double alphau;
+	double sqrtu;
+
+	this(double alpha, double u)
+	{
+		alphau = alpha * u;
+		sqrtu = sqrt(u);
+	}
+
+	///call operator overloading
+	double opCall(double x) const
+	{
+		immutable y = (x - alphau) / sqrtu;
+		//up to a constant!
+		return exp(y * y / -2) / sqrtu;
+	}
+}
+
+double[] mySample, myNewSample;
+PDF[] pdfs;
+//... initialize pdfs and mySample.
+
+auto optimizer = new CoordinateLikelihoodMaximization!double(pdfs.length, mySample.length+1000);
+
+bool delegate(double, double) tolerance = 
+	(likelihoodPrev, likelihood) 
+	=> likelihood - likelihoodPrev <= 1e-3;
+
+optimizer.put(pdfs, mySample);
+optimizer.optimize(tolerance);
+
+double[] mixtureWeights = optimizer.weights.dup;
+
+//remove first 50 elements in sample.
+optimizer.popFrontN(50);
+
+//... initialize myNewSample.
+//check length <= 1050
+assert(myNewSample.length <= 1050);
+
+// add new sample
+optimizer.put(pdfs, myNewSample);
+optimizer.optimize(tolerance);
+
+double[] mixtureWeights2 = optimizer.weights.dup;
+-------
+*/
 module atmosphere.mixture;
 
 
@@ -13,27 +99,26 @@ import std.numeric;
 
 import atmosphere.internal;
 
-
 /**
 Params:
 	T = floating point type
 */
 abstract class MixtureOptimizer(T)
 {
-	package SlidingWindow!T _componentsT;
-	package T[] _distribution;
+	package SlidingWindow!T _featuresT;
+	package T[] _weights;
 	package T[] _mixture;
 
 	/**
 	Params:
 		k = number of components
-		maxLength = maximal length of each component. In terms of likelihood maximization maxLength is length of a sample.
+		maxLength = maximal length of features. In terms of likelihood maximization maxLength is maximal length of a sample.
 	*/
 	this(size_t k, size_t maxLength)
 	{
-		_componentsT = SlidingWindow!T(k, maxLength);
-		_distribution = new T[k];
-		_distribution[] = T(1)/k;
+		_featuresT = SlidingWindow!T(k, maxLength);
+		_weights = new T[k];
+		_weights[] = T(1)/k;
 		_mixture = new T[maxLength];
 	}
 
@@ -60,29 +145,29 @@ final:
 	Params:
 		objectiveFunction = accepts mixture.
 		tolerance = Defines an early termination condition. 
-			Receives the current and previous versions of $(D objectiveFunction(mixture)) and distribution. 
-			The delegate must return true when mixture and distribution are acceptable. 
+			Receives the current and previous versions of $(D objectiveFunction(mixture)) and weights. 
+			The delegate must return true when mixture and weights are acceptable. 
 		findRootTolerance = Tolerance for inner optimization.
 	See_Also:
 		$(STDREF numeric, findRoot)
 	*/
 	void optimize(
 			scope T delegate(in T[] mixture) objectiveFunction, 
-			scope bool delegate (T objectiveFunctionValuePrev, T objectiveFunctionValue, in T[] distributionPrev, in T[] distribution) tolerance,
+			scope bool delegate (T objectiveFunctionValuePrev, T objectiveFunctionValue, in T[] weightsPrev, in T[] weights) tolerance,
 			scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null,
 		)
 	{
 		T objectiveFunctionValuePrev;
 		T objectiveFunctionValue = objectiveFunction(mixture);
-		T[] distributionPrev = new T[distribution.length];
+		T[] weightsPrev = new T[weights.length];
 		do
 		{
 			objectiveFunctionValuePrev = objectiveFunctionValue;
-			distributionPrev[] = distribution[];
+			weightsPrev[] = weights[];
 			eval(findRootTolerance);
 			objectiveFunctionValue = objectiveFunction(mixture);
 		}
-		while(!tolerance(objectiveFunctionValuePrev, objectiveFunctionValue, distributionPrev, distribution));
+		while(!tolerance(objectiveFunctionValuePrev, objectiveFunctionValue, weightsPrev, weights));
 	}
 
 	/**
@@ -91,7 +176,7 @@ final:
 		objectiveFunction = accepts mixture.
 		tolerance = Defines an early termination condition. 
 			Receives the current and previous versions of $(D objectiveFunction(mixture)). 
-			The delegate must return true when mixture and distribution are acceptable. 
+			The delegate must return true when mixture are acceptable. 
 		findRootTolerance = Tolerance for inner optimization.
 	See_Also:
 		$(STDREF numeric, findRoot)
@@ -117,105 +202,138 @@ final:
 	/**
 	Performs optimization.
 	Params:
-		objectiveFunction = accepts mixture.
 		tolerance = Defines an early termination condition. 
-			Receives the current and previous versions of distribution. 
-			The delegate must return true when mixture and distribution are acceptable. 
+			Receives the current and previous versions of weights. 
+			The delegate must return true when mixture and weights are acceptable. 
 		findRootTolerance = Tolerance for inner optimization.
 	See_Also:
 		$(STDREF numeric, findRoot)
 	*/
 	void optimize
 	(
-		scope bool delegate (in T[] distributionPrev, in T[] distribution) tolerance,
+		scope bool delegate (in T[] weightsPrev, in T[] weights) tolerance,
 		scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null,
 	)
 	{
-		T[] distributionPrev = new T[distribution.length];
+		T[] weightsPrev = new T[weights.length];
 		do
 		{
-			distributionPrev[] = distribution[];
+			weightsPrev[] = weights[];
 			eval(findRootTolerance);
 		}
-		while(!tolerance(distributionPrev, distribution));
+		while(!tolerance(weightsPrev, weights));
 	}
 
 	/**
+	Puts back new feature for each components.
+	Params:
+		features = One feature per component.
+	Preconditions:
+		---------
+		features.length == weights.length
+		length+1 <= maxLength
+		---------
 	*/
-	void put(Range)(Range r)
+	void put(Range)(Range features)
 	if(isInputRange!Range && hasLength!Range && isNumeric!(ElementType!Range))
 	in
 	{
-		assert(_componentsT.matrix.length == r.length);
-		assert(_componentsT.matrix.width < _componentsT.matrix.shift);
+		assert(_featuresT.matrix.length == featuresROR.length);
+		assert(_featuresT.matrix.width < _featuresT.matrix.shift);
 	}
 	body
 	{
-		_componentsT.put(r);
+		_featuresT.put(features);
 		updateMixtureBack;
 	}
 
-	void put(RangeOfRanges)(RangeOfRanges ror)
+
+	/**
+	Puts back new features for each components.
+	Params:
+		featuresROR = Range of ranges of features per component.
+	Preconditions:
+		---------
+		featuresROR[j].length == weights.length
+		length+featuresROR.length <= maxLength
+		---------
+	*/
+	void put(RangeOfRanges)(RangeOfRanges featuresROR)
 	if(isInputRange!RangeOfRanges && hasLength!RangeOfRanges && 
 		isInputRange!(ElementType!RangeOfRanges) && hasLength!(ElementType!RangeOfRanges) && 
 		isNumeric!(ElementType!(ElementType!RangeOfRanges)))
 	in
 	{
-		assert(_componentsT.matrix.length == ror.front.length);
-		assert(_componentsT.matrix.width + ror.length <= _componentsT.matrix.shift);
+		assert(_featuresT.matrix.length == featuresROR.front.length);
+		assert(_featuresT.matrix.width + featuresROR.length <= _featuresT.matrix.shift);
 	}
 	body
 	{
-		const n = ror.length;
-		.put(_componentsT, ror);
+		const n = featuresROR.length;
+		.put(_featuresT, featuresROR);
 		updateMixtureBackN(n);
 	}
 
-	///
+	/**
+	Returns:
+		current length of features for each component
+	*/
 	size_t length() @property const
 	{
-		return _componentsT.matrix.width;
+		return _featuresT.matrix.width;
 	}
 
-	///
+	/**
+	Returns:
+		maximal allowed length of features
+	*/
 	size_t maxLength() @property const
 	{
-		return _componentsT.matrix.shift;
+		return _featuresT.matrix.shift;
 	}
 
 
-	///
+	/**
+	Reset length of features to zero.
+	*/
 	void reset()
 	{
-		_componentsT.reset;
+		_featuresT.reset;
 	}
 
-	///
+	/**
+	Remove one front feature for each component.
+	*/
 	void popFront()
 	{
-		_componentsT.popFront;
+		_featuresT.popFront;
 		updateMixtureBack;
 	}
 
-	///
+	/**
+	Remove n front features for each component.
+	Params:
+		n = features will be removed
+	*/
 	void popFrontN(size_t n)
 	{
-		_componentsT.popFrontN(n);
+		_featuresT.popFrontN(n);
 		updateMixtureBackN(n);
 	}
 
 	/**
 	Returns:
-		Const internal components representation.
+		Range of range of features for each component. A matrix with k rows and n columns.
+		This is internal representation, and can be discarded after any methods calls.
 	*/
-	Matrix!(const(T)) components() const
+	Matrix!(const(T)) features() const
 	{
-		return cast(typeof(return))_componentsT.matrix;
+		return cast(typeof(return))_featuresT.matrix;
 	}
 
 	/**
 	Returns:
-		Const slice to the internal mixture representation.
+		Const slice of the internal mixture representation.
 	Example:
 	-------------
 	double objectiveFunction(in double[])
@@ -244,59 +362,59 @@ final:
 	*/
 	const(T)[] mixture() @property const
 	{
-		return _mixture[0.._componentsT.length];
+		return _mixture[0.._featuresT.length];
 	}
 
 	/**
 	Returns:
-		Const slice to the internal distribution representation.
+		Const slice of the internal weights representation.
 	Example:
 	-------------
 	//save slice
-	auto distribution = optimizer.distribution;
+	auto weights = optimizer.weights;
 
-	//use $(D .dup) or copy to save current distribution
+	//use $(D .dup) or copy to save current weights
 
 	//1: .dup
-	auto distributionSave1 = distribution.dup;
+	auto weightsSave1 = weights.dup;
 
 	//2: create array
-	auto distributionSave2 = new double[distribution.length];
+	auto weightsSave2 = new double[weights.length];
 	//2: copy
-	distributionSave2[] = distribution[];
+	weightsSave2[] = weights[];
 	-------------
 	*/
-	const(T)[] distribution() @property const
+	const(T)[] weights() @property const
 	{
-		return _distribution;
+		return _weights;
 	}
 
 	/**
-	Set the mixture distribution and calls $(MREF updateMixture)
+	Set the mixture weights and calls $(MREF update).
 	Params:
-		_distribution = new mixture distribution
+		_weights = new mixture weights
 	*/
-	void distribution(in T[] _distribution) @property
+	void weights(in T[] _weights) @property
 	{
-		this._distribution[] = _distribution[];
+		this._weights[] = _weights[];
 		updateMixture;
 	}
 
 	package void updateMixture()
 	{
-		mix(cast(Matrix!(const T))_componentsT.matrix, _distribution, _mixture[0.._componentsT.matrix.width]);
+		mix(cast(Matrix!(const T))_featuresT.matrix, _weights, _mixture[0.._featuresT.matrix.width]);
 		update();
 	}
 
 	package void updateMixtureBack()
 	{
-		_mixture[_componentsT.matrix.width-1] = dotProduct(_distribution, _componentsT.back);
+		_mixture[_featuresT.matrix.width-1] = dotProduct(_weights, _featuresT.back);
 		update();
 	}
 
 	package void updateMixtureBackN(size_t n)
 	{
-		mix(cast(Matrix!(const T))_componentsT[$-n..$].matrix, _distribution, _mixture[0.._componentsT.matrix.width]);
+		mix(cast(Matrix!(const T))_featuresT[$-n..$].matrix, _weights, _mixture[0.._featuresT.matrix.width]);
 		update();
 	}
 
@@ -307,7 +425,7 @@ final:
 
 	package void updateMixturePopBackN(size_t n)
 	{
-		_mixture[0.._componentsT.matrix.width-n] = _mixture[n.._componentsT.matrix.width];
+		_mixture[0.._featuresT.matrix.width-n] = _mixture[n.._featuresT.matrix.width];
 		update();
 	}
 }
@@ -325,7 +443,11 @@ class GradientDescent(alias Gradient, T) : MixtureOptimizer!T
 	private T[] gamma;
 	private T[] c;
 
-	///
+	/**
+	Params:
+		k = number of components
+		maxLength = maximal length of features. In terms of likelihood maximization maxLength is maximal length of a sample.
+	*/
 	this(size_t k, size_t maxLength)
 	{
 		super(k, maxLength);
@@ -345,7 +467,7 @@ class GradientDescent(alias Gradient, T) : MixtureOptimizer!T
 
 	final override void eval(scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null)
 	{
-		gradientDescentIteration!(Gradient, T)(cast(Matrix!(const T))_componentsT.matrix, _distribution, mixture, pi[0.._componentsT.matrix.width], xi[0.._componentsT.matrix.width], gamma[0.._componentsT.matrix.width], c, findRootTolerance is null ? (a, b) => false : findRootTolerance);
+		gradientDescentIteration!(Gradient, T)(cast(Matrix!(const T))_featuresT.matrix, _weights, mixture, pi[0.._featuresT.matrix.width], xi[0.._featuresT.matrix.width], gamma[0.._featuresT.matrix.width], c, findRootTolerance is null ? (a, b) => false : findRootTolerance);
 		updateMixture;
 	}
 
@@ -364,7 +486,11 @@ class CoordinateDescent(alias Gradient, T) : MixtureOptimizer!T
 	private T[] xi;
 	private T[] gamma;
 
-	///
+	/**
+	Params:
+		k = number of components
+		maxLength = maximal length of features. In terms of likelihood maximization maxLength is maximal length of a sample.
+	*/
 	this(size_t k, size_t maxLength)
 	{
 		super(k, maxLength);
@@ -382,7 +508,7 @@ class CoordinateDescent(alias Gradient, T) : MixtureOptimizer!T
 
 	final override void eval(scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null)
 	{
-		coordinateDescentIteration!(Gradient, T)(cast(Matrix!(const T))_componentsT.matrix, _distribution, mixture, pi[0.._componentsT.matrix.width], xi[0.._componentsT.matrix.width], gamma[0.._componentsT.matrix.width], findRootTolerance is null ? (a, b) => false : findRootTolerance);
+		coordinateDescentIteration!(Gradient, T)(cast(Matrix!(const T))_featuresT.matrix, _weights, mixture, pi[0.._featuresT.matrix.width], xi[0.._featuresT.matrix.width], gamma[0.._featuresT.matrix.width], findRootTolerance is null ? (a, b) => false : findRootTolerance);
 		updateMixture;
 	}
 
@@ -399,7 +525,11 @@ class CoordinateDescentPartial(alias PartialDerivative, T) : MixtureOptimizer!T
 {
 	private T[] pi;
 
-	///
+	/**
+	Params:
+		k = number of components
+		maxLength = maximal length of features. In terms of likelihood maximization maxLength is maximal length of a sample.
+	*/
 	this(size_t k, size_t maxLength)
 	{
 		super(k, maxLength);
@@ -413,7 +543,7 @@ class CoordinateDescentPartial(alias PartialDerivative, T) : MixtureOptimizer!T
 
 	final override void eval(scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null)
 	{
-		coordinateDescentIterationPartial!(PartialDerivative, T)(cast(Matrix!(const T))_componentsT.matrix, _distribution, _mixture[0.._componentsT.matrix.width], pi[0.._componentsT.matrix.width], findRootTolerance is null ? (a, b) => false : findRootTolerance);
+		coordinateDescentIterationPartial!(PartialDerivative, T)(cast(Matrix!(const T))_featuresT.matrix, _weights, _mixture[0.._featuresT.matrix.width], pi[0.._featuresT.matrix.width], findRootTolerance is null ? (a, b) => false : findRootTolerance);
 		updateMixture;
 	}
 
@@ -422,6 +552,8 @@ class CoordinateDescentPartial(alias PartialDerivative, T) : MixtureOptimizer!T
 
 
 /**
+Params:
+	T = floating point type
 */
 interface LikelihoodMaximization(T)
 {
@@ -429,17 +561,35 @@ interface LikelihoodMaximization(T)
 	See_Also:
 		 $(STDREF traits, isCallable)
 	*/
-	void put(PDFRange, SampleRange)(PDFRange pdfs, SampleRange sample);
+	void put(PDFRange, SampleRange)(PDFRange pdfs, SampleRange sample)
+		if(isInputRange!PDFRange && hasLength!PDFRange && isCallable!(ElementType!PDFRange));
 
-
-	///
+	/**
+	Performs optimization.
+	Params:
+		tolerance = Defines an early termination condition. 
+			Receives the current and previous versions of log2Likelihood and weights. 
+			The delegate must return true when likelihood and weights are acceptable. 
+		findRootTolerance = Tolerance for inner optimization.
+	See_Also:
+		$(STDREF numeric, findRoot)
+	*/
 	void optimize
 	(
-		scope bool delegate (T sumOfLog2sValuePrev, T sumOfLog2sValue, in T[] distributionPrev, in T[] distribution) tolerance,
+		scope bool delegate (T sumOfLog2sValuePrev, T sumOfLog2sValue, in T[] weightsPrev, in T[] weights) tolerance,
 		scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null,
 	);
 
-	///
+	/**
+	Performs optimization.
+	Params:
+		tolerance = Defines an early termination condition. 
+			Receives the current and previous versions of log2Likelihood. 
+			The delegate must return true when likelihood are acceptable. 
+		findRootTolerance = Tolerance for inner optimization.
+	See_Also:
+		$(STDREF numeric, findRoot)
+	*/
 	void optimize
 	(
 		scope bool delegate (T sumOfLog2sValuePrev, T sumOfLog2sValue) tolerance,
@@ -448,10 +598,16 @@ interface LikelihoodMaximization(T)
 }
 
 /**
+Params:
+	T = floating point type
 */
 class CoordinateLikelihoodMaximization(T) : CoordinateDescentPartial!(a => -1/a, T), LikelihoodMaximization!T
 {
-	///
+	/**
+	Params:
+		k = number of components
+		maxLength = maximal length of features. In terms of likelihood maximization maxLength is maximal length of a sample.
+	*/
 	this(size_t k, size_t maxLength)
 	{
 		super(k, maxLength);
@@ -461,10 +617,16 @@ class CoordinateLikelihoodMaximization(T) : CoordinateDescentPartial!(a => -1/a,
 }
 
 /**
+Params:
+	T = floating point type
 */
 class GradientLikelihoodMaximization(T) : GradientDescent!((a, b) {foreach(i, ai; a) b[i]=-1/ai;}, T), LikelihoodMaximization!T
 {
-	///
+	/**
+	Params:
+		k = number of components
+		maxLength = maximal length of features. In terms of likelihood maximization maxLength is maximal length of a sample.
+	*/
 	this(size_t k, size_t maxLength)
 	{
 		super(k, maxLength);
@@ -473,13 +635,14 @@ class GradientLikelihoodMaximization(T) : GradientDescent!((a, b) {foreach(i, ai
 	mixin LikelihoodMaximizationTemplate!T;
 }
 
+
 private mixin template LikelihoodMaximizationTemplate(T)
 {
 	void put(PDFRange, SampleRange)(PDFRange pdfs, SampleRange sample)
 	if(isInputRange!PDFRange && hasLength!PDFRange && isCallable!(ElementType!PDFRange))
 	in
 	{
-		assert(pdfs.length == _componentsT.matrix.height);
+		assert(pdfs.length == _featuresT.matrix.height);
 	}
 	body
 	{
@@ -488,7 +651,7 @@ private mixin template LikelihoodMaximizationTemplate(T)
 
 	void optimize
 	(
-		scope bool delegate (T sumOfLog2sValuePrev, T sumOfLog2sValue, in T[] distributionPrev, in T[] distribution) tolerance,
+		scope bool delegate (T sumOfLog2sValuePrev, T sumOfLog2sValue, in T[] weightsPrev, in T[] weights) tolerance,
 		scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null,
 	)
 	{
@@ -512,21 +675,3 @@ unittest {
 	alias C11 = CoordinateLikelihoodMaximization!(double);
 	alias C2 = GradientDescent!((a, b){}, double);
 }
-
-
-/////Example:
-//unittest {
-//	import std.range;
-
-//	//import atmosphere.stationary;
-//	auto optimizer = new LikelihoodMaximizationCoordinate!double(10, 100);
-
-//	auto components = optimizer.MixtureOptimizer.components;
-//	alias ComponentsType = typeof(components);
-//	alias ComponentType = ElementType!ComponentsType;
-	
-//	static assert(isRandomAccessRange!ComponentType);
-//	static assert(isRandomAccessRange!ComponentsType);
-//	static assert(hasAssignableElements!ComponentType == false);
-//	static assert(hasAssignableElements!ComponentsType == false);
-//}
