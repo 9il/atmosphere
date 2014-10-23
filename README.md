@@ -1,4 +1,4 @@
-#Features:
+#Features
   0. Separating mixtures of probability distributions
   1. Grid methods
   2. Parameterized algorithms
