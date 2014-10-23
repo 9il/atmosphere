@@ -43,7 +43,7 @@ One iteration of gradient descent optimization algorithm.
 Params:
 	grad = ∇u(ω)
 	WTransposed = transposed version of W. k rows, n columns.
-	p = discrete probability distribution. length = k.
+	p = mixture weight. length = k.
 	mixture = Wp, length = n.
 	pi = temporary array, length = n.
 	xi = temporary array, length = n.
@@ -105,7 +105,7 @@ Similar rows (in context of u) of WTransposed should be held far from each other
 Params:
 	grad = ∇u(ω)
 	WTransposed = transposed version of W. n columns, k rows.
-	p = discrete probability distribution. length = k.
+	p = mixture weight. length = k.
 	mixture = Wp, length = n.
 	pi = temporary array, length = n.
 	xi = temporary array, length = n.
@@ -170,7 +170,7 @@ Similar rows (in context of u) of $(D_PARAM WTransposed) should be held far from
 Params:
 	PartialDerivative = Partial derivative $(D y) of objective convex function $(D u): $(D du/dω_j = y(ω_j), 1 <= j <= n).
 	WTransposed = transposed version of W. n columns, k rows.
-	p = discrete probability distribution. length = k.
+	p = mixture weight. length = k.
 	mixture = Wp, length = n.
 	pi = temporary array, length = n.
 	tolerance = Defines an early termination condition. 
@@ -269,7 +269,7 @@ One iteration of Expectation Maximization algorithm.
 Params:
 	grad = ∇u(ω)
 	WTransposed = transposed version of W. k rows, n columns. W[i, j] >= 0.
-	p = discrete probability distribution. length = k.
+	p = mixture weight. length = k.
 	mixture = Wp, length = n.
 	pi = temporary array, length = n.
 	c = temporary array, length = k.
