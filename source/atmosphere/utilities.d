@@ -15,6 +15,34 @@ import cblas;
 import simple_matrix;
 
 
+/*
+Computes accurate sum of binary logarithms of input range $(D r).
+Will be avalible in std.numeric with with DMD 2.068.
+ */
+T sumOfLog2s(T)(T[] r) 
+{
+	import std.math : frexp; 
+	import std.traits : Unqual;
+
+    long exp = 0;
+    Unqual!(typeof(return)) x = 1; 
+    foreach (e; r)
+    {
+        if (e < 0)
+            return typeof(return).nan;
+        int lexp = void;
+        x *= frexp(e, lexp);
+        exp += lexp;
+        if (x < 0.5) 
+        {
+            x *= 2;
+            exp--;
+        }
+    }
+    return exp + log2(x); 
+}
+
+
 auto sum(Range)(Range range) if(!isArray!Range)
 {
 	Unqual!(ForeachType!Range) s = 0;

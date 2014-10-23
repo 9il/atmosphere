@@ -9,5 +9,16 @@
 	"dependencies": {
 		"atmosphere_gm": "~master"
 	},
-	"license": "Subject to the terms of the MIT license, as written in the included LICENSE.md file."
+	"license": "Subject to the terms of the MIT license, as written in the included LICENSE.md file.",
+	"configurations": [
+		{
+			"name": "application",
+			"targetType": "executable"
+		},
+		{
+			"name": "parallel_application",
+			"versions": ["atmosphere_gm_parallel"],
+			"targetType": "executable"
+		}
+	]
 }

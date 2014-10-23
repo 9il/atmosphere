@@ -38,7 +38,7 @@ One iteration of gradient descent optimization algorithm.
 Params:
 	grad = ∇u(ω)
 	WTransposed = transposed version of W. k rows, n columns.
-	p = discrete probability distribution with, length = k.
+	p = discrete probability distribution. length = k.
 	mixture = Wp, length = n.
 	pi = temporary array, length = n.
 	xi = temporary array, length = n.
@@ -47,6 +47,11 @@ Params:
 	tolerance = Defines an early termination condition. 
 				Receives the current upper and lower bounds on the root. 
 				The delegate must return true when these bounds are acceptable. 
+See_Also:
+	$(MREF mix),
+	$(STDREF numeric, findRoot)
+Preconditions:
+	mixture = Wp
 */
 void gradientDescentIteration(alias grad, T)
 	(
@@ -95,7 +100,7 @@ Similar rows (in context of u) of WTransposed should be held far from each other
 Params:
 	grad = ∇u(ω)
 	WTransposed = transposed version of W. n columns, k rows.
-	p = discrete probability distribution with, length = k.
+	p = discrete probability distribution. length = k.
 	mixture = Wp, length = n.
 	pi = temporary array, length = n.
 	xi = temporary array, length = n.
@@ -103,6 +108,12 @@ Params:
 	tolerance = Defines an early termination condition. 
 				Receives the current upper and lower bounds on the root. 
 				The delegate must return true when these bounds are acceptable. 
+See_Also:
+	$(MREF mix),
+	$(MREF coordinateDescentIterationPartial),
+	$(STDREF numeric, findRoot)
+Preconditions:
+	mixture = Wp
 */
 void coordinateDescentIteration(alias grad, T)
 	(
@@ -147,19 +158,25 @@ body
 
 
 /**
-k iterations of coordinate descent optimization algorithm.
+Perform k iterations of coordinate descent optimization algorithm.
 
-For better performance permute rows of WTransposed rows and corresponding elements of p.
-Similar rows (in context of u) of WTransposed should be held far from each other.
+For better performance permute rows of $(D_PARAM WTransposed) rows and corresponding elements of p.
+Similar rows (in context of u) of $(D_PARAM WTransposed) should be held far from each other.
 Params:
-	PartialDerivative = du/dω_1, where du/dω_j = du/dω_1, 1 <= j <= n.
+	PartialDerivative = Partial derivative $(D y) of objective convex function $(D u): $(D du/dω_j = y(ω_j), 1 <= j <= n).
 	WTransposed = transposed version of W. n columns, k rows.
-	p = discrete probability distribution with, length = k.
+	p = discrete probability distribution. length = k.
 	mixture = Wp, length = n.
 	pi = temporary array, length = n.
 	tolerance = Defines an early termination condition. 
 				Receives the current upper and lower bounds on the root. 
 				The delegate must return true when these bounds are acceptable. 
+See_Also:
+	$(MREF mix),
+	$(MREF coordinateDescentIteration),
+	$(STDREF numeric, findRoot)
+Preconditions:
+	mixture = Wp
 */
 void coordinateDescentIterationPartial(alias PartialDerivative, T)
 	(
@@ -247,10 +264,14 @@ One iteration of Expectation Maximization algorithm.
 Params:
 	grad = ∇u(ω)
 	WTransposed = transposed version of W. k rows, n columns. W[i, j] >= 0.
-	p = discrete probability distribution with, length = k.
+	p = discrete probability distribution. length = k.
 	mixture = Wp, length = n.
 	pi = temporary array, length = n.
 	c = temporary array, length = k.
+See_Also:
+	$(MREF mix)
+Preconditions:
+	mixture = Wp
 */
 void EMIteration(alias grad, T)
 	(

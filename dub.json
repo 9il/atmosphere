@@ -16,5 +16,14 @@
 		"docs": {
 			"dflags": ["-c", "-Dddocs", "-Xfdocs.json"]
 		}
-	}
+	},
+	"configurations": [
+		{
+			"name": "library",
+		},
+		{
+			"name": "parallel_library",
+			"versions": ["atmosphere_gm_parallel"]
+		}
+	]
 }

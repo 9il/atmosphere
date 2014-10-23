@@ -1,5 +1,5 @@
 import std.file, std.path, std.stdio, std.conv, std.algorithm, 
-	std.range, std.math, std.functional;
+	std.range, std.math, std.functional, std.datetime;
 
 import atmosphere;
 
@@ -36,25 +36,19 @@ void main()
 		//finds mixture distribution
 		writeln("mixture optimization =========================");
 		//compute range of distributions
-		auto kernels = grid.map!(u => Kernel(alpha, u)).array;
+		auto pdfs = grid.map!(u => PDF(alpha, u)).array;
 		///argmax(f(x)) = argmin(-f(x))		
 		///compile time parameters: partial derivative of -Σ_j log(x_j) function, floating point type
 		///runtime parameters: probability density functions (up to a common constant), sample
-		auto optimizer = new CoordinateDescentPartial!(a => -1/a, double)(kernels.length, sample.length);
-		auto components = sample.map!(a => kernels.map!(k => k(a)));
-		optimizer.put(components);
+		auto optimizer = new CoordinateLikelihoodMaximization!double(pdfs.length, sample.length);
+		optimizer.put(pdfs, sample);
 		optimizer.optimize( ///optimization
-				a => a.sumOfLog2s, //objective function: log2Likelihood(mixture)
-				//tolerance
-				(
-					double objectiveFunctionValuePrev, 
-					double objectiveFunctionValue, 
-				) 
-				{
-					counter++;
-					return objectiveFunctionValue - objectiveFunctionValuePrev <= eps;
-				}
-			);
+			//tolerance
+			(sumOfLog2sValuePrev, sumOfLog2sValue) 
+			{
+				counter++;
+				return sumOfLog2sValue - sumOfLog2sValuePrev <= eps;
+			});
 		writefln("total iterations: %s", counter);
 		writefln("log2Likelihood = %s", optimizer.mixture.sumOfLog2s);
 		writefln("-----------\ndistribution = %s", optimizer.distribution);
@@ -64,23 +58,20 @@ void main()
 ///Special α-parametrized EM algorithm:
 
 		///finds good (possibly not the best) value of parameter alpha and mixture distribution
-		auto spacialEMOptimizer = new NormalVarianceMeanMixtureEMAndCoordinateSeparator!double(grid, sample);
-		
+		auto spacialEMOptimizer = new NormalVarianceMeanMixtureEMAndCoordinateSeparator!double(grid, sample.length);
+		spacialEMOptimizer.sample = sample;
 		writeln("α-parametrized EM mixture optimization =======");
+		auto sw = StopWatch();
+		sw.start;
 		spacialEMOptimizer.optimize( ///optimization
 			//tolerance
-			(
-				double alphaPrev, 
-				double alpha, 
-				double log2LikelihoodPrev, 
-				double log2Likelihood, 
-				in double[] distributionPrev, 
-				in double[] distribution,
-			)
+			(alphaPrev, alpha, double log2LikelihoodPrev, double log2Likelihood)
 			{
 				counter++;
 				return log2Likelihood - log2LikelihoodPrev <= eps;
 			});
+		sw.stop;
+		writefln("time: %s ms", sw.peek.msecs);
 		writefln("total iterations: %s", counter);
 		writefln("α = %s", spacialEMOptimizer.alpha);
 		writefln("log2Likelihood = %s", spacialEMOptimizer.log2Likelihood);
@@ -90,7 +81,7 @@ void main()
 }
 
 //probability density function
-struct Kernel
+struct PDF
 {
 	double alphau;
 	double sqrtu;
