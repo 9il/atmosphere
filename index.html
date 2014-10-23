@@ -7,45 +7,40 @@
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/pygment_trac.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script src="javascripts/respond.js"></script>
+    <script src="javascripts/main.js"></script>
     <!--[if lt IE 9]>
       <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <!--[if lt IE 8]>
-    <link rel="stylesheet" href="stylesheets/ie.css">
     <![endif]-->
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
   </head>
   <body>
-      <div id="header">
-        <nav>
-          <li class="fork"><a href="https://github.com/9il/atmosphere_gm">View On GitHub</a></li>
-          <li class="downloads"><a href="https://github.com/9il/atmosphere_gm/zipball/master">ZIP</a></li>
-          <li class="downloads"><a href="https://github.com/9il/atmosphere_gm/tarball/master">TAR</a></li>
-          <li class="title">DOWNLOADS</li>
-        </nav>
-      </div><!-- end header -->
+
+      <header>
+        <h1>Atmosphere GM</h1>
+        <p>Statistical package</p>
+      </header>
+
+      <div id="banner">
+        <span id="logo"></span>
+
+        <a href="https://github.com/9il/atmosphere_gm" class="button fork"><strong>View On GitHub</strong></a>
+        <div class="downloads">
+          <span>Downloads:</span>
+          <ul>
+            <li><a href="https://github.com/9il/atmosphere_gm/zipball/master" class="button">ZIP</a></li>
+            <li><a href="https://github.com/9il/atmosphere_gm/tarball/master" class="button">TAR</a></li>
+          </ul>
+        </div>
+      </div><!-- end banner -->
 
     <div class="wrapper">
-
+      <nav>
+        <ul></ul>
+      </nav>
       <section>
-        <div id="title">
-          <h1>Atmosphere GM</h1>
-          <p>Statistical package</p>
-          <hr>
-          <span class="credits left">Project maintained by <a href="https://github.com/9il">9il</a></span>
-          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
-        </div>
-
         <h1>
-<a name="atmosphere-gm" class="anchor" href="#atmosphere-gm"><span class="octicon octicon-link"></span></a>Atmosphere GM</h1>
-
-<p>Statistical package. 
-Contains likelihood maximization methods.</p>
-
-<h3>
-<a name="features" class="anchor" href="#features"><span class="octicon octicon-link"></span></a>Features:</h3>
+<a name="features" class="anchor" href="#features"><span class="octicon octicon-link"></span></a>Features</h1>
 
 <ol>
 <li>Separating mixtures of probability distributions</li>
@@ -54,13 +49,13 @@ Contains likelihood maximization methods.</p>
 <li>Optimization over sliding window</li>
 </ol>
 
-<h2>
-<a name="documentation" class="anchor" href="#documentation"><span class="octicon octicon-link"></span></a>Documentation</h2>
+<h1>
+<a name="documentation" class="anchor" href="#documentation"><span class="octicon octicon-link"></span></a>Documentation</h1>
 
 <p>Documentation can be found <a href="http://9il.github.io/atmosphere_gm/atmosphere.package.html">here</a>.</p>
 
-<h2>
-<a name="instalation" class="anchor" href="#instalation"><span class="octicon octicon-link"></span></a>Instalation</h2>
+<h1>
+<a name="instalation" class="anchor" href="#instalation"><span class="octicon octicon-link"></span></a>Instalation</h1>
 
 <p>To use <a href="http://code.dlang.org/packages/atmosphere_gm">this package</a>, put the following dependency into your project's
 <a href="http://code.dlang.org/about">dub</a>.json into the dependencies section:</p>
@@ -73,7 +68,10 @@ Contains likelihood maximization methods.</p>
 <span class="p">}</span>
 </pre></div>
       </section>
-
+      <footer>
+        <p>Project maintained by <a href="https://github.com/9il">9il</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></small></p>
+      </footer>
     </div>
     <!--[if !IE]><script>fixScale(document);</script><![endif]-->
     
