@@ -7,7 +7,7 @@
 #Documentation
 Documentation can be found [here](http://9il.github.io/atmosphere_gm/atmosphere.package.html).
 
-#Instalation
+#Installation
 To use [this package](http://code.dlang.org/packages/atmosphere_gm), put the following dependency into your project's
 [dub](http://code.dlang.org/about).json into the dependencies section:
 ```json
