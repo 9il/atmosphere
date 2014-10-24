@@ -305,9 +305,14 @@ final:
 	Remove one front feature for each component.
 	*/
 	void popFront()
+	in
+	{
+		assert(length);
+	}
+	body
 	{
 		_featuresT.popFront;
-		updateMixtureBack;
+		_mixture[0.._featuresT.length] = _mixture[1.._featuresT.length+1];
 	}
 
 	/**
@@ -316,9 +321,14 @@ final:
 		n = features will be removed
 	*/
 	void popFrontN(size_t n)
+	in
+	{
+		assert(length >= n);
+	}
+	body
 	{
 		_featuresT.popFrontN(n);
-		updateMixtureBackN(n);
+		_mixture[0.._featuresT.length] = _mixture[n.._featuresT.length+n];
 	}
 
 	/**
