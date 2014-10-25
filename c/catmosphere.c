@@ -8,6 +8,8 @@ dmd catmosphere.o ../libatmosphere_gm.a -L-lblas ../../simple_matrix/libsimple_m
 
 int main(int argc, char const *argv[])
 {
+	// needs to call rt_init!
+	
 	double alpha1 = catmosphere_nvmm_em_and_coordinate(0,0,NULL,NULL,NULL,NULL,NULL);
 	double alpha2 =catmosphere_nvmm_em_and_gradient(0,0,NULL,NULL,NULL,NULL,NULL);
 	double alpha3 =catmosphere_nvmm_em(0,0,NULL,NULL,NULL,NULL,NULL);
