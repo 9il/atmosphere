@@ -115,6 +115,12 @@ abstract class MixtureOptimizer(T)
 		maxLength = maximal length of features. In terms of likelihood maximization maxLength is maximal length of a sample.
 	*/
 	this(size_t k, size_t maxLength)
+	in
+	{
+		assert(k);
+		assert(maxLength);
+	}
+	body
 	{
 		_featuresT = SlidingWindow!T(k, maxLength);
 		_weights = new T[k];
@@ -157,6 +163,7 @@ final:
 			scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null,
 		)
 	{
+		assert(length);
 		T objectiveFunctionValuePrev;
 		T objectiveFunctionValue = objectiveFunction(mixture);
 		T[] weightsPrev = new T[weights.length];
@@ -188,6 +195,7 @@ final:
 		scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null,
 	)
 	{
+		assert(length);
 		T objectiveFunctionValuePrev;
 		T objectiveFunctionValue = objectiveFunction(mixture);
 		do
@@ -215,6 +223,7 @@ final:
 		scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null,
 	)
 	{
+		assert(length);
 		T[] weightsPrev = new T[weights.length];
 		do
 		{
@@ -412,28 +421,51 @@ final:
 
 	package void updateMixture()
 	{
-		mix(cast(Matrix!(const T))_featuresT.matrix, _weights, _mixture[0.._featuresT.matrix.width]);
-		update();
+		if(length)
+		{
+			mix(cast(Matrix!(const T))_featuresT.matrix, _weights, _mixture[0.._featuresT.matrix.width]);
+			update();			
+		}
 	}
 
 	package void updateMixtureBack()
+	in
+	{
+		assert(length);
+	}
+	body
 	{
 		_mixture[_featuresT.matrix.width-1] = dotProduct(_weights, _featuresT.back);
 		update();
 	}
 
 	package void updateMixtureBackN(size_t n)
+	in
+	{
+		assert(length >= n);
+	}
+	body
 	{
 		mix(cast(Matrix!(const T))_featuresT[$-n..$].matrix, _weights, _mixture[0.._featuresT.matrix.width]);
 		update();
 	}
 
 	package void updateMixturePopBack()
+	in
+	{
+		assert(length);
+	}
+	body
 	{
 		updateMixturePopBackN(1);
 	}
 
 	package void updateMixturePopBackN(size_t n)
+	in
+	{
+		assert(length >= n);
+	}
+	body
 	{
 		_mixture[0.._featuresT.matrix.width-n] = _mixture[n.._featuresT.matrix.width];
 		update();
