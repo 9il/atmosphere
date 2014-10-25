@@ -30,6 +30,7 @@ void main()
 
 		//iteration counter
 		uint counter;
+		auto sw = StopWatch();
 
 ///Common algorithm
 
@@ -42,6 +43,7 @@ void main()
 		///runtime parameters: probability density functions (up to a common constant), sample
 		auto optimizer = new CoordinateLikelihoodMaximization!double(pdfs.length, sample.length);
 		optimizer.put(pdfs, sample);
+		sw.start;
 		optimizer.optimize( ///optimization
 			//tolerance
 			(sumOfLog2sValuePrev, sumOfLog2sValue) 
@@ -49,11 +51,14 @@ void main()
 				counter++;
 				return sumOfLog2sValue - sumOfLog2sValuePrev <= eps;
 			});
+		sw.stop;
+		writefln("time: %s ms", sw.peek.msecs);
 		writefln("total iterations: %s", counter);
 		writefln("log2Likelihood = %s", optimizer.mixture.sumOfLog2s);
 		writefln("-----------\nweights = %s", optimizer.weights);
 		writeln("==============================================\n");
 		counter = 0;
+		sw.reset;
 
 ///Special α-parametrized EM algorithm:
 
@@ -61,7 +66,6 @@ void main()
 		auto spacialEMOptimizer = new NormalVarianceMeanMixtureEMAndCoordinate!double(grid, sample.length);
 		spacialEMOptimizer.sample = sample;
 		writeln("α-parametrized EM mixture optimization =======");
-		auto sw = StopWatch();
 		sw.start;
 		spacialEMOptimizer.optimize( ///optimization
 			//tolerance
