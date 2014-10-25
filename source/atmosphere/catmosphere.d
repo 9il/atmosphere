@@ -111,3 +111,33 @@ double catmosphere_nvmm_em_and_gradient(
 		findRootTolerance
 	);
 }
+
+double catmosphere_nvmm_em(
+		size_t k, 
+		size_t n,
+		double* weights,
+		const double* grid, 
+		const double* sample,
+		bool function (
+			double alphaPrev, 
+			double alpha, 
+			double log2LikelihoodValuePrev, 
+			double log2LikelihoodValue, 
+			const double* weightsPrev, 
+			const double* weights,
+		) 
+		tolerance,
+		bool function(double a, double b) @nogc nothrow findRootTolerance
+	)
+{
+	return catmosphere_nvmm!(NormalVarianceMeanMixtureEM!double)
+	(
+		k,
+		n,
+		weights,
+		grid,
+		sample,
+		tolerance,
+		findRootTolerance
+	);
+}
