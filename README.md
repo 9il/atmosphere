@@ -18,6 +18,14 @@ To use [this package](http://code.dlang.org/packages/atmosphere_gm), put the fol
 	}
 }
 ```
+
+##BLAS
+###ubuntu
+```shell
+sudo apt-get install libblas-dev
+```
+
+
 #Benchmarking
 It is suggested the [llvm D compiler](https://github.com/ldc-developers/ldc/releases) be used for benchmarks.
 Project requires LDC version >= 0.15.0 or DMD >= 2.066, or corresponding GDC release.
