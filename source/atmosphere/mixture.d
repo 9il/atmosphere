@@ -97,18 +97,18 @@ import std.math;
 
 import atmosphere.internal;
 
-/++
+/**
 Exception thrown for MixtureOptimizer.
-+/
+*/
 class MixtureOptimizerException : Exception
 {
-	/++
+	/**
 	Constructor which takes an error message.
 	Params:
 		msg  = Message describing the error.
 		file = The file where the error occurred.
 		line = The line where the error occurred.
-	+/
+	*/
 	this(string msg, 
 		string file = __FILE__, 
 		size_t line = __LINE__) 
