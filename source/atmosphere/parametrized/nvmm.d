@@ -53,6 +53,8 @@ import std.range;
 import std.numeric;
 import std.traits;
 import core.stdc.tgmath;
+import std.algorithm;
+import std.math : isNormal;
 
 static import std.math;
 
@@ -60,7 +62,7 @@ static import std.math;
 Params:
 	T = floating point type
 */
-abstract class NormalVarianceMeanMixture(T) : MixtureOptimizer!T
+abstract class NormalVarianceMeanMixture(T) : MixtureOptimizer!T, LikelihoodMaximization!T
 {
 
 	override void update()
@@ -75,6 +77,9 @@ abstract class NormalVarianceMeanMixture(T) : MixtureOptimizer!T
 	package T _mean;
 	package T _alpha;
 	package T _log2Likelihood;
+
+	mixin LikelihoodMaximizationTemplate!T;
+	
 
 	/**
 	Params:
@@ -92,6 +97,8 @@ abstract class NormalVarianceMeanMixture(T) : MixtureOptimizer!T
 		super(_grid.length, maxLength);
 		this._grid = _grid.dup;
 		this._sample = new T[maxLength];
+		if (!isFeaturesCorrect)
+			throw new FeaturesException;
 	}
 
 final:
@@ -103,6 +110,8 @@ final:
 			Receives the current and previous versions of various parameters. 
 			The delegate must return true when parameters are acceptable. 
 		findRootTolerance = Tolerance for inner optimization.
+	Throws: 
+		FeaturesException if $(MREF isFeaturesCorrect) is false.
 	See_Also:
 		$(STDREF numeric, findRoot)
 	*/
@@ -119,6 +128,8 @@ final:
 			scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null,
 		)
 	{
+		if (!isFeaturesCorrect)
+			throw new FeaturesException;
 		T log2LikelihoodPrev, alphaPrev;
 		scope T[] weightsPrev = new T[weights.length];
 		do
@@ -145,6 +156,8 @@ final:
 			scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null,
 		)
 	{
+		if (!isFeaturesCorrect)
+			throw new FeaturesException;
 		T log2LikelihoodPrev, alphaPrev;
 		do
 		{
@@ -167,6 +180,8 @@ final:
 			scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null,
 		)
 	{
+		if (!isFeaturesCorrect)
+			throw new FeaturesException;
 		T alphaPrev;
 		scope T[] weightsPrev = new T[weights.length];
 		do
@@ -184,6 +199,8 @@ final:
 	Sets sample and recalculates alpha and mixture.
 	Params:
 		_sample = new sample with length less or equal $(D maxLength)
+	Throws: 
+		FeaturesException if $(MREF isFeaturesCorrect) is false.
 	*/
 	void sample(in T[] _sample) @property
 	in
@@ -204,6 +221,8 @@ final:
 		updateAlpha;
 		assert(_featuresT.matrix.width == _sample.length);
 		updateComponents;
+		if (!isFeaturesCorrect)
+			throw new FeaturesException;
 	}
 
 	/**
