@@ -118,16 +118,16 @@ class MixtureOptimizerException : Exception
 	}
 }
 
-///ditto
+///
 class FeaturesException : MixtureOptimizerException
 {
-	/++
+	/**
 	Constructor which takes an error message.
 	Params:
 		msg  = Message describing the error.
 		file = The file where the error occurred.
 		line = The line where the error occurred.
-	+/
+	*/
 	this(string msg = "There is value in sample that incompatible with all PDFs or machine precision is insufficient.", 
 		string file = __FILE__, 
 		size_t line = __LINE__) 
@@ -669,7 +669,7 @@ interface LikelihoodMaximization(T)
 			The delegate must return true when likelihood are acceptable. 
 		findRootTolerance = Tolerance for inner optimization.
 	Throws: 
-		FeaturesException if $(MREF isFeaturesCorrect) is false.
+		$(MREF FeaturesException) if $(MREF isFeaturesCorrect) is false.
 	See_Also:
 		$(STDREF numeric, findRoot)
 	*/

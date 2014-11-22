@@ -111,7 +111,7 @@ final:
 			The delegate must return true when parameters are acceptable. 
 		findRootTolerance = Tolerance for inner optimization.
 	Throws: 
-		FeaturesException if $(MREF isFeaturesCorrect) is false.
+		$(DPREF mixture, FeaturesException) if $(DPREF mixture, isFeaturesCorrect) is false.
 	See_Also:
 		$(STDREF numeric, findRoot)
 	*/
@@ -200,7 +200,7 @@ final:
 	Params:
 		_sample = new sample with length less or equal $(D maxLength)
 	Throws: 
-		FeaturesException if $(MREF isFeaturesCorrect) is false.
+		$(DPREF mixture, FeaturesException) if $(DPREF mixture, isFeaturesCorrect) is false.
 	*/
 	void sample(in T[] _sample) @property
 	in
