@@ -737,6 +737,8 @@ package mixin template LikelihoodMaximizationTemplate(T)
 	body
 	{
 		super.put(sample.map!(x => pdfs.map!(pdf => pdf(x))));
+		if (!isFeaturesCorrect)
+			throw new FeaturesException;
 	}
 
 	void optimize
