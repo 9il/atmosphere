@@ -92,12 +92,51 @@ import atmosphere.utilities : sumOfLog2s;
 import std.range;
 import std.traits;
 import std.numeric;
-///**
-//In most cases coordinate descent is much more faster then gradient descent.
-//*/
-//module atmosphere.stationary;
+import std.algorithm;
+import std.math;
 
 import atmosphere.internal;
+
+/++
+Exception thrown for MixtureOptimizer.
++/
+class MixtureOptimizerException : Exception
+{
+	/++
+	Constructor which takes an error message.
+	Params:
+		msg  = Message describing the error.
+		file = The file where the error occurred.
+		line = The line where the error occurred.
+	+/
+	this(string msg, 
+		string file = __FILE__, 
+		size_t line = __LINE__) 
+		@safe pure
+	{
+		super(msg, file, line);
+	}
+}
+
+///ditto
+class FeaturesException : MixtureOptimizerException
+{
+	/++
+	Constructor which takes an error message.
+	Params:
+		msg  = Message describing the error.
+		file = The file where the error occurred.
+		line = The line where the error occurred.
+	+/
+	this(string msg = "There is value in sample that incompatible with all PDFs or machine precision is insufficient.", 
+		string file = __FILE__, 
+		size_t line = __LINE__) 
+		@safe pure
+	{
+		super(msg, file, line);
+	}
+}
+
 
 /**
 Params:
@@ -244,7 +283,7 @@ final:
 		---------
 	*/
 	void put(Range)(Range features)
-	if(isInputRange!Range && hasLength!Range && isNumeric!(ElementType!Range))
+	if (isInputRange!Range && hasLength!Range && isNumeric!(ElementType!Range))
 	in
 	{
 		assert(_featuresT.matrix.length == featuresROR.length);
@@ -268,7 +307,7 @@ final:
 		---------
 	*/
 	void put(RangeOfRanges)(RangeOfRanges featuresROR)
-	if(isInputRange!RangeOfRanges && hasLength!RangeOfRanges && 
+	if (isInputRange!RangeOfRanges && hasLength!RangeOfRanges && 
 		isInputRange!(ElementType!RangeOfRanges) && hasLength!(ElementType!RangeOfRanges) && 
 		isNumeric!(ElementType!(ElementType!RangeOfRanges)))
 	in
@@ -421,7 +460,7 @@ final:
 
 	package void updateMixture()
 	{
-		if(length)
+		if (length)
 		{
 			mix(cast(Matrix!(const T))_featuresT.matrix, _weights, _mixture[0.._featuresT.matrix.width]);
 			update();			
@@ -604,7 +643,7 @@ interface LikelihoodMaximization(T)
 		 $(STDREF traits, isCallable)
 	*/
 	void put(PDFRange, SampleRange)(PDFRange pdfs, SampleRange sample)
-		if(isInputRange!PDFRange && hasLength!PDFRange && isCallable!(ElementType!PDFRange));
+		if (isInputRange!PDFRange && hasLength!PDFRange && isCallable!(ElementType!PDFRange));
 
 	/**
 	Performs optimization.
@@ -629,6 +668,8 @@ interface LikelihoodMaximization(T)
 			Receives the current and previous versions of log2Likelihood. 
 			The delegate must return true when likelihood are acceptable. 
 		findRootTolerance = Tolerance for inner optimization.
+	Throws: 
+		FeaturesException if $(MREF isFeaturesCorrect) is false.
 	See_Also:
 		$(STDREF numeric, findRoot)
 	*/
@@ -637,6 +678,13 @@ interface LikelihoodMaximization(T)
 		scope bool delegate (T sumOfLog2sValuePrev, T sumOfLog2sValue) tolerance,
 		scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null,
 	);
+
+	/**
+	Returns true if for all values in sample exists probability density function from mixture such that $(D isNormal(PDF(value)))
+	See_Also:
+		$(STDREF math, isNormal)
+	*/
+	bool isFeaturesCorrect() const;
 }
 
 /**
@@ -678,10 +726,10 @@ class GradientLikelihoodMaximization(T) : GradientDescent!((a, b) {foreach(i, ai
 }
 
 
-private mixin template LikelihoodMaximizationTemplate(T)
+package mixin template LikelihoodMaximizationTemplate(T)
 {
 	void put(PDFRange, SampleRange)(PDFRange pdfs, SampleRange sample)
-	if(isInputRange!PDFRange && hasLength!PDFRange && isCallable!(ElementType!PDFRange))
+		if (isInputRange!PDFRange && hasLength!PDFRange && isCallable!(ElementType!PDFRange))
 	in
 	{
 		assert(pdfs.length == _featuresT.matrix.height);
@@ -697,6 +745,8 @@ private mixin template LikelihoodMaximizationTemplate(T)
 		scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null,
 	)
 	{
+		if (!isFeaturesCorrect)
+			throw new FeaturesException;
 		super.optimize((m => m.sumOfLog2s), tolerance, findRootTolerance);
 	}
 
@@ -706,8 +756,16 @@ private mixin template LikelihoodMaximizationTemplate(T)
 		scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null,
 	)
 	{
+		if (!isFeaturesCorrect)
+			throw new FeaturesException;
 		super.optimize((m => m.sumOfLog2s), tolerance, findRootTolerance);
 	}
+
+	bool isFeaturesCorrect() const
+	{
+		return features.transposed.all!(any!isNormal);
+	}
+
 }
 
 unittest {
