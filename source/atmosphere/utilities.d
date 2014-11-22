@@ -138,12 +138,12 @@ body {
 			Transpose.NoTrans,
 			cast(blasint)b.length,
 		 	cast(blasint)a.length,
-			1.0,
+			1,//F
 			m.ptr,
 			cast(blasint)m.shift,
 			a.ptr,
 			1,
-			0.0,
+			0,//F
 			b.ptr,
 			1);
 	}
