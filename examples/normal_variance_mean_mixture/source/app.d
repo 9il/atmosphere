@@ -13,6 +13,10 @@ void main()
 {
 	//uniform grid
 	const double[] grid = iota(begin, end+step/2, step).array;
+	writefln("left bound = %s", begin);
+	writefln("right bound = %s", end);
+	writefln("step = %s", step);
+	writefln("grid = %s", grid);
 
 	//for each *.txt file in data folder
 	foreach(file; "data".dirEntries("*.txt", SpanMode.shallow))
@@ -80,6 +84,7 @@ void main()
 		writefln("α = %s", spacialEMOptimizer.alpha);
 		writefln("log2Likelihood = %s", spacialEMOptimizer.log2Likelihood);
 		writefln("-----------\nweights = %s", spacialEMOptimizer.weights);
+		//writefln("-----------\ngrid = %s", optimizer.grid);
 		writeln("==============================================\n");
 	}
 }
