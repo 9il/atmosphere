@@ -24,9 +24,18 @@ To use [this package](http://code.dlang.org/packages/atmosphere_gm), put the fol
 ```shell
 sudo apt-get install libblas-dev
 ```
+### OS X
+BLAS is available by default in OS X.
 
+### Windows
+TODO
 
 #Benchmarking
 It is suggested the [llvm D compiler](https://github.com/ldc-developers/ldc/releases) be used for benchmarks.
 Project requires LDC version >= 0.15.0 or DMD >= 2.066, or corresponding GDC release.
 The [DMD](http://dlang.org/download.html) is easy way to start.
+
+#Changelog
+##v0.0.2
+1. Exceptions added; #3
+2. NVMM test updated to show `grid`; #6
