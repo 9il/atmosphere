@@ -163,7 +163,7 @@ optimizer.optimize(
 </pre>
 </dd>
 </dl>
-<hr><div class="row-fluid declaration"><h3>class <span class="symbol-target" id="NormalVarianceMeanMixture">&nbsp;</span><a class="symbol-link" href="#NormalVarianceMeanMixture">NormalVarianceMeanMixture</a>(T): MixtureOptimizer!T;
+<hr><div class="row-fluid declaration"><h3>class <span class="symbol-target" id="NormalVarianceMeanMixture">&nbsp;</span><a class="symbol-link" href="#NormalVarianceMeanMixture">NormalVarianceMeanMixture</a>(T): MixtureOptimizer!T, LikelihoodMaximization!T;
 </h3></div>
 <div class="declaration-content"><dl><dt>Parameters</dt><dd><table class="table table-condensed table-bordered"><tr><td>T</td>
 <td>floating point type</td></tr>
@@ -191,6 +191,8 @@ optimizer.optimize(
 <tr><td>bool delegate(T a, T b) nothrow @nogc <i>findRootTolerance</i></td>
 <td>Tolerance for inner optimization.</td></tr>
 </table></dd>
+<dt>Throws</dt><dd><a href="atmosphere.mixture.html#FeaturesException"><span class="inlinecode">atmosphere.mixture.FeaturesException</span></a> if <a href="atmosphere.mixture.html#isFeaturesCorrect"><span class="inlinecode">atmosphere.mixture.isFeaturesCorrect</span></a> is <span class="d_keyword">false</span>.
+</dd>
 <dt>See Also</dt><dd><a href="http://dlang.org/phobos/std_numeric.html#findRoot"><span class="inlinecode">std.numeric.findRoot</span></a></dd>
 </dl>
 </div>
@@ -201,6 +203,7 @@ optimizer.optimize(
 <dt>Parameters</dt><dd><table class="table table-condensed table-bordered"><tr><td>T[] <i>_sample</i></td>
 <td>new <span class="symbol-target" id="sample">&nbsp;</span><a class="symbol-link" href="#sample">sample</a> with length less or equal <span class="inlinecode">maxLength</span></td></tr>
 </table></dd>
+<dt>Throws</dt><dd><a href="atmosphere.mixture.html#FeaturesException"><span class="inlinecode">atmosphere.mixture.FeaturesException</span></a> if <a href="atmosphere.mixture.html#isFeaturesCorrect"><span class="inlinecode">atmosphere.mixture.isFeaturesCorrect</span></a> is <span class="d_keyword">false</span>.</dd>
 </dl>
 </div>
 <hr><div class="row-fluid declaration"><h3>const @property const(T)[] <span class="symbol-target" id="sample">&nbsp;</span><a class="symbol-link" href="#sample">sample</a>();

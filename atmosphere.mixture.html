@@ -204,6 +204,43 @@ optimizer.optimize(tolerance);
 </pre>
 </dd>
 </dl>
+<hr><div class="row-fluid declaration"><h3>class <span class="symbol-target" id="MixtureOptimizerException">&nbsp;</span><a class="symbol-link" href="#MixtureOptimizerException">MixtureOptimizerException</a>: <u>object.Exception</u>;
+</h3></div>
+<div class="declaration-content"><dl><p>Exception thrown for MixtureOptimizer.</p>
+</dl>
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>pure @safe this(string <i>msg</i>, string <i>file</i> = __FILE__, size_t <i>line</i> = __LINE__);
+</h3></div>
+<div class="declaration-content"><dl><p>Constructor which takes an error message.
+</p>
+<dt>Parameters</dt><dd><table class="table table-condensed table-bordered"><tr><td>string <i>msg</i></td>
+<td>Message describing the error.</td></tr>
+<tr><td>string <i>file</i></td>
+<td>The <i>file</i> where the error occurred.</td></tr>
+<tr><td>size_t <i>line</i></td>
+<td>The <i>line</i> where the error occurred.</td></tr>
+</table></dd>
+</dl>
+</div>
+</div>
+</div>
+<hr><div class="row-fluid declaration"><h3>class <span class="symbol-target" id="FeaturesException">&nbsp;</span><a class="symbol-link" href="#FeaturesException">FeaturesException</a>: <u>atmosphere.mixture.MixtureOptimizerException</u>;
+</h3></div>
+<div class="declaration-content"><br><br>
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>pure @safe this(string <i>msg</i> = "There is value in sample that incompatible with all PDFs or machine precision is insufficient.", string <i>file</i> = __FILE__, size_t <i>line</i> = __LINE__);
+</h3></div>
+<div class="declaration-content"><dl><p>Constructor which takes an error message.
+</p>
+<dt>Parameters</dt><dd><table class="table table-condensed table-bordered"><tr><td>string <i>msg</i></td>
+<td>Message describing the error.</td></tr>
+<tr><td>string <i>file</i></td>
+<td>The <i>file</i> where the error occurred.</td></tr>
+<tr><td>size_t <i>line</i></td>
+<td>The <i>line</i> where the error occurred.</td></tr>
+</table></dd>
+</dl>
+</div>
+</div>
+</div>
 <hr><div class="row-fluid declaration"><h3>class <span class="symbol-target" id="MixtureOptimizer">&nbsp;</span><a class="symbol-link" href="#MixtureOptimizer">MixtureOptimizer</a>(T);
 </h3></div>
 <div class="declaration-content"><dl><dt>Parameters</dt><dd><table class="table table-condensed table-bordered"><tr><td>T</td>
@@ -501,7 +538,16 @@ optimizer.eval;
 <tr><td>bool delegate(T a, T b) nothrow @nogc <i>findRootTolerance</i></td>
 <td>Tolerance for inner optimization.</td></tr>
 </table></dd>
+<dt>Throws</dt><dd><a class="symbol-link" href="#FeaturesException"><span class="inlinecode">FeaturesException</span></a> if <a class="symbol-link" href="#isFeaturesCorrect"><span class="inlinecode">isFeaturesCorrect</span></a> is <span class="d_keyword">false</span>.
+</dd>
 <dt>See Also</dt><dd><a href="http://dlang.org/phobos/std_numeric.html#findRoot"><span class="inlinecode">std.numeric.findRoot</span></a></dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>const bool <span class="symbol-target" id="isFeaturesCorrect">&nbsp;</span><a class="symbol-link" href="#isFeaturesCorrect">isFeaturesCorrect</a>();
+</h3></div>
+<div class="declaration-content"><dl><p>Returns <span class="d_keyword">true</span> if for all values in sample exists probability density function from mixture such that <span class="inlinecode">isNormal(PDF(value))</span>
+</p>
+<dt>See Also</dt><dd><a href="http://dlang.org/phobos/std_math.html#isNormal"><span class="inlinecode">std.math.isNormal</span></a></dd>
 </dl>
 </div>
 </div>
