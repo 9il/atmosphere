@@ -25,7 +25,7 @@ To use [this package](http://code.dlang.org/packages/atmosphere_gm), put the fol
 sudo apt-get install libblas-dev
 ```
 ### OS X
-BLAS is available by default in OS X.
+Mac OS X comes with the Accelerate framework built in.
 
 ### Windows
 TODO
