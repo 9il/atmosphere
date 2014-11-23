@@ -42,8 +42,6 @@ void main()
 		writeln("mixture optimization =========================");
 		//compute range of PDFs
 		auto pdfs = grid.map!(u => PDF(alpha, u)).array;
-		///argmax(f(x)) = argmin(-f(x))		
-		///compile time parameters: partial derivative of -Σ_j log(x_j) function, floating point type
 		///runtime parameters: probability density functions (up to a common constant), sample
 		auto optimizer = new CoordinateLikelihoodMaximization!double(pdfs.length, sample.length);
 		optimizer.put(pdfs, sample);
