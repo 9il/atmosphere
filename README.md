@@ -21,14 +21,27 @@ To use [this package](http://code.dlang.org/packages/atmosphere_gm), put the fol
 
 ##BLAS
 ###ubuntu
+####Default package
 ```shell
 sudo apt-get install libblas-dev
 ```
-### OS X
-Mac OS X comes with the Accelerate framework built in.
 
-### Windows
-TODO
+####OpenBLAS
+Compile and install optimized [OpenBLAS](https://github.com/xianyi/OpenBLAS).
+
+### OS X
+Mac OS X comes with the [Accelerate framework](https://developer.apple.com/library/mac/documentation/Accelerate/Reference/BLAS_Ref/index.html#//apple_ref/doc/uid/TP40009457) built in.
+
+### Windows (needs to be checked)
+#### x86
+1. Install latest Win32 BLAS from http://sourceforge.net/projects/openblas/files/.
+2. Copy `lib\libopenblas.a` to `YourProject\blas.lib`.
+
+#### x86_64
+1. Install latest Win64-Int32 BLAS from http://sourceforge.net/projects/openblas/files/.
+2. Copy `lib\libopenblas.a` to `YourProject\blas.lib`.
+3. Use `dub --arch=x86_64` to run project.
+
 
 ##Intro to D
 1. Install D [compiler](http://dlang.org/download.html)
