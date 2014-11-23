@@ -73,17 +73,40 @@
 <h3>
 <a id="ubuntu" class="anchor" href="#ubuntu" aria-hidden="true"><span class="octicon octicon-link"></span></a>ubuntu</h3>
 
+<h4>
+<a id="default-package" class="anchor" href="#default-package" aria-hidden="true"><span class="octicon octicon-link"></span></a>Default package</h4>
+
 <div class="highlight highlight-shell"><pre>sudo apt-get install libblas-dev</pre></div>
+
+<h4>
+<a id="openblas" class="anchor" href="#openblas" aria-hidden="true"><span class="octicon octicon-link"></span></a>OpenBLAS</h4>
+
+<p>Compile and install optimized <a href="https://github.com/xianyi/OpenBLAS">OpenBLAS</a>.</p>
 
 <h3>
 <a id="os-x" class="anchor" href="#os-x" aria-hidden="true"><span class="octicon octicon-link"></span></a>OS X</h3>
 
-<p>Mac OS X comes with the Accelerate framework built in.</p>
+<p>Mac OS X comes with the <a href="https://developer.apple.com/library/mac/documentation/Accelerate/Reference/BLAS_Ref/index.html#//apple_ref/doc/uid/TP40009457">Accelerate framework</a> built in.</p>
 
 <h3>
-<a id="windows" class="anchor" href="#windows" aria-hidden="true"><span class="octicon octicon-link"></span></a>Windows</h3>
+<a id="windows-needs-to-be-checked" class="anchor" href="#windows-needs-to-be-checked" aria-hidden="true"><span class="octicon octicon-link"></span></a>Windows (needs to be checked)</h3>
 
-<p>TODO</p>
+<h4>
+<a id="x86" class="anchor" href="#x86" aria-hidden="true"><span class="octicon octicon-link"></span></a>x86</h4>
+
+<ol>
+<li>Install latest Win32 BLAS from <a href="http://sourceforge.net/projects/openblas/files/">http://sourceforge.net/projects/openblas/files/</a>.</li>
+<li>Copy <code>lib\libopenblas.a</code> to <code>YourProject\blas.lib</code>.</li>
+</ol>
+
+<h4>
+<a id="x86_64" class="anchor" href="#x86_64" aria-hidden="true"><span class="octicon octicon-link"></span></a>x86_64</h4>
+
+<ol>
+<li>Install latest Win64-Int32 BLAS from <a href="http://sourceforge.net/projects/openblas/files/">http://sourceforge.net/projects/openblas/files/</a>.</li>
+<li>Copy <code>lib\libopenblas.a</code> to <code>YourProject\blas.lib</code>.</li>
+<li>Use <code>dub --arch=x86_64</code> to run project.</li>
+</ol>
 
 <h2>
 <a id="intro-to-d" class="anchor" href="#intro-to-d" aria-hidden="true"><span class="octicon octicon-link"></span></a>Intro to D</h2>
