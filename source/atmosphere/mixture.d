@@ -128,7 +128,7 @@ class FeaturesException : MixtureOptimizerException
 		file = The file where the error occurred.
 		line = The line where the error occurred.
 	*/
-	this(string msg = "There is value in sample that incompatible with all PDFs or machine precision is insufficient.", 
+	this(string msg = "There is value in the sample that incompatible with all PDFs or machine precision is insufficient.", 
 		string file = __FILE__, 
 		size_t line = __LINE__) 
 		@safe pure
