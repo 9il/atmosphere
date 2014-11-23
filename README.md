@@ -30,7 +30,7 @@ Mac OS X comes with the Accelerate framework built in.
 ### Windows
 TODO
 
-###Intro to D
+##Intro to D
 1. Install D [compiler](http://dlang.org/download.html)
 2. Install [DUB registry](http://code.dlang.org/download)
 3. Read about [DUB](http://code.dlang.org/about)
