@@ -30,6 +30,13 @@ Mac OS X comes with the Accelerate framework built in.
 ### Windows
 TODO
 
+###Intro to D
+1. Install D [compiler](http://dlang.org/download.html)
+2. Install [DUB registry](http://code.dlang.org/download)
+3. Read about [DUB](http://code.dlang.org/about)
+4. Read about [DUB package format](http://code.dlang.org/package-format)
+5. Start with [example](https://github.com/9il/atmosphere_gm/tree/master/examples/normal_variance_mean_mixture)
+
 #Benchmarking
 It is suggested the [llvm D compiler](https://github.com/ldc-developers/ldc/releases) be used for benchmarks.
 Project requires LDC version >= 0.15.0 or DMD >= 2.066, or corresponding GDC release.
