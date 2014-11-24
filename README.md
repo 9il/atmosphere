@@ -21,13 +21,11 @@ To use [this package](http://code.dlang.org/packages/atmosphere_gm), put the fol
 
 ##BLAS
 ###ubuntu
-####Default package
+You can install default package
 ```shell
 sudo apt-get install libblas-dev
 ```
-
-####OpenBLAS
-Compile and install optimized [OpenBLAS](https://github.com/xianyi/OpenBLAS).
+or compile and install optimized [OpenBLAS](https://github.com/xianyi/OpenBLAS).
 
 ### OS X
 Mac OS X comes with the [Accelerate framework](https://developer.apple.com/library/mac/documentation/Accelerate/Reference/BLAS_Ref/index.html#//apple_ref/doc/uid/TP40009457) built in.
