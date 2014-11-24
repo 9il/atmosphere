@@ -34,11 +34,11 @@ Mac OS X comes with the [Accelerate framework](https://developer.apple.com/libra
 
 ### Windows (needs to be checked)
 #### x86
-1. Install latest Win32 BLAS from http://sourceforge.net/projects/openblas/files/.
+1. Download latest Win32 BLAS from http://sourceforge.net/projects/openblas/files/.
 2. Copy `lib\libopenblas.a` to `YourProject\blas.lib`.
 
 #### x86_64
-1. Install latest Win64-Int32 BLAS from http://sourceforge.net/projects/openblas/files/.
+1. Download latest Win64-Int32 BLAS from http://sourceforge.net/projects/openblas/files/.
 2. Copy `lib\libopenblas.a` to `YourProject\blas.lib`.
 3. Use `dub --arch=x86_64` to run project.
 
