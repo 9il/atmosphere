@@ -1,7 +1,3 @@
-NVMM example
-==================
-
-# Name conversion
 
 ## [output.csv](data/output.csv)
 
@@ -18,5 +14,5 @@ NVMM example
 3. _lh - log2 likelihood
 4. _alpha - computed alpha
 
-### Testing 
+## Testing 
 [Testing engine for Atmosphere GM](https://github.com/9il/atmosphere_gm_test) Statistical package.
