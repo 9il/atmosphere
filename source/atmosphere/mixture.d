@@ -685,6 +685,13 @@ interface LikelihoodMaximization(T)
 		$(STDREF math, isNormal)
 	*/
 	bool isFeaturesCorrect() const;
+
+
+	/**
+	Returns:
+		LogLikelihood base 2.
+	*/
+	T log2Likelihood() @property const;
 }
 
 /**
@@ -768,6 +775,10 @@ package mixin template LikelihoodMaximizationTemplate(T)
 		return features.transposed.all!(any!isNormal);
 	}
 
+	T log2Likelihood() @property const
+	{
+		return mixture.sumOfLog2s;
+	}
 }
 
 unittest {
