@@ -8,8 +8,8 @@ immutable CSVHead =
 	"GLM_iter, " "GLM_time, GLM_lh, " ~
 	"CLM_iter, " "CLM_time, CLM_lh, " ~
 	"NVMME_iter, " "NVMME_time, NVMME_lh, NVMME_alpha, " ~ 
-	"NVMMC_iter, " "NVMMC_time, NVMMC_lh, NVMMC_alpha, " ~ 
 	"NVMMG_iter, " "NVMMG_time, NVMMG_lh, NVMMG_alpha, " ~
+	"NVMMC_iter, " "NVMMC_time, NVMMC_lh, NVMMC_alpha, " ~ 
 	"unused";
 immutable folder = "data";
 
