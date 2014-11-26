@@ -1,132 +1,126 @@
-import std.file, std.path, std.stdio, std.conv, std.algorithm, 
-	std.range, std.math, std.functional, std.datetime;
-
+import core.sync.mutex;
+import std.algorithm, std.conv, std.csv, std.datetime, std.file, std.format, std.functional, std.math, 
+	std.parallelism, std.path, std.range, std.stdio;
 import atmosphere;
 
-const begin = 0.1;
-const end = 15.0;
-const count = 50;
-const step = (end-begin)/count;
-const eps = 5e-5;
+immutable CSVHead = 
+	"alpha, " ~
+	"GLM_iter, " "GLM_time, GLM_lh, " ~
+	"CLM_iter, " "CLM_time, CLM_lh, " ~
+	"NVMME_iter, " "NVMME_time, NVMME_lh, NVMME_alpha, " ~ 
+	"NVMMC_iter, " "NVMMC_time, NVMMC_lh, NVMMC_alpha, " ~ 
+	"NVMMG_iter, " "NVMMG_time, NVMMG_lh, NVMMG_alpha, " ~
+	"unused";
+immutable folder = "data";
 
 void main()
 {
-	//uniform grid
-	const double[] grid = iota(begin, end+step/2, step).array;
-	writefln("left bound = %s", begin);
-	writefln("right bound = %s", end);
-	writefln("step = %s", step);
-	writefln("grid = %s", grid);
+	writeln("Total threads: ", totalCPUs);
+	auto fout = File(folder.buildPath("output.csv"), "w");
+	auto ferr = File(folder.buildPath("fails.csv"), "w");
+	auto mout = new Mutex;
+	auto merr = new Mutex;
+	auto mstd = new Mutex;
 
-	//for each *.txt file in data folder
-	foreach(file; "data".dirEntries("*.txt", SpanMode.shallow))
+	StopWatch gsw;
+	gsw.start;
+	//file
+	fout.writeln(CSVHead);
+	auto inputs = folder.buildPath("input.csv").readText.splitter.array;
+	//foreach(i, input; inputs)
+	foreach(i, input; inputs.parallel(1))
 	{
-		///reads alpha from file name
-		const alpha = file.baseName(".txt").to!double;
+		StopWatch lsw;
+		lsw.start;
+		auto lineOut = appender!string;
+		lineOut.put(input);
+		lineOut.put(", ");
+		scope(exit) 
+		{
+			lsw.stop;
+			synchronized(mstd) writefln("cpu %s [ %s / %s ] %s", taskPool.workerIndex+1, i+1, inputs.length, cast(Duration)lsw.peek);
+		}
+		scope(success) synchronized(mout)
+		{
+			fout.writeln(lineOut.data);
+			fout.flush;
+		}
+		scope(failure) synchronized(merr)
+		{
+			ferr.writeln(input);
+			ferr.flush;
+		}
+		immutable begin = 0.1;
+		immutable end = 15.0;
+		immutable count = 50;
+		immutable step = (end-begin)/count;
+		immutable eps = 1e-4;
+		immutable grid = iota(begin, end+step/2, step).array;
+		immutable sample = folder.buildPath("data", input ~ ".csv").readText.splitter.map!(to!double).array;
+		immutable pdfs = grid.map!(u => immutable NormalVarianceMeanMixture!double.PDF(input.to!double, u)).array;
+		immutable maxIter = 5000;
+		immutable minIter = 100;
 
-		writeln("DATA =========================================");
-		writefln(file);
-		writefln("α in sample = %s", alpha);
-		writeln("==============================================\n");
-
-		//reads sample from file
-		const double[] sample = file.readText.splitter.map!(to!double).array;
-
-		//iteration counter
-		uint counter;
-		auto sw = StopWatch();
-
-///Common algorithm
-
-		//finds mixture weights
-		writeln("mixture optimization =========================");
-		//compute range of PDFs
-		auto pdfs = grid.map!(u => PDF(alpha, u)).array;
-		///runtime parameters: probability density functions (up to a common constant), sample
-		auto optimizer = new CoordinateLikelihoodMaximization!double(pdfs.length, sample.length);
-		optimizer.put(pdfs, sample);
-		sw.start;
-		optimizer.optimize( ///optimization
-			//tolerance
-			(sumOfLog2sValuePrev, sumOfLog2sValue) 
+		///Common algorithms
+		foreach(LM; TypeTuple!(
+			  GradientLikelihoodMaximization, 
+			CoordinateLikelihoodMaximization))
+		{
+			StopWatch sw;
+			size_t iterCount;
+			auto optimizer = new LM!double(pdfs.length, sample.length);
+			sw.start;
+			try
 			{
-				counter++;
-				return sumOfLog2sValue - sumOfLog2sValuePrev <= eps;
-			});
-		sw.stop;
-		writefln("time: %s ms", sw.peek.msecs);
-		writefln("total iterations: %s", counter);
-		writefln("log2Likelihood = %s", optimizer.mixture.sumOfLog2s);
-		writefln("-----------\nweights = %s", optimizer.weights);
-		writeln("==============================================\n");
-		counter = 0;
-		sw.reset;
-
-///Special α-parametrized EM algorithm:
-
-		///finds good (possibly not the best) value of parameter alpha and mixture weights
-		auto spacialEMOptimizer = new NormalVarianceMeanMixtureEMAndCoordinate!double(grid, sample.length);
-		spacialEMOptimizer.sample = sample;
-		writeln("α-parametrized EM mixture optimization =======");
-		sw.start;
-		spacialEMOptimizer.optimize( ///optimization
-			//tolerance
-			(alphaPrev, alpha, double log2LikelihoodPrev, double log2Likelihood)
+				optimizer.put(pdfs, sample);
+				optimizer.optimize( ///optimization
+					(log2LikelihoodPrev, log2Likelihood) 
+					{
+						iterCount++;
+						return iterCount >= maxIter || log2Likelihood - log2LikelihoodPrev <= eps;
+					});				
+			}
+			catch (FeaturesException e)
 			{
-				counter++;
-				return log2Likelihood - log2LikelihoodPrev <= eps;
-			});
-		sw.stop;
-		writefln("time: %s ms", sw.peek.msecs);
-		writefln("total iterations: %s", counter);
-		writefln("α = %s", spacialEMOptimizer.alpha);
-		writefln("log2Likelihood = %s", spacialEMOptimizer.log2Likelihood);
-		writefln("-----------\nweights = %s", spacialEMOptimizer.weights);
-		//writefln("-----------\ngrid = %s", optimizer.grid);
-		writeln("==============================================\n");
+				sw.stop;
+				lineOut.formattedWrite("%s, %s, FeaturesException, ", iterCount, sw.peek.msecs);
+				continue;
+			}
+			sw.stop;
+			lineOut.formattedWrite("%s, %s, %s, ", iterCount, sw.peek.msecs, optimizer.log2Likelihood);
+		}
+
+		///Special α-parametrized EM algorithms
+		foreach(NVMM; TypeTuple!(
+			NormalVarianceMeanMixtureEM, 
+			NormalVarianceMeanMixtureEMAndGradient, 
+			NormalVarianceMeanMixtureEMAndCoordinate))
+		{
+			StopWatch sw;
+			size_t iterCount;
+			auto optimizer = new NVMM!double(grid, sample.length);
+			sw.start;
+			try 
+			{
+				optimizer.sample = sample;
+				optimizer.optimize( ///optimization
+					//tolerance
+					(alphaPrev, alpha, double log2LikelihoodPrev, double log2Likelihood)
+					{
+						iterCount++;
+						return iterCount >= maxIter || iterCount >= minIter && log2Likelihood - log2LikelihoodPrev <= eps;
+					});				
+			}
+			catch (FeaturesException e)
+			{
+				sw.stop;
+				lineOut.formattedWrite("%s, %s, FeaturesException, -, ", iterCount, sw.peek.msecs);
+				continue;
+			}
+			sw.stop;
+			lineOut.formattedWrite("%s, %s, %s, %s, ", iterCount, sw.peek.msecs, optimizer.log2Likelihood, optimizer.alpha);
+		}
 	}
-}
-
-//probability density function
-struct PDF
-{
-	double alphau;
-	double sqrtu;
-
-	this(double alpha, double u)
-	{
-		alphau = alpha * u;
-		sqrtu = sqrt(u);
-	}
-
-	///call operator overloading
-	double opCall(double x) const
-	{
-		immutable y = (x - alphau) / sqrtu;
-		//up to a constant!
-		return exp(y * y / -2) / sqrtu;
-	}
-}
-
-
-///Computes accurate sum of binary logarithms of input range $(D r).
-//Will be available in std.numeric with DMD 2.068.
-double sumOfLog2s(in double[] r) 
-{
-    long exp = 0;
-    Unqual!(typeof(return)) x = 1; 
-    foreach (e; r)
-    {
-        if (e < 0)
-            return typeof(return).nan;
-        int lexp = void;
-        x *= frexp(e, lexp);
-        exp += lexp;
-        if (x < 0.5) 
-        {
-            x *= 2;
-            exp--;
-        }
-    }
-    return exp + log2(x); 
+	gsw.stop;
+	writefln("time: %s", cast(Duration)gsw.peek);
 }
