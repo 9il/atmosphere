@@ -244,10 +244,6 @@ final:
 	}
 
 
-	/**
-	Returns:
-		LogLikelihood base 2.
-	*/
 	T log2Likelihood() @property const
 	{
 		return _log2Likelihood;
@@ -319,12 +315,12 @@ final:
 		updateMixture;
 	}
 
-	private static struct PDF
+	static struct PDF
 	{
 		T alphau;
 		T sqrtu;
 
-		this(T alpha, T u)
+		this(T alpha, T u) inout
 		{
 			assert(u > 0);
 			this.alphau = alpha*u;
@@ -332,7 +328,7 @@ final:
 			assert(sqrtu > 0);
 		}
 
-		T opCall(T x) const
+		T opCall(T x) inout
 		{
 			immutable y = (x - alphau) / sqrtu;
 			return exp(y * y / -2) / sqrtu;
