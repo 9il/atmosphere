@@ -54,58 +54,49 @@
 
 <p>Documentation can be found <a href="http://9il.github.io/atmosphere_gm/atmosphere.package.html">here</a>.</p>
 
+<h4>
+<a id="changelog" class="anchor" href="#changelog" aria-hidden="true"><span class="octicon octicon-link"></span></a>Changelog</h4>
+
+<p>See <a href="https://github.com/9il/atmosphere_gm/releases">release notes</a>.</p>
+
+<h4>
+<a id="benchmarking-and-testing" class="anchor" href="#benchmarking-and-testing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Benchmarking and testing</h4>
+
+<p>It is suggested the <a href="https://github.com/ldc-developers/ldc/releases">llvm D compiler</a> be used for benchmarks.
+Project requires LDC version &gt;= 0.15.0 or DMD &gt;= 2.066, or corresponding GDC release.
+The <a href="http://dlang.org/download.html">DMD</a> is easy way to start.</p>
+
+<p>See also <a href="https://github.com/9il/atmosphere_gm_test">Atmosphere GM Test</a>. </p>
+
 <h1>
 <a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h1>
 
-<p>To use <a href="http://code.dlang.org/packages/atmosphere_gm">this package</a>, put the following dependency into your project's
-<a href="http://code.dlang.org/about">dub</a>.json into the dependencies section:</p>
-
-<div class="highlight highlight-json"><pre>{
-    <span class="pl-ii">...</span>
-    <span class="pl-s1"><span class="pl-pds">"</span>dependencies<span class="pl-pds">"</span></span>: {
-        <span class="pl-s1"><span class="pl-pds">"</span>atmosphere_gm<span class="pl-pds">"</span></span>: <span class="pl-s1"><span class="pl-pds">"</span>&gt;=0.0.3<span class="pl-pds">"</span></span>
-    }
-}</pre></div>
-
-<h2>
-<a id="blas" class="anchor" href="#blas" aria-hidden="true"><span class="octicon octicon-link"></span></a>BLAS</h2>
-
-<h3>
-<a id="ubuntu" class="anchor" href="#ubuntu" aria-hidden="true"><span class="octicon octicon-link"></span></a>ubuntu</h3>
-
-<p>You can install default package</p>
-
-<div class="highlight highlight-shell"><pre>sudo apt-get install libblas-dev</pre></div>
-
-<p>or compile and install optimized <a href="https://github.com/xianyi/OpenBLAS">OpenBLAS</a>.</p>
-
-<h3>
-<a id="os-x" class="anchor" href="#os-x" aria-hidden="true"><span class="octicon octicon-link"></span></a>OS X</h3>
-
-<p>Mac OS X comes with the <a href="https://developer.apple.com/library/mac/documentation/Accelerate/Reference/BLAS_Ref/index.html#//apple_ref/doc/uid/TP40009457">Accelerate framework</a> built in.</p>
-
-<h3>
-<a id="windows-needs-to-be-checked" class="anchor" href="#windows-needs-to-be-checked" aria-hidden="true"><span class="octicon octicon-link"></span></a>Windows (needs to be checked)</h3>
-
 <h4>
-<a id="x86" class="anchor" href="#x86" aria-hidden="true"><span class="octicon octicon-link"></span></a>x86</h4>
+<a id="install-blas" class="anchor" href="#install-blas" aria-hidden="true"><span class="octicon octicon-link"></span></a>Install BLAS</h4>
+
+<ul>
+<li>If you're on <code>Ubuntu</code>, you can install default package <code>sudo apt-get install libblas-dev</code> or compile and install optimized <a href="https://github.com/xianyi/OpenBLAS">OpenBLAS</a>.</li>
+<li>
+<code>OS X</code> comes with the <a href="https://developer.apple.com/library/mac/documentation/Accelerate/Reference/BLAS_Ref/index.html#//apple_ref/doc/uid/TP40009457">Accelerate framework</a> built in.</li>
+<li>Instruction for <code>Windows x86</code> (needs to be checked)
 
 <ol>
 <li>Download latest <code>Win32</code> BLAS from <a href="http://sourceforge.net/projects/openblas/files/">http://sourceforge.net/projects/openblas/files/</a>.</li>
 <li>Copy <code>lib\libopenblas.a</code> to <code>YourProject\blas.lib</code>.</li>
 </ol>
-
-<h4>
-<a id="x86_64" class="anchor" href="#x86_64" aria-hidden="true"><span class="octicon octicon-link"></span></a>x86_64</h4>
+</li>
+<li> Instruction for <code>Windows x86_64</code> (needs to be checked)
 
 <ol>
 <li>Download latest <code>Win64-Int32</code> BLAS from <a href="http://sourceforge.net/projects/openblas/files/">http://sourceforge.net/projects/openblas/files/</a>.</li>
 <li>Copy <code>lib\libopenblas.a</code> to <code>YourProject\blas.lib</code>.</li>
 <li>Use <code>dub --arch=x86_64</code> to run project.</li>
 </ol>
+</li>
+</ul>
 
-<h2>
-<a id="intro-to-d" class="anchor" href="#intro-to-d" aria-hidden="true"><span class="octicon octicon-link"></span></a>Intro to D</h2>
+<h4>
+<a id="intro-to-d" class="anchor" href="#intro-to-d" aria-hidden="true"><span class="octicon octicon-link"></span></a>Intro to D</h4>
 
 <ol>
 <li>Install D <a href="http://dlang.org/download.html">compiler</a>
@@ -120,14 +111,18 @@
 </li>
 </ol>
 
-<h1>
-<a id="benchmarking-and-testing" class="anchor" href="#benchmarking-and-testing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Benchmarking and testing</h1>
+<h4>
+<a id="package" class="anchor" href="#package" aria-hidden="true"><span class="octicon octicon-link"></span></a>Package</h4>
 
-<p>It is suggested the <a href="https://github.com/ldc-developers/ldc/releases">llvm D compiler</a> be used for benchmarks.
-Project requires LDC version &gt;= 0.15.0 or DMD &gt;= 2.066, or corresponding GDC release.
-The <a href="http://dlang.org/download.html">DMD</a> is easy way to start.</p>
+<p>To use <a href="http://code.dlang.org/packages/atmosphere_gm">this package</a>, put the following dependency into your project's
+<a href="http://code.dlang.org/about">dub</a>.json into the dependencies section:</p>
 
-<p>See also <a href="https://github.com/9il/atmosphere_gm_test">Atmosphere GM Test</a>. </p>
+<div class="highlight highlight-json"><pre>{
+    <span class="pl-ii">...</span>
+    <span class="pl-s1"><span class="pl-pds">"</span>dependencies<span class="pl-pds">"</span></span>: {
+        <span class="pl-s1"><span class="pl-pds">"</span>atmosphere_gm<span class="pl-pds">"</span></span>: <span class="pl-s1"><span class="pl-pds">"</span>&gt;=0.0.4<span class="pl-pds">"</span></span>
+    }
+}</pre></div>
       </section>
       <footer>
         <p>Project maintained by <a href="https://github.com/9il">9il</a></p>
