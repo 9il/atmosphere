@@ -6,7 +6,7 @@
 
 #Documentation
 Documentation can be found [here](http://9il.github.io/atmosphere_gm/atmosphere.package.html).
-##Changelog
+####Changelog
 See [release notes](https://github.com/9il/atmosphere_gm/releases).
 
 #Installation
