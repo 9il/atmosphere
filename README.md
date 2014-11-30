@@ -17,8 +17,8 @@ See also [Atmosphere GM Test](https://github.com/9il/atmosphere_gm_test).
 
 #Installation
 
-##Install BLAS
-1. ubuntu
+####Install BLAS
+* ubuntu
 You can install default package
 ```shell
 sudo apt-get install libblas-dev
@@ -26,25 +26,23 @@ sudo apt-get install libblas-dev
 or compile and install optimized [OpenBLAS](https://github.com/xianyi/OpenBLAS).
 Instruction
 
-2. Mac OS X comes with the [Accelerate framework](https://developer.apple.com/library/mac/documentation/Accelerate/Reference/BLAS_Ref/index.html#//apple_ref/doc/uid/TP40009457) built in.
+* Mac OS X comes with the [Accelerate framework](https://developer.apple.com/library/mac/documentation/Accelerate/Reference/BLAS_Ref/index.html#//apple_ref/doc/uid/TP40009457) built in.
+* Windows x86 (needs to be checked)
+	1. Download latest `Win32` BLAS from http://sourceforge.net/projects/openblas/files/.
+	2. Copy `lib\libopenblas.a` to `YourProject\blas.lib`.
+* Windows x86_64 (needs to be checked)
+	1. Download latest `Win64-Int32` BLAS from http://sourceforge.net/projects/openblas/files/.
+	2. Copy `lib\libopenblas.a` to `YourProject\blas.lib`.
+	3. Use `dub --arch=x86_64` to run project.
 
-3. Windows (needs to be checked)
-	* x86
-		1. Download latest `Win32` BLAS from http://sourceforge.net/projects/openblas/files/.
-		2. Copy `lib\libopenblas.a` to `YourProject\blas.lib`.
-	* x86_64
-		1. Download latest `Win64-Int32` BLAS from http://sourceforge.net/projects/openblas/files/.
-		2. Copy `lib\libopenblas.a` to `YourProject\blas.lib`.
-		3. Use `dub --arch=x86_64` to run project.
-
-##Intro to D
+####Intro to D
 1. Install D [compiler](http://dlang.org/download.html)
 2. Install [DUB registry](http://code.dlang.org/download)
 3. Read about [DUB](http://code.dlang.org/about)
 4. Read about [DUB package format](http://code.dlang.org/package-format)
 5. Start with [example](https://github.com/9il/atmosphere_gm/tree/master/examples/normal_variance_mean_mixture)
 
-## Package
+#### Package
 To use [this package](http://code.dlang.org/packages/atmosphere_gm), put the following dependency into your project's
 [dub](http://code.dlang.org/about).json into the dependencies section:
 ```json
