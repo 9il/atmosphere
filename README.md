@@ -18,25 +18,22 @@ See also [Atmosphere GM Test](https://github.com/9il/atmosphere_gm_test).
 #Installation
 
 ##Install BLAS
-1. ubuntu
+* ubuntu
 You can install default package
 ```shell
 sudo apt-get install libblas-dev
 ```
 or compile and install optimized [OpenBLAS](https://github.com/xianyi/OpenBLAS).
-
-2. OS X
-Mac OS X comes with the [Accelerate framework](https://developer.apple.com/library/mac/documentation/Accelerate/Reference/BLAS_Ref/index.html#//apple_ref/doc/uid/TP40009457) built in.
-
-3. Windows (needs to be checked)
-3.1. x86
-1. Download latest `Win32` BLAS from http://sourceforge.net/projects/openblas/files/.
-2. Copy `lib\libopenblas.a` to `YourProject\blas.lib`.
-
-3.2. x86_64
-1. Download latest `Win64-Int32` BLAS from http://sourceforge.net/projects/openblas/files/.
-2. Copy `lib\libopenblas.a` to `YourProject\blas.lib`.
-3. Use `dub --arch=x86_64` to run project.
+Instruction
+* Mac OS X comes with the [Accelerate framework](https://developer.apple.com/library/mac/documentation/Accelerate/Reference/BLAS_Ref/index.html#//apple_ref/doc/uid/TP40009457) built in.
+* Windows (needs to be checked)
+	* x86
+		1. Download latest `Win32` BLAS from http://sourceforge.net/projects/openblas/files/.
+		2. Copy `lib\libopenblas.a` to `YourProject\blas.lib`.
+	* x86_64
+		1. Download latest `Win64-Int32` BLAS from http://sourceforge.net/projects/openblas/files/.
+		2. Copy `lib\libopenblas.a` to `YourProject\blas.lib`.
+		3. Use `dub --arch=x86_64` to run project.
 
 ##Intro to D
 1. Install D [compiler](http://dlang.org/download.html)
