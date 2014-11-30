@@ -20,10 +20,10 @@ See also [Atmosphere GM Test](https://github.com/9il/atmosphere_gm_test).
 ####Install BLAS
 * If you're on `Ubuntu`, you can install default package `sudo apt-get install libblas-dev` or compile and install optimized [OpenBLAS](https://github.com/xianyi/OpenBLAS).
 * `OS X` comes with the [Accelerate framework](https://developer.apple.com/library/mac/documentation/Accelerate/Reference/BLAS_Ref/index.html#//apple_ref/doc/uid/TP40009457) built in.
-* `Windows x86` (needs to be checked)
+* Instruction for `Windows x86` (needs to be checked)
 	1. Download latest `Win32` BLAS from http://sourceforge.net/projects/openblas/files/.
 	2. Copy `lib\libopenblas.a` to `YourProject\blas.lib`.
-* `Windows x86_64` (needs to be checked)
+*  Instruction for `Windows x86_64` (needs to be checked)
 	1. Download latest `Win64-Int32` BLAS from http://sourceforge.net/projects/openblas/files/.
 	2. Copy `lib\libopenblas.a` to `YourProject\blas.lib`.
 	3. Use `dub --arch=x86_64` to run project.
