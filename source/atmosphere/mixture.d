@@ -667,7 +667,7 @@ interface LikelihoodMaximization(T)
 	*/
 	void optimize
 	(
-		scope bool delegate (T sumOfLog2sValuePrev, T sumOfLog2sValue, in T[] weightsPrev, in T[] weights) tolerance,
+		scope bool delegate (T log2LikelihoodValuePrev, T log2LikelihoodValue, in T[] weightsPrev, in T[] weights) tolerance,
 		scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null,
 	);
 
@@ -685,7 +685,7 @@ interface LikelihoodMaximization(T)
 	*/
 	void optimize
 	(
-		scope bool delegate (T sumOfLog2sValuePrev, T sumOfLog2sValue) tolerance,
+		scope bool delegate (T log2LikelihoodValuePrev, T log2LikelihoodValue) tolerance,
 		scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null,
 	);
 
@@ -784,7 +784,7 @@ package mixin template LikelihoodMaximizationTemplate(T)
 
 	void optimize
 	(
-		scope bool delegate (T sumOfLog2sValuePrev, T sumOfLog2sValue, in T[] weightsPrev, in T[] weights) tolerance,
+		scope bool delegate (T log2LikelihoodValuePrev, T log2LikelihoodValue, in T[] weightsPrev, in T[] weights) tolerance,
 		scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null,
 	)
 	{
@@ -795,7 +795,7 @@ package mixin template LikelihoodMaximizationTemplate(T)
 
 	void optimize
 	(
-		scope bool delegate (T sumOfLog2sValuePrev, T sumOfLog2sValue) tolerance,
+		scope bool delegate (T log2LikelihoodValuePrev, T log2LikelihoodValue) tolerance,
 		scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null,
 	)
 	{
