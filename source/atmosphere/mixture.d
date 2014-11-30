@@ -50,8 +50,8 @@ static struct PDF
 	double opCall(double x) const
 	{
 		immutable y = (x - alphau) / sqrtu;
-		//up to a constant!
-		return exp(y * y / -2) / sqrtu;
+		enum T c = 0.398942280401432677939946059934381868475858631164934657665925;
+		return c * exp(y * y / -2) / sqrtu;
 	}
 }
 
