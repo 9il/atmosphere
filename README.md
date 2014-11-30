@@ -6,6 +6,8 @@
 
 #Documentation
 Documentation can be found [here](http://9il.github.io/atmosphere_gm/atmosphere.package.html).
+##Changelog
+See [release notes](https://github.com/9il/atmosphere_gm/releases).
 
 #Installation
 To use [this package](http://code.dlang.org/packages/atmosphere_gm), put the following dependency into your project's
@@ -14,7 +16,7 @@ To use [this package](http://code.dlang.org/packages/atmosphere_gm), put the fol
 {
 	...
 	"dependencies": {
-		"atmosphere_gm": ">=0.0.3"
+		"atmosphere_gm": ">=0.0.4"
 	}
 }
 ```
