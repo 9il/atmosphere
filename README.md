@@ -13,7 +13,7 @@ It is suggested the [llvm D compiler](https://github.com/ldc-developers/ldc/rele
 Project requires LDC version >= 0.15.0 or DMD >= 2.066, or corresponding GDC release.
 The [DMD](http://dlang.org/download.html) is easy way to start.
 
-See also [Atmosphere GM Test](https://github.com/9il/atmosphere_gm_test). 
+See [Atmosphere GM Test](https://github.com/9il/atmosphere_gm_test) for testing. 
 
 #Installation
 
