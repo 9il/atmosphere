@@ -295,7 +295,6 @@ final:
 		updateMixtureBack;
 	}
 
-
 	/**
 	Puts back new features for each components.
 	Params:
@@ -452,9 +451,10 @@ final:
 	Params:
 		_weights = new mixture weights
 	*/
-	void weights(in T[] _weights) @property
+	void weights(Range)(Range _weights) @property
+		if(isInputRange!Range) 
 	{
-		this._weights[] = _weights[];
+		_weights.copy(this._weights);
 		updateMixture;
 	}
 
@@ -639,11 +639,21 @@ Params:
 interface LikelihoodMaximization(T)
 {
 	/**
+	Set weights in proportion to the likelihood.
+	*/
+	void setWeightsInProportionToLikelihood();
+
+	/**
 	See_Also:
 		 $(STDREF traits, isCallable)
 	*/
 	void put(PDFRange, SampleRange)(PDFRange pdfs, SampleRange sample)
 		if (isInputRange!PDFRange && hasLength!PDFRange && isCallable!(ElementType!PDFRange));
+
+	//ditto
+	void putAndSetWeightsInProportionToLikelihood(PDFRange, SampleRange)(PDFRange pdfs, SampleRange sample)
+		if (isInputRange!PDFRange && hasLength!PDFRange && isCallable!(ElementType!PDFRange));
+
 
 	/**
 	Performs optimization.
@@ -735,6 +745,16 @@ class GradientLikelihoodMaximization(T) : GradientDescent!((a, b) {foreach(i, ai
 
 package mixin template LikelihoodMaximizationTemplate(T)
 {
+	void setWeightsInProportionToLikelihood()
+	{
+		features.map!sumOfLog2s.copy(_weights);
+		_weights[] -= _weights.reduce!max;
+		foreach(ref w; _weights)
+			w = exp2(w);
+		_weights.normalize;
+		updateMixture;
+	}
+
 	void put(PDFRange, SampleRange)(PDFRange pdfs, SampleRange sample)
 		if (isInputRange!PDFRange && hasLength!PDFRange && isCallable!(ElementType!PDFRange))
 	in
@@ -746,6 +766,20 @@ package mixin template LikelihoodMaximizationTemplate(T)
 		super.put(sample.map!(x => pdfs.map!(pdf => pdf(x))));
 		if (!isFeaturesCorrect)
 			throw new FeaturesException;
+	}
+
+	void putAndSetWeightsInProportionToLikelihood(PDFRange, SampleRange)(PDFRange pdfs, SampleRange sample)
+		if (isInputRange!PDFRange && hasLength!PDFRange && isCallable!(ElementType!PDFRange))
+	in
+	{
+		assert(pdfs.length == _featuresT.matrix.height);
+	}
+	body
+	{
+		.put(_featuresT, sample.map!(x => pdfs.map!(pdf => pdf(x))));
+		if (!isFeaturesCorrect)
+			throw new FeaturesException;
+		setWeightsInProportionToLikelihood();
 	}
 
 	void optimize

@@ -72,7 +72,7 @@ void main()
 			sw.start;
 			try
 			{
-				optimizer.put(pdfs, sample);
+				optimizer.putAndSetWeightsInProportionToLikelihood(pdfs, sample);
 				optimizer.optimize( ///optimization
 					(log2LikelihoodPrev, log2Likelihood) 
 					{

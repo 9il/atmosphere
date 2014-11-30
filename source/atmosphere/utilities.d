@@ -19,6 +19,7 @@ import simple_matrix;
 Computes accurate sum of binary logarithms of input range $(D r).
 Will be avalible in std.numeric with with DMD 2.068.
  */
+public // @@BUG@@
 T sumOfLog2s(T)(T[] r) 
 {
 	import std.math : frexp; 
