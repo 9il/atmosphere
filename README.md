@@ -25,7 +25,9 @@ sudo apt-get install libblas-dev
 ```
 or compile and install optimized [OpenBLAS](https://github.com/xianyi/OpenBLAS).
 Instruction
+
 2. Mac OS X comes with the [Accelerate framework](https://developer.apple.com/library/mac/documentation/Accelerate/Reference/BLAS_Ref/index.html#//apple_ref/doc/uid/TP40009457) built in.
+
 3. Windows (needs to be checked)
 	* x86
 		1. Download latest `Win32` BLAS from http://sourceforge.net/projects/openblas/files/.
