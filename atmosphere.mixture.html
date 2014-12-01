@@ -169,8 +169,8 @@ n - length of sample, n may vary (sliding window).
 </span>	<span class="d_keyword">double</span> opCall(<span class="d_keyword">double</span> x) <span class="d_keyword">const</span>
 	{
 		<span class="d_keyword">immutable</span> y = (x - alphau) / sqrtu;
-		<span class="d_comment">//up to a constant!
-</span>		<span class="d_keyword">return</span> exp(y * y / -2) / sqrtu;
+		<span class="d_keyword">enum</span> T c = 0.398942280401432677939946059934381868475858631164934657665925;
+		<span class="d_keyword">return</span> c * exp(y * y / -2) / sqrtu;
 	}
 }
 
@@ -226,7 +226,7 @@ optimizer.optimize(tolerance);
 <hr><div class="row-fluid declaration"><h3>class <span class="symbol-target" id="FeaturesException">&nbsp;</span><a class="symbol-link" href="#FeaturesException">FeaturesException</a>: <u>atmosphere.mixture.MixtureOptimizerException</u>;
 </h3></div>
 <div class="declaration-content"><br><br>
-<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>pure @safe this(string <i>msg</i> = "There is value in sample that incompatible with all PDFs or machine precision is insufficient.", string <i>file</i> = __FILE__, size_t <i>line</i> = __LINE__);
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>pure @safe this(string <i>msg</i> = "There is value in the sample that incompatible with all PDFs or machine precision is insufficient.", string <i>file</i> = __FILE__, size_t <i>line</i> = __LINE__);
 </h3></div>
 <div class="declaration-content"><dl><p>Constructor which takes an error message.
 </p>
@@ -434,11 +434,11 @@ optimizer.eval;
 </dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>@property void <span class="symbol-target" id="weights">&nbsp;</span><a class="symbol-link" href="#weights">weights</a>(in T[] <i>_weights</i>);
+<hr><div class="row-fluid declaration"><h3>@property void <span class="symbol-target" id="weights">&nbsp;</span><a class="symbol-link" href="#weights">weights</a>(Range)(Range <i>_weights</i>) if (isInputRange!Range);
 </h3></div>
 <div class="declaration-content"><dl><p>Set the mixture <span class="symbol-target" id="weights">&nbsp;</span><a class="symbol-link" href="#weights">weights</a> and calls <a class="symbol-link" href="#update"><span class="inlinecode">update</span></a>.
 </p>
-<dt>Parameters</dt><dd><table class="table table-condensed table-bordered"><tr><td>T[] <i>_weights</i></td>
+<dt>Parameters</dt><dd><table class="table table-condensed table-bordered"><tr><td>Range _weights</td>
 <td>new mixture <span class="symbol-target" id="weights">&nbsp;</span><a class="symbol-link" href="#weights">weights</a></td></tr>
 </table></dd>
 </dl>
@@ -508,16 +508,21 @@ optimizer.eval;
 <td>floating point type</td></tr>
 </table></dd>
 </dl>
-<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="put">&nbsp;</span><a class="symbol-link" href="#put">put</a>(PDFRange, SampleRange)(PDFRange <i>pdfs</i>, SampleRange <i>sample</i>) if (isInputRange!PDFRange &amp;&amp; hasLength!PDFRange &amp;&amp; isCallable!(ElementType!PDFRange));
+<div class="offset1 member-list"><hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="setWeightsInProportionToLikelihood">&nbsp;</span><a class="symbol-link" href="#setWeightsInProportionToLikelihood">setWeightsInProportionToLikelihood</a>();
+</h3></div>
+<div class="declaration-content"><dl><p>Set weights in proportion to the likelihood.</p>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="put">&nbsp;</span><a class="symbol-link" href="#put">put</a>(PDFRange, SampleRange)(PDFRange <i>pdfs</i>, SampleRange <i>sample</i>) if (isInputRange!PDFRange &amp;&amp; hasLength!PDFRange &amp;&amp; isCallable!(ElementType!PDFRange));
 </h3></div>
 <div class="declaration-content"><dl><dt>See Also</dt><dd><a href="http://dlang.org/phobos/std_traits.html#isCallable"><span class="inlinecode">std.traits.isCallable</span></a></dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="optimize">&nbsp;</span><a class="symbol-link" href="#optimize">optimize</a>(scope bool delegate(T sumOfLog2sValuePrev, T sumOfLog2sValue, in T[] weightsPrev, in T[] weights) <i>tolerance</i>, scope bool delegate(T a, T b) nothrow @nogc <i>findRootTolerance</i> = null);
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="optimize">&nbsp;</span><a class="symbol-link" href="#optimize">optimize</a>(scope bool delegate(T log2LikelihoodValuePrev, T log2LikelihoodValue, in T[] weightsPrev, in T[] weights) <i>tolerance</i>, scope bool delegate(T a, T b) nothrow @nogc <i>findRootTolerance</i> = null);
 </h3></div>
 <div class="declaration-content"><dl><p>Performs optimization.
 </p>
-<dt>Parameters</dt><dd><table class="table table-condensed table-bordered"><tr><td>bool delegate(T sumOfLog2sValuePrev, T sumOfLog2sValue, in T[] weightsPrev, in T[] weights) <i>tolerance</i></td>
+<dt>Parameters</dt><dd><table class="table table-condensed table-bordered"><tr><td>bool delegate(T log2LikelihoodValuePrev, T log2LikelihoodValue, in T[] weightsPrev, in T[] weights) <i>tolerance</i></td>
 <td>Defines an early termination condition.
 			Receives the current and previous versions of log2Likelihood and weights.
 			The delegate must return <span class="d_keyword">true</span> when likelihood and weights are acceptable.</td></tr>
@@ -527,11 +532,11 @@ optimizer.eval;
 <dt>See Also</dt><dd><a href="http://dlang.org/phobos/std_numeric.html#findRoot"><span class="inlinecode">std.numeric.findRoot</span></a></dd>
 </dl>
 </div>
-<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="optimize">&nbsp;</span><a class="symbol-link" href="#optimize">optimize</a>(scope bool delegate(T sumOfLog2sValuePrev, T sumOfLog2sValue) <i>tolerance</i>, scope bool delegate(T a, T b) nothrow @nogc <i>findRootTolerance</i> = null);
+<hr><div class="row-fluid declaration"><h3>void <span class="symbol-target" id="optimize">&nbsp;</span><a class="symbol-link" href="#optimize">optimize</a>(scope bool delegate(T log2LikelihoodValuePrev, T log2LikelihoodValue) <i>tolerance</i>, scope bool delegate(T a, T b) nothrow @nogc <i>findRootTolerance</i> = null);
 </h3></div>
 <div class="declaration-content"><dl><p>Performs optimization.
 </p>
-<dt>Parameters</dt><dd><table class="table table-condensed table-bordered"><tr><td>bool delegate(T sumOfLog2sValuePrev, T sumOfLog2sValue) <i>tolerance</i></td>
+<dt>Parameters</dt><dd><table class="table table-condensed table-bordered"><tr><td>bool delegate(T log2LikelihoodValuePrev, T log2LikelihoodValue) <i>tolerance</i></td>
 <td>Defines an early termination condition.
 			Receives the current and previous versions of log2Likelihood.
 			The delegate must return <span class="d_keyword">true</span> when likelihood are acceptable.</td></tr>
@@ -548,6 +553,11 @@ optimizer.eval;
 <div class="declaration-content"><dl><p>Returns <span class="d_keyword">true</span> if for all values in sample exists probability density function from mixture such that <span class="inlinecode">isNormal(PDF(value))</span>
 </p>
 <dt>See Also</dt><dd><a href="http://dlang.org/phobos/std_math.html#isNormal"><span class="inlinecode">std.math.isNormal</span></a></dd>
+</dl>
+</div>
+<hr><div class="row-fluid declaration"><h3>const @property T <span class="symbol-target" id="log2Likelihood">&nbsp;</span><a class="symbol-link" href="#log2Likelihood">log2Likelihood</a>();
+</h3></div>
+<div class="declaration-content"><dl><dt>Returns</dt><dd>LogLikelihood base 2.</dd>
 </dl>
 </div>
 </div>
