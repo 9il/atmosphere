@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<link rel="stylesheet" type="text/css" href="../../style.css"/><script src="../../highlight.pack.js"></script>
+<title>CoordinateDescent</title>
+<base href="../../"/>
+<script src="search.js"></script>
+</head>
+<body>
+<div class="main">
+<div class="toc">
+<ul>
+<li>
+<span class="package">
+<a href="atmosphere.html">atmosphere</a>
+</span>
+<ul>
+<li>
+<small>atmosphere.</small><a href="atmosphere/mixture.html">mixture</a>
+</li>
+<li>
+<span class="package">
+atmosphere.parametrized
+</span>
+<ul>
+<li>
+<small>atmosphere.parametrized.</small><a href="atmosphere/parametrized/nvmm.html">nvmm</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<span class="package">
+<a href="distribution.html">distribution</a>
+</span>
+<ul>
+<li>
+<small>distribution.</small><a href="distribution/cdf.html">cdf</a>
+</li>
+<li>
+<small>distribution.</small><a href="distribution/pdf.html">pdf</a>
+</li>
+<li>
+<small>distribution.</small><a href="distribution/quantile.html">quantile</a>
+</li>
+<li>
+<small>distribution.</small><a href="distribution/random.html">random</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="simple_matrix.html">simple_matrix</a>
+</li>
+</ul>
+</div>
+<div class="breadcrumbs">
+<table id="results"></table>
+<a class="home" href=index.html>⌂</a>
+<input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
+<small>atmosphere.<a href=atmosphere/mixture.html>mixture</a>.</small><span class="highlight">CoordinateDescent</span></div>
+<div class="content">
+<pre><code>public class CoordinateDescent(alias Gradient, T) : MixtureOptimizer!T
+if(isFloatingPoint!T)
+</code></pre><div class="section">
+<h2>Parameters</h2>
+<table class="params">
+<tr class="param"><td class="paramName">Gradient</td><td class="paramDoc"><p>Gradient of the objective function. <code class="prettyprint">Gradient(a, b)</code> should perform <code class="prettyprint">b = grad_f(a)</code>.
+</p>
+</td></tr>
+</table></div>
+<div class="section">
+<h2>Functions</h2>
+<table>
+<tr><td><a href="atmosphere/mixture/CoordinateDescent.this.html">this</a></td><td></td><td></td></tr></table>
+</div>
+
+<script>hljs.initHighlightingOnLoad();</script>
+</div>
+</div>
+</body>
+</html>
