@@ -52,8 +52,7 @@ Params:
 	tolerance = Defines an early termination condition. 
 				Receives the current upper and lower bounds on the root. 
 				The delegate must return true when these bounds are acceptable. 
-See_Also:
-	$(MREF mix),
+See_Also: $(MREF mix),
 	$(STDREF numeric, findRoot)
 Preconditions:
 	mixture = Wp
@@ -113,8 +112,7 @@ Params:
 	tolerance = Defines an early termination condition. 
 				Receives the current upper and lower bounds on the root. 
 				The delegate must return true when these bounds are acceptable. 
-See_Also:
-	$(MREF mix),
+See_Also:	$(MREF mix),
 	$(MREF coordinateDescentIterationPartial),
 	$(STDREF numeric, findRoot)
 Preconditions:
@@ -168,7 +166,7 @@ Perform k iterations of coordinate descent optimization algorithm.
 For better performance permute rows of $(D_PARAM WTransposed) rows and corresponding elements of p.
 Similar rows (in context of u) of $(D_PARAM WTransposed) should be held far from each other.
 Params:
-	PartialDerivative = Partial derivative $(D y) of objective convex function $(D u): $(D du/dω_j = y(ω_j), 1 <= j <= n).
+	PartialDerivative = Partial derivative `y` of objective convex function `u`: `du/dω_j = y(ω_j), 1 <= j <= n.
 	WTransposed = transposed version of W. n columns, k rows.
 	p = mixture weight. length = k.
 	mixture = Wp, length = n.
@@ -176,8 +174,7 @@ Params:
 	tolerance = Defines an early termination condition. 
 				Receives the current upper and lower bounds on the root. 
 				The delegate must return true when these bounds are acceptable. 
-See_Also:
-	$(MREF mix),
+See_Also: $(MREF mix),
 	$(MREF coordinateDescentIteration),
 	$(STDREF numeric, findRoot)
 Preconditions:
@@ -273,8 +270,7 @@ Params:
 	mixture = Wp, length = n.
 	pi = temporary array, length = n.
 	c = temporary array, length = k.
-See_Also:
-	$(MREF mix)
+See_Also: $(MREF mix)
 Preconditions:
 	mixture = Wp
 */

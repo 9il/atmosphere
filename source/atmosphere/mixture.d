@@ -50,7 +50,7 @@ static struct PDF
 	double opCall(double x) const
 	{
 		immutable y = (x - alphau) / sqrtu;
-		enum T c = 0.398942280401432677939946059934381868475858631164934657665925;
+		enum T c = 0.3989422804014326779399460599L;
 		return c * exp(y * y / -2) / sqrtu;
 	}
 }
@@ -137,12 +137,12 @@ class FeaturesException : MixtureOptimizerException
 	}
 }
 
+struct attri {}
 
 /**
-Params:
-	T = floating point type
 */
 abstract class MixtureOptimizer(T)
+	if(isFloatingPoint!T)
 {
 	package SlidingWindow!T _featuresT;
 	package T[] _weights;
@@ -173,8 +173,7 @@ abstract class MixtureOptimizer(T)
 	findRootTolerance = Defines an early termination condition. 
 			Receives the current upper and lower bounds on the root. 
 			The delegate must return true when these bounds are acceptable.
-	See_Also:
-		$(STDREF numeric, findRoot)
+	See_Also: $(STDREF numeric, findRoot)
 	*/
 	abstract void eval(scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null);
 
@@ -190,11 +189,10 @@ final:
 	Params:
 		objectiveFunction = accepts mixture.
 		tolerance = Defines an early termination condition. 
-			Receives the current and previous versions of $(D objectiveFunction(mixture)) and weights. 
+			Receives the current and previous versions of `objectiveFunction(mixture))` and weights. 
 			The delegate must return true when mixture and weights are acceptable. 
 		findRootTolerance = Tolerance for inner optimization.
-	See_Also:
-		$(STDREF numeric, findRoot)
+	See_Also: $(STDREF numeric, findRoot)
 	*/
 	void optimize(
 			scope T delegate(in T[] mixture) objectiveFunction, 
@@ -221,11 +219,10 @@ final:
 	Params:
 		objectiveFunction = accepts mixture.
 		tolerance = Defines an early termination condition. 
-			Receives the current and previous versions of $(D objectiveFunction(mixture)). 
+			Receives the current and previous versions of `objectiveFunction(mixture))`. 
 			The delegate must return true when mixture are acceptable. 
 		findRootTolerance = Tolerance for inner optimization.
-	See_Also:
-		$(STDREF numeric, findRoot)
+	See_Also: $(STDREF numeric, findRoot)
 	*/
 	void optimize
 	(
@@ -253,8 +250,7 @@ final:
 			Receives the current and previous versions of weights. 
 			The delegate must return true when mixture and weights are acceptable. 
 		findRootTolerance = Tolerance for inner optimization.
-	See_Also:
-		$(STDREF numeric, findRoot)
+	See_Also: $(STDREF numeric, findRoot)
 	*/
 	void optimize
 	(
@@ -276,11 +272,6 @@ final:
 	Puts back new feature for each components.
 	Params:
 		features = One feature per component.
-	Preconditions:
-		---------
-		features.length == weights.length
-		length+1 <= maxLength
-		---------
 	*/
 	void put(Range)(Range features)
 	if (isInputRange!Range && hasLength!Range && isNumeric!(ElementType!Range))
@@ -299,11 +290,6 @@ final:
 	Puts back new features for each components.
 	Params:
 		featuresROR = Range of ranges of features per component.
-	Preconditions:
-		---------
-		featuresROR[j].length == weights.length
-		length+featuresROR.length <= maxLength
-		---------
 	*/
 	void put(RangeOfRanges)(RangeOfRanges featuresROR)
 	if (isInputRange!RangeOfRanges && hasLength!RangeOfRanges && 
@@ -322,8 +308,7 @@ final:
 	}
 
 	/**
-	Returns:
-		current length of features for each component
+	Returns: current length of features for each component
 	*/
 	size_t length() @property const
 	{
@@ -331,8 +316,7 @@ final:
 	}
 
 	/**
-	Returns:
-		maximal allowed length of features
+	Returns: maximal allowed length of features
 	*/
 	size_t maxLength() @property const
 	{
@@ -379,8 +363,7 @@ final:
 	}
 
 	/**
-	Returns:
-		Range of range of features for each component. A matrix with k rows and n columns.
+	Returns: Range of range of features for each component. A matrix with k rows and n columns.
 		This is internal representation, and can be discarded after any methods calls.
 	*/
 	Matrix!(const(T)) features() const
@@ -389,13 +372,12 @@ final:
 	}
 
 	/**
-	Returns:
-		Const slice of the internal mixture representation.
+	Returns: Const slice of the internal mixture representation.
 	Example:
-	-------------
+	---
 	double objectiveFunction(in double[])
 	{
-	
+		...
 	}
 
 	//save slice
@@ -406,7 +388,7 @@ final:
 	auto value1 = objectiveFunction(mixture);
 
 
-	//use $(D .dup) or copy to save current mixture
+	//use `.dup` or copy to save current mixture
 
 	//1: .dup
 	auto mixtureSave1 = mixture.dup;
@@ -415,7 +397,7 @@ final:
 	auto mixtureSave2 = new double[mixture.length];
 	//2: copy
 	mixtureSave2[] = mixture[];
-	-------------
+	---
 	*/
 	const(T)[] mixture() @property const
 	{
@@ -423,14 +405,13 @@ final:
 	}
 
 	/**
-	Returns:
-		Const slice of the internal weights representation.
+	Returns: Const slice of the internal weights representation.
 	Example:
-	-------------
+	---
 	//save slice
 	auto weights = optimizer.weights;
 
-	//use $(D .dup) or copy to save current weights
+	//use `.dup` or copy to save current weights
 
 	//1: .dup
 	auto weightsSave1 = weights.dup;
@@ -439,7 +420,7 @@ final:
 	auto weightsSave2 = new double[weights.length];
 	//2: copy
 	weightsSave2[] = weights[];
-	-------------
+	---
 	*/
 	const(T)[] weights() @property const
 	{
@@ -447,7 +428,7 @@ final:
 	}
 
 	/**
-	Set the mixture weights and calls $(MREF update).
+	Set the mixture weights and calls [update](update).
 	Params:
 		_weights = new mixture weights
 	*/
@@ -514,10 +495,10 @@ final:
 
 /**
 Params:
-	Gradient = Gradient of the objective function. $(D Gradient(a, b) should perform b = grad_f(a)).
-	T = floating point type
+	Gradient = Gradient of the objective function. `Gradient(a, b)` should perform `b = grad_f(a)`.
 */
 class GradientDescent(alias Gradient, T) : MixtureOptimizer!T
+	if(isFloatingPoint!T)
 {
 	private T[] pi;
 	private T[] xi;
@@ -558,10 +539,10 @@ class GradientDescent(alias Gradient, T) : MixtureOptimizer!T
 
 /**
 Params:
-	Gradient = Gradient of the objective function. $(D Gradient(a, b) should perform b = grad_f(a)).
-	T = floating point type
+	Gradient = Gradient of the objective function. `Gradient(a, b)` should perform `b = grad_f(a)`.
 */
 class CoordinateDescent(alias Gradient, T) : MixtureOptimizer!T
+	if(isFloatingPoint!T)
 {
 	private T[] pi;
 	private T[] xi;
@@ -599,10 +580,10 @@ class CoordinateDescent(alias Gradient, T) : MixtureOptimizer!T
 
 /**
 Params:
-	PartialDerivative = Partial derivative $(D y) of objective convex function $(D u): $(D du/dω_j = y(ω_j), 1 <= j <= n).
-	T = floating point type
+	PartialDerivative = Partial derivative `y` of objective convex function `u`: `du/dω_j = y(ω_j), 1 <= j <= n`.
 */
 class CoordinateDescentPartial(alias PartialDerivative, T) : MixtureOptimizer!T
+	if(isFloatingPoint!T)
 {
 	private T[] pi;
 
@@ -633,10 +614,9 @@ class CoordinateDescentPartial(alias PartialDerivative, T) : MixtureOptimizer!T
 
 
 /**
-Params:
-	T = floating point type
 */
 interface LikelihoodMaximization(T)
+	if(isFloatingPoint!T)
 {
 	/**
 	Set weights in proportion to the likelihood.
@@ -644,13 +624,15 @@ interface LikelihoodMaximization(T)
 	void setWeightsInProportionToLikelihood();
 
 	/**
-	See_Also:
-		 $(STDREF traits, isCallable)
+	Params:
+		pdfs = Probability distribution *functions*
+		sample = Sample
+	See_Also: $(STDREF traits, isCallable)
 	*/
 	void put(PDFRange, SampleRange)(PDFRange pdfs, SampleRange sample)
 		if (isInputRange!PDFRange && hasLength!PDFRange && isCallable!(ElementType!PDFRange));
 
-	//ditto
+	///ditto
 	void putAndSetWeightsInProportionToLikelihood(PDFRange, SampleRange)(PDFRange pdfs, SampleRange sample)
 		if (isInputRange!PDFRange && hasLength!PDFRange && isCallable!(ElementType!PDFRange));
 
@@ -662,8 +644,7 @@ interface LikelihoodMaximization(T)
 			Receives the current and previous versions of log2Likelihood and weights. 
 			The delegate must return true when likelihood and weights are acceptable. 
 		findRootTolerance = Tolerance for inner optimization.
-	See_Also:
-		$(STDREF numeric, findRoot)
+	See_Also: $(STDREF numeric, findRoot)
 	*/
 	void optimize
 	(
@@ -678,10 +659,8 @@ interface LikelihoodMaximization(T)
 			Receives the current and previous versions of log2Likelihood. 
 			The delegate must return true when likelihood are acceptable. 
 		findRootTolerance = Tolerance for inner optimization.
-	Throws: 
-		$(MREF FeaturesException) if $(MREF isFeaturesCorrect) is false.
-	See_Also:
-		$(STDREF numeric, findRoot)
+	Throws: [FeaturesException](atmosphere/mixture/FeaturesException.html) if [isFeaturesCorrect](atmosphere/mixture/LikelihoodMaximization.isFeaturesCorrect.html) is false.
+	See_Also: $(STDREF numeric, findRoot)
 	*/
 	void optimize
 	(
@@ -690,9 +669,8 @@ interface LikelihoodMaximization(T)
 	);
 
 	/**
-	Returns true if for all values in sample exists probability density function from mixture such that $(D isNormal(PDF(value)))
-	See_Also:
-		$(STDREF math, isNormal)
+	Returns true if for all values in sample exists probability density function from mixture such that `isNormal(PDF(value))`
+	See_Also: $(STDREF math, isNormal)
 	*/
 	bool isFeaturesCorrect() const;
 
@@ -705,10 +683,9 @@ interface LikelihoodMaximization(T)
 }
 
 /**
-Params:
-	T = floating point type
 */
 class CoordinateLikelihoodMaximization(T) : CoordinateDescentPartial!(a => -1/a, T), LikelihoodMaximization!T
+	if(isFloatingPoint!T)
 {
 	/**
 	Params:
@@ -724,10 +701,9 @@ class CoordinateLikelihoodMaximization(T) : CoordinateDescentPartial!(a => -1/a,
 }
 
 /**
-Params:
-	T = floating point type
 */
 class GradientLikelihoodMaximization(T) : GradientDescent!((a, b) {foreach(i, ai; a) b[i]=-1/ai;}, T), LikelihoodMaximization!T
+	if(isFloatingPoint!T)
 {
 	/**
 	Params:

@@ -1,7 +1,9 @@
+Atmosphere GM contains an experimental algorithms for new generation of likelihood maximization methods. The goal of this library is to create an reliable and simple in use technology that can be used by software engineers. Package is growing step by step with mathematical publications.
+
 #Features
   0. Separating mixtures of probability distributions
   1. Grid methods
-  2. Parameterized algorithms
+  2. Likelihood maximization
   3. Optimization over sliding window
 
 #Documentation

@@ -59,10 +59,9 @@ import std.math : isNormal;
 static import std.math;
 
 /**
-Params:
-	T = floating point type
 */
 abstract class NormalVarianceMeanMixture(T) : MixtureOptimizer!T, LikelihoodMaximization!T
+	if(isFloatingPoint!T)
 {
 
 	override void update()
@@ -110,10 +109,8 @@ final:
 			Receives the current and previous versions of various parameters. 
 			The delegate must return true when parameters are acceptable. 
 		findRootTolerance = Tolerance for inner optimization.
-	Throws: 
-		$(DPREF mixture, FeaturesException) if $(DPREF mixture, isFeaturesCorrect) is false.
-	See_Also:
-		$(STDREF numeric, findRoot)
+	Throws: [FeaturesException](atmosphere/mixture/FeaturesException.html) if [isFeaturesCorrect](atmosphere/mixture/LikelihoodMaximization.isFeaturesCorrect.html) is false.
+	See_Also: $(STDREF numeric, findRoot)
 	*/
 	void optimize(
 			scope bool delegate (
@@ -199,8 +196,7 @@ final:
 	Sets sample and recalculates alpha and mixture.
 	Params:
 		_sample = new sample with length less or equal $(D maxLength)
-	Throws: 
-		$(DPREF mixture, FeaturesException) if $(DPREF mixture, isFeaturesCorrect) is false.
+	Throws: [FeaturesException](atmosphere/mixture/FeaturesException.html) if [isFeaturesCorrect](atmosphere/mixture/LikelihoodMaximization.isFeaturesCorrect.html) is false.
 	*/
 	void sample(in T[] _sample) @property
 	in
@@ -226,8 +222,7 @@ final:
 	}
 
 	/**
-	Returns:
-		Const slice of the internal sample representation.
+	Returns: Const slice of the internal sample representation.
 	*/
 	const(T)[] sample() @property const
 	{
@@ -235,8 +230,7 @@ final:
 	}
 
 	/**
-	Returns:
-		sample mean
+	Returns: sample mean
 	*/
 	T mean() @property const
 	{
@@ -250,8 +244,7 @@ final:
 	}
 
 	/**
-	Returns:
-		alpha
+	Returns: alpha
 	*/
 	T alpha() @property const
 	{
@@ -260,8 +253,7 @@ final:
 
 
 	/**
-	Returns:
-		Const slice of the internal grid representation.
+	Returns: Const slice of the internal grid representation.
 	*/
 	const(T)[] grid() @property const
 	{
@@ -340,10 +332,9 @@ final:
 
 /**
 Expectation–maximization algorithm
-Params:
-	T = floating point type
 */
 final class NormalVarianceMeanMixtureEM(T) : NormalVarianceMeanMixture!T
+	if(isFloatingPoint!T)
 {
 	private T[] pi;
 	private T[] c;
@@ -383,10 +374,9 @@ final class NormalVarianceMeanMixtureEM(T) : NormalVarianceMeanMixture!T
 
 /**
 Expectation–maximization algorithm with inner gradient descend optimization.
-Params:
-	T = floating point type
 */
 final class NormalVarianceMeanMixtureEMAndGradient(T) : NormalVarianceMeanMixture!T
+	if(isFloatingPoint!T)
 {
 	private T[] pi;
 	private T[] xi;
@@ -428,10 +418,9 @@ final class NormalVarianceMeanMixtureEMAndGradient(T) : NormalVarianceMeanMixtur
 /**
 Expectation–maximization algorithm with inner coordinate descend optimization.
 Speed depends on permutation of elements of $(grid).
-Params:
-	T = floating point type
 */
 final class NormalVarianceMeanMixtureEMAndCoordinate(T) : NormalVarianceMeanMixture!T
+	if(isFloatingPoint!T)
 {
 	private T[] pi;
 

@@ -1,41 +1,37 @@
-/**
+/++
 This module publicly imports all classes.
 
-Usage:
+Import:
 --------
 import atmosphere;
 --------
 
 Class_hierarchy:
-$(D_CODE
-$(DPREF mixture, MixtureOptimizer) $(BLUE abstract)
-|-$(DPREF mixture, GradientDescent)
-| |-$(DPREF mixture, GradientLikelihoodMaximization) : $(DPREF mixture, LikelihoodMaximization)
-|-$(DPREF mixture, CoordinateDescent)
-|-$(DPREF mixture, CoordinateDescentPartial)
-| |-$(DPREF mixture, CoordinateLikelihoodMaximization) : $(DPREF mixture, LikelihoodMaximization)
-|-$(DPREF parametrized.nvmm, NormalVarianceMeanMixture) : $(DPREF mixture, LikelihoodMaximization) $(BLUE abstract)
-  |-$(DPREF parametrized.nvmm, NormalVarianceMeanMixtureEM) $(BLUE final)
-  |-$(DPREF parametrized.nvmm, NormalVarianceMeanMixtureEMAndGradient) $(BLUE final)
-  |-$(DPREF parametrized.nvmm, NormalVarianceMeanMixtureEMAndCoordinate) $(BLUE final)
-)
+- [MixtureOptimizer](atmosphere/mixture/MixtureOptimizer.html)
+	- [GradientDescent](atmosphere/mixture/GradientDescent.html)
+		- [GradientLikelihoodMaximization](atmosphere/mixture/GradientLikelihoodMaximization.html) : [LikelihoodMaximization](atmosphere/mixture/LikelihoodMaximization.html)
+	- [CoordinateDescent](atmosphere/mixture/CoordinateDescent.html)
+	- [CoordinateDescentPartial](atmosphere/mixture/CoordinateDescentPartial.html)
+		- [CoordinateLikelihoodMaximization](atmosphere/mixture/CoordinateLikelihoodMaximization.html) : [LikelihoodMaximization](atmosphere/mixture/LikelihoodMaximization.html)
+	- [NormalVarianceMeanMixture](atmosphere/parametrized/nvmm/NormalVarianceMeanMixture.html) : [LikelihoodMaximization](atmosphere/mixture/LikelihoodMaximization.html)
+		- [NormalVarianceMeanMixtureEM](atmosphere/parametrized/nvmm/NormalVarianceMeanMixtureEM.html)
+		- [NormalVarianceMeanMixtureEMAndGradient](atmosphere/parametrized/nvmm/NormalVarianceMeanMixtureEMAndGradient.html)
+		- [NormalVarianceMeanMixtureEMAndCoordinate](atmosphere/parametrized/nvmm/NormalVarianceMeanMixtureEMAndCoordinate.html)
 
-<table class = "table table-condensed table-bordered">
-<tr><th>Class</th><th>BLAS Level 2 % of all computations</th><th>Non-BLAS parallel</th><th>  Speed (one thread & big data) </th><th>Global maximum for convex function</th><th>Parameterized</th></tr>
-<tr><td>GradientDescent, number of mixture components > ~16</td><td>~95-99%</td><td>No</td><td> normal </td><td>Yes</td><td>No</td></tr>
-<tr><td>GradientDescent, number of mixture components < ~16</td><td>~95-99%</td><td>No</td><td> fast </td><td>Yes</td><td>No</td></tr>
-<tr><td>CoordinateDescent</td><td>~10-50%</td><td>No</td><td> fast </td><td>Yes</td><td>No</td></tr>
-<tr><td>CoordinateDescentPartial</td><td>~10-50%</td><td>No</td><td> fast, always faster then CoordinateDescent </td><td>Yes</td><td>No</td></tr>
-<tr><td>NormalVarianceMeanMixtureEM</td><td>~10%</td><td>Yes</td><td> slow </td><td>No</td><td>Yes</td></tr>
-<tr><td>NormalVarianceMeanMixtureEMAndGradient</td><td>~10%</td><td>Yes</td><td> slow </td><td>No</td><td>Yes</td></tr>
-<tr><td>NormalVarianceMeanMixtureEMAndCoordinate</td><td>~5%</td><td>Partial</td><td> slow </td><td>No</td><td>Yes</td></tr>
-</table>
+Table of separating mixtures algorithms:
+	$(TABLE
+		$(TR  $(TH Class) $(TH BLAS Level 2 % of all computations) $(TH Non-BLAS parallel) $(TH   Speed (one thread & big data) ) $(TH Global maximum for convex function) $(TH Parameterized))
+		$(TR $(TD [GradientDescent](atmosphere/mixture/GradientDescent.html), number of mixture components > ~16) $(TD ~95-99%) $(TD No) $(TD  normal ) $(TD Yes) $(TD No) )
+		$(TR $(TD [GradientDescent](atmosphere/mixture/GradientDescent.html), number of mixture components < ~16) $(TD ~95-99%) $(TD No) $(TD  fast ) $(TD Yes) $(TD No) )
+		$(TR $(TD [CoordinateDescent](atmosphere/mixture/CoordinateDescent.html)) $(TD ~10-50%) $(TD No) $(TD  fast ) $(TD Yes) $(TD No) )
+		$(TR $(TD [CoordinateLikelihoodMaximization](atmosphere/mixture/CoordinateLikelihoodMaximization.html)) $(TD ~10-50%) $(TD No) $(TD  fast, always faster then CoordinateDescent ) $(TD Yes) $(TD No) )
+		$(TR $(TD [NormalVarianceMeanMixtureEM](atmosphere/parametrized/nvmm/NormalVarianceMeanMixtureEM.html)) $(TD ~10%) $(TD Yes) $(TD  slow ) $(TD No) $(TD Yes) )
+		$(TR $(TD [NormalVarianceMeanMixtureEMAndGradient](atmosphere/parametrized/nvmm/NormalVarianceMeanMixtureEMAndGradient.html)) $(TD ~10%) $(TD Yes) $(TD  slow ) $(TD No) $(TD Yes) )
+		$(TR $(TD [NormalVarianceMeanMixtureEMAndCoordinate](atmosphere/parametrized/nvmm/NormalVarianceMeanMixtureEMAndCoordinate.html)) $(TD ~5%) $(TD Partial) $(TD  slow ) $(TD No) $(TD Yes) ) )
 
-Example: 
-	$(HTTP github.com/9il/atmosphere_gm/blob/master/examples/normal_variance_mean_mixture/source/app.d, GitHub) 
+See_Also: [GitHub Example](http://github.com/9il/atmosphere_gm/blob/master/examples/normal_variance_mean_mixture/source/app.d)
 
-If you want to enable non-BLAS parallelism use $(D atmosphere_gm_parallel) compilation version.
-*/
++/
 module atmosphere;
 
 public import atmosphere.mixture;

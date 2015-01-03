@@ -1,0 +1,5 @@
+STDREF = $(LINK2 http://dlang.org/library/std/$1/$2.html, std.$1.$2)
+
+COREREF = $(LINK2 http://dlang.org/library/core/$1/$2.html, core.$1.$2)
+
+MREF = [$1]($1.html)

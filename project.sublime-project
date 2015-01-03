@@ -23,7 +23,7 @@
 				{
 					"cmd":
 					[
-						"dub build --build=docs --force"
+						"dub run stddoc"
 					],
 					"name": "Docs",
 					"shell": true

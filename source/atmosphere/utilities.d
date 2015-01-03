@@ -15,8 +15,8 @@ import cblas;
 import simple_matrix;
 
 
-/*
-Computes accurate sum of binary logarithms of input range $(D r).
+/**
+Computes accurate sum of binary logarithms of input range `r`.
 Will be avalible in std.numeric with with DMD 2.068.
  */
 public // @@BUG@@
@@ -43,7 +43,7 @@ T sumOfLog2s(T)(T[] r)
     return exp + log2(x); 
 }
 
-
+///
 auto sum(Range)(Range range) if(!isArray!Range)
 {
 	Unqual!(ForeachType!Range) s = 0;
@@ -52,6 +52,7 @@ auto sum(Range)(Range range) if(!isArray!Range)
 	return s;
 }
 
+///
 F sum(F)(in F[] a)
 {
 	F ret0 = 0;
@@ -106,13 +107,13 @@ unittest {
 		assert(iota(i).sum == iota(i).array.sum);
 }
 
-
+///
 auto avg(Range)(Range range)
 {
 	return range.sum / range.length;
 }
 
-
+///
 void normalize(F)(F[] range)
 {
 	immutable s = range.sum;
@@ -122,7 +123,7 @@ void normalize(F)(F[] range)
 		elem /= s;
 }
 
-
+///
 void gemv(M, F)(in M m, in F[] a, F[] b)
 in {
 	assert (m.width == a.length);
@@ -199,7 +200,6 @@ unittest
 
 }
 
-
 unittest
 {
 	const ar = [
@@ -224,12 +224,13 @@ unittest
 
 }
 
-
+///
 auto dot(Range1, Range2)(Range1 r1, Range2 r2)
 {
 	return cblas.dot(cast(blasint)r1.length, r1.ptr, cast(blasint)r1.shift, r2.ptr, cast(blasint)r2.shift);
 }
 
+///
 ptrdiff_t shift(F)(F[])
 {
 	return 1;

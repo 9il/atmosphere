@@ -10,8 +10,6 @@ example
 /bootDoc
 
 
-*.ddoc
-
 *.html
 
 __test__library__
