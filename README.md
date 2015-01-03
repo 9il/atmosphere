@@ -7,7 +7,7 @@ Atmosphere GM contains an experimental algorithms for new generation of likeliho
   3. Optimization over sliding window
 
 #Documentation
-Documentation can be found [here](http://9il.github.io/atmosphere_gm/atmosphere.package.html).
+Documentation can be found [here](http://9il.github.io/atmosphere_gm/doc/atmosphere.html).
 ####Changelog
 See [release notes](https://github.com/9il/atmosphere_gm/releases).
 ####Benchmarking and testing
