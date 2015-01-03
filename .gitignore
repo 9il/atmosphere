@@ -1,6 +1,7 @@
 dub.selections.json
 __dummy.html
-docs.json
+d
+ocs.json
 /docs
 /**/.dub/
 *.a
@@ -9,8 +10,6 @@ docs.json
 example
 /bootDoc
 
-
-*.html
 
 __test__library__
 
