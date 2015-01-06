@@ -43,7 +43,7 @@
 </div>
 <div class="content">
 <div class="section">
-Likelihood maximization algorithms for normal variance mean mixture with unknown scale parameter .
+Likelihood maximization algorithms for normal variance mean mixture with unknown scale parameter `alpha`.
 <pre><code>F(x) = ∫_0^∞ Φ((x-αu_i)√u) dG(u) ≈ Σ_i p_i*Φ((x-αu_i)/sqrt(u))
 α - alpha (unknown)
 Φ - standard normal distribution
@@ -90,7 +90,7 @@ double[] mixtureWeights2 = optimizer.weights.dup;</code></pre>
 </td></tr><tr><td><a href="atmosphere/parametrized/nvmm/NormalVarianceMeanMixtureEMAndGradient.html">NormalVarianceMeanMixtureEMAndGradient</a></td><td></td><td><p>Expectation–maximization algorithm with inner gradient descend optimization.
 </p>
 </td></tr><tr><td><a href="atmosphere/parametrized/nvmm/NormalVarianceMeanMixtureEMAndCoordinate.html">NormalVarianceMeanMixtureEMAndCoordinate</a></td><td></td><td><p>Expectation–maximization algorithm with inner coordinate descend optimization.
-Speed depends on permutation of elements of .
+Speed depends on permutation of elements of <code class="prettyprint">grid</code>.
 </p>
 </td></tr></table></div>
 <script>hljs.initHighlightingOnLoad();</script>
