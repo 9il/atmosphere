@@ -1,17 +1,17 @@
-/**
-*/
+/++
++/
 module distribution.quantile;
 
 import std.traits;
 import std.mathspecial;
 
-/**
-*/
+/++
++/
 interface Quantile(T)
 {
-	/**
+	/++
 	Call operator
-	*/
+	+/
 	abstract T opCall(T x);
 }
 
@@ -34,18 +34,19 @@ unittest
 
 	auto qf = new NormalQuantile;
 	auto x = qf(0.1);
+	assert(isNormal(x));
 }
 
 
 
-/**
-*/
+/++
++/
 final class GammaQuantile(T) : Quantile!T
 	if(isFloatingPoint!T)
 {
 	private T shape, scale;
 
-	///
+	///Constructor
 	this(T shape, T scale)
 	in {
 		assert(shape.isNormal);
@@ -66,23 +67,24 @@ final class GammaQuantile(T) : Quantile!T
 	}
 }
 
-/**
-*/
+/++
++/
 unittest 
 {
 	auto qf = new GammaQuantile!double(3, 2);
 	auto x = qf(0.1);
+	assert(isNormal(x));
 }
 
 
-/**
-*/
+/++
++/
 final class InverseGammaQuantile(T) : Quantile!T
 	if(isFloatingPoint!T)
 {
 	private T shape, scale;
 
-	///
+	///Constructor
 	this(T shape, T scale)
 	in {
 		assert(shape.isNormal);
@@ -103,10 +105,11 @@ final class InverseGammaQuantile(T) : Quantile!T
 	}
 }
 
-/**
-*/
+/++
++/
 unittest 
 {
 	auto qf = new InverseGammaQuantile!double(3, 2);
 	auto x = qf(0.1);
+	assert(isNormal(x));
 }

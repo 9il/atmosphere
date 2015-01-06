@@ -1,18 +1,18 @@
-/**
-*/
+/++
++/
 module distribution.cdf;
 
 
 import std.traits;
 import std.mathspecial;
 
-/**
-*/
+/++
++/
 interface CDF(T)
 {
-	/**
+	/++
 	Call operator
-	*/
+	+/
 	T opCall(T x);
 }
 
@@ -32,16 +32,17 @@ unittest
 
 	auto cdf = new NormalCDF;
 	auto x = cdf(0.1);
+	assert(isNormal(x));
 }
 
-/**
-*/
+/++
++/
 final class GammaCDF(T) : CDF!T
 	if(isFloatingPoint!T)
 {
 	private T shape, scale;
 
-	///
+	///Constructor
 	this(T shape, T scale)
 	in {
 		assert(shape.isNormal);
@@ -60,23 +61,24 @@ final class GammaCDF(T) : CDF!T
 	}
 }
 
-/**
-*/
+/++
++/
 unittest 
 {
 	auto cdf = new GammaCDF!double(3, 2);
 	auto x = cdf(0.1);
+	assert(isNormal(x));
 }
 
 
-/**
-*/
+/++
++/
 final class InverseGammaCDF(T) : CDF!T
 	if(isFloatingPoint!T)
 {
 	private T shape, scale;
 
-	///
+	///Constructor
 	this(T shape, T scale)
 	in {
 		assert(shape.isNormal);
@@ -95,10 +97,11 @@ final class InverseGammaCDF(T) : CDF!T
 	}
 }
 
-/**
-*/
+/++
++/
 unittest 
 {
 	auto cdf = new InverseGammaCDF!double(3, 2);
 	auto x = cdf(0.1);
+	assert(isNormal(x));
 }

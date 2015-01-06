@@ -81,6 +81,7 @@ abstract class NormalVarianceMeanMixture(T) : MixtureOptimizer!T, LikelihoodMaxi
 	
 
 	/**
+	Constructor
 	Params:
 		_grid = Array of parameters u. [u_1, ..., u_k]
 		maxLength = maximal length of sample
@@ -340,6 +341,7 @@ final class NormalVarianceMeanMixtureEM(T) : NormalVarianceMeanMixture!T
 	private T[] c;
 
 	/**
+	Constructor
 	Params:
 		_grid = Array of parameters u. [u_1, ..., u_k]
 		maxLength = maximal length of sample
@@ -384,6 +386,7 @@ final class NormalVarianceMeanMixtureEMAndGradient(T) : NormalVarianceMeanMixtur
 	private T[] c;
 
 	/**
+	Constructor
 	Params:
 		_grid = Array of parameters u. [u_1, ..., u_k]
 		maxLength = maximal length of sample
@@ -425,6 +428,7 @@ final class NormalVarianceMeanMixtureEMAndCoordinate(T) : NormalVarianceMeanMixt
 	private T[] pi;
 
 	/**
+	Constructor
 	Params:
 		_grid = Array of parameters u. [u_1, ..., u_k]
 		maxLength = maximal length of sample

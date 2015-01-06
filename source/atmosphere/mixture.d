@@ -40,6 +40,7 @@ static struct PDF
 	double alphau;
 	double sqrtu;
 
+	///Constructor
 	this(double alpha, double u)
 	{
 		alphau = alpha * u;
@@ -149,6 +150,7 @@ abstract class MixtureOptimizer(T)
 	package T[] _mixture;
 
 	/**
+	Constructor
 	Params:
 		k = number of components
 		maxLength = maximal length of features. In terms of likelihood maximization maxLength is maximal length of a sample.
@@ -506,6 +508,7 @@ class GradientDescent(alias Gradient, T) : MixtureOptimizer!T
 	private T[] c;
 
 	/**
+	Constructor
 	Params:
 		k = number of components
 		maxLength = maximal length of features. In terms of likelihood maximization maxLength is maximal length of a sample.
@@ -549,6 +552,7 @@ class CoordinateDescent(alias Gradient, T) : MixtureOptimizer!T
 	private T[] gamma;
 
 	/**
+	Constructor
 	Params:
 		k = number of components
 		maxLength = maximal length of features. In terms of likelihood maximization maxLength is maximal length of a sample.
@@ -588,6 +592,7 @@ class CoordinateDescentPartial(alias PartialDerivative, T) : MixtureOptimizer!T
 	private T[] pi;
 
 	/**
+	Constructor
 	Params:
 		k = number of components
 		maxLength = maximal length of features. In terms of likelihood maximization maxLength is maximal length of a sample.
@@ -688,6 +693,7 @@ class CoordinateLikelihoodMaximization(T) : CoordinateDescentPartial!(a => -1/a,
 	if(isFloatingPoint!T)
 {
 	/**
+	Constructor
 	Params:
 		k = number of components
 		maxLength = maximal length of features. In terms of likelihood maximization maxLength is maximal length of a sample.
@@ -706,6 +712,7 @@ class GradientLikelihoodMaximization(T) : GradientDescent!((a, b) {foreach(i, ai
 	if(isFloatingPoint!T)
 {
 	/**
+	Constructor
 	Params:
 		k = number of components
 		maxLength = maximal length of features. In terms of likelihood maximization maxLength is maximal length of a sample.

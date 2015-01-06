@@ -1,5 +1,5 @@
-/**
-*/
+/++
++/
 module distribution.random;
 
 
@@ -8,18 +8,18 @@ import std.random;
 import std.traits;
 
 
-/**
+/++
 Interface for infinity input range of random numbers.
-*/
++/
 interface DistributionRNG(T)
 {
 	///always false
 	enum empty = false;
 	///do nothing
 	static void popFront() @safe pure nothrow @nogc {}
-	/**
+	/++
 	Returns: new random number.
-	*/
+	+/
 	T front() @property;
 }
 
@@ -43,11 +43,11 @@ unittest
 }
 
 
-/**
+/++
 Class to create normal variance-mean mixture random number generators.
 Assume `U` has mixing probability density, `Y ~ N(0, 1)`.
 Class constructs `RNG` for `Z = Y*U^(1/2)+alpha*U`.
-*/
++/
 class NormalVarianceMeanMixtureRNG(T, UniformRNG = Random) : DistributionRNG!T
 	if (isFloatingPoint!T)
 {
@@ -56,12 +56,13 @@ class NormalVarianceMeanMixtureRNG(T, UniformRNG = Random) : DistributionRNG!T
 	private DistributionRNG!T components;
 	private T alpha;
 
-	/**
+	/++
+	Constructor
 	Params:
 		rng = uniform random number generator (`Y`)
 		components = mixing random generator (`U`)
 		alpha = mixture scale parameter: `Y*U^(1/2)+alpha*U`
-	*/
+	+/
 	this(ref UniformRNG rng, DistributionRNG!T components, T alpha)
 	in {
 		assert(alpha.isFinite);
@@ -95,11 +96,11 @@ unittest
 }
 
 
-/**
+/++
 Class to generate random observations from a
 gamma
 distribution.
- */
+ +/
 final class GammaRNG(T, UniformRNG = Random) : DistributionRNG!T
 	if (isFloatingPoint!T)
 {
@@ -107,12 +108,13 @@ final class GammaRNG(T, UniformRNG = Random) : DistributionRNG!T
 	
 	private T shape, scale;
 
-	/**
+	/++
+	Constructor
 	Params:
 		rng = uniform random number generator
 		shape = shape parameter
 		scale = scale parameter
-	*/
+	+/
 	this(ref UniformRNG rng, T shape, T scale = 1)
 	{
 		this.rng = &rng;
@@ -135,11 +137,11 @@ unittest
 }
 
 
-/**
+/++
 Class to generate random observations from a
 inverse-gamma
 distribution.
- */
+ +/
 final class InverseGammaRNG(T, UniformRNG = Random) : DistributionRNG!T
 	if (isFloatingPoint!T)
 {
@@ -147,12 +149,13 @@ final class InverseGammaRNG(T, UniformRNG = Random) : DistributionRNG!T
 	
 	private T shape, scale;
 
-	/**
+	/++
+	Constructor
 	Params:
 		rng = uniform random number generator
 		shape = shape parameter
 		scale = scale parameter
-	*/
+	+/
 	this(ref UniformRNG rng, T shape, T scale = 1)
 	{
 		this.rng = &rng;
@@ -175,11 +178,11 @@ unittest
 }
 
 
-/**
+/++
 Class to generate random observations from a
 generalized gamma
 distribution.
- */
+ +/
 final class GeneralizedGammaRNG(T, UniformRNG = Random) : DistributionRNG!T
 	if (isFloatingPoint!T)
 {
@@ -187,13 +190,14 @@ final class GeneralizedGammaRNG(T, UniformRNG = Random) : DistributionRNG!T
 	
 	private T shape, power, scale;
 
-	/**
+	/++
+	Constructor
 	Params:
 		rng = uniform random number generator
 		shape = shape parameter
 		power = power parameter
 		scale = scale parameter
-	*/
+	+/
 	this(ref UniformRNG rng, T shape, T power, T scale = 1)
 	{
 		this.rng = &rng;
@@ -216,11 +220,11 @@ unittest
 	auto sample = rng.map!(x => x + 4).take(9).array;
 }
 
-/**
+/++
 Class to generate random observations from a
 inverse Gaussian
 distribution.
- */
+ +/
 final class InverseGaussianRNG(T, UniformRNG = Random) : DistributionRNG!T
 	if (isFloatingPoint!T)
 {
@@ -228,12 +232,13 @@ final class InverseGaussianRNG(T, UniformRNG = Random) : DistributionRNG!T
 	
 	private T mu, lambda;
 
-	/**
+	/++
+	Constructor
 	Params:
 		rng = uniform random number generator
 		mu = mu parameter
 		lambda = lambda parameter
-	*/
+	+/
 	this(ref UniformRNG rng, T mu, T lambda)
 	{
 		this.rng = &rng;
@@ -256,13 +261,13 @@ unittest
 }
 
 
-/**
+/++
 Class to generate random observations from a
 proper (chi > 0, psi > 0) generalized inverse Gaussian distribution. 
 The algorithm is based on that given by Dagpunar (1989).
 
 References: $(LINK2 https://www.stat.auckland.ac.nz/~dscott/, Original R source code).
-*/
++/
 final class ProperGeneralizedInverseGaussianRNG(T, UniformRNG = Random) : DistributionRNG!T
 	if (isFloatingPoint!T)
 {
@@ -270,13 +275,14 @@ final class ProperGeneralizedInverseGaussianRNG(T, UniformRNG = Random) : Distri
 	
 	private T lambdam1, omega, eta, a, b, c, m;
 
-	/**
+	/++
+	Constructor
 	Params:
 		rng = uniform random number generator
 		lambda = lambda parameter
 		omega = sqrt(chi * psi)
 		eta = sqrt(chi / psi)
-	*/
+	+/
 	this(ref UniformRNG rng, T lambda, T omega, T eta = 1)
 	in {
 		assert(omega.isNormal);
@@ -340,23 +346,24 @@ unittest
 }
 
 
-/**
+/++
 Class to generate random observations from a
 generalized inverse Gaussian 
 distribution. 
-*/
++/
 final class GeneralizedInverseGaussianRNG(T, UniformRNG = Random) : DistributionRNG!T
 	if (isFloatingPoint!T)
 {
 	private DistributionRNG!T rng;
 	
-	/**
+	/++
+	Constructor
 	Params:
 		rng = uniform random number generator
 		lambda = lambda parameter
 		chi = chi parameter
 		psi = psi parameter
-	*/
+	+/
 	this(ref UniformRNG rng, T lambda, T chi, T psi)
 	in {
 		assert(lambda.isFinite);
@@ -391,23 +398,24 @@ unittest
 }
 
 
-/**
+/++
 Class to generate random observations from a
 variance-gamma 
 distribution using normal variance-mean mixture of 
 gamma
 distribution.
-*/
++/
 final class VarianceGammaRNG(T, UniformRNG = Random) : NormalVarianceMeanMixtureRNG!T
 	if (isFloatingPoint!T)
 {
-	/**
+	/++
+	Constructor
 	Params:
 		rng = uniform random number generator
 		alpha = mixture scale parameter: `Y*U^(1/2)+alpha*U`
 		shape = gamma shape parameter
 		scale = gamma scale parameter
-	*/
+	+/
 	this(ref UniformRNG rng, T alpha, T shape, T scale = 1)
 	{
 		super(rng, new GammaRNG!(T, UniformRNG)(rng, shape, scale), alpha);
@@ -423,23 +431,24 @@ unittest
 }
 
 
-/**
+/++
 Class to generate random observations from a
 hyperbolic asymmetric 
 t-distribution using normal variance-mean mixture of 
 inverse-gamma
 distribution.
-*/
++/
 final class HyperbolicAsymmetricTRNG(T, UniformRNG = Random) : NormalVarianceMeanMixtureRNG!T
 	if (isFloatingPoint!T)
 {
-	/**
+	/++
+	Constructor
 	Params:
 		rng = uniform random number generator
 		alpha = mixture scale parameter: `Y*U^(1/2)+alpha*U`
 		shape = inverse-gamma shape parameter
 		scale = inverse-gamma scale parameter
-	*/
+	+/
 	this(ref UniformRNG rng, T alpha, T shape, T scale = 1)
 	{
 		super(rng, new InverseGammaRNG!(T, UniformRNG)(rng, shape, scale), alpha);
@@ -455,24 +464,25 @@ unittest
 }
 
 
-/**
+/++
 Class to generate random observations from a
 generalized variance-gamma 
 distribution using normal variance-mean mixture of 
 generalized gamma
 distribution.
-*/
++/
 final class GeneralizedVarianceGammaRNG(T, UniformRNG = Random) : NormalVarianceMeanMixtureRNG!T
 	if (isFloatingPoint!T)
 {
-	/**
+	/++
+	Constructor
 	Params:
 		rng = uniform random number generator
 		alpha = mixture scale parameter: `Y*U^(1/2)+alpha*U`
 		shape = generalized gamma shape parameter
 		power = generalized gamma power parameter
 		scale = generalized gamma scale parameter
-	*/
+	+/
 	this(ref UniformRNG rng, T alpha, T shape, T power, T scale = 1)
 	{
 		super(rng, new GeneralizedGammaRNG!(T, UniformRNG)(rng, shape, power, scale), alpha);
@@ -488,23 +498,24 @@ unittest
 }
 
 
-/**
+/++
 Class to generate random observations from a
 normal inverse Gaussian 
 distribution using normal variance-mean mixture of 
 inverse Gaussian
 distribution.
-*/
++/
 final class NormalInverseGaussianRNG(T, UniformRNG = Random) : NormalVarianceMeanMixtureRNG!T
 	if (isFloatingPoint!T)
 {
-	/**
+	/++
+	Constructor
 	Params:
 		rng = uniform random number generator
 		alpha = mixture scale parameter: `Y*U^(1/2) + alpha*U`
 		mu = inverse Gaussian mu parameter
 		lambda = inverse Gaussian lambda parameter
-	*/
+	+/
 	this(ref UniformRNG rng, T alpha, T mu, T lambda)
 	{
 		super(rng, new InverseGaussianRNG!(T, UniformRNG)(rng, mu, lambda), alpha);
@@ -520,24 +531,25 @@ unittest
 }
 
 
-/**
+/++
 Class to generate random observations from a
 proper generalized hyperbolic 
 distribution using normal variance-mean mixture of 
 proper generalized inverse Gaussian
 distribution.
-*/
++/
 final class ProperGeneralizedHyperbolicRNG(T, UniformRNG = Random) : NormalVarianceMeanMixtureRNG!T
 	if (isFloatingPoint!T)
 {
-	/**
+	/++
+	Constructor
 	Params:
 		rng = uniform random number generator
 		alpha = mixture scale parameter: `Y*U^(1/2)+alpha*U`
 		lambda = proper generalized inverse Gaussian lambda parameter
 		shape = proper generalized inverse Gaussian shape parameter
 		scale = proper generalized inverse Gaussian scale parameter
-	*/
+	+/
 	this(ref UniformRNG rng, T alpha, T lambda, T shape, T scale = 1)
 	{
 		super(rng, new ProperGeneralizedInverseGaussianRNG!(T, UniformRNG)(rng, lambda, shape, scale), alpha);
@@ -553,24 +565,25 @@ unittest
 }
 
 
-/**
+/++
 Class to generate random observations from a
 generalized hyperbolic 
 distribution using normal variance-mean mixture of 
 generalized inverse Gaussian
 distribution.
-*/
++/
 final class GeneralizedHyperbolicRNG(T, UniformRNG = Random) : NormalVarianceMeanMixtureRNG!T
 	if (isFloatingPoint!T)
 {
-	/**
+	/++
+	Constructor
 	Params:
 		rng = uniform random number generator
 		alpha = mixture scale parameter: `Y*U^(1/2)+alpha*U`
 		lambda = generalized inverse Gaussian lambda parameter
 		chi = generalized inverse Gaussian chi parameter
 		psi = generalized inverse Gaussian psi parameter
-	*/
+	+/
 	this(ref UniformRNG rng, T alpha, T lambda, T chi, T psi)
 	{
 		super(rng, new GeneralizedInverseGaussianRNG!(T, UniformRNG)(rng, lambda, chi, psi), alpha);
@@ -587,9 +600,9 @@ unittest
 
 
 
-/**
+/++
 Returns: random number from `[-1, +1] \ {0}`.
-*/
++/
 T uniformM11E0(T = double)() 
 	if (isFloatingPoint!T)
 {
@@ -611,11 +624,11 @@ unittest
 }
 
 
-/**
+/++
 Function to generate random observationb from
 standard normal 
 distribution.
-*/
++/
 T rNormal(T = double)() 
 	if (isFloatingPoint!T)
 {
@@ -644,11 +657,11 @@ unittest
 }
 
 
-/**
+/++
 Function to generate random observation from
 standard exponential 
 distribution.
-*/
++/
 T rExponential(T = double)() 
 	if (isFloatingPoint!T)
 {
@@ -669,14 +682,14 @@ unittest
 }
 
 
-/**
+/++
 Function to generate random observation from a
 gamma 
 distribution.
 
 References
 	"Computer Generation of Statistical Distributions" by Richard Saucier
-*/
++/
 T rGamma(T = double)(T shape) 
 	if (isFloatingPoint!T)
 {
@@ -740,11 +753,11 @@ unittest
 }
 
 
-/**
+/++
 Function to generate random observation from a
 generalized gamma 
 distribution.
-*/
++/
 T rGeneralizedGamma(T = double)(T shape, T power) 
 	if (isFloatingPoint!T)
 {
@@ -771,11 +784,11 @@ unittest
 }
 
 
-/**
+/++
 Function to generate random observation from a
 inverse-gamma 
 distribution.
-*/
++/
 T rInverseGamma(T = double)(T shape) 
 	if (isFloatingPoint!T)
 {
@@ -800,14 +813,14 @@ unittest
 }
 
 
-/**
+/++
 Function to generate random observation from a
 inverse Gaussian
 distribution.
 
 References:
 	Michael, John R.; Schucany, William R.; Haas, Roy W. (May 1976). "Generating Random Variates Using Transformations with Multiple Roots".
- */
+ +/
 T rInverseGaussian(T = double)(T mu, T lambda)
 	if (isFloatingPoint!T)
 {
@@ -839,11 +852,11 @@ unittest
 }
 
 
-/**
+/++
 Function to generate random observation from a
 Chi-squared
 distribution.
- */
+ +/
 T rChiSquare(T = double)(T shape) 
 	if (isFloatingPoint!T)
 {
@@ -868,10 +881,10 @@ unittest
 }
 
 
-/**
+/++
 Function to generate random observation from a
 Student's t-distribution.
- */
+ +/
 T rStudentT(T = double)(T shape) 
 	if (isFloatingPoint!T)
 {
@@ -896,11 +909,11 @@ unittest
 }
 
 
-/**
+/++
 Function to generate random observation from a
 Weibull
 distribution.
- */
++/
 T rWeibull(T = double)(T shape) 
 	if (isFloatingPoint!T)
 {
