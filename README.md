@@ -1,10 +1,16 @@
 Atmosphere GM contains an experimental algorithms for new generation of likelihood maximization methods. The goal of this library is to create an reliable and simple in use technology that can be used by software engineers. Package is growing step by step with mathematical publications.
 
 #Features
-  0. Separating mixtures of probability distributions
-  1. Grid methods
-  2. Likelihood maximization
-  3. Optimization over sliding window
+ 1. Separating mixtures of probability distributions
+  + Grid methods
+  + Likelihood maximization
+  + Optimization over sliding window
+ 2. Generalized probability distributions
+  + Density functions
+  + Comulative functions
+  + Quantiles
+  + Random observations generators
+
 
 #Documentation
 Documentation can be found [here](http://9il.github.io/atmosphere_gm/doc/atmosphere.html).
@@ -44,7 +50,7 @@ To use [this package](http://code.dlang.org/packages/atmosphere_gm), put the fol
 {
 	...
 	"dependencies": {
-		"atmosphere_gm": ">=0.0.4"
+		"atmosphere_gm": ">=0.0.5"
 	}
 }
 ```
