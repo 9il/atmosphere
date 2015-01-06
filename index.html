@@ -4,40 +4,28 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <title>Atmosphere gm by 9il</title>
+
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script src="javascripts/main.js"></script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+    <script src="javascripts/scale.fix.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
   </head>
   <body>
-
+    <div class="wrapper">
       <header>
         <h1>Atmosphere gm</h1>
         <p>Statistical package</p>
+        <p class="view"><a href="https://github.com/9il/atmosphere_gm">View the Project on GitHub <small>9il/atmosphere_gm</small></a></p>
+        <ul>
+          <li><a href="https://github.com/9il/atmosphere_gm/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/9il/atmosphere_gm/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/9il/atmosphere_gm">View On <strong>GitHub</strong></a></li>
+        </ul>
       </header>
-
-      <div id="banner">
-        <span id="logo"></span>
-
-        <a href="https://github.com/9il/atmosphere_gm" class="button fork"><strong>View On GitHub</strong></a>
-        <div class="downloads">
-          <span>Downloads:</span>
-          <ul>
-            <li><a href="https://github.com/9il/atmosphere_gm/zipball/master" class="button">ZIP</a></li>
-            <li><a href="https://github.com/9il/atmosphere_gm/tarball/master" class="button">TAR</a></li>
-          </ul>
-        </div>
-      </div><!-- end banner -->
-
-    <div class="wrapper">
-      <nav>
-        <ul></ul>
-      </nav>
       <section>
         <p>Atmosphere GM contains an experimental algorithms for new generation of likelihood maximization methods. The goal of this library is to create an reliable and simple in use technology that can be used by software engineers. Package is growing step by step with mathematical publications.</p>
 
@@ -45,10 +33,23 @@
 <a id="features" class="anchor" href="#features" aria-hidden="true"><span class="octicon octicon-link"></span></a>Features</h1>
 
 <ol>
-<li>Separating mixtures of probability distributions</li>
+<li>Separating mixtures of probability distributions
+
+<ul>
 <li>Grid methods</li>
 <li>Likelihood maximization</li>
 <li>Optimization over sliding window</li>
+</ul>
+</li>
+<li>Generalized probability distributions
+
+<ul>
+<li>Density functions</li>
+<li>Comulative functions</li>
+<li>Quantiles</li>
+<li>Random observations generators</li>
+</ul>
+</li>
 </ol>
 
 <h1>
@@ -74,24 +75,26 @@ The <a href="http://dlang.org/download.html">DMD</a> is easy way to start.</p>
 <a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h1>
 
 <h4>
-<a id="install-blas" class="anchor" href="#install-blas" aria-hidden="true"><span class="octicon octicon-link"></span></a>Install BLAS</h4>
+<a id="blas--lapack" class="anchor" href="#blas--lapack" aria-hidden="true"><span class="octicon octicon-link"></span></a>BLAS &amp; LAPACK</h4>
 
 <ul>
-<li>If you're on <strong>Ubuntu</strong>, you can install default package <code>sudo apt-get install libblas-dev</code> or compile and install optimized <a href="https://github.com/xianyi/OpenBLAS">OpenBLAS</a>.</li>
+<li>If you're on <strong>Ubuntu</strong>, you can install default package <code>sudo apt-get install libblas-dev liblapack-dev</code> or compile and install optimized <a href="https://github.com/xianyi/OpenBLAS">OpenBLAS</a>.</li>
 <li>
 <strong>OS X</strong> comes with the <a href="https://developer.apple.com/library/mac/documentation/Accelerate/Reference/BLAS_Ref/index.html#//apple_ref/doc/uid/TP40009457">Accelerate framework</a> built in.</li>
 <li>Instruction for <strong>Windows x86</strong> (needs to be checked)
 
 <ol>
 <li>Download latest <code>Win32</code> BLAS from <a href="http://sourceforge.net/projects/openblas/files/">http://sourceforge.net/projects/openblas/files/</a>.</li>
-<li>Copy <code>lib\libopenblas.a</code> to <code>YourProject\blas.lib</code>.</li>
+<li>Make link  <code>YourProject\blas.lib</code> to <code>lib\libopenblas.a</code>.</li>
+<li>Make link  <code>YourProject\lapack.lib</code> to <code>lib\libopenblas.a</code>.</li>
 </ol>
 </li>
-<li> Instruction for <strong>Windows x86_64</strong> (needs to be checked)
+<li>Instruction for <strong>Windows x86_64</strong> (needs to be checked)
 
 <ol>
 <li>Download latest <code>Win64-Int32</code> BLAS from <a href="http://sourceforge.net/projects/openblas/files/">http://sourceforge.net/projects/openblas/files/</a>.</li>
-<li>Copy <code>lib\libopenblas.a</code> to <code>YourProject\blas.lib</code>.</li>
+<li>Make link  <code>YourProject\blas.lib</code> to <code>lib\libopenblas.a</code>.</li>
+<li>Make link  <code>YourProject\lapack.lib</code> to <code>lib\libopenblas.a</code>.</li>
 <li>Use <code>dub --arch=x86_64</code> to run project.</li>
 </ol>
 </li>
@@ -122,15 +125,15 @@ The <a href="http://dlang.org/download.html">DMD</a> is easy way to start.</p>
 <div class="highlight highlight-json"><pre>{
     <span class="pl-ii">...</span>
     <span class="pl-s1"><span class="pl-pds">"</span>dependencies<span class="pl-pds">"</span></span>: {
-        <span class="pl-s1"><span class="pl-pds">"</span>atmosphere_gm<span class="pl-pds">"</span></span>: <span class="pl-s1"><span class="pl-pds">"</span>&gt;=0.0.4<span class="pl-pds">"</span></span>
+        <span class="pl-s1"><span class="pl-pds">"</span>atmosphere_gm<span class="pl-pds">"</span></span>: <span class="pl-s1"><span class="pl-pds">"</span>&gt;=0.0.5<span class="pl-pds">"</span></span>
     }
 }</pre></div>
       </section>
-      <footer>
-        <p>Project maintained by <a href="https://github.com/9il">9il</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></small></p>
-      </footer>
     </div>
+    <footer>
+      <p>Project maintained by <a href="https://github.com/9il">9il</a></p>
+      <p>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></p>
+    </footer>
     <!--[if !IE]><script>fixScale(document);</script><![endif]-->
     
   </body>
