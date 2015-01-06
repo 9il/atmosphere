@@ -540,7 +540,7 @@ unittest
 
 
 /++
-Generalized inverse Gaussian PDF
+Generalized hyperbolic (generalized inverse Gaussian mixture of normals) PDF
 +/
 final class GeneralizedHyperbolicPDF(T) : PDF!T
 	if(isFloatingPoint!T)
