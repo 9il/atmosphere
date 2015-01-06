@@ -3,3 +3,4 @@ examples
 dub.*
 *.sublime*
 *.a
+__test__library__

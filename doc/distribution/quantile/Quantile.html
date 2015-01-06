@@ -2,67 +2,49 @@
 <html>
 <head>
 <meta charset="utf-8"/>
-<link rel="stylesheet" type="text/css" href="../../style.css"/><script src="../../highlight.pack.js"></script>
+<link rel="stylesheet" type="text/css" href="../../style.css"/>
+<script src="../../highlight.pack.js"></script>
 <title>Quantile</title>
 <base href="../../"/>
 <script src="search.js"></script>
+<script src="show_hide.js"></script>
 </head>
 <body>
 <div class="main">
 <div class="toc">
 <ul>
-<li>
-<span class="package">
-<a href="atmosphere.html">atmosphere</a>
-</span>
-<ul>
-<li>
-<small>atmosphere.</small><a href="atmosphere/mixture.html">mixture</a>
-</li>
-<li>
-<span class="package">
-atmosphere.parametrized
-</span>
-<ul>
-<li>
-<small>atmosphere.parametrized.</small><a href="atmosphere/parametrized/nvmm.html">nvmm</a>
-</li>
+<li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
+<ul id="atmosphere">
+<li><small>atmosphere.</small><a href="atmosphere/mixture.html">mixture</a></li>
+<li><span class="package" onclick="show_hide('atmosphere.parametrized');">atmosphere.parametrized</span>
+<ul id="atmosphere.parametrized">
+<li><small>atmosphere.parametrized.</small><a href="atmosphere/parametrized/nvmm.html">nvmm</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li>
-<span class="package">
-<a href="distribution.html">distribution</a>
-</span>
-<ul>
-<li>
-<small>distribution.</small><a href="distribution/cdf.html">cdf</a>
+<li><span class="package" onclick="show_hide('distribution');"><a href="distribution.html">distribution</a></span>
+<ul id="distribution" style='display:block;'>
+<li><small>distribution.</small><a href="distribution/cdf.html">cdf</a></li>
+<li><small>distribution.</small><a href="distribution/pdf.html">pdf</a></li>
+<li><span class="selected"><small>distribution.</small><a href="distribution/quantile.html">quantile</a></span>
 </li>
-<li>
-<small>distribution.</small><a href="distribution/pdf.html">pdf</a>
-</li>
-<li>
-<small>distribution.</small><a href="distribution/quantile.html">quantile</a>
-</li>
-<li>
-<small>distribution.</small><a href="distribution/random.html">random</a>
-</li>
+<li><small>distribution.</small><a href="distribution/random.html">random</a></li>
 </ul>
 </li>
-<li>
-<a href="simple_matrix.html">simple_matrix</a>
-</li>
+<li><a href="simple_matrix.html">simple_matrix</a></li>
 </ul>
 </div>
 <div class="breadcrumbs">
 <table id="results"></table>
 <a class="home" href=index.html>⌂</a>
 <input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
-<small>distribution.<a href=distribution/quantile.html>quantile</a>.</small><span class="highlight">Quantile</span></div>
+<small>distribution.<a href=distribution/quantile.html>quantile</a>.</small><span class="highlight">Quantile</span>
+</div>
 <div class="content">
 <pre><code>public interface Quantile(T)
-</code></pre><div class="section"><h2>Example</h2>
+</code></pre>
+<div class="section"><h2>Example</h2>
 <pre><code>import std.traits, std.mathspecial;
 
 class NormalQuantile : Quantile!real
@@ -79,16 +61,13 @@ class NormalQuantile : Quantile!real
 
 auto qf = new NormalQuantile;
 auto x = qf(0.1);
+assert(isNormal(x));
+
 </code></pre>
 </div>
-<div class="section">
-<h2>Functions</h2>
-<table>
-<tr><td><span class="extrainfo"><span class="attribs"><span class="attr-abstract">abstract</span></span></span><a href="distribution/quantile/Quantile.opCall.html">opCall</a><span class="extrainfo"></span></td><td></td><td><p>Call operator
+<div class="section"><h2>Functions</h2><table><tr><td><span class="extrainfo"><span class="attribs"><span class="attr-abstract">abstract</span></span></span><a href="distribution/quantile/Quantile.opCall.html">opCall</a><span class="extrainfo"></span></td><td></td><td><p>Call operator
 </p>
-</td></tr></table>
-</div>
-
+</td></tr></table></div>
 <script>hljs.initHighlightingOnLoad();</script>
 </div>
 </div>

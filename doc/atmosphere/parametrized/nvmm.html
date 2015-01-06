@@ -2,64 +2,45 @@
 <html>
 <head>
 <meta charset="utf-8"/>
-<link rel="stylesheet" type="text/css" href="../../style.css"/><script src="../../highlight.pack.js"></script>
+<link rel="stylesheet" type="text/css" href="../../style.css"/>
+<script src="../../highlight.pack.js"></script>
 <title>atmosphere.parametrized.nvmm</title>
 <base href="../../"/>
 <script src="search.js"></script>
+<script src="show_hide.js"></script>
 </head>
 <body>
 <div class="main">
 <div class="toc">
 <ul>
-<li>
-<span class="package">
-<a href="atmosphere.html">atmosphere</a>
-</span>
-<ul>
-<li>
-<small>atmosphere.</small><a href="atmosphere/mixture.html">mixture</a>
-</li>
-<li>
-<span class="package">
-atmosphere.parametrized
-</span>
-<ul>
-<li>
-<small>atmosphere.parametrized.</small><a href="atmosphere/parametrized/nvmm.html">nvmm</a>
+<li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
+<ul id="atmosphere" style='display:block;'>
+<li><small>atmosphere.</small><a href="atmosphere/mixture.html">mixture</a></li>
+<li><span class="package" onclick="show_hide('atmosphere.parametrized');">atmosphere.parametrized</span>
+<ul id="atmosphere.parametrized" style='display:block;'>
+<li><span class="selected"><small>atmosphere.parametrized.</small><a href="atmosphere/parametrized/nvmm.html">nvmm</a></span>
 </li>
 </ul>
 </li>
 </ul>
 </li>
-<li>
-<span class="package">
-<a href="distribution.html">distribution</a>
-</span>
-<ul>
-<li>
-<small>distribution.</small><a href="distribution/cdf.html">cdf</a>
-</li>
-<li>
-<small>distribution.</small><a href="distribution/pdf.html">pdf</a>
-</li>
-<li>
-<small>distribution.</small><a href="distribution/quantile.html">quantile</a>
-</li>
-<li>
-<small>distribution.</small><a href="distribution/random.html">random</a>
-</li>
+<li><span class="package" onclick="show_hide('distribution');"><a href="distribution.html">distribution</a></span>
+<ul id="distribution">
+<li><small>distribution.</small><a href="distribution/cdf.html">cdf</a></li>
+<li><small>distribution.</small><a href="distribution/pdf.html">pdf</a></li>
+<li><small>distribution.</small><a href="distribution/quantile.html">quantile</a></li>
+<li><small>distribution.</small><a href="distribution/random.html">random</a></li>
 </ul>
 </li>
-<li>
-<a href="simple_matrix.html">simple_matrix</a>
-</li>
+<li><a href="simple_matrix.html">simple_matrix</a></li>
 </ul>
 </div>
 <div class="breadcrumbs">
 <table id="results"></table>
 <a class="home" href=index.html>⌂</a>
 <input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
-<small>atmosphere.parametrized.nvmm</small></div>
+<small>atmosphere.parametrized.nvmm</small>
+</div>
 <div class="content">
 <div class="section">
 Likelihood maximization algorithms for normal variance mean mixture with unknown scale parameter .
@@ -104,19 +85,14 @@ optimizer.optimize(
 double alpha2 = optimizer.alpha;
 double[] mixtureWeights2 = optimizer.weights.dup;</code></pre>
 </div>
-<div class="section">
-<h2>Classes</h2>
-<table>
-<tr><td><a href="atmosphere/parametrized/nvmm/NormalVarianceMeanMixture.html">NormalVarianceMeanMixture</a></td><td></td><td></td></tr><tr><td><a href="atmosphere/parametrized/nvmm/NormalVarianceMeanMixtureEM.html">NormalVarianceMeanMixtureEM</a></td><td></td><td><p>Expectation–maximization algorithm
+<div class="section"><h2>Classes</h2><table><tr><td><a href="atmosphere/parametrized/nvmm/NormalVarianceMeanMixture.html">NormalVarianceMeanMixture</a></td><td></td><td></td></tr><tr><td><a href="atmosphere/parametrized/nvmm/NormalVarianceMeanMixtureEM.html">NormalVarianceMeanMixtureEM</a></td><td></td><td><p>Expectation–maximization algorithm
 </p>
 </td></tr><tr><td><a href="atmosphere/parametrized/nvmm/NormalVarianceMeanMixtureEMAndGradient.html">NormalVarianceMeanMixtureEMAndGradient</a></td><td></td><td><p>Expectation–maximization algorithm with inner gradient descend optimization.
 </p>
 </td></tr><tr><td><a href="atmosphere/parametrized/nvmm/NormalVarianceMeanMixtureEMAndCoordinate.html">NormalVarianceMeanMixtureEMAndCoordinate</a></td><td></td><td><p>Expectation–maximization algorithm with inner coordinate descend optimization.
 Speed depends on permutation of elements of .
 </p>
-</td></tr></table>
-</div>
-
+</td></tr></table></div>
 <script>hljs.initHighlightingOnLoad();</script>
 </div>
 </div>

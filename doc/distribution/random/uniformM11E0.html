@@ -2,68 +2,50 @@
 <html>
 <head>
 <meta charset="utf-8"/>
-<link rel="stylesheet" type="text/css" href="../../style.css"/><script src="../../highlight.pack.js"></script>
+<link rel="stylesheet" type="text/css" href="../../style.css"/>
+<script src="../../highlight.pack.js"></script>
 <title>uniformM11E0</title>
 <base href="../../"/>
 <script src="search.js"></script>
+<script src="show_hide.js"></script>
 </head>
 <body>
 <div class="main">
 <div class="toc">
 <ul>
-<li>
-<span class="package">
-<a href="atmosphere.html">atmosphere</a>
-</span>
-<ul>
-<li>
-<small>atmosphere.</small><a href="atmosphere/mixture.html">mixture</a>
-</li>
-<li>
-<span class="package">
-atmosphere.parametrized
-</span>
-<ul>
-<li>
-<small>atmosphere.parametrized.</small><a href="atmosphere/parametrized/nvmm.html">nvmm</a>
-</li>
+<li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
+<ul id="atmosphere">
+<li><small>atmosphere.</small><a href="atmosphere/mixture.html">mixture</a></li>
+<li><span class="package" onclick="show_hide('atmosphere.parametrized');">atmosphere.parametrized</span>
+<ul id="atmosphere.parametrized">
+<li><small>atmosphere.parametrized.</small><a href="atmosphere/parametrized/nvmm.html">nvmm</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li>
-<span class="package">
-<a href="distribution.html">distribution</a>
-</span>
-<ul>
-<li>
-<small>distribution.</small><a href="distribution/cdf.html">cdf</a>
-</li>
-<li>
-<small>distribution.</small><a href="distribution/pdf.html">pdf</a>
-</li>
-<li>
-<small>distribution.</small><a href="distribution/quantile.html">quantile</a>
-</li>
-<li>
-<small>distribution.</small><a href="distribution/random.html">random</a>
+<li><span class="package" onclick="show_hide('distribution');"><a href="distribution.html">distribution</a></span>
+<ul id="distribution" style='display:block;'>
+<li><small>distribution.</small><a href="distribution/cdf.html">cdf</a></li>
+<li><small>distribution.</small><a href="distribution/pdf.html">pdf</a></li>
+<li><small>distribution.</small><a href="distribution/quantile.html">quantile</a></li>
+<li><span class="selected"><small>distribution.</small><a href="distribution/random.html">random</a></span>
 </li>
 </ul>
 </li>
-<li>
-<a href="simple_matrix.html">simple_matrix</a>
-</li>
+<li><a href="simple_matrix.html">simple_matrix</a></li>
 </ul>
 </div>
 <div class="breadcrumbs">
 <table id="results"></table>
 <a class="home" href=index.html>⌂</a>
 <input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
-<small>distribution.<a href=distribution/random.html>random</a>.</small><span class="highlight">uniformM11E0</span></div>
+<small>distribution.<a href=distribution/random.html>random</a>.</small><span class="highlight">uniformM11E0</span>
+</div>
 <div class="content">
 <pre><code>public T uniformM11E0(T = double)() 
 if(isFloatingPoint!T)
-</code></pre><div class="section">
+</code></pre>
+<div class="section">
 <h2>Returns</h2>
 <p> random number from <code class="prettyprint">[-1, +1] \ {0}</code>.
 </p>
@@ -71,7 +53,8 @@ if(isFloatingPoint!T)
 </div>
 <hr/><pre><code>public T uniformM11E0(T = double, UniformRNG)(ref UniformRNG rng) 
 if(isFloatingPoint!T && isUniformRNG!UniformRNG)
-</code></pre><div class="section">
+</code></pre>
+<div class="section">
 <h2>Returns</h2>
 <p> random number from <code class="prettyprint">[-1, +1] \ {0}</code>.
 </p>
@@ -79,6 +62,7 @@ if(isFloatingPoint!T && isUniformRNG!UniformRNG)
 </div>
 <div class="section"><h2>Example</h2>
 <pre><code>auto x = uniformM11E0();
+
 </code></pre>
 </div>
 

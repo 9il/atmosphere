@@ -2,71 +2,50 @@
 <html>
 <head>
 <meta charset="utf-8"/>
-<link rel="stylesheet" type="text/css" href="../../style.css"/><script src="../../highlight.pack.js"></script>
+<link rel="stylesheet" type="text/css" href="../../style.css"/>
+<script src="../../highlight.pack.js"></script>
 <title>LikelihoodMaximization</title>
 <base href="../../"/>
 <script src="search.js"></script>
+<script src="show_hide.js"></script>
 </head>
 <body>
 <div class="main">
 <div class="toc">
 <ul>
-<li>
-<span class="package">
-<a href="atmosphere.html">atmosphere</a>
-</span>
-<ul>
-<li>
-<small>atmosphere.</small><a href="atmosphere/mixture.html">mixture</a>
+<li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
+<ul id="atmosphere" style='display:block;'>
+<li><span class="selected"><small>atmosphere.</small><a href="atmosphere/mixture.html">mixture</a></span>
 </li>
-<li>
-<span class="package">
-atmosphere.parametrized
-</span>
-<ul>
-<li>
-<small>atmosphere.parametrized.</small><a href="atmosphere/parametrized/nvmm.html">nvmm</a>
-</li>
+<li><span class="package" onclick="show_hide('atmosphere.parametrized');">atmosphere.parametrized</span>
+<ul id="atmosphere.parametrized">
+<li><small>atmosphere.parametrized.</small><a href="atmosphere/parametrized/nvmm.html">nvmm</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li>
-<span class="package">
-<a href="distribution.html">distribution</a>
-</span>
-<ul>
-<li>
-<small>distribution.</small><a href="distribution/cdf.html">cdf</a>
-</li>
-<li>
-<small>distribution.</small><a href="distribution/pdf.html">pdf</a>
-</li>
-<li>
-<small>distribution.</small><a href="distribution/quantile.html">quantile</a>
-</li>
-<li>
-<small>distribution.</small><a href="distribution/random.html">random</a>
-</li>
+<li><span class="package" onclick="show_hide('distribution');"><a href="distribution.html">distribution</a></span>
+<ul id="distribution">
+<li><small>distribution.</small><a href="distribution/cdf.html">cdf</a></li>
+<li><small>distribution.</small><a href="distribution/pdf.html">pdf</a></li>
+<li><small>distribution.</small><a href="distribution/quantile.html">quantile</a></li>
+<li><small>distribution.</small><a href="distribution/random.html">random</a></li>
 </ul>
 </li>
-<li>
-<a href="simple_matrix.html">simple_matrix</a>
-</li>
+<li><a href="simple_matrix.html">simple_matrix</a></li>
 </ul>
 </div>
 <div class="breadcrumbs">
 <table id="results"></table>
 <a class="home" href=index.html>⌂</a>
 <input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
-<small>atmosphere.<a href=atmosphere/mixture.html>mixture</a>.</small><span class="highlight">LikelihoodMaximization</span></div>
+<small>atmosphere.<a href=atmosphere/mixture.html>mixture</a>.</small><span class="highlight">LikelihoodMaximization</span>
+</div>
 <div class="content">
 <pre><code>public interface LikelihoodMaximization(T)
 if(isFloatingPoint!T)
-</code></pre><div class="section">
-<h2>Functions</h2>
-<table>
-<tr><td><a href="atmosphere/mixture/LikelihoodMaximization.setWeightsInProportionToLikelihood.html">setWeightsInProportionToLikelihood</a><span class="extrainfo"></span></td><td></td><td><p>Set weights in proportion to the likelihood.
+</code></pre>
+<div class="section"><h2>Functions</h2><table><tr><td><a href="atmosphere/mixture/LikelihoodMaximization.setWeightsInProportionToLikelihood.html">setWeightsInProportionToLikelihood</a><span class="extrainfo"></span></td><td></td><td><p>Set weights in proportion to the likelihood.
 </p>
 </td></tr><tr><td><a href="atmosphere/mixture/LikelihoodMaximization.put.html">put</a><span class="extrainfo"></span></td><td></td><td></td></tr><tr><td><a href="atmosphere/mixture/LikelihoodMaximization.putAndSetWeightsInProportionToLikelihood.html">putAndSetWeightsInProportionToLikelihood</a><span class="extrainfo"></span></td><td></td><td></td></tr><tr><td><a href="atmosphere/mixture/LikelihoodMaximization.optimize.html">optimize</a><span class="extrainfo"></span></td><td></td><td><p>Performs optimization.
 </p>
@@ -75,9 +54,7 @@ if(isFloatingPoint!T)
 </td></tr><tr><td><a href="atmosphere/mixture/LikelihoodMaximization.isFeaturesCorrect.html">isFeaturesCorrect</a><span class="extrainfo"><span class="method-attribs"><span class="attr-const">const</span></span></span></td><td></td><td><p>Returns true if for all values in sample exists probability density function from mixture such that <code class="prettyprint">isNormal(PDF(value))</code>
 </p>
 </td></tr><tr><td><a href="atmosphere/mixture/LikelihoodMaximization.log2Likelihood.html">log2Likelihood</a><span class="extrainfo"><span class="method-attribs"><span class="attr-property">@property</span>, <span class="attr-const">const</span></span></span></td><td></td><td>Returns: <pre class="prettyprint"><code>LogLikelihood base 2.
-</code></pre></td></tr></table>
-</div>
-
+</code></pre></td></tr></table></div>
 <script>hljs.initHighlightingOnLoad();</script>
 </div>
 </div>
