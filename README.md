@@ -24,7 +24,7 @@ The [DMD](http://dlang.org/download.html) is easy way to start.
 See [Atmosphere GM Test](https://github.com/9il/atmosphere_gm_test) for testing. 
 
 #Installation
-
+#### BLAS & LAPACK
 * If you're on **Ubuntu**, you can install default package `sudo apt-get install libblas-dev liblapack-dev ` or compile and install optimized [OpenBLAS](https://github.com/xianyi/OpenBLAS).
 * **OS X** comes with the [Accelerate framework](https://developer.apple.com/library/mac/documentation/Accelerate/Reference/BLAS_Ref/index.html#//apple_ref/doc/uid/TP40009457) built in.
 * Instruction for **Windows x86** (needs to be checked)
@@ -37,7 +37,7 @@ See [Atmosphere GM Test](https://github.com/9il/atmosphere_gm_test) for testing.
 	3. Make link  `YourProject\lapack.lib` to `lib\libopenblas.a`.
 	4. Use `dub --arch=x86_64` to run project.
 
-####Intro to D
+#### Intro to D
 1. Install D [compiler](http://dlang.org/download.html)
 2. Install [DUB registry](http://code.dlang.org/download)
 3. Read about [DUB](http://code.dlang.org/about)
