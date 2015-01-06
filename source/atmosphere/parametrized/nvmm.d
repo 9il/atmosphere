@@ -1,5 +1,5 @@
 /**
-Likelihood maximization algorithms for normal variance mean mixture with unknown scale parameter $(D alpha).
+Likelihood maximization algorithms for normal variance mean mixture with unknown scale parameter `alpha`.
 ------
 F(x) = ∫_0^∞ Φ((x-αu_i)√u) dG(u) ≈ Σ_i p_i*Φ((x-αu_i)/sqrt(u))
 α - alpha (unknown)
@@ -196,7 +196,7 @@ final:
 	/**
 	Sets sample and recalculates alpha and mixture.
 	Params:
-		_sample = new sample with length less or equal $(D maxLength)
+		_sample = new sample with length less or equal `maxLength`
 	Throws: [FeaturesException](atmosphere/mixture/FeaturesException.html) if [isFeaturesCorrect](atmosphere/mixture/LikelihoodMaximization.isFeaturesCorrect.html) is false.
 	*/
 	void sample(in T[] _sample) @property
@@ -420,7 +420,7 @@ final class NormalVarianceMeanMixtureEMAndGradient(T) : NormalVarianceMeanMixtur
 
 /**
 Expectation–maximization algorithm with inner coordinate descend optimization.
-Speed depends on permutation of elements of $(grid).
+Speed depends on permutation of elements of `grid`.
 */
 final class NormalVarianceMeanMixtureEMAndCoordinate(T) : NormalVarianceMeanMixture!T
 	if(isFloatingPoint!T)
