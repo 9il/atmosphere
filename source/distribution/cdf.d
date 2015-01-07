@@ -36,8 +36,9 @@ unittest
 	assert(isNormal(x));
 }
 
+
 /++
-Class to compute comulative density function as integral of its probability density function
+Class to compute cumulative density function as integral of its probability density function
 +/
 abstract class NumericCDF(T) : CDF!T
 {
@@ -108,6 +109,81 @@ unittest
 
 	auto result = cdf.eval(1.2);
 	assert(abs(result.value - normalDistribution(1.2)) < result.error);
+}
+
+
+/++
+Class to compute complementary cumulative density function as integral of its probability density function
++/
+abstract class NumericCCDF(T) : CDF!T
+{
+	import scid.calculus : Result, integrate;
+	import distribution.pdf;
+
+	private PDF!T pdf;
+	private T a, b, epsRel, epsAbs;
+
+	/++
+    Params:
+        pdf     = The PDF to _integrate.
+        b       = (optional) The upper limit of integration.
+        epsRel  = (optional) The requested relative accuracy.
+        epsAbs  = (optional) The requested absolute accuracy.
+	+/
+	this(PDF!T pdf, T b = T.infinity, T epsRel = 1e-6, T epsAbs = 0)
+	{
+		this.pdf = pdf;
+		this.a = a;
+		this.b = b;
+		this.epsRel = epsRel;
+		this.epsAbs = epsAbs;
+	}
+
+	/++
+	Compute CCDF for x.
+	See_also: [struct Result](https://github.com/kyllingstad/scid/blob/a9f3916526e4bf9a4da35d14a969e1abfa17a496/source/scid/types.d)
+	+/
+	final Result!T eval(T x)
+	{
+		return pdf.integrate(x, b, epsRel, epsAbs);
+	}
+
+	final T opCall(T x)
+	{
+		return eval(x).value;
+	}
+}
+
+///
+unittest
+{
+	import std.traits, std.mathspecial;
+	import distribution.pdf;
+
+	class NormalPDF : PDF!real
+	{
+		real opCall(real x)
+		{
+			// 1/sqrt(2 PI)
+			enum c = 0.398942280401432677939946L;
+			return c * exp(-0.5f * x * x);
+		}
+	}
+
+	class NormalCCDF : NumericCCDF!real
+	{
+		this()
+		{
+			super(new NormalPDF);
+		}
+	}
+
+	auto cdf = new NormalCCDF;
+
+	assert(approxEqual(cdf(1.3), 1 - normalDistribution(1.3)));
+
+	auto result = cdf.eval(1.2);
+	assert(abs(result.value - (1 - normalDistribution(1.2))) < result.error);
 }
 
 
