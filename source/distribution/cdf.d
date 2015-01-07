@@ -3,7 +3,9 @@ Comulative density functions
 +/
 module distribution.cdf;
 
+import std.algorithm;
 import std.traits;
+import std.range;
 import std.mathspecial;
 
 
@@ -47,6 +49,8 @@ abstract class NumericCDF(T) : CDF!T
 
 	private PDF!T pdf;
 	private T a, epsRel, epsAbs;
+	private T[] subdivisions;
+	private T[] partials;
 
 	/++
 	Constructor
@@ -58,26 +62,36 @@ abstract class NumericCDF(T) : CDF!T
 	See_also: [struct Result](https://github.com/kyllingstad/scid/blob/a9f3916526e4bf9a4da35d14a969e1abfa17a496/source/scid/types.d)
 
 	+/
-	this(PDF!T pdf, T a = -T.infinity, T epsRel = 1e-6, T epsAbs = 0)
-	{
+	this(PDF!T pdf, T[] subdivisions, T a = -T.infinity, T epsRel = 1e-6, T epsAbs = 0)
+	in {
+		assert(!subdivisions.empty);
+		assert(subdivisions.all!isFinite);
+		assert(subdivisions.isSorted);
+		assert(subdivisions.findAdjacent.empty);
+	}
+	body {
 		this.pdf = pdf;
 		this.a = a;
 		this.epsRel = epsRel;
 		this.epsAbs = epsAbs;
+		this.subdivisions = subdivisions;
+		this.partials = new T[subdivisions.length];
+		partials.front = pdf.integrate(-T.infinity, subdivisions.front, epsRel, epsAbs);
+		foreach(i, ref partial; partials[1..$])
+			partial = pdf.integrate(subdivisions[i], subdivisions[i+1], epsRel, epsAbs);
 	}
 
 	/++
-	Compute CDF for x.
-	See_also: [struct Result](https://github.com/kyllingstad/scid/blob/a9f3916526e4bf9a4da35d14a969e1abfa17a496/source/scid/types.d)
+	Call operator
 	+/
-	final Result!T eval(T x)
-	{
-		return pdf.integrate(a, x, epsRel, epsAbs);
-	}
-
 	final T opCall(T x)
-	{
-		return eval(x).value;
+	in {
+		assert(x.isFinite);
+	}
+	body {
+		immutable i = subdivisions.assumeSorted.trisect(x)[0].length;
+		return sum(partials[0..i])
+			+ pdf.integrate(i ? subdivisions[i-1] : -T.infinity, x, epsRel, epsAbs);
 	}
 }
 
@@ -101,16 +115,13 @@ unittest
 	{
 		this()
 		{
-			super(new NormalPDF);
+			super(new NormalPDF, [-3, -1, 0, 1, 3]);
 		}
 	}
 
 	auto cdf = new NormalCDF;
 
 	assert(approxEqual(cdf(1.3), normalDistribution(1.3)));
-
-	auto result = cdf.eval(1.2);
-	assert(abs(result.value - normalDistribution(1.2)) < result.error);
 }
 
 
