@@ -46,7 +46,7 @@ abstract class NumericCDF(T) : CDF!T
 	import distribution.pdf;
 
 	private PDF!T pdf;
-	private T a, b, epsRel, epsAbs;
+	private T a, epsRel, epsAbs;
 
 	/++
     Params:
@@ -59,7 +59,6 @@ abstract class NumericCDF(T) : CDF!T
 	{
 		this.pdf = pdf;
 		this.a = a;
-		this.b = b;
 		this.epsRel = epsRel;
 		this.epsAbs = epsAbs;
 	}
@@ -121,7 +120,7 @@ abstract class NumericCCDF(T) : CDF!T
 	import distribution.pdf;
 
 	private PDF!T pdf;
-	private T a, b, epsRel, epsAbs;
+	private T b, epsRel, epsAbs;
 
 	/++
     Params:
@@ -133,7 +132,6 @@ abstract class NumericCCDF(T) : CDF!T
 	this(PDF!T pdf, T b = T.infinity, T epsRel = 1e-6, T epsAbs = 0)
 	{
 		this.pdf = pdf;
-		this.a = a;
 		this.b = b;
 		this.epsRel = epsRel;
 		this.epsAbs = epsAbs;
