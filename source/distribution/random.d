@@ -373,7 +373,7 @@ final class GeneralizedInverseGaussianRNG(T, UniformRNG = Random) : Distribution
 		assert(psi >= 0);
 	}
 	body {
-		auto params = GIGChiPsi!T(chi, psi);
+		immutable params = GIGChiPsi!T(chi, psi);
 		if (chi <= T.min_normal)
 			this.rng = new GammaRNG!(T, UniformRNG)(rng, lambda, 2 / psi);
 		else if (psi <= T.min_normal)
