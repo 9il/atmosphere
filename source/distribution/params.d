@@ -9,6 +9,85 @@ import std.typecons;
 
 @safe pure nothrow @nogc:
 
+/// `chi, psi` generalized inverse Gaussian distribution parameters
+struct GIGChiPsi(T)
+	if(isFloatingPoint!T)
+{
+	///
+	T chi;
+	///
+	T psi;
+
+const @property:
+	/// `sqrt(chi / psi)`
+	T eta()   { return sqrt(chi / psi); }
+	/// `sqrt(chi * psi)`
+	T omega() { return sqrt(chi * psi); }
+
+	/// `cast` operator overloading 
+	R opCast(R : GIGChiPsi!F, F)(){ return R(chi, psi); }
+	/// ditto
+	R opCast(R : GIGEtaOmega!F, F)() { return R(eta, omega); }
+}
+
+///
+unittest 
+{
+	double _chi   = 3;
+	double _psi   = 4;
+
+	auto params = GIGChiPsi!double(_chi, _psi);
+
+	auto params1 = cast(GIGChiPsi    !real) params;
+	auto params2 = cast(GIGEtaOmega  !real) params;
+
+	double chi   = params.chi;
+	double psi   = params.psi;
+
+	double eta   = params.eta;
+	double omega = params.omega;
+}
+
+
+/// `eta, omega` generalized inverse Gaussian distribution parameters
+struct GIGEtaOmega(T)
+	if(isFloatingPoint!T)
+{
+	///
+	T eta;
+	///
+	T omega;
+
+const @property:
+	/// `omega * eta`
+	T chi()   { return omega * eta; }
+	/// `omega / eta`
+	T psi()   { return omega / eta; }
+
+	/// `cast` operator overloading 
+	R opCast(R : GIGChiPsi!F, F)(){ return R(chi, psi); }
+	/// ditto
+	R opCast(R : GIGEtaOmega!F, F)() { return R(eta, omega); }
+}
+
+///
+unittest 
+{
+	double _eta   = 3;
+	double _omega = 4;
+
+	auto params = GIGEtaOmega!double(_eta, _omega);
+
+	auto params1 = cast(GIGChiPsi    !real) params;
+	auto params2 = cast(GIGEtaOmega  !real) params;
+
+	double chi   = params.chi;
+	double psi   = params.psi;
+
+	double eta   = params.eta;
+	double omega = params.omega;
+}
+
 
 /// `alpha, beta, delta` generalized hyperbolic distribution parameters
 struct GHypAlphaDelta(T)
