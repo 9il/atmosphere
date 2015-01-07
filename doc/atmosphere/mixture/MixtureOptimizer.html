@@ -11,6 +11,12 @@
 </head>
 <body>
 <div class="main">
+<div class="breadcrumbs">
+<table id="results"></table>
+<a class="home" href=index.html>⌂</a>
+<input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
+<small>atmosphere.<a href=atmosphere/mixture.html>mixture</a>.</small><span class="highlight">MixtureOptimizer</span>
+</div>
 <div class="toc">
 <ul>
 <li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
@@ -34,12 +40,6 @@
 </li>
 <li><a href="simple_matrix.html">simple_matrix</a></li>
 </ul>
-</div>
-<div class="breadcrumbs">
-<table id="results"></table>
-<a class="home" href=index.html>⌂</a>
-<input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
-<small>atmosphere.<a href=atmosphere/mixture.html>mixture</a>.</small><span class="highlight">MixtureOptimizer</span>
 </div>
 <div class="content">
 <pre><code>public abstract class MixtureOptimizer(T)
@@ -80,7 +80,9 @@ if(isFloatingPoint!T)
 </p>
 </td></tr><tr><td><a href="atmosphere/mixture/MixtureOptimizer.weights.html">weights</a><span class="extrainfo"><span class="method-attribs"><span class="attr-property">@property</span></span></span></td><td></td><td><p>Set the mixture weights and calls <a href="update">update</a>.
 </p>
-</td></tr></table></div>
+</td></tr></table>
+</div>
+
 <script>hljs.initHighlightingOnLoad();</script>
 </div>
 </div>

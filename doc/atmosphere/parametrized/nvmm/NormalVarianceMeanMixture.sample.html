@@ -11,6 +11,12 @@
 </head>
 <body>
 <div class="main">
+<div class="breadcrumbs">
+<table id="results"></table>
+<a class="home" href=index.html>⌂</a>
+<input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
+<small>atmosphere.parametrized.<a href=atmosphere/parametrized/nvmm.html>nvmm</a>.</small><span class="highlight"><a href=atmosphere/parametrized/nvmm/NormalVarianceMeanMixture.html>NormalVarianceMeanMixture</a>.sample</span>
+</div>
 <div class="toc">
 <ul>
 <li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
@@ -35,18 +41,12 @@
 <li><a href="simple_matrix.html">simple_matrix</a></li>
 </ul>
 </div>
-<div class="breadcrumbs">
-<table id="results"></table>
-<a class="home" href=index.html>⌂</a>
-<input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
-<small>atmosphere.parametrized.<a href=atmosphere/parametrized/nvmm.html>nvmm</a>.</small><span class="highlight"><a href=atmosphere/parametrized/nvmm/NormalVarianceMeanMixture.html>NormalVarianceMeanMixture</a>.sample</span>
-</div>
 <div class="content">
 <pre><code>public final void sample(in T[] _sample) @property
 </code></pre>
-<div class="section">
-<p>Sets sample and recalculates alpha and mixture.
+<div class="section"><p>Sets sample and recalculates alpha and mixture.
 </p>
+
 
 </div>
 <div class="section"><h2>Contracts</h2><pre><code>in
@@ -60,26 +60,27 @@
     assert (_featuresT.matrix.shift >= _sample.length);
 }
 </code></pre>
+
 </div>
-<div class="section">
-<h2>Parameters</h2>
+<div class="section"><h2>Parameters</h2>
 <table class="params">
 <tr class="param"><td class="paramName">_sample</td><td class="paramDoc"><p>new sample with length less or equal <code class="prettyprint">maxLength</code>
 </p>
 </td></tr>
-</table></div>
-<div class="section">
-<h2>Throws</h2>
+</table>
+</div>
+<div class="section"><h2>Throws</h2>
 <p> <a href="atmosphere/mixture/FeaturesException.html">FeaturesException</a> if <a href="atmosphere/mixture/LikelihoodMaximization.isFeaturesCorrect.html">isFeaturesCorrect</a> is false.
 </p>
+
 
 </div>
 <hr/><pre><code>public final const(T)[] sample() @property const
 </code></pre>
-<div class="section">
-<h2>Returns</h2>
+<div class="section"><h2>Returns</h2>
 <p> Const slice of the internal sample representation.
 </p>
+
 
 </div>
 

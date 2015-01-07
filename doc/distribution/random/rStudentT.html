@@ -11,6 +11,12 @@
 </head>
 <body>
 <div class="main">
+<div class="breadcrumbs">
+<table id="results"></table>
+<a class="home" href=index.html>⌂</a>
+<input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
+<small>distribution.<a href=distribution/random.html>random</a>.</small><span class="highlight">rStudentT</span>
+</div>
 <div class="toc">
 <ul>
 <li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
@@ -35,20 +41,14 @@
 <li><a href="simple_matrix.html">simple_matrix</a></li>
 </ul>
 </div>
-<div class="breadcrumbs">
-<table id="results"></table>
-<a class="home" href=index.html>⌂</a>
-<input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
-<small>distribution.<a href=distribution/random.html>random</a>.</small><span class="highlight">rStudentT</span>
-</div>
 <div class="content">
 <pre><code>public T rStudentT(T = double)(T shape) 
 if(isFloatingPoint!T)
 </code></pre>
-<div class="section">
-<p>Function to generate random observation from a
+<div class="section"><p>Function to generate random observation from a
 Student's t-distribution.
 </p>
+
 
 </div>
 <hr/><pre><code>public T rStudentT(T = double, UniformRNG)(
@@ -56,10 +56,10 @@ Student's t-distribution.
     T shape) 
 if(isFloatingPoint!T && isUniformRNG!UniformRNG)
 </code></pre>
-<div class="section">
-<p>Function to generate random observation from a
+<div class="section"><p>Function to generate random observation from a
 Student's t-distribution.
 </p>
+
 
 </div>
 <div class="section"><h2>Contracts</h2><pre><code>in
@@ -68,11 +68,13 @@ Student's t-distribution.
     assert (shape > 0);
 }
 </code></pre>
+
 </div>
 <div class="section"><h2>Example</h2>
 <pre><code>auto x = rStudentT(2.0) * 5;
 
 </code></pre>
+
 </div>
 
 <script>hljs.initHighlightingOnLoad();</script>

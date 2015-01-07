@@ -11,6 +11,12 @@
 </head>
 <body>
 <div class="main">
+<div class="breadcrumbs">
+<table id="results"></table>
+<a class="home" href=index.html>⌂</a>
+<input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
+<small>atmosphere.<a href=atmosphere/mixture.html>mixture</a>.</small><span class="highlight"><a href=atmosphere/mixture/MixtureOptimizer.html>MixtureOptimizer</a>.put</span>
+</div>
 <div class="toc">
 <ul>
 <li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
@@ -35,19 +41,13 @@
 <li><a href="simple_matrix.html">simple_matrix</a></li>
 </ul>
 </div>
-<div class="breadcrumbs">
-<table id="results"></table>
-<a class="home" href=index.html>⌂</a>
-<input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
-<small>atmosphere.<a href=atmosphere/mixture.html>mixture</a>.</small><span class="highlight"><a href=atmosphere/mixture/MixtureOptimizer.html>MixtureOptimizer</a>.put</span>
-</div>
 <div class="content">
 <pre><code>public final void put(Range)(Range features) 
 if(isInputRange!Range && hasLength!Range && isNumeric!(ElementType!Range))
 </code></pre>
-<div class="section">
-<p>Puts back new feature for each components.
+<div class="section"><p>Puts back new feature for each components.
 </p>
+
 
 </div>
 <div class="section"><h2>Contracts</h2><pre><code>in
@@ -56,20 +56,21 @@ if(isInputRange!Range && hasLength!Range && isNumeric!(ElementType!Range))
     assert (_featuresT.matrix.width < _featuresT.matrix.shift);
 }
 </code></pre>
+
 </div>
-<div class="section">
-<h2>Parameters</h2>
+<div class="section"><h2>Parameters</h2>
 <table class="params">
 <tr class="param"><td class="paramName">features</td><td class="paramDoc"><p>One feature per component.
 </p>
 </td></tr>
-</table></div>
+</table>
+</div>
 <hr/><pre><code>public final void put(RangeOfRanges)(RangeOfRanges featuresROR) 
 if(isInputRange!RangeOfRanges && hasLength!RangeOfRanges && isInputRange!(ElementType!RangeOfRanges) && hasLength!(ElementType!RangeOfRanges) && isNumeric!(ElementType!(ElementType!RangeOfRanges)))
 </code></pre>
-<div class="section">
-<p>Puts back new features for each components.
+<div class="section"><p>Puts back new features for each components.
 </p>
+
 
 </div>
 <div class="section"><h2>Contracts</h2><pre><code>in
@@ -78,14 +79,15 @@ if(isInputRange!RangeOfRanges && hasLength!RangeOfRanges && isInputRange!(Elemen
     assert (_featuresT.matrix.width + featuresROR.length <= _featuresT.matrix.shift);
 }
 </code></pre>
+
 </div>
-<div class="section">
-<h2>Parameters</h2>
+<div class="section"><h2>Parameters</h2>
 <table class="params">
 <tr class="param"><td class="paramName">featuresROR</td><td class="paramDoc"><p>Range of ranges of features per component.
 </p>
 </td></tr>
-</table></div>
+</table>
+</div>
 
 <script>hljs.initHighlightingOnLoad();</script>
 </div>

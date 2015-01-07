@@ -11,6 +11,12 @@
 </head>
 <body>
 <div class="main">
+<div class="breadcrumbs">
+<table id="results"></table>
+<a class="home" href=index.html>⌂</a>
+<input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
+<small>atmosphere.parametrized.<a href=atmosphere/parametrized/nvmm.html>nvmm</a>.</small><span class="highlight">NormalVarianceMeanMixture</span>
+</div>
 <div class="toc">
 <ul>
 <li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
@@ -35,12 +41,6 @@
 <li><a href="simple_matrix.html">simple_matrix</a></li>
 </ul>
 </div>
-<div class="breadcrumbs">
-<table id="results"></table>
-<a class="home" href=index.html>⌂</a>
-<input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
-<small>atmosphere.parametrized.<a href=atmosphere/parametrized/nvmm.html>nvmm</a>.</small><span class="highlight">NormalVarianceMeanMixture</span>
-</div>
 <div class="content">
 <pre><code>public abstract class NormalVarianceMeanMixture(T) : MixtureOptimizer!T, LikelihoodMaximization!T
 if(isFloatingPoint!T)
@@ -63,7 +63,9 @@ if(isFloatingPoint!T)
 </p>
 </td></tr><tr><td><a href="atmosphere/parametrized/nvmm/NormalVarianceMeanMixture.grid.html">grid</a><span class="extrainfo"><span class="method-attribs"><span class="attr-property">@property</span>, <span class="attr-const">const</span></span></span></td><td></td><td>Returns: <p> Const slice of the internal grid representation.
 </p>
-</td></tr></table></div>
+</td></tr></table>
+</div>
+
 <script>hljs.initHighlightingOnLoad();</script>
 </div>
 </div>

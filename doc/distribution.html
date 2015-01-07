@@ -11,6 +11,12 @@
 </head>
 <body>
 <div class="main">
+<div class="breadcrumbs">
+<table id="results"></table>
+<a class="home" href=index.html>⌂</a>
+<input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
+<small>distribution</small>
+</div>
 <div class="toc">
 <ul>
 <li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
@@ -34,20 +40,14 @@
 <li><a href="simple_matrix.html">simple_matrix</a></li>
 </ul>
 </div>
-<div class="breadcrumbs">
-<table id="results"></table>
-<a class="home" href=index.html>⌂</a>
-<input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
-<small>distribution</small>
-</div>
 <div class="content">
-<div class="section">
-<p>Publicly imports 
+<div class="section"><p>Publicly imports 
 <a href="distribution/random.html">random</a>,
 <a href="distribution/pdf.html">pdf</a>,
 <a href="distribution/cdf.html">cdf</a>,
 <a href="distribution/quantile.html">quantile</a>.
 </p>
+
 
 </div>
 

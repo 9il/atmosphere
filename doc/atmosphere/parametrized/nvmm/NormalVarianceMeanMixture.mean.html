@@ -11,6 +11,12 @@
 </head>
 <body>
 <div class="main">
+<div class="breadcrumbs">
+<table id="results"></table>
+<a class="home" href=index.html>⌂</a>
+<input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
+<small>atmosphere.parametrized.<a href=atmosphere/parametrized/nvmm.html>nvmm</a>.</small><span class="highlight"><a href=atmosphere/parametrized/nvmm/NormalVarianceMeanMixture.html>NormalVarianceMeanMixture</a>.mean</span>
+</div>
 <div class="toc">
 <ul>
 <li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
@@ -35,19 +41,13 @@
 <li><a href="simple_matrix.html">simple_matrix</a></li>
 </ul>
 </div>
-<div class="breadcrumbs">
-<table id="results"></table>
-<a class="home" href=index.html>⌂</a>
-<input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
-<small>atmosphere.parametrized.<a href=atmosphere/parametrized/nvmm.html>nvmm</a>.</small><span class="highlight"><a href=atmosphere/parametrized/nvmm/NormalVarianceMeanMixture.html>NormalVarianceMeanMixture</a>.mean</span>
-</div>
 <div class="content">
 <pre><code>public final T mean() @property const
 </code></pre>
-<div class="section">
-<h2>Returns</h2>
+<div class="section"><h2>Returns</h2>
 <p> sample mean
 </p>
+
 
 </div>
 

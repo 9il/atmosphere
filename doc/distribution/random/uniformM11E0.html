@@ -11,6 +11,12 @@
 </head>
 <body>
 <div class="main">
+<div class="breadcrumbs">
+<table id="results"></table>
+<a class="home" href=index.html>⌂</a>
+<input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
+<small>distribution.<a href=distribution/random.html>random</a>.</small><span class="highlight">uniformM11E0</span>
+</div>
 <div class="toc">
 <ul>
 <li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
@@ -35,35 +41,30 @@
 <li><a href="simple_matrix.html">simple_matrix</a></li>
 </ul>
 </div>
-<div class="breadcrumbs">
-<table id="results"></table>
-<a class="home" href=index.html>⌂</a>
-<input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
-<small>distribution.<a href=distribution/random.html>random</a>.</small><span class="highlight">uniformM11E0</span>
-</div>
 <div class="content">
 <pre><code>public T uniformM11E0(T = double)() 
 if(isFloatingPoint!T)
 </code></pre>
-<div class="section">
-<h2>Returns</h2>
+<div class="section"><h2>Returns</h2>
 <p> random number from <code class="prettyprint">[-1, +1] \ {0}</code>.
 </p>
+
 
 </div>
 <hr/><pre><code>public T uniformM11E0(T = double, UniformRNG)(ref UniformRNG rng) 
 if(isFloatingPoint!T && isUniformRNG!UniformRNG)
 </code></pre>
-<div class="section">
-<h2>Returns</h2>
+<div class="section"><h2>Returns</h2>
 <p> random number from <code class="prettyprint">[-1, +1] \ {0}</code>.
 </p>
+
 
 </div>
 <div class="section"><h2>Example</h2>
 <pre><code>auto x = uniformM11E0();
 
 </code></pre>
+
 </div>
 
 <script>hljs.initHighlightingOnLoad();</script>

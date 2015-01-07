@@ -11,6 +11,12 @@
 </head>
 <body>
 <div class="main">
+<div class="breadcrumbs">
+<table id="results"></table>
+<a class="home" href=index.html>⌂</a>
+<input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
+<small><a href=simple_matrix.html>simple_matrix</a>.</small><span class="highlight"><a href=simple_matrix/Matrix.html>Matrix</a>.opIndex</span>
+</div>
 <div class="toc">
 <ul>
 <li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
@@ -35,12 +41,6 @@
 </li>
 </ul>
 </div>
-<div class="breadcrumbs">
-<table id="results"></table>
-<a class="home" href=index.html>⌂</a>
-<input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
-<small><a href=simple_matrix.html>simple_matrix</a>.</small><span class="highlight"><a href=simple_matrix/Matrix.html>Matrix</a>.opIndex</span>
-</div>
 <div class="content">
 <pre><code>public ref inout(T) opIndex(
     size_t heightI, 
@@ -52,6 +52,7 @@
     assert (widthI < width);
 }
 </code></pre>
+
 </div>
 <hr/><pre><code>public inout(typeof(this)) opIndex(size_t[2] range) inout
 </code></pre>
@@ -60,6 +61,7 @@
     assert (range[1] <= height);
 }
 </code></pre>
+
 </div>
 <hr/><pre><code>public inout(typeof(this)) opIndex(
     size_t[2] range0, 
@@ -71,6 +73,7 @@
     assert (range1[1] <= width);
 }
 </code></pre>
+
 </div>
 
 <script>hljs.initHighlightingOnLoad();</script>

@@ -11,6 +11,12 @@
 </head>
 <body>
 <div class="main">
+<div class="breadcrumbs">
+<table id="results"></table>
+<a class="home" href=index.html>⌂</a>
+<input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
+<small>atmosphere.<a href=atmosphere/mixture.html>mixture</a>.</small><span class="highlight"><a href=atmosphere/mixture/LikelihoodMaximization.html>LikelihoodMaximization</a>.isFeaturesCorrect</span>
+</div>
 <div class="toc">
 <ul>
 <li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
@@ -35,18 +41,12 @@
 <li><a href="simple_matrix.html">simple_matrix</a></li>
 </ul>
 </div>
-<div class="breadcrumbs">
-<table id="results"></table>
-<a class="home" href=index.html>⌂</a>
-<input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
-<small>atmosphere.<a href=atmosphere/mixture.html>mixture</a>.</small><span class="highlight"><a href=atmosphere/mixture/LikelihoodMaximization.html>LikelihoodMaximization</a>.isFeaturesCorrect</span>
-</div>
 <div class="content">
 <pre><code>public bool isFeaturesCorrect() const
 </code></pre>
-<div class="section">
-<p>Returns true if for all values in sample exists probability density function from mixture such that <code class="prettyprint">isNormal(PDF(value))</code>
+<div class="section"><p>Returns true if for all values in sample exists probability density function from mixture such that <code class="prettyprint">isNormal(PDF(value))</code>
 </p>
+
 
 </div>
 <div class="section seealso">

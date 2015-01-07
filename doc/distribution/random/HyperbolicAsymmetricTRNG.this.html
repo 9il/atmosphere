@@ -11,6 +11,12 @@
 </head>
 <body>
 <div class="main">
+<div class="breadcrumbs">
+<table id="results"></table>
+<a class="home" href=index.html>⌂</a>
+<input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
+<small>distribution.<a href=distribution/random.html>random</a>.</small><span class="highlight"><a href=distribution/random/HyperbolicAsymmetricTRNG.html>HyperbolicAsymmetricTRNG</a>.this</span>
+</div>
 <div class="toc">
 <ul>
 <li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
@@ -35,12 +41,6 @@
 <li><a href="simple_matrix.html">simple_matrix</a></li>
 </ul>
 </div>
-<div class="breadcrumbs">
-<table id="results"></table>
-<a class="home" href=index.html>⌂</a>
-<input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
-<small>distribution.<a href=distribution/random.html>random</a>.</small><span class="highlight"><a href=distribution/random/HyperbolicAsymmetricTRNG.html>HyperbolicAsymmetricTRNG</a>.this</span>
-</div>
 <div class="content">
 <pre><code>public this(
     ref UniformRNG rng, 
@@ -48,13 +48,12 @@
     T shape, 
     T scale = 1)
 </code></pre>
-<div class="section">
-<p>Constructor
+<div class="section"><p>Constructor
 </p>
 
+
 </div>
-<div class="section">
-<h2>Parameters</h2>
+<div class="section"><h2>Parameters</h2>
 <table class="params">
 <tr class="param"><td class="paramName">rng</td><td class="paramDoc"><p>uniform random number generator
 </p>
@@ -68,7 +67,8 @@
 <tr class="param"><td class="paramName">scale</td><td class="paramDoc"><p>inverse-gamma scale parameter
 </p>
 </td></tr>
-</table></div>
+</table>
+</div>
 
 <script>hljs.initHighlightingOnLoad();</script>
 </div>

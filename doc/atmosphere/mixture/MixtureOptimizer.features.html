@@ -11,6 +11,12 @@
 </head>
 <body>
 <div class="main">
+<div class="breadcrumbs">
+<table id="results"></table>
+<a class="home" href=index.html>⌂</a>
+<input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
+<small>atmosphere.<a href=atmosphere/mixture.html>mixture</a>.</small><span class="highlight"><a href=atmosphere/mixture/MixtureOptimizer.html>MixtureOptimizer</a>.features</span>
+</div>
 <div class="toc">
 <ul>
 <li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
@@ -35,20 +41,14 @@
 <li><a href="simple_matrix.html">simple_matrix</a></li>
 </ul>
 </div>
-<div class="breadcrumbs">
-<table id="results"></table>
-<a class="home" href=index.html>⌂</a>
-<input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
-<small>atmosphere.<a href=atmosphere/mixture.html>mixture</a>.</small><span class="highlight"><a href=atmosphere/mixture/MixtureOptimizer.html>MixtureOptimizer</a>.features</span>
-</div>
 <div class="content">
 <pre><code>public final Matrix!(const(T)) features() const
 </code></pre>
-<div class="section">
-<h2>Returns</h2>
+<div class="section"><h2>Returns</h2>
 <p> Range of range of features for each component. A matrix with k rows and n columns.
 		This is internal representation, and can be discarded after any methods calls.
 </p>
+
 
 </div>
 

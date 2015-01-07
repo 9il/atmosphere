@@ -11,6 +11,12 @@
 </head>
 <body>
 <div class="main">
+<div class="breadcrumbs">
+<table id="results"></table>
+<a class="home" href=index.html>⌂</a>
+<input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
+<small><a href=simple_matrix.html>simple_matrix</a>.</small><span class="highlight"><a href=simple_matrix/TransposedMatrix.html>TransposedMatrix</a>.popFrontTransversal</span>
+</div>
 <div class="toc">
 <ul>
 <li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
@@ -35,12 +41,6 @@
 </li>
 </ul>
 </div>
-<div class="breadcrumbs">
-<table id="results"></table>
-<a class="home" href=index.html>⌂</a>
-<input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
-<small><a href=simple_matrix.html>simple_matrix</a>.</small><span class="highlight"><a href=simple_matrix/TransposedMatrix.html>TransposedMatrix</a>.popFrontTransversal</span>
-</div>
 <div class="content">
 <pre><code>public void popFrontTransversal()
 </code></pre>
@@ -49,6 +49,7 @@
     assert (!emptyTransveral);
 }
 </code></pre>
+
 </div>
 
 <script>hljs.initHighlightingOnLoad();</script>

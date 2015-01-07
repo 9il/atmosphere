@@ -11,6 +11,12 @@
 </head>
 <body>
 <div class="main">
+<div class="breadcrumbs">
+<table id="results"></table>
+<a class="home" href=index.html>⌂</a>
+<input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
+<small>atmosphere.<a href=atmosphere/mixture.html>mixture</a>.</small><span class="highlight"><a href=atmosphere/mixture/GradientLikelihoodMaximization.html>GradientLikelihoodMaximization</a>.this</span>
+</div>
 <div class="toc">
 <ul>
 <li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
@@ -35,24 +41,17 @@
 <li><a href="simple_matrix.html">simple_matrix</a></li>
 </ul>
 </div>
-<div class="breadcrumbs">
-<table id="results"></table>
-<a class="home" href=index.html>⌂</a>
-<input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
-<small>atmosphere.<a href=atmosphere/mixture.html>mixture</a>.</small><span class="highlight"><a href=atmosphere/mixture/GradientLikelihoodMaximization.html>GradientLikelihoodMaximization</a>.this</span>
-</div>
 <div class="content">
 <pre><code>public this(
     size_t k, 
     size_t maxLength)
 </code></pre>
-<div class="section">
-<p>Constructor
+<div class="section"><p>Constructor
 </p>
 
+
 </div>
-<div class="section">
-<h2>Parameters</h2>
+<div class="section"><h2>Parameters</h2>
 <table class="params">
 <tr class="param"><td class="paramName">k</td><td class="paramDoc"><p>number of components
 </p>
@@ -60,7 +59,8 @@
 <tr class="param"><td class="paramName">maxLength</td><td class="paramDoc"><p>maximal length of features. In terms of likelihood maximization maxLength is maximal length of a sample.
 </p>
 </td></tr>
-</table></div>
+</table>
+</div>
 
 <script>hljs.initHighlightingOnLoad();</script>
 </div>

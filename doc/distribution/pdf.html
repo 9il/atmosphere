@@ -11,6 +11,12 @@
 </head>
 <body>
 <div class="main">
+<div class="breadcrumbs">
+<table id="results"></table>
+<a class="home" href=index.html>⌂</a>
+<input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
+<small>distribution.pdf</small>
+</div>
 <div class="toc">
 <ul>
 <li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
@@ -35,13 +41,12 @@
 <li><a href="simple_matrix.html">simple_matrix</a></li>
 </ul>
 </div>
-<div class="breadcrumbs">
-<table id="results"></table>
-<a class="home" href=index.html>⌂</a>
-<input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
-<small>distribution.pdf</small>
-</div>
 <div class="content">
+<div class="section"><p>Probability density functions
+</p>
+
+
+</div>
 <div class="section"><h2>Interfaces</h2><table><tr><td><a href="distribution/pdf/PDF.html">PDF</a></td><td></td><td><p>Probability density function interface
 </p>
 </td></tr></table><h2>Classes</h2><table><tr><td><a href="distribution/pdf/GammaPDF.html">GammaPDF</a></td><td></td><td><p>Gamma PDF
@@ -60,13 +65,15 @@
 </p>
 </td></tr><tr><td><a href="distribution/pdf/HyperbolicAsymmetricTPDF.html">HyperbolicAsymmetricTPDF</a></td><td></td><td><p>Hyperbolic asymmetric T (inverse gamma mixture of normals) PDF
 </p>
-</td></tr><tr><td><a href="distribution/pdf/NormalInverseGaussianPDF.html">NormalInverseGaussianPDF</a></td><td></td><td><p>Normal inverse Gaussian (inverse Gaussian mixture of normals) PDF
+</td></tr><tr><td><a href="distribution/pdf/NormalInverseGaussianPDF.html">NormalInverseGaussianPDF</a></td><td></td><td><p>Normal-inverse Gaussian (inverse Gaussian mixture of normals) PDF
 </p>
 </td></tr><tr><td><a href="distribution/pdf/ProperGeneralizedHyperbolicPDF.html">ProperGeneralizedHyperbolicPDF</a></td><td></td><td><p>Proper generalized hyperbolic (generalized inverse Gaussian mixture of normals) PDF
 </p>
 </td></tr><tr><td><a href="distribution/pdf/GeneralizedHyperbolicPDF.html">GeneralizedHyperbolicPDF</a></td><td></td><td><p>Generalized hyperbolic (generalized inverse Gaussian mixture of normals) PDF
 </p>
-</td></tr></table></div>
+</td></tr></table>
+</div>
+
 <script>hljs.initHighlightingOnLoad();</script>
 </div>
 </div>

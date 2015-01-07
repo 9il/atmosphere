@@ -11,6 +11,12 @@
 </head>
 <body>
 <div class="main">
+<div class="breadcrumbs">
+<table id="results"></table>
+<a class="home" href=index.html>⌂</a>
+<input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
+<small>atmosphere</small>
+</div>
 <div class="toc">
 <ul>
 <li><span class="package selected" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
@@ -34,27 +40,20 @@
 <li><a href="simple_matrix.html">simple_matrix</a></li>
 </ul>
 </div>
-<div class="breadcrumbs">
-<table id="results"></table>
-<a class="home" href=index.html>⌂</a>
-<input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
-<small>atmosphere</small>
-</div>
 <div class="content">
-<div class="section">
-<p>This module publicly imports all classes.
+<div class="section"><p>This module publicly imports all classes.
 </p>
 
+
 </div>
-<div class="section">
-<h2>Import</h2>
+<div class="section"><h2>Import</h2>
 
 <pre><code>import atmosphere;</code></pre>
 
 
+
 </div>
-<div class="section">
-<h2>Class_hierarchy</h2>
+<div class="section"><h2>Class_hierarchy</h2>
 <ul>
 <li><a href="atmosphere/mixture/MixtureOptimizer.html">MixtureOptimizer</a>
 <ul>
@@ -95,6 +94,7 @@
 		<tr><td><a href="atmosphere/parametrized/nvmm/NormalVarianceMeanMixtureEMAndGradient.html">NormalVarianceMeanMixtureEMAndGradient</a></td> <td>~10%</td> <td>Yes</td> <td>slow </td> <td>No</td> <td>Yes</td> </tr>
 		<tr><td><a href="atmosphere/parametrized/nvmm/NormalVarianceMeanMixtureEMAndCoordinate.html">NormalVarianceMeanMixtureEMAndCoordinate</a></td> <td>~5%</td> <td>Partial</td> <td>slow </td> <td>No</td> <td>Yes</td> </tr> </table>
 </p>
+
 
 </div>
 <div class="section seealso">

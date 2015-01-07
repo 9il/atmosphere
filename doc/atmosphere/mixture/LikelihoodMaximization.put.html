@@ -11,6 +11,12 @@
 </head>
 <body>
 <div class="main">
+<div class="breadcrumbs">
+<table id="results"></table>
+<a class="home" href=index.html>⌂</a>
+<input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
+<small>atmosphere.<a href=atmosphere/mixture.html>mixture</a>.</small><span class="highlight"><a href=atmosphere/mixture/LikelihoodMaximization.html>LikelihoodMaximization</a>.put</span>
+</div>
 <div class="toc">
 <ul>
 <li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
@@ -35,20 +41,13 @@
 <li><a href="simple_matrix.html">simple_matrix</a></li>
 </ul>
 </div>
-<div class="breadcrumbs">
-<table id="results"></table>
-<a class="home" href=index.html>⌂</a>
-<input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
-<small>atmosphere.<a href=atmosphere/mixture.html>mixture</a>.</small><span class="highlight"><a href=atmosphere/mixture/LikelihoodMaximization.html>LikelihoodMaximization</a>.put</span>
-</div>
 <div class="content">
 <pre><code>public void put(PDFRange, SampleRange)(
     PDFRange pdfs, 
     SampleRange sample) 
 if(isInputRange!PDFRange && hasLength!PDFRange && isCallable!(ElementType!PDFRange))
 </code></pre>
-<div class="section">
-<h2>Parameters</h2>
+<div class="section"><h2>Parameters</h2>
 <table class="params">
 <tr class="param"><td class="paramName">pdfs</td><td class="paramDoc"><p>Probability distribution <em>functions</em>
 </p>
@@ -56,7 +55,8 @@ if(isInputRange!PDFRange && hasLength!PDFRange && isCallable!(ElementType!PDFRan
 <tr class="param"><td class="paramName">sample</td><td class="paramDoc"><p>Sample
 </p>
 </td></tr>
-</table></div>
+</table>
+</div>
 <div class="section seealso">
 <h2>See Also:</h2>
 <div class="seealso-content">
