@@ -93,7 +93,7 @@ abstract class NumericCDF(T) : CDF!T
 			return 1;
 		if(x.isNaN)
 			return x;
-		immutable i = subdivisions.assumeSorted.trisect(x)[0].length;
+		immutable i = subdivisions.length - subdivisions.assumeSorted.trisect(x)[2].length;
 		return sum(partials[0..i])
 			+ pdf.integrate(i ? subdivisions[i-1] : a, x, epsRel, epsAbs);
 	}
@@ -183,7 +183,7 @@ abstract class NumericCCDF(T) : CDF!T
 			return 1;
 		if(x.isNaN)
 			return x;
-		immutable i = subdivisions.assumeSorted.trisect(x)[2].length;
+		immutable i = subdivisions.length - subdivisions.assumeSorted.trisect(x)[0].length;
 		return sum(partials[$-i..$])
 			+ pdf.integrate(x, i ? subdivisions[$-i] : b, epsRel, epsAbs);
 	}
