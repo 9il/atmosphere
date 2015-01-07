@@ -54,9 +54,9 @@ abstract class NumericQuantile(T) : Quantile!T
 	/++
 	Constructor
     Params:
-		cdf     = The CDF to _integrate.
-		a	= (optional) The lower limit of integration.
-		b	= (optional) The upper limit of integration.
+		cdf	= The CDF to to inverse.
+		a	= (optional) The lower limit.
+		b	= (optional) The upper limit.
 	+/
 	this(CDF!T cdf, T a = -T.max, T b = T.max)
 	{
