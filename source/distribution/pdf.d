@@ -40,6 +40,10 @@ unittest
 	auto pdf = new NormalPDF;
 	auto x = pdf(0.1);
 	assert(x.isNormal);
+
+	import scid.calculus : integrate;
+	auto result = pdf.integrate(-double.infinity, double.infinity);
+	assert(abs(result.value - 1) < result.error);
 }
 
 
@@ -51,8 +55,12 @@ final class GammaPDF(T) : PDF!T
 {
 	private T shapem1, scale, c;
 
-	///Constructor
-	this(T shape, T scale)
+	/++
+	Constructor
+	Params:
+		shape = gamma shape parameter
+		scale = gamma scale parameter
+	+/	this(T shape, T scale)
 	in {
 		assert(shape.isNormal);
 		assert(shape > 0);
@@ -61,6 +69,7 @@ final class GammaPDF(T) : PDF!T
 	}
 	body {
 		this.c = 1 / (gamma(shape) * scale);
+		assert(c.isNormal);
 		this.shapem1 = shape - 1;
 		this.scale = scale;
 	}
@@ -82,6 +91,10 @@ unittest
 	auto pdf = new GammaPDF!double(3, 2);
 	auto x = pdf(0.1);
 	assert(x.isNormal);
+
+	import scid.calculus : integrate;
+	auto result = pdf.integrate(-double.infinity, double.infinity);
+	assert(abs(result.value - 1) < result.error);
 }
 
 
@@ -93,7 +106,12 @@ final class InverseGammaPDF(T) : PDF!T
 {
 	private T shapem1, scale, c;
 
-	///Constructor
+	/++
+	Constructor
+	Params:
+		shape = gamma shape parameter
+		scale = gamma scale parameter
+	+/
 	this(T shape, T scale)
 	in {
 		assert(shape.isNormal);
@@ -103,7 +121,8 @@ final class InverseGammaPDF(T) : PDF!T
 	}
 	body {
 		this.c = 1 / (gamma(shape) * scale);
-		this.shapem1 = shape - 1;
+		assert(c.isNormal);
+		this.shapem1 = shape + 1;
 		this.scale = scale;
 	}
 
@@ -111,7 +130,7 @@ final class InverseGammaPDF(T) : PDF!T
 	{
 		if(x < 0)
 			return 0;
-		x *= scale;
+		x /= scale;
 		return c 
 			* pow(x, -shapem1) 
 			* exp(-1/x);
@@ -121,9 +140,13 @@ final class InverseGammaPDF(T) : PDF!T
 ///
 unittest 
 {
-	auto pdf = new InverseGammaPDF!double(3, 2);
+	auto pdf = new InverseGammaPDF!double(3, 4);
 	auto x = pdf(0.1);
 	assert(x.isNormal);
+
+	import scid.calculus : integrate;
+	auto result = pdf.integrate(-double.infinity, double.infinity);
+	assert(abs(result.value - 1) < result.error);
 }
 
 
@@ -153,7 +176,7 @@ final class GeneralizedGammaPDF(T) : PDF!T
 	body {
 		this.power = power;
 		this.scale = scale;
-		this.c = fabs(power) / gamma(shape) / scale;
+		this.c = abs(power) / gamma(shape) / scale;
 		this.e = power * shape - 1;
 	}
 
@@ -174,6 +197,10 @@ unittest
 	auto pdf = new GeneralizedGammaPDF!double(3, 2, 0.5);
 	auto x = pdf(0.1);
 	assert(x.isNormal);
+
+	import scid.calculus : integrate;
+	auto result = pdf.integrate(-double.infinity, double.infinity);
+	assert(abs(result.value - 1) < result.error);
 }
 
 
@@ -211,6 +238,10 @@ unittest
 	auto pdf = new InverseGaussianPDF!double(3, 2);
 	auto x = pdf(0.1);
 	assert(x.isNormal);
+
+	import scid.calculus : integrate;
+	auto result = pdf.integrate(-double.infinity, double.infinity);
+	assert(abs(result.value - 1) < result.error);
 }
 
 
@@ -253,6 +284,10 @@ unittest
 	auto pdf = new ProperGeneralizedInverseGaussianPDF!double(3, 2);
 	auto x = pdf(0.1);
 	assert(x.isNormal);
+
+	import scid.calculus : integrate;
+	auto result = pdf.integrate(-double.infinity, double.infinity);
+	assert(abs(result.value - 1) < result.error);
 }
 
 
@@ -296,6 +331,10 @@ unittest
 	auto pdf = new GeneralizedInverseGaussianPDF!double(3, 2, 1);
 	auto x = pdf(0.1);
 	assert(x.isNormal);
+
+	import scid.calculus : integrate;
+	auto result = pdf.integrate(-double.infinity, double.infinity);
+	assert(abs(result.value - 1) < result.error);
 }
 
 
@@ -339,7 +378,7 @@ final class VarianceGammaPDF(T) : PDF!T
 	T opCall(T x)
 	{
 		immutable y = x - mu;
-		immutable z = fabs(y);
+		immutable z = abs(y);
 		immutable a = alpha * z;
 		return c 
 			* pow(z / alpha, lambdamh)
@@ -354,6 +393,10 @@ unittest
 	auto pdf = new VarianceGammaPDF!double(1.1, 1.1, 1.0, 1.1);
 	auto x = pdf(0.1);
 	assert(x.isNormal);
+
+	import scid.calculus : integrate;
+	auto result = pdf.integrate(-double.infinity, double.infinity);
+	assert(abs(result.value - 1) < result.error);
 }
 
 
@@ -396,7 +439,7 @@ final class HyperbolicAsymmetricTPDF(T) : PDF!T
 	{
 		immutable y = x - mu;
 		immutable z = hypot(delta, y);
-		immutable alpha = fabs(beta);
+		immutable alpha = abs(beta);
 		immutable a = z * alpha;
 		import std.stdio;
 		return c
@@ -459,6 +502,7 @@ final class NormalInverseGaussianPDF(T) : PDF!T
 		immutable z = hypot(delta, y);
 		immutable a = z * alpha;
 		return c
+			/ z
 			* besselK(a, 1, Flag!"ExponentiallyScaled".yes)
 			* exp(beta * y - a);
 	}
@@ -467,9 +511,13 @@ final class NormalInverseGaussianPDF(T) : PDF!T
 ///
 unittest 
 {
-	auto pdf = new NormalInverseGaussianPDF!double(1.1, 1.0, 1.1, 1.1);
+	auto pdf = new NormalInverseGaussianPDF!double(1.1, 0.8, 1.1, 1.1);
 	auto x = pdf(0.1);
 	assert(x.isNormal);
+
+	import scid.calculus : integrate;
+	auto result = pdf.integrate(-double.infinity, double.infinity);
+	assert(abs(result.value - 1) < result.error);
 }
 
 
@@ -508,7 +556,7 @@ final class ProperGeneralizedHyperbolicPDF(T) : PDF!T
 		this.omega = delta * q;
 		this.c = M_2_SQRTPI / (SQRT2 * 2)
 			* pow(eta, -lambda)
-			* besselK(omega, lambda, Flag!"ExponentiallyScaled".yes);
+			/ besselK(omega, lambda, Flag!"ExponentiallyScaled".yes);
 		assert(c.isNormal);
 		this.lambdamh = lambda - 0.5f;
 		this.alpha = alpha;
@@ -532,9 +580,13 @@ final class ProperGeneralizedHyperbolicPDF(T) : PDF!T
 ///
 unittest 
 {
-	auto pdf = new ProperGeneralizedHyperbolicPDF!double(1.1, 1.1, 1.0, 1.1, 1.1);
+	auto pdf = new ProperGeneralizedHyperbolicPDF!double(1.1, 1.1, 0.8, 1.1, 1.1);
 	auto x = pdf(0.1);
 	assert(x.isNormal);
+
+	import scid.calculus : integrate;
+	auto result = pdf.integrate(-double.infinity, double.infinity);
+	assert(abs(result.value - 1) < result.error);
 }
 
 
@@ -570,7 +622,7 @@ final class GeneralizedHyperbolicPDF(T) : PDF!T
 	body {
 		if (delta == 0)
 			this.pdf = new VarianceGammaPDF!T(lambda, alpha, beta, mu);
-		else if (alpha == fabs(beta))
+		else if (alpha == abs(beta))
 			this.pdf = new HyperbolicAsymmetricTPDF!T(lambda, beta, delta, mu);
 		else if (lambda == -0.5f)
 			this.pdf = new NormalInverseGaussianPDF!T(alpha, beta, delta, mu);
@@ -587,7 +639,11 @@ final class GeneralizedHyperbolicPDF(T) : PDF!T
 ///
 unittest 
 {
-	auto pdf = new GeneralizedHyperbolicPDF!double(1.1, 1.1, 1.0, 1.1, 1.1);
+	auto pdf = new GeneralizedHyperbolicPDF!double(1.1, 1.1, 0.9, 1.1, 1.1);
 	auto x = pdf(0.1);
 	assert(x.isNormal);
+
+	import scid.calculus : integrate;
+	auto result = pdf.integrate(-double.infinity, double.infinity);
+	assert(abs(result.value - 1) < result.error);
 }
