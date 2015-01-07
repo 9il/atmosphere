@@ -94,33 +94,21 @@ unittest
 	import distribution.pdf;
 	import distribution.cdf;
 
-	class NormalPDF : PDF!double
+	class NormalCDF : CDF!real
 	{
-		double opCall(double x)
+		real opCall(real x)
 		{
-			// 1/sqrt(2 PI)
-			enum c = 0.398942280401432677939946L;
-			return c * exp(-0.5f * x * x);
+			return normalDistribution(x);
 		}
 	}
 
-	class NormalCDF : NumericCDF!double
-	{
-		this()
-		{
-			super(new NormalPDF);
-		}
-	}
-
-	class NormalQuantile : NumericQuantile!double
+	class NormalQuantile : NumericQuantile!real
 	{
 		this()
 		{
 			super(new NormalCDF, -20, 20);
 		}
 	}
-	import scid.calculus;
-	auto l = integrate(new NormalPDF, -double.infinity, 20);
 
 	auto qf = new NormalQuantile;
 
