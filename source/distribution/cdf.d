@@ -50,10 +50,12 @@ abstract class NumericCDF(T) : CDF!T
 
 	/++
     Params:
-        pdf     = The PDF to _integrate.
-        a       = (optional) The lower limit of integration.
-        epsRel  = (optional) The requested relative accuracy.
-        epsAbs  = (optional) The requested absolute accuracy.
+		pdf     = The PDF to _integrate.
+		a	= (optional) The lower limit of integration.
+		epsRel  = (optional) The requested relative accuracy.
+		epsAbs  = (optional) The requested absolute accuracy.
+	See_also: [struct Result](https://github.com/kyllingstad/scid/blob/a9f3916526e4bf9a4da35d14a969e1abfa17a496/source/scid/types.d)
+
 	+/
 	this(PDF!T pdf, T a = -T.infinity, T epsRel = 1e-6, T epsAbs = 0)
 	{
@@ -123,11 +125,11 @@ abstract class NumericCCDF(T) : CDF!T
 	private T b, epsRel, epsAbs;
 
 	/++
-    Params:
-        pdf     = The PDF to _integrate.
-        b       = (optional) The upper limit of integration.
-        epsRel  = (optional) The requested relative accuracy.
-        epsAbs  = (optional) The requested absolute accuracy.
+	Params:
+		pdf	= The PDF to _integrate.
+		b	= (optional) The upper limit of integration.
+		epsRel  = (optional) The requested relative accuracy.
+		epsAbs  = (optional) The requested absolute accuracy.
 	+/
 	this(PDF!T pdf, T b = T.infinity, T epsRel = 1e-6, T epsAbs = 0)
 	{
