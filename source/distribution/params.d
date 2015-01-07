@@ -25,9 +25,9 @@ const @property:
 	T omega() { return sqrt(chi * psi); }
 
 	/// `cast` operator overloading 
-	R opCast(R : GIGChiPsi!F, F)(){ return R(chi, psi); }
+	R opCast(R : GIGChiPsi!F, F)()      { return R(chi, psi); }
 	/// ditto
-	R opCast(R : GIGEtaOmega!F, F)() { return R(eta, omega); }
+	R opCast(R : GIGEtaOmega!F, F)()    { return R(eta, omega); }
 }
 
 ///
@@ -65,9 +65,9 @@ const @property:
 	T psi()   { return omega / eta; }
 
 	/// `cast` operator overloading 
-	R opCast(R : GIGChiPsi!F, F)(){ return R(chi, psi); }
+	R opCast(R : GIGChiPsi!F, F)()      { return R(chi, psi); }
 	/// ditto
-	R opCast(R : GIGEtaOmega!F, F)() { return R(eta, omega); }
+	R opCast(R : GIGEtaOmega!F, F)()    { return R(eta, omega); }
 }
 
 ///
@@ -113,9 +113,13 @@ const @property:
 	/// `cast` operator overloading 
 	R opCast(R : GHypAlphaDelta!F, F)() { return R(alpha, beta, delta); }
 	/// ditto 
-	R opCast(R : GHypChiPsi!F, F)(){ return R(beta, chi, psi); }
+	R opCast(R : GHypChiPsi!F, F)()     { return R(beta, chi, psi); }
 	/// ditto
-	R opCast(R : GHypEtaOmega!F, F)() { return R(beta, eta, omega); }
+	R opCast(R : GHypEtaOmega!F, F)()   { return R(beta, eta, omega); }
+	/// ditto
+	R opCast(R : GIGChiPsi!F, F)()      { return R(chi, psi); }
+	/// ditto
+	R opCast(R : GIGEtaOmega!F, F)()    { return R(eta, omega); }
 }
 
 ///
@@ -130,6 +134,8 @@ unittest
 	auto params0 = cast(GHypAlphaDelta!real) params;
 	auto params1 = cast(GHypChiPsi    !real) params;
 	auto params2 = cast(GHypEtaOmega  !real) params;
+	auto params3 = cast(GIGChiPsi     !real) params;
+	auto params4 = cast(GIGEtaOmega   !real) params;
 
 	double alpha = params.alpha;
 	double delta = params.delta;
@@ -166,9 +172,13 @@ const @property:
 	/// `cast` operator overloading 
 	R opCast(R : GHypAlphaDelta!F, F)() { return R(alpha, beta, delta); }
 	/// ditto 
-	R opCast(R : GHypChiPsi!F, F)(){ return R(beta, chi, psi); }
+	R opCast(R : GHypChiPsi!F, F)()     { return R(beta, chi, psi); }
 	/// ditto
-	R opCast(R : GHypEtaOmega!F, F)() { return R(beta, eta, omega); }
+	R opCast(R : GHypEtaOmega!F, F)()   { return R(beta, eta, omega); }
+	/// ditto
+	R opCast(R : GIGChiPsi!F, F)()      { return R(chi, psi); }
+	/// ditto
+	R opCast(R : GIGEtaOmega!F, F)()    { return R(eta, omega); }
 }
 
 ///
@@ -183,6 +193,8 @@ unittest
 	auto params0 = cast(GHypAlphaDelta!real) params;
 	auto params1 = cast(GHypChiPsi    !real) params;
 	auto params2 = cast(GHypEtaOmega  !real) params;
+	auto params3 = cast(GIGChiPsi     !real) params;
+	auto params4 = cast(GIGEtaOmega   !real) params;
 
 	double alpha = params.alpha;
 	double delta = params.delta;
@@ -219,9 +231,13 @@ const @property:
 	/// `cast` operator overloading 
 	R opCast(R : GHypAlphaDelta!F, F)() { return R(alpha, beta, delta); }
 	/// ditto 
-	R opCast(R : GHypChiPsi!F, F)(){ return R(beta, chi, psi); }
+	R opCast(R : GHypChiPsi!F, F)()     { return R(beta, chi, psi); }
 	/// ditto
-	R opCast(R : GHypEtaOmega!F, F)() { return R(beta, eta, omega); }
+	R opCast(R : GHypEtaOmega!F, F)()   { return R(beta, eta, omega); }
+	/// ditto
+	R opCast(R : GIGChiPsi!F, F)()      { return R(chi, psi); }
+	/// ditto
+	R opCast(R : GIGEtaOmega!F, F)()    { return R(eta, omega); }
 }
 
 ///
@@ -236,6 +252,8 @@ unittest
 	auto params0 = cast(GHypAlphaDelta!real) params;
 	auto params1 = cast(GHypChiPsi    !real) params;
 	auto params2 = cast(GHypEtaOmega  !real) params;
+	auto params3 = cast(GIGChiPsi     !real) params;
+	auto params4 = cast(GIGEtaOmega   !real) params;
 
 	double alpha = params.alpha;
 	double delta = params.delta;
