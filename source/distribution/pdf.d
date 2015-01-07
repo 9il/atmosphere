@@ -183,7 +183,7 @@ Inverse Gaussian PDF
 final class InverseGaussianPDF(T) : PDF!T
 	if(isFloatingPoint!T)
 {
-	private T c, cchi, cpsi;
+	private T omega, chi, psi;
 
 	///Constructor
 	this(T chi, T psi)
@@ -194,14 +194,14 @@ final class InverseGaussianPDF(T) : PDF!T
 		assert(psi > 0);
 	}
 	body {
-		this.c = sqrt(chi/(2 * PI)) * exp(sqrt(chi*psi));
-		this.cchi = -0.5f * chi;
-		this.cpsi = -0.5f * psi;
+		this.chi = chi;
+		this.psi = psi;
+		this.omega = sqrt(chi * psi);
 	}
 
 	T opCall(T x)
 	{
-		return x < 0 ? 0 : c * exp(cchi / x + cpsi * x);
+		return x < 0 ? 0 : sqrt(chi / (2*PI*x^^3)) * exp(omega - (chi / x + psi * x) / 2);
 	}
 }
 
@@ -417,7 +417,7 @@ unittest
 
 
 /++
-Normal inverse Gaussian (inverse Gaussian mixture of normals) PDF
+Normal-inverse Gaussian (inverse Gaussian mixture of normals) PDF
 +/
 final class NormalInverseGaussianPDF(T) : PDF!T
 	if(isFloatingPoint!T)
