@@ -7,7 +7,11 @@ $(LINK2 distribution/quantile.html, quantile).
 */
 module distribution;
 
+///
 public import distribution.cdf;
+///
 public import distribution.pdf;
+///
 public import distribution.quantile;
+///
 public import distribution.random;

@@ -1,12 +1,14 @@
 /++
+Comulative density functions
 +/
 module distribution.cdf;
-
 
 import std.traits;
 import std.mathspecial;
 
+
 /++
+Comulative density function interface
 +/
 interface CDF(T)
 {
@@ -15,7 +17,6 @@ interface CDF(T)
 	+/
 	T opCall(T x);
 }
-
 
 ///
 unittest 
@@ -35,7 +36,9 @@ unittest
 	assert(isNormal(x));
 }
 
+
 /++
+Gamma CDF
 +/
 final class GammaCDF(T) : CDF!T
 	if(isFloatingPoint!T)
@@ -61,8 +64,7 @@ final class GammaCDF(T) : CDF!T
 	}
 }
 
-/++
-+/
+///
 unittest 
 {
 	auto cdf = new GammaCDF!double(3, 2);
@@ -72,6 +74,7 @@ unittest
 
 
 /++
+Inverse-gamma CDF
 +/
 final class InverseGammaCDF(T) : CDF!T
 	if(isFloatingPoint!T)
@@ -97,8 +100,7 @@ final class InverseGammaCDF(T) : CDF!T
 	}
 }
 
-/++
-+/
+///
 unittest 
 {
 	auto cdf = new InverseGammaCDF!double(3, 2);

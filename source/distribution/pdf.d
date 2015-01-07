@@ -1,7 +1,7 @@
 /++
+Probability density functions
 +/
 module distribution.pdf;
-
 
 import bessel;
 import std.traits;
@@ -9,6 +9,7 @@ import std.numeric;
 import std.math;
 import std.mathspecial;
 import std.typecons;
+
 
 /++
 Probability density function interface
@@ -20,7 +21,6 @@ interface PDF(T)
 	*/
 	T opCall(T x);
 }
-
 
 ///
 unittest
@@ -283,7 +283,6 @@ final class GeneralizedInverseGaussianPDF(T) : PDF!T
 		else
 			this.pdf = new ProperGeneralizedInverseGaussianPDF!T(lambda, sqrt(chi*psi), sqrt(chi/psi));
 	}
-
 
 	T opCall(T x)
 	{
@@ -578,7 +577,6 @@ final class GeneralizedHyperbolicPDF(T) : PDF!T
 		else
 			this.pdf = new ProperGeneralizedHyperbolicPDF!T(lambda, alpha, beta, delta, mu);
 	}
-
 
 	T opCall(T x)
 	{

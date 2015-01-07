@@ -1,4 +1,5 @@
 /++
+Quantile functions
 +/
 module distribution.quantile;
 
@@ -6,6 +7,7 @@ import std.traits;
 import std.mathspecial;
 
 /++
+Quantile function interface
 +/
 interface Quantile(T)
 {
@@ -38,8 +40,8 @@ unittest
 }
 
 
-
 /++
+Quantile function of the gamma distribution
 +/
 final class GammaQuantile(T) : Quantile!T
 	if(isFloatingPoint!T)
@@ -67,8 +69,7 @@ final class GammaQuantile(T) : Quantile!T
 	}
 }
 
-/++
-+/
+///
 unittest 
 {
 	auto qf = new GammaQuantile!double(3, 2);
@@ -78,6 +79,7 @@ unittest
 
 
 /++
+Quantile function of the inverse-gamma distribution
 +/
 final class InverseGammaQuantile(T) : Quantile!T
 	if(isFloatingPoint!T)
@@ -105,8 +107,7 @@ final class InverseGammaQuantile(T) : Quantile!T
 	}
 }
 
-/++
-+/
+///
 unittest 
 {
 	auto qf = new InverseGammaQuantile!double(3, 2);

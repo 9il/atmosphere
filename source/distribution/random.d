@@ -1,7 +1,7 @@
 /++
+Random number generators
 +/
 module distribution.random;
-
 
 import std.mathspecial;
 import std.random;
@@ -22,7 +22,6 @@ interface DistributionRNG(T)
 	+/
 	T front() @property;
 }
-
 
 ///
 unittest
