@@ -52,6 +52,7 @@ abstract class NumericQuantile(T) : Quantile!T
 	private scope bool delegate(T lo, T hi) tolerance;
 
 	/++
+	Constructor
     Params:
 		cdf     = The CDF to _integrate.
 		a	= (optional) The lower limit of integration.

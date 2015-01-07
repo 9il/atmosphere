@@ -49,6 +49,7 @@ abstract class NumericCDF(T) : CDF!T
 	private T a, epsRel, epsAbs;
 
 	/++
+	Constructor
     Params:
 		pdf     = The PDF to _integrate.
 		a	= (optional) The lower limit of integration.
@@ -125,6 +126,7 @@ abstract class NumericCCDF(T) : CDF!T
 	private T b, epsRel, epsAbs;
 
 	/++
+	Constructor
 	Params:
 		pdf	= The PDF to _integrate.
 		b	= (optional) The upper limit of integration.
