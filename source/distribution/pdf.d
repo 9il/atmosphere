@@ -60,7 +60,8 @@ final class GammaPDF(T) : PDF!T
 	Params:
 		shape = gamma shape parameter
 		scale = gamma scale parameter
-	+/	this(T shape, T scale)
+	+/
+	this(T shape, T scale)
 	in {
 		assert(shape.isNormal);
 		assert(shape > 0);

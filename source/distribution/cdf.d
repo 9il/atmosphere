@@ -45,7 +45,12 @@ final class GammaCDF(T) : CDF!T
 {
 	private T shape, scale;
 
-	///Constructor
+	/++
+	Constructor
+	Params:
+		shape = gamma shape parameter
+		scale = gamma scale parameter
+	+/
 	this(T shape, T scale)
 	in {
 		assert(shape.isNormal);
@@ -81,7 +86,12 @@ final class InverseGammaCDF(T) : CDF!T
 {
 	private T shape, scale;
 
-	///Constructor
+	/++
+	Constructor
+	Params:
+		shape = gamma shape parameter
+		scale = gamma scale parameter
+	+/
 	this(T shape, T scale)
 	in {
 		assert(shape.isNormal);
