@@ -78,6 +78,7 @@ abstract class NumericCDF(T) : CDF!T
 	}
 }
 
+///
 unittest
 {
 	import std.traits, std.mathspecial;
@@ -104,6 +105,9 @@ unittest
 	auto cdf = new NormalCDF;
 
 	assert(approxEqual(cdf(1.3), normalDistribution(1.3)));
+
+	auto result = cdf.eval(1.2);
+	assert(abs(result.value - normalDistribution(1.2)) < result.error);
 }
 
 
