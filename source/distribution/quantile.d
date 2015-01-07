@@ -95,11 +95,21 @@ unittest
 	import distribution.pdf;
 	import distribution.cdf;
 
-	class NormalCDF : CDF!real
+	class NormalPDF : PDF!real
 	{
 		real opCall(real x)
 		{
-			return normalDistribution(x);
+			// 1/sqrt(2 PI)
+			enum c = 0.398942280401432677939946L;
+			return c * exp(-0.5f * x * x);
+		}
+	}
+
+	class NormalCDF : NumericCDF!real
+	{
+		this()
+		{
+			super(new NormalPDF, [-3, -1, 0, 1, 3]);
 		}
 	}
 
@@ -107,7 +117,7 @@ unittest
 	{
 		this()
 		{
-			super(new NormalCDF, -20, 20);
+			super(new NormalCDF);
 		}
 	}
 
