@@ -10,6 +10,7 @@ import std.math;
 import std.mathspecial;
 import std.typecons;
 
+import distribution.params;
 
 /++
 Probability density function interface
@@ -224,7 +225,7 @@ final class InverseGaussianPDF(T) : PDF!T
 	body {
 		this.chi = chi;
 		this.psi = psi;
-		this.omega = sqrt(chi * psi);
+		this.omega = GIGChiPsi!T(chi, psi).omega;
 	}
 
 	T opCall(T x)
@@ -255,13 +256,14 @@ final class ProperGeneralizedInverseGaussianPDF(T) : PDF!T
 	private T omega, eta, c, lambdam1;
 
 	///Constructor
-	this(T lambda, T omega, T eta = 1)
+	this(T lambda, T eta, T omega)
 	in {
 		assert(lambda.isFinite);
-		assert(omega.isNormal);
-		assert(omega > 0);
 		assert(eta.isNormal);
 		assert(eta > 0);
+		assert(omega.isNormal);
+		assert(omega > 0);
+
 	}
 	body {
 		this.c = 2 * eta * besselK(omega, lambda, Flag!"ExponentiallyScaled".yes);
@@ -282,7 +284,7 @@ final class ProperGeneralizedInverseGaussianPDF(T) : PDF!T
 ///
 unittest 
 {
-	auto pdf = new ProperGeneralizedInverseGaussianPDF!double(3, 2);
+	auto pdf = new ProperGeneralizedInverseGaussianPDF!double(4, 3, 2);
 	auto x = pdf(0.1);
 	assert(x.isNormal);
 
@@ -310,14 +312,15 @@ final class GeneralizedInverseGaussianPDF(T) : PDF!T
 		assert(psi >= 0);
 	}
 	body {
+		immutable params = GIGChiPsi!T(chi, psi);
 		if (chi <= T.min_normal)
 			this.pdf = new GammaPDF!T(lambda, 2 / psi);
 		else if (psi <= T.min_normal)
 			this.pdf = new InverseGammaPDF!T(-lambda, chi / 2);
 		else if (lambda == -0.5f)
-			this.pdf = new InverseGaussianPDF!T(sqrt(chi/psi), chi);
+			this.pdf = new InverseGaussianPDF!T(params.eta, chi);
 		else
-			this.pdf = new ProperGeneralizedInverseGaussianPDF!T(lambda, sqrt(chi*psi), sqrt(chi/psi));
+			this.pdf = new ProperGeneralizedInverseGaussianPDF!T(lambda, params.eta, params.omega);
 	}
 
 	T opCall(T x)
@@ -352,7 +355,7 @@ final class VarianceGammaPDF(T) : PDF!T
 	Params:
 		lambda = 
 		alpha = 
-		beta = asymmetry parameter
+		beta = 
 		delta = 0
 		mu = location
 	+/
@@ -368,7 +371,8 @@ final class VarianceGammaPDF(T) : PDF!T
 		assert(mu.isFinite);
 	}
 	body {
-		this.c = M_2_SQRTPI / SQRT2 * pow((alpha^^2 - beta^^2) / 2, lambda) / gamma(lambda);
+		immutable params = GHypAlphaDelta!T(alpha, beta, 0);
+		this.c = M_2_SQRTPI / SQRT2 * pow(params.psi / 2, lambda) / gamma(lambda);
 		assert(c.isNormal);
 		this.lambdamh = lambda - 0.5f;
 		this.alpha = alpha;
@@ -414,7 +418,7 @@ final class HyperbolicAsymmetricTPDF(T) : PDF!T
 	Params:
 		lambda = 
 		alpha = `|beta|`
-		beta = asymmetry parameter
+		beta = 
 		delta = 
 		mu = location
 	+/
@@ -428,7 +432,8 @@ final class HyperbolicAsymmetricTPDF(T) : PDF!T
 		assert(mu.isFinite);
 	}
 	body {
-		this.c = M_2_SQRTPI / SQRT2 * pow(delta^^2 / 2, -lambda) / gamma(-lambda);
+		immutable params = GHypAlphaDelta!T(abs(beta), beta, delta);
+		this.c = M_2_SQRTPI / SQRT2 * pow(params.chi / 2, -lambda) / gamma(-lambda);
 		assert(c.isNormal);
 		this.lambdamh = lambda - 0.5f;
 		this.beta = beta;
@@ -473,7 +478,7 @@ final class NormalInverseGaussianPDF(T) : PDF!T
 	Params:
 		lambda = -1/2
 		alpha = 
-		beta = asymmetry parameter
+		beta = 
 		delta = 
 		mu = location
 	+/
@@ -489,7 +494,8 @@ final class NormalInverseGaussianPDF(T) : PDF!T
 		assert(mu.isFinite);
 	}
 	body {
-		this.c = exp(delta * sqrt(alpha^^2 - beta^^2)) * alpha * delta / PI;
+		immutable params = GHypAlphaDelta!T(alpha, beta, delta);
+		this.c = exp(params.omega) * alpha * delta / PI;
 		assert(c.isNormal);
 		this.alpha = alpha;
 		this.beta = beta;
@@ -535,7 +541,7 @@ final class ProperGeneralizedHyperbolicPDF(T) : PDF!T
 	Params:
 		lambda =
 		alpha = 
-		beta = asymmetry parameter
+		beta = 
 		delta = 
 		mu = location
 	+/
@@ -552,11 +558,10 @@ final class ProperGeneralizedHyperbolicPDF(T) : PDF!T
 		assert(mu.isFinite);
 	}
 	body {
-		immutable q = sqrt(alpha^^2 - beta^^2);
-		immutable eta = delta / q;
-		this.omega = delta * q;
+		immutable params = GHypAlphaDelta!T(alpha, beta, delta);
+		this.omega = params.omega;
 		this.c = M_2_SQRTPI / (SQRT2 * 2)
-			* pow(eta, -lambda)
+			* pow(params.eta, -lambda)
 			/ besselK(omega, lambda, Flag!"ExponentiallyScaled".yes);
 		assert(c.isNormal);
 		this.lambdamh = lambda - 0.5f;
@@ -604,7 +609,7 @@ final class GeneralizedHyperbolicPDF(T) : PDF!T
 	Params:
 		lambda =
 		alpha = 
-		beta = asymmetry parameter
+		beta = 
 		delta = 
 		mu = location
 	+/
