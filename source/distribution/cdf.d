@@ -60,7 +60,6 @@ abstract class NumericCDF(T) : CDF!T
 		epsRel  = (optional) The requested relative accuracy.
 		epsAbs  = (optional) The requested absolute accuracy.
 	See_also: [struct Result](https://github.com/kyllingstad/scid/blob/a9f3916526e4bf9a4da35d14a969e1abfa17a496/source/scid/types.d)
-
 	+/
 	this(PDF!T pdf, T[] subdivisions, T a = -T.infinity, T epsRel = 1e-6, T epsAbs = 0)
 	in {
@@ -99,7 +98,7 @@ abstract class NumericCDF(T) : CDF!T
 	}
 }
 
-///
+/// Numeric cumulative density function of standard normal distribution
 unittest
 {
 	import std.traits, std.mathspecial;
@@ -150,7 +149,6 @@ abstract class NumericCCDF(T) : CDF!T
 		epsRel  = (optional) The requested relative accuracy.
 		epsAbs  = (optional) The requested absolute accuracy.
 	See_also: [struct Result](https://github.com/kyllingstad/scid/blob/a9f3916526e4bf9a4da35d14a969e1abfa17a496/source/scid/types.d)
-
 	+/
 	this(PDF!T pdf, T[] subdivisions, T b = T.infinity, T epsRel = 1e-6, T epsAbs = 0)
 	in {
@@ -189,7 +187,7 @@ abstract class NumericCCDF(T) : CDF!T
 	}
 }
 
-///
+/// Numeric complementary cumulative density function of standard normal distribution
 unittest
 {
 	import std.traits, std.mathspecial;

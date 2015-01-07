@@ -88,7 +88,7 @@ abstract class NumericQuantile(T) : Quantile!T
 	}
 }
 
-///
+/// Numeric quantile function of standard normal distribution
 unittest
 {
 	import std.traits, std.mathspecial;
