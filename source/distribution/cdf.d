@@ -66,6 +66,7 @@ abstract class NumericCDF(T) : CDF!T
 	in {
 		assert(!subdivisions.empty);
 		assert(subdivisions.all!isFinite);
+		assert(subdivisions.all!(s => s > a));
 		assert(subdivisions.isSorted);
 		assert(subdivisions.findAdjacent.empty);
 	}
@@ -76,7 +77,7 @@ abstract class NumericCDF(T) : CDF!T
 		this.epsAbs = epsAbs;
 		this.subdivisions = subdivisions;
 		this.partials = new T[subdivisions.length];
-		partials.front = pdf.integrate(-T.infinity, subdivisions.front, epsRel, epsAbs);
+		partials.front = pdf.integrate(a, subdivisions.front, epsRel, epsAbs);
 		foreach(i, ref partial; partials[1..$])
 			partial = pdf.integrate(subdivisions[i], subdivisions[i+1], epsRel, epsAbs);
 	}
@@ -85,13 +86,16 @@ abstract class NumericCDF(T) : CDF!T
 	Call operator
 	+/
 	final T opCall(T x)
-	in {
-		assert(x.isFinite);
-	}
-	body {
+	{
+		if(x == -T.infinity)
+			return 0;
+		if(x == T.infinity)
+			return 1;
+		if(x.isNaN)
+			return x;
 		immutable i = subdivisions.assumeSorted.trisect(x)[0].length;
 		return sum(partials[0..i])
-			+ pdf.integrate(i ? subdivisions[i-1] : -T.infinity, x, epsRel, epsAbs);
+			+ pdf.integrate(i ? subdivisions[i-1] : a, x, epsRel, epsAbs);
 	}
 }
 
@@ -135,35 +139,53 @@ abstract class NumericCCDF(T) : CDF!T
 
 	private PDF!T pdf;
 	private T b, epsRel, epsAbs;
+	private T[] subdivisions;
+	private T[] partials;
 
 	/++
 	Constructor
-	Params:
-		pdf	= The PDF to _integrate.
+    Params:
+		pdf     = The PDF to _integrate.
 		b	= (optional) The upper limit of integration.
 		epsRel  = (optional) The requested relative accuracy.
 		epsAbs  = (optional) The requested absolute accuracy.
+	See_also: [struct Result](https://github.com/kyllingstad/scid/blob/a9f3916526e4bf9a4da35d14a969e1abfa17a496/source/scid/types.d)
+
 	+/
-	this(PDF!T pdf, T b = T.infinity, T epsRel = 1e-6, T epsAbs = 0)
-	{
+	this(PDF!T pdf, T[] subdivisions, T b = T.infinity, T epsRel = 1e-6, T epsAbs = 0)
+	in {
+		assert(!subdivisions.empty);
+		assert(subdivisions.all!isFinite);
+		assert(subdivisions.all!(s => s < b));
+		assert(subdivisions.isSorted);
+		assert(subdivisions.findAdjacent.empty);
+	}
+	body {
 		this.pdf = pdf;
 		this.b = b;
 		this.epsRel = epsRel;
 		this.epsAbs = epsAbs;
+		this.subdivisions = subdivisions;
+		this.partials = new T[subdivisions.length];
+		partials.back = pdf.integrate(subdivisions.back, b, epsRel, epsAbs);
+		foreach(i, ref partial; partials[0..$-1])
+			partial = pdf.integrate(subdivisions[i], subdivisions[i+1], epsRel, epsAbs);
 	}
 
 	/++
-	Compute CCDF for x.
-	See_also: [struct Result](https://github.com/kyllingstad/scid/blob/a9f3916526e4bf9a4da35d14a969e1abfa17a496/source/scid/types.d)
+	Call operator
 	+/
-	final Result!T eval(T x)
-	{
-		return pdf.integrate(x, b, epsRel, epsAbs);
-	}
-
 	final T opCall(T x)
 	{
-		return eval(x).value;
+		if(x == -T.infinity)
+			return 0;
+		if(x == T.infinity)
+			return 1;
+		if(x.isNaN)
+			return x;
+		immutable i = subdivisions.assumeSorted.trisect(x)[2].length;
+		return sum(partials[$-i..$])
+			+ pdf.integrate(x, i ? subdivisions[$-i] : b, epsRel, epsAbs);
 	}
 }
 
@@ -187,16 +209,13 @@ unittest
 	{
 		this()
 		{
-			super(new NormalPDF);
+			super(new NormalPDF, [-3, -1, 0, 1, 3]);
 		}
 	}
 
-	auto cdf = new NormalCCDF;
+	auto ccdf = new NormalCCDF;
 
-	assert(approxEqual(cdf(1.3), 1 - normalDistribution(1.3)));
-
-	auto result = cdf.eval(1.2);
-	assert(abs(result.value - (1 - normalDistribution(1.2))) < result.error);
+	assert(approxEqual(ccdf(1.3), 1-normalDistribution(1.3)));
 }
 
 
@@ -231,6 +250,7 @@ final class GammaCDF(T) : CDF!T
 		return x <= 0 ? 0 : gammaIncomplete(shape, x / scale);
 	}
 }
+
 
 ///
 unittest 
