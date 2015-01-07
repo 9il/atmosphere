@@ -38,7 +38,7 @@ unittest
 
 
 /++
-Class to compute cumulative density function as integral of its probability density function
+Class to compute cumulative density function as integral of it's probability density function
 +/
 abstract class NumericCDF(T) : CDF!T
 {
@@ -114,7 +114,7 @@ unittest
 
 
 /++
-Class to compute complementary cumulative density function as integral of its probability density function
+Class to compute complementary cumulative density function as integral of it's probability density function
 +/
 abstract class NumericCCDF(T) : CDF!T
 {
