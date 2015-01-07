@@ -153,3 +153,44 @@ unittest
 	auto x = cdf(0.1);
 	assert(isNormal(x));
 }
+
+
+/++
+Inverse Gaussian PDF
++/
+final class InverseGaussianCDF(T) : CDF!T
+	if(isFloatingPoint!T)
+{
+	private T omega, chi, psi;
+
+	///Constructor
+	this(T chi, T psi)
+	in {
+		assert(chi.isNormal);
+		assert(chi > 0);
+		assert(psi.isNormal);
+		assert(psi > 0);
+	}
+	body {
+		this.chi = chi;
+		this.psi = psi;
+		this.omega = sqrt(chi * psi);
+	}
+
+	T opCall(T x)
+	{
+		if(x <= 0)
+			return 0;
+		immutable a = sqrt(chi / x);
+		immutable b = sqrt(psi * x);
+		return normalDistribution(b - a) - exp(2*omega) * normalDistribution(-(a+b));
+	}
+}
+
+///
+unittest 
+{
+	auto cdf = new InverseGaussianCDF!double(3, 2);
+	auto x = cdf(0.1);
+	assert(isNormal(x));
+}
