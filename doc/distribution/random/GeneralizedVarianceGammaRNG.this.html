@@ -32,6 +32,9 @@
 <li><span class="package" onclick="show_hide('distribution');"><a href="distribution.html">distribution</a></span>
 <ul id="distribution" style='display:block;'>
 <li><small>distribution.</small><a href="distribution/cdf.html">cdf</a></li>
+<li><small>distribution.</small><a href="distribution/derivative.html">derivative</a></li>
+<li><small>distribution.</small><a href="distribution/moment.html">moment</a></li>
+<li><small>distribution.</small><a href="distribution/params.html">params</a></li>
 <li><small>distribution.</small><a href="distribution/pdf.html">pdf</a></li>
 <li><small>distribution.</small><a href="distribution/quantile.html">quantile</a></li>
 <li><span class="selected"><small>distribution.</small><a href="distribution/random.html">random</a></span>
@@ -44,12 +47,12 @@
 <div class="content">
 <pre><code>public this(
     ref UniformRNG rng, 
-    T alpha, 
+    T beta, 
     T shape, 
     T power, 
     T scale = 1)
 </code></pre>
-<div class="section"><p>Constructor
+<div class="section "><p>Constructor
 </p>
 
 
@@ -59,7 +62,7 @@
 <tr class="param"><td class="paramName">rng</td><td class="paramDoc"><p>uniform random number generator
 </p>
 </td></tr>
-<tr class="param"><td class="paramName">alpha</td><td class="paramDoc"><p>mixture scale parameter: <code class="prettyprint">Y*U^(1/2)+alpha*U</code>
+<tr class="param"><td class="paramName">beta</td><td class="paramDoc"><p>mixture scale parameter: <code class="prettyprint">Y*U^(1/2)+beta*U</code>
 </p>
 </td></tr>
 <tr class="param"><td class="paramName">shape</td><td class="paramDoc"><p>generalized gamma shape parameter

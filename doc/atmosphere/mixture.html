@@ -33,6 +33,9 @@
 <li><span class="package" onclick="show_hide('distribution');"><a href="distribution.html">distribution</a></span>
 <ul id="distribution">
 <li><small>distribution.</small><a href="distribution/cdf.html">cdf</a></li>
+<li><small>distribution.</small><a href="distribution/derivative.html">derivative</a></li>
+<li><small>distribution.</small><a href="distribution/moment.html">moment</a></li>
+<li><small>distribution.</small><a href="distribution/params.html">params</a></li>
 <li><small>distribution.</small><a href="distribution/pdf.html">pdf</a></li>
 <li><small>distribution.</small><a href="distribution/quantile.html">quantile</a></li>
 <li><small>distribution.</small><a href="distribution/random.html">random</a></li>
@@ -42,7 +45,7 @@
 </ul>
 </div>
 <div class="content">
-<div class="section">Module contains classes that perform optimization of mixture weights over sliding window.
+<div class="section ">Module contains classes that perform optimization of mixture weights over sliding window.
 <pre><code>problem: p' = argmin f(p), p_i >= 0, Σ_i p_i = 1.
 
 p - mixture weights,
@@ -128,7 +131,7 @@ optimizer.optimize(tolerance);
 double[] mixtureWeights2 = optimizer.weights.dup;</code></pre>
 
 </div>
-<div class="section"><h2>Interfaces</h2><table><tr><td><a href="atmosphere/mixture/LikelihoodMaximization.html">LikelihoodMaximization</a></td><td></td><td></td></tr></table><h2>Classes</h2><table><tr><td><a href="atmosphere/mixture/MixtureOptimizerException.html">MixtureOptimizerException</a></td><td></td><td><p>Exception thrown for MixtureOptimizer.
+<div class="section "><h2>Interfaces</h2><table><tr><td><a href="atmosphere/mixture/LikelihoodMaximization.html">LikelihoodMaximization</a></td><td></td><td></td></tr></table><h2>Classes</h2><table><tr><td><a href="atmosphere/mixture/MixtureOptimizerException.html">MixtureOptimizerException</a></td><td></td><td><p>Exception thrown for MixtureOptimizer.
 </p>
 </td></tr><tr><td><a href="atmosphere/mixture/FeaturesException.html">FeaturesException</a></td><td></td><td></td></tr><tr><td><a href="atmosphere/mixture/MixtureOptimizer.html">MixtureOptimizer</a></td><td></td><td></td></tr><tr><td><a href="atmosphere/mixture/GradientDescent.html">GradientDescent</a></td><td></td><td></td></tr><tr><td><a href="atmosphere/mixture/CoordinateDescent.html">CoordinateDescent</a></td><td></td><td></td></tr><tr><td><a href="atmosphere/mixture/CoordinateDescentPartial.html">CoordinateDescentPartial</a></td><td></td><td></td></tr><tr><td><a href="atmosphere/mixture/CoordinateLikelihoodMaximization.html">CoordinateLikelihoodMaximization</a></td><td></td><td></td></tr><tr><td><a href="atmosphere/mixture/GradientLikelihoodMaximization.html">GradientLikelihoodMaximization</a></td><td></td><td></td></tr></table>
 </div>

@@ -32,6 +32,9 @@
 <li><span class="package" onclick="show_hide('distribution');"><a href="distribution.html">distribution</a></span>
 <ul id="distribution" style='display:block;'>
 <li><small>distribution.</small><a href="distribution/cdf.html">cdf</a></li>
+<li><small>distribution.</small><a href="distribution/derivative.html">derivative</a></li>
+<li><small>distribution.</small><a href="distribution/moment.html">moment</a></li>
+<li><small>distribution.</small><a href="distribution/params.html">params</a></li>
 <li><small>distribution.</small><a href="distribution/pdf.html">pdf</a></li>
 <li><small>distribution.</small><a href="distribution/quantile.html">quantile</a></li>
 <li><span class="selected"><small>distribution.</small><a href="distribution/random.html">random</a></span>
@@ -44,10 +47,10 @@
 <div class="content">
 <pre><code>public this(
     ref UniformRNG rng, 
-    T mu, 
-    T lambda)
+    T lambda, 
+    T mu)
 </code></pre>
-<div class="section"><p>Constructor
+<div class="section "><p>Constructor
 </p>
 
 
@@ -57,10 +60,10 @@
 <tr class="param"><td class="paramName">rng</td><td class="paramDoc"><p>uniform random number generator
 </p>
 </td></tr>
-<tr class="param"><td class="paramName">mu</td><td class="paramDoc"><p>mu parameter
+<tr class="param"><td class="paramName">lambda</td><td class="paramDoc"><p>lambda parameter
 </p>
 </td></tr>
-<tr class="param"><td class="paramName">lambda</td><td class="paramDoc"><p>lambda parameter
+<tr class="param"><td class="paramName">mu</td><td class="paramDoc"><p>mu parameter
 </p>
 </td></tr>
 </table>

@@ -32,6 +32,9 @@
 <li><span class="package" onclick="show_hide('distribution');"><a href="distribution.html">distribution</a></span>
 <ul id="distribution">
 <li><small>distribution.</small><a href="distribution/cdf.html">cdf</a></li>
+<li><small>distribution.</small><a href="distribution/derivative.html">derivative</a></li>
+<li><small>distribution.</small><a href="distribution/moment.html">moment</a></li>
+<li><small>distribution.</small><a href="distribution/params.html">params</a></li>
 <li><small>distribution.</small><a href="distribution/pdf.html">pdf</a></li>
 <li><small>distribution.</small><a href="distribution/quantile.html">quantile</a></li>
 <li><small>distribution.</small><a href="distribution/random.html">random</a></li>
@@ -44,12 +47,12 @@
 <div class="content">
 <pre><code>public struct SlidingWindow(T)
 </code></pre>
-<div class="section"><p>Stack of columns.
+<div class="section "><p>Stack of columns.
 </p>
 
 
 </div>
-<div class="section"><h2>Example</h2>
+<div class="section "><h2>Example</h2>
 <pre><code>auto sl = SlidingWindow!double(4, 3);
 sl.put([0, 3, 6, 9]);
 sl.put([1, 4, 7, 9]);
@@ -75,7 +78,7 @@ assert(sl.transversal(1) == [6, 7, 7]);
 </code></pre>
 
 </div>
-<div class="section"><h2>Variables</h2><table><tr><td><a href="simple_matrix/SlidingWindow.data.html">data</a></td><td><pre><code>T[]
+<div class="section "><h2>Variables</h2><table><tr><td><a href="simple_matrix/SlidingWindow.data.html">data</a></td><td><pre><code>T[]
 </code></pre>
 </td><td></td></tr><tr><td><a href="simple_matrix/SlidingWindow.transposedMatrix.html">transposedMatrix</a></td><td><pre><code>TransposedMatrix!T
 </code></pre>

@@ -32,6 +32,9 @@
 <li><span class="package" onclick="show_hide('distribution');"><a href="distribution.html">distribution</a></span>
 <ul id="distribution" style='display:block;'>
 <li><small>distribution.</small><a href="distribution/cdf.html">cdf</a></li>
+<li><small>distribution.</small><a href="distribution/derivative.html">derivative</a></li>
+<li><small>distribution.</small><a href="distribution/moment.html">moment</a></li>
+<li><small>distribution.</small><a href="distribution/params.html">params</a></li>
 <li><small>distribution.</small><a href="distribution/pdf.html">pdf</a></li>
 <li><small>distribution.</small><a href="distribution/quantile.html">quantile</a></li>
 <li><span class="selected"><small>distribution.</small><a href="distribution/random.html">random</a></span>
@@ -47,7 +50,7 @@
     T power) 
 if(isFloatingPoint!T)
 </code></pre>
-<div class="section"><p>Function to generate random observation from a
+<div class="section "><p>Function to generate random observation from a
 generalized gamma 
 distribution.
 </p>
@@ -60,14 +63,14 @@ distribution.
     T power) 
 if(isFloatingPoint!T && isUniformRNG!UniformRNG)
 </code></pre>
-<div class="section"><p>Function to generate random observation from a
+<div class="section "><p>Function to generate random observation from a
 generalized gamma 
 distribution.
 </p>
 
 
 </div>
-<div class="section"><h2>Contracts</h2><pre><code>in
+<div class="section "><h2>Contracts</h2><pre><code>in
 {
     assert (power.isNormal);
     assert (shape.isNormal);
@@ -77,7 +80,7 @@ distribution.
 </code></pre>
 
 </div>
-<div class="section"><h2>Example</h2>
+<div class="section "><h2>Example</h2>
 <pre><code>auto x = rGeneralizedGamma(2.0, 3.0) * 5;
 
 </code></pre>

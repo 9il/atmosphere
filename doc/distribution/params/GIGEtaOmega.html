@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<link rel="stylesheet" type="text/css" href="../../style.css"/>
+<script src="../../highlight.pack.js"></script>
+<title>GIGEtaOmega</title>
+<base href="../../"/>
+<script src="search.js"></script>
+<script src="show_hide.js"></script>
+</head>
+<body>
+<div class="main">
+<div class="breadcrumbs">
+<table id="results"></table>
+<a class="home" href=index.html>⌂</a>
+<input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
+<small>distribution.<a href=distribution/params.html>params</a>.</small><span class="highlight">GIGEtaOmega</span>
+</div>
+<div class="toc">
+<ul>
+<li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
+<ul id="atmosphere">
+<li><small>atmosphere.</small><a href="atmosphere/mixture.html">mixture</a></li>
+<li><span class="package" onclick="show_hide('atmosphere.parametrized');">atmosphere.parametrized</span>
+<ul id="atmosphere.parametrized">
+<li><small>atmosphere.parametrized.</small><a href="atmosphere/parametrized/nvmm.html">nvmm</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><span class="package" onclick="show_hide('distribution');"><a href="distribution.html">distribution</a></span>
+<ul id="distribution" style='display:block;'>
+<li><small>distribution.</small><a href="distribution/cdf.html">cdf</a></li>
+<li><small>distribution.</small><a href="distribution/derivative.html">derivative</a></li>
+<li><small>distribution.</small><a href="distribution/moment.html">moment</a></li>
+<li><span class="selected"><small>distribution.</small><a href="distribution/params.html">params</a></span>
+</li>
+<li><small>distribution.</small><a href="distribution/pdf.html">pdf</a></li>
+<li><small>distribution.</small><a href="distribution/quantile.html">quantile</a></li>
+<li><small>distribution.</small><a href="distribution/random.html">random</a></li>
+</ul>
+</li>
+<li><a href="simple_matrix.html">simple_matrix</a></li>
+</ul>
+</div>
+<div class="content">
+<pre><code>public @safe pure nothrow @nogc struct GIGEtaOmega(T)
+if(isFloatingPoint!T)
+</code></pre>
+<div class="section "><p><img style="width: 600px;" src="../view/images/GIGEtaOmega.png">
+</p>
+
+
+</div>
+<div class="section "><h2>Example</h2>
+<pre><code>double _eta  = 3;
+double _omega= 4;
+
+auto params  = GIGEtaOmega!double(_eta, _omega);
+
+auto params1 = cast(GIGChiPsi    !real) params;
+auto params2 = cast(GIGEtaOmega  !real) params;
+
+double chi   = params.chi;
+double psi   = params.psi;
+
+double eta   = params.eta;
+double omega = params.omega;
+
+</code></pre>
+
+</div>
+<div class="section "><h2>Variables</h2><table><tr><td><a href="distribution/params/GIGEtaOmega.eta.html">eta</a></td><td><pre><code>T
+</code></pre>
+</td><td></td></tr><tr><td><a href="distribution/params/GIGEtaOmega.omega.html">omega</a></td><td><pre><code>T
+</code></pre>
+</td><td></td></tr></table><h2>Functions</h2><table><tr><td><a href="distribution/params/GIGEtaOmega.chi.html">chi</a><span class="extrainfo"></span></td><td></td><td><p><code class="prettyprint">omega * eta</code>
+</p>
+</td></tr><tr><td><a href="distribution/params/GIGEtaOmega.psi.html">psi</a><span class="extrainfo"></span></td><td></td><td><p><code class="prettyprint">omega / eta</code>
+</p>
+</td></tr><tr><td><a href="distribution/params/GIGEtaOmega.opCast.html">opCast</a><span class="extrainfo"></span></td><td></td><td><p><code class="prettyprint">cast</code> operator overloading 
+</p>
+</td></tr><tr><td><a href="distribution/params/GIGEtaOmega.opCast.html">opCast</a><span class="extrainfo"></span></td><td></td><td><p><code class="prettyprint">cast</code> operator overloading 
+</p>
+</td></tr></table>
+</div>
+
+<script>hljs.initHighlightingOnLoad();</script>
+</div>
+</div>
+</body>
+</html>
