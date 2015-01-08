@@ -208,6 +208,8 @@ unittest
 
 /++
 Inverse Gaussian PDF
+
+See_Also: [distribution.params](distribution/params.html)
 +/
 final class InverseGaussianPDF(T) : PDF!T
 	if(isFloatingPoint!T)
@@ -296,6 +298,8 @@ unittest
 
 /++
 Generalized inverse Gaussian PDF
+
+See_Also: [distribution.params](distribution/params.html)
 +/
 final class GeneralizedInverseGaussianPDF(T) : PDF!T
 	if(isFloatingPoint!T)
@@ -344,6 +348,8 @@ unittest
 
 /++
 Variance gamma (gamma mixture of normals) PDF
+
+See_Also: [distribution.params](distribution/params.html)
 +/
 final class VarianceGammaPDF(T) : PDF!T
 	if(isFloatingPoint!T)
@@ -407,6 +413,8 @@ unittest
 
 /++
 Hyperbolic asymmetric T (inverse gamma mixture of normals) PDF
+
+See_Also: [distribution.params](distribution/params.html)
 +/
 final class HyperbolicAsymmetricTPDF(T) : PDF!T
 	if(isFloatingPoint!T)
@@ -467,6 +475,8 @@ unittest
 
 /++
 Normal-inverse Gaussian (inverse Gaussian mixture of normals) PDF
+
+See_Also: [distribution.params](distribution/params.html)
 +/
 final class NormalInverseGaussianPDF(T) : PDF!T
 	if(isFloatingPoint!T)
@@ -530,6 +540,8 @@ unittest
 
 /++
 Proper generalized hyperbolic (generalized inverse Gaussian mixture of normals) PDF
+
+See_Also: [distribution.params](distribution/params.html)
 +/
 final class ProperGeneralizedHyperbolicPDF(T) : PDF!T
 	if(isFloatingPoint!T)
@@ -598,6 +610,8 @@ unittest
 
 /++
 Generalized hyperbolic (generalized inverse Gaussian mixture of normals) PDF
+
+See_Also: [distribution.params](distribution/params.html)
 +/
 final class GeneralizedHyperbolicPDF(T) : PDF!T
 	if(isFloatingPoint!T)
