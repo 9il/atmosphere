@@ -126,6 +126,38 @@ unittest
 	assert(approxEqual(qf(0.3), normalDistributionInverse(0.3)));
 }
 
+/// Numeric quantile function of Generalized Hyperbolic distribution
+unittest
+{
+	import distribution.pdf;
+	import distribution.cdf;
+	import distribution.params;
+	import distribution.moment;
+
+	class GHypCDF: NumericCDF!real {
+		this(real lambda, GHypChiPsi!real params)
+		{
+			immutable mu = 0;
+			auto pdf = new GeneralizedHyperbolicPDF!real(lambda, params.alpha, params.beta, params.delta, mu);
+			immutable expectation = E_GHyp!real(lambda, params.beta, params.chi, params.psi);
+			super(pdf, [expectation]);	
+		}
+	}
+
+	class GHypQuantile : NumericQuantile!real
+	{
+		this(real lambda, GHypChiPsi!real params)
+		{
+			super(new GHypCDF(lambda, params), -1000, 1000);	
+		}
+	}
+
+	auto qf = new GHypQuantile(0.5, GHypChiPsi!real(5, 0.7, 0.6));
+	import std.stdio, std.conv;
+	assert(approxEqual(qf(0.95), 40.9263));
+	assert(approxEqual(qf(0.99), 64.977));
+}
+
 
 /++
 Quantile function of the gamma distribution
