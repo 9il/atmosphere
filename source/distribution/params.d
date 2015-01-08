@@ -1,5 +1,5 @@
 /++
-Parameters conversions of probability density functions
+Parameters conversions
 +/
 module distribution.params;
 
@@ -9,7 +9,9 @@ import std.typecons;
 
 @safe pure nothrow @nogc:
 
-/// `chi, psi` generalized inverse Gaussian distribution parameters
+/++
+<img style="width: 600px;" src="../view/images/GIGChiPsi.png">
++/
 struct GIGChiPsi(T)
 	if(isFloatingPoint!T)
 {
@@ -49,7 +51,9 @@ unittest
 }
 
 
-/// `eta, omega` generalized inverse Gaussian distribution parameters
+/++
+<img style="width: 600px;" src="../view/images/GIGEtaOmega.png">
++/
 struct GIGEtaOmega(T)
 	if(isFloatingPoint!T)
 {
@@ -89,7 +93,10 @@ unittest
 }
 
 
-/// `alpha, beta, delta` generalized hyperbolic distribution parameters
+/++
+<img style="width: 600px;" src="../view/images/GHypAlphaDelta.png">
+<img style="width: 150px;" src="../view/images/GHypYx.png">
++/
 struct GHypAlphaDelta(T)
 	if(isFloatingPoint!T)
 {
@@ -148,7 +155,9 @@ unittest
 }
 
 
-/// `beta, chi, psi` generalized hyperbolic distribution parameters
+/++
+<img style="width: 400px;" src="../view/images/GHypNVMM.png">
++/
 struct GHypChiPsi(T)
 	if(isFloatingPoint!T)
 {
