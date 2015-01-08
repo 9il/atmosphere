@@ -236,19 +236,19 @@ final class InverseGaussianRNG(T, UniformRNG = Random) : DistributionRNG!T
 	Constructor
 	Params:
 		rng = uniform random number generator
-		mu = mu parameter
 		lambda = lambda parameter
+		mu = mu parameter
 	+/
-	this(ref UniformRNG rng, T mu, T lambda)
+	this(ref UniformRNG rng, T lambda, T mu)
 	{
 		this.rng = &rng;
-		this.mu = mu;
 		this.lambda = lambda;
+		this.mu = mu;
 	}
 
 	T front() @property
 	{
-		return rng.rInverseGaussian(mu, lambda);
+		return rng.rInverseGaussian(lambda, mu);
 	}
 }
 
@@ -350,6 +350,8 @@ unittest
 Class to generate random observations from a
 generalized inverse Gaussian 
 distribution. 
+
+See_Also: [distribution.params](distribution/params.html)
 +/
 final class GeneralizedInverseGaussianRNG(T, UniformRNG = Random) : DistributionRNG!T
 	if (isFloatingPoint!T)
@@ -538,6 +540,8 @@ proper generalized hyperbolic
 distribution using normal variance-mean mixture of 
 proper generalized inverse Gaussian
 distribution.
+
+See_Also: [distribution.params](distribution/params.html)
 +/
 final class ProperGeneralizedHyperbolicRNG(T, UniformRNG = Random) : NormalVarianceMeanMixtureRNG!T
 	if (isFloatingPoint!T)
@@ -572,6 +576,8 @@ generalized hyperbolic
 distribution using normal variance-mean mixture of 
 generalized inverse Gaussian
 distribution.
+
+See_Also: [distribution.params](distribution/params.html)
 +/
 final class GeneralizedHyperbolicRNG(T, UniformRNG = Random) : NormalVarianceMeanMixtureRNG!T
 	if (isFloatingPoint!T)
@@ -822,20 +828,20 @@ distribution.
 References:
 	Michael, John R.; Schucany, William R.; Haas, Roy W. (May 1976). "Generating Random Variates Using Transformations with Multiple Roots".
  +/
-T rInverseGaussian(T = double)(T mu, T lambda)
+T rInverseGaussian(T = double)(T lambda, T mu)
 	if (isFloatingPoint!T)
 {
-	return rndGen.rInverseGaussian!T(mu, lambda);
+	return rndGen.rInverseGaussian!T(lambda, mu);
 }
 
 ///ditto
-T rInverseGaussian(T = double, UniformRNG)(ref UniformRNG rng, T mu, T lambda)
+T rInverseGaussian(T = double, UniformRNG)(ref UniformRNG rng, T lambda, T mu)
 	if (isFloatingPoint!T && isUniformRNG!UniformRNG)
 in {
-	assert(mu.isNormal);
-	assert(mu > 0);
 	assert(lambda.isNormal);
 	assert(lambda > 0);
+	assert(mu.isNormal);
+	assert(mu > 0);
 }
 body {
 	immutable nu = mu * mu;
