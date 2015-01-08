@@ -134,7 +134,8 @@ unittest
 	import distribution.params;
 	import distribution.moment;
 
-	class GHypCDF: NumericCDF!real {
+	class GHypCDF: NumericCDF!real
+	{
 		this(real lambda, GHypChiPsi!real params)
 		{
 			immutable mu = 0;
