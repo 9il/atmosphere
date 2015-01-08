@@ -1,4 +1,6 @@
-///
+/++
+Moment of probability distributions.
++/
 module distribution.moment;
 
 import bessel;
