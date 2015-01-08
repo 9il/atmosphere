@@ -55,8 +55,8 @@ abstract class NumericQuantile(T) : Quantile!T
 	Constructor
     Params:
 		cdf	= The CDF to to inverse.
-		a	= (optional) The lower limit.
-		b	= (optional) The upper limit.
+		a	= (optional) The lower bound.
+		b	= (optional) The upper bound.
 	+/
 	this(CDF!T cdf, T a = -T.max, T b = T.max)
 	{
