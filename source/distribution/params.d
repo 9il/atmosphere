@@ -33,10 +33,10 @@ const @property:
 ///
 unittest 
 {
-	double _chi   = 3;
-	double _psi   = 4;
+	double _chi  = 3;
+	double _psi  = 4;
 
-	auto params = GIGChiPsi!double(_chi, _psi);
+	auto params  = GIGChiPsi!double(_chi, _psi);
 
 	auto params1 = cast(GIGChiPsi    !real) params;
 	auto params2 = cast(GIGEtaOmega  !real) params;
@@ -73,10 +73,10 @@ const @property:
 ///
 unittest 
 {
-	double _eta   = 3;
-	double _omega = 4;
+	double _eta  = 3;
+	double _omega= 4;
 
-	auto params = GIGEtaOmega!double(_eta, _omega);
+	auto params  = GIGEtaOmega!double(_eta, _omega);
 
 	auto params1 = cast(GIGChiPsi    !real) params;
 	auto params2 = cast(GIGEtaOmega  !real) params;
@@ -125,11 +125,11 @@ const @property:
 ///
 unittest 
 {
-	double beta   = 2;
-	double _alpha   = 3;
-	double _delta = 4;
+	double beta  = 2;
+	double _alpha= 3;
+	double _delta= 4;
 
-	auto params = GHypAlphaDelta!double(_alpha, beta, _delta);
+	auto params  = GHypAlphaDelta!double(_alpha, beta, _delta);
 
 	auto params0 = cast(GHypAlphaDelta!real) params;
 	auto params1 = cast(GHypChiPsi    !real) params;
@@ -185,10 +185,10 @@ const @property:
 unittest 
 {
 	double beta  = 2;
-	double _chi   = 3;
-	double _psi   = 4;
+	double _chi  = 3;
+	double _psi  = 4;
 
-	auto params = GHypChiPsi!double(beta, _chi, _psi);
+	auto params  = GHypChiPsi!double(beta, _chi, _psi);
 
 	auto params0 = cast(GHypAlphaDelta!real) params;
 	auto params1 = cast(GHypChiPsi    !real) params;
@@ -243,11 +243,11 @@ const @property:
 ///
 unittest 
 {
-	double beta   = 2;
-	double _eta   = 3;
-	double _omega = 4;
+	double beta  = 2;
+	double _eta  = 3;
+	double _omega= 4;
 
-	auto params = GHypEtaOmega!double(beta, _eta, _omega);
+	auto params  = GHypEtaOmega!double(beta, _eta, _omega);
 
 	auto params0 = cast(GHypAlphaDelta!real) params;
 	auto params1 = cast(GHypChiPsi    !real) params;
