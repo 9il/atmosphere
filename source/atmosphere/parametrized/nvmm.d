@@ -1,4 +1,4 @@
-/**
+/++
 Likelihood maximization algorithms for normal variance mean mixture with unknown scale parameter `alpha`.
 ------
 F(x) = ∫_0^∞ Φ((x-αu_i)√u) dG(u) ≈ Σ_i p_i*Φ((x-αu_i)/sqrt(u))
@@ -42,7 +42,7 @@ optimizer.optimize(
 double alpha2 = optimizer.alpha;
 double[] mixtureWeights2 = optimizer.weights.dup;
 --------
-*/
++/
 module atmosphere.parametrized.nvmm;
 
 import atmosphere.mixture;
@@ -58,8 +58,8 @@ import std.math : isNormal;
 
 static import std.math;
 
-/**
-*/
+/++
++/
 abstract class NormalVarianceMeanMixture(T) : MixtureOptimizer!T, LikelihoodMaximization!T
 	if(isFloatingPoint!T)
 {
@@ -80,12 +80,12 @@ abstract class NormalVarianceMeanMixture(T) : MixtureOptimizer!T, LikelihoodMaxi
 	mixin LikelihoodMaximizationTemplate!T;
 	
 
-	/**
+	/++
 	Constructor
 	Params:
 		_grid = Array of parameters u. [u_1, ..., u_k]
 		maxLength = maximal length of sample
-	*/
+	+/
 	this(in T[] _grid, size_t maxLength)
 	in
 	{
@@ -103,7 +103,7 @@ abstract class NormalVarianceMeanMixture(T) : MixtureOptimizer!T, LikelihoodMaxi
 
 final:
 
-	/**
+	/++
 	Performs optimization.
 	Params:
 		tolerance = Defines an early termination condition. 
@@ -112,7 +112,7 @@ final:
 		findRootTolerance = Tolerance for inner optimization.
 	Throws: [FeaturesException](atmosphere/mixture/FeaturesException.html) if [isFeaturesCorrect](atmosphere/mixture/LikelihoodMaximization.isFeaturesCorrect.html) is false.
 	See_Also: $(STDREF numeric, findRoot)
-	*/
+	+/
 	void optimize(
 			scope bool delegate (
 				T alphaPrev, 
@@ -193,12 +193,12 @@ final:
 	}
 
 
-	/**
+	/++
 	Sets sample and recalculates alpha and mixture.
 	Params:
 		_sample = new sample with length less or equal `maxLength`
 	Throws: [FeaturesException](atmosphere/mixture/FeaturesException.html) if [isFeaturesCorrect](atmosphere/mixture/LikelihoodMaximization.isFeaturesCorrect.html) is false.
-	*/
+	+/
 	void sample(in T[] _sample) @property
 	in
 	{
@@ -222,17 +222,17 @@ final:
 			throw new FeaturesException;
 	}
 
-	/**
+	/++
 	Returns: Const slice of the internal sample representation.
-	*/
+	+/
 	const(T)[] sample() @property const
 	{
 		return _sample[0..mixture.length];
 	}
 
-	/**
+	/++
 	Returns: sample mean
-	*/
+	+/
 	T mean() @property const
 	{
 		return _mean;
@@ -244,18 +244,18 @@ final:
 		return _log2Likelihood;
 	}
 
-	/**
+	/++
 	Returns: alpha
-	*/
+	+/
 	T alpha() @property const
 	{
 		return _alpha;
 	}
 
 
-	/**
+	/++
 	Returns: Const slice of the internal grid representation.
-	*/
+	+/
 	const(T)[] grid() @property const
 	{
 		return _grid;
@@ -331,21 +331,21 @@ final:
 }
 
 
-/**
+/++
 Expectation–maximization algorithm
-*/
++/
 final class NormalVarianceMeanMixtureEM(T) : NormalVarianceMeanMixture!T
 	if(isFloatingPoint!T)
 {
 	private T[] pi;
 	private T[] c;
 
-	/**
+	/++
 	Constructor
 	Params:
 		_grid = Array of parameters u. [u_1, ..., u_k]
 		maxLength = maximal length of sample
-	*/
+	+/
 	this(in T[] _grid, size_t maxLength)
 	in
 	{
@@ -374,9 +374,9 @@ final class NormalVarianceMeanMixtureEM(T) : NormalVarianceMeanMixture!T
 }
 
 
-/**
+/++
 Expectation–maximization algorithm with inner gradient descend optimization.
-*/
++/
 final class NormalVarianceMeanMixtureEMAndGradient(T) : NormalVarianceMeanMixture!T
 	if(isFloatingPoint!T)
 {
@@ -385,12 +385,12 @@ final class NormalVarianceMeanMixtureEMAndGradient(T) : NormalVarianceMeanMixtur
 	private T[] gamma;
 	private T[] c;
 
-	/**
+	/++
 	Constructor
 	Params:
 		_grid = Array of parameters u. [u_1, ..., u_k]
 		maxLength = maximal length of sample
-	*/
+	+/
 	this(in T[] _grid, size_t maxLength)
 	{
 		super(_grid, maxLength);
@@ -418,21 +418,21 @@ final class NormalVarianceMeanMixtureEMAndGradient(T) : NormalVarianceMeanMixtur
 }
 
 
-/**
+/++
 Expectation–maximization algorithm with inner coordinate descend optimization.
 Speed depends on permutation of elements of `grid`.
-*/
++/
 final class NormalVarianceMeanMixtureEMAndCoordinate(T) : NormalVarianceMeanMixture!T
 	if(isFloatingPoint!T)
 {
 	private T[] pi;
 
-	/**
+	/++
 	Constructor
 	Params:
 		_grid = Array of parameters u. [u_1, ..., u_k]
 		maxLength = maximal length of sample
-	*/
+	+/
 	this(in T[] _grid, size_t maxLength)
 	{
 		super(_grid, maxLength);
