@@ -60,3 +60,5 @@ To use [this package](http://code.dlang.org/packages/atmosphere_gm), put the fol
 	}
 }
 ```
+# Bugs
+See [bug list](https://github.com/9il/atmosphere_gm/labels/bug).
