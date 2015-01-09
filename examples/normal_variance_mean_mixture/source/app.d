@@ -4,12 +4,12 @@ import std.algorithm, std.conv, std.csv, std.datetime, std.file, std.format, std
 import atmosphere;
 
 immutable CSVHead = 
-	"alpha, " ~
+	"beta, " ~
 	"GLM_iter, " "GLM_time, GLM_lh, " ~
 	"CLM_iter, " "CLM_time, CLM_lh, " ~
-	"NVMME_iter, " "NVMME_time, NVMME_lh, NVMME_alpha, " ~ 
-	"NVMMG_iter, " "NVMMG_time, NVMMG_lh, NVMMG_alpha, " ~
-	"NVMMC_iter, " "NVMMC_time, NVMMC_lh, NVMMC_alpha, " ~ 
+	"NVMME_iter, " "NVMME_time, NVMME_lh, NVMME_beta, " ~ 
+	"NVMMG_iter, " "NVMMG_time, NVMMG_lh, NVMMG_beta, " ~
+	"NVMMC_iter, " "NVMMC_time, NVMMC_lh, NVMMC_beta, " ~ 
 	"unused";
 immutable folder = "data";
 
@@ -105,7 +105,7 @@ void main()
 				optimizer.sample = sample;
 				optimizer.optimize( ///optimization
 					//tolerance
-					(alphaPrev, alpha, double log2LikelihoodPrev, double log2Likelihood)
+					(betaPrev, beta, double log2LikelihoodPrev, double log2Likelihood)
 					{
 						iterCount++;
 						return iterCount >= maxIter || iterCount >= minIter && log2Likelihood - log2LikelihoodPrev <= eps;
@@ -118,7 +118,7 @@ void main()
 				continue;
 			}
 			sw.stop;
-			lineOut.formattedWrite("%s, %s, %s, %s, ", iterCount, sw.peek.msecs, optimizer.log2Likelihood, optimizer.alpha);
+			lineOut.formattedWrite("%s, %s, %s, %s, ", iterCount, sw.peek.msecs, optimizer.log2Likelihood, optimizer.beta);
 		}
 	}
 	gsw.stop;

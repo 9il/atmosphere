@@ -14,8 +14,8 @@ double catmosphere_nvmm(NVMM : NormalVarianceMeanMixture!double)(
 		in double* grid, 
 		in double* sample,
 		in bool function (
-			double alphaPrev, 
-			double alpha, 
+			double betaPrev, 
+			double beta, 
 			double log2LikelihoodValuePrev, 
 			double log2LikelihoodValue, 
 			in double* weightsPrev, 
@@ -30,15 +30,15 @@ double catmosphere_nvmm(NVMM : NormalVarianceMeanMixture!double)(
 	op.sample = sample[0..n];
 	op.optimize(
 		(	
-			double alphaPrev, 
-			double alpha, 
+			double betaPrev, 
+			double beta, 
 			double log2LikelihoodValuePrev, 
 			double log2LikelihoodValue, 
 			in double[] weightsPrev, 
 			in double[] weights,
 		) => tolerance(
-			alphaPrev,
-			alpha,
+			betaPrev,
+			beta,
 			log2LikelihoodValuePrev,
 			log2LikelihoodValue,
 			weightsPrev.ptr,
@@ -47,7 +47,7 @@ double catmosphere_nvmm(NVMM : NormalVarianceMeanMixture!double)(
 		(a, b) => findRootTolerance(a, b)
 		);
 	weights[0..k] = op.weights[];
-	return op.alpha;
+	return op.beta;
 }
 
 
@@ -58,8 +58,8 @@ double catmosphere_nvmm_em_and_coordinate(
 		const double* grid, 
 		const double* sample,
 		bool function (
-			double alphaPrev, 
-			double alpha, 
+			double betaPrev, 
+			double beta, 
 			double log2LikelihoodValuePrev, 
 			double log2LikelihoodValue, 
 			const double* weightsPrev, 
@@ -89,8 +89,8 @@ double catmosphere_nvmm_em_and_gradient(
 		const double* grid, 
 		const double* sample,
 		bool function (
-			double alphaPrev, 
-			double alpha, 
+			double betaPrev, 
+			double beta, 
 			double log2LikelihoodValuePrev, 
 			double log2LikelihoodValue, 
 			const double* weightsPrev, 
@@ -119,8 +119,8 @@ double catmosphere_nvmm_em(
 		const double* grid, 
 		const double* sample,
 		bool function (
-			double alphaPrev, 
-			double alpha, 
+			double betaPrev, 
+			double beta, 
 			double log2LikelihoodValuePrev, 
 			double log2LikelihoodValue, 
 			const double* weightsPrev, 

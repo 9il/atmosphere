@@ -1,8 +1,8 @@
 /++
-Likelihood maximization algorithms for normal variance mean mixture with unknown scale parameter `alpha`.
+Likelihood maximization algorithms for normal variance mean mixture with unknown scale parameter `beta`.
 ------
 F(x) = ∫_0^∞ Φ((x-αu_i)√u) dG(u) ≈ Σ_i p_i*Φ((x-αu_i)/sqrt(u))
-α - alpha (unknown)
+α - beta (unknown)
 Φ - standard normal distribution
 G - mixture distribution
 p - approximation of G, mixture weights (unknown)
@@ -19,10 +19,10 @@ auto optimizer = new NormalVarianceMeanMixtureEMAndCoordinate!double(myGrid, myS
 
 optimizer.sample = mySample;
 optimizer.optimize(
-	(double alphaPrev, double alpha, double likelihoodPrev, double likelihood)
+	(double betaPrev, double beta, double likelihoodPrev, double likelihood)
 		=> likelihood - likelihoodPrev <= 1e-3);
 
-double alpha = optimizer.alpha;
+double beta = optimizer.beta;
 double[] mixtureWeights = optimizer.weights.dup;
 
 
@@ -36,10 +36,10 @@ assert(myNewSample.length <= 1050);
 // add new sample
 optimizer.sample = optimizer.sample~myNewSample;
 optimizer.optimize(
-	(double alphaPrev, double alpha, double likelihoodPrev, double likelihood)
+	(double betaPrev, double beta, double likelihoodPrev, double likelihood)
 		=> likelihood - likelihoodPrev <= 1e-3);
 
-double alpha2 = optimizer.alpha;
+double beta2 = optimizer.beta;
 double[] mixtureWeights2 = optimizer.weights.dup;
 --------
 +/
@@ -67,14 +67,14 @@ abstract class NormalVarianceMeanMixture(T) : MixtureOptimizer!T, LikelihoodMaxi
 	override void update()
 	{
 		_log2Likelihood = mixture.sumOfLog2s;
-		updateAlpha;
+		updateBeta;
 	}
 
 	package T[] _sample;
 	package const T[] _grid;
 
 	package T _mean;
-	package T _alpha;
+	package T _beta;
 	package T _log2Likelihood;
 
 	mixin LikelihoodMaximizationTemplate!T;
@@ -115,8 +115,8 @@ final:
 	+/
 	void optimize(
 			scope bool delegate (
-				T alphaPrev, 
-				T alpha, 
+				T betaPrev, 
+				T beta, 
 				T log2LikelihoodValuePrev, 
 				T log2LikelihoodValue, 
 				in T[] weightsPrev, 
@@ -128,25 +128,25 @@ final:
 	{
 		if (!isFeaturesCorrect)
 			throw new FeaturesException;
-		T log2LikelihoodPrev, alphaPrev;
+		T log2LikelihoodPrev, betaPrev;
 		scope T[] weightsPrev = new T[weights.length];
 		do
 		{
 			log2LikelihoodPrev = _log2Likelihood;
-			alphaPrev = _alpha;
+			betaPrev = _beta;
 			assert(weights.length == weightsPrev.length);
 			weightsPrev[] = weights[];
 			eval(findRootTolerance);
 		}
-		while(!tolerance(alphaPrev, _alpha, log2LikelihoodPrev, _log2Likelihood, weightsPrev, weights));
+		while(!tolerance(betaPrev, _beta, log2LikelihoodPrev, _log2Likelihood, weightsPrev, weights));
 	}
 
 
 	///ditto
 	void optimize(
 			scope bool delegate (
-				T alphaPrev, 
-				T alpha, 
+				T betaPrev, 
+				T beta, 
 				T log2LikelihoodValuePrev, 
 				T log2LikelihoodValue, 
 			) 
@@ -156,21 +156,21 @@ final:
 	{
 		if (!isFeaturesCorrect)
 			throw new FeaturesException;
-		T log2LikelihoodPrev, alphaPrev;
+		T log2LikelihoodPrev, betaPrev;
 		do
 		{
 			log2LikelihoodPrev = _log2Likelihood;
-			alphaPrev = _alpha;
+			betaPrev = _beta;
 			eval(findRootTolerance);
 		}
-		while(!tolerance(alphaPrev, _alpha, log2LikelihoodPrev, _log2Likelihood));
+		while(!tolerance(betaPrev, _beta, log2LikelihoodPrev, _log2Likelihood));
 	}
 
 	///ditto
 	void optimize(
 			scope bool delegate (
-				T alphaPrev, 
-				T alpha, 
+				T betaPrev, 
+				T beta, 
 				in T[] weightsPrev, 
 				in T[] weights,
 			) 
@@ -180,21 +180,21 @@ final:
 	{
 		if (!isFeaturesCorrect)
 			throw new FeaturesException;
-		T alphaPrev;
+		T betaPrev;
 		scope T[] weightsPrev = new T[weights.length];
 		do
 		{
-			alphaPrev = _alpha;
+			betaPrev = _beta;
 			assert(weights.length == weightsPrev.length);
 			weightsPrev[] = weights[];
 			eval(findRootTolerance);
 		}
-		while(!tolerance(alphaPrev, _alpha, weightsPrev, weights));
+		while(!tolerance(betaPrev, _beta, weightsPrev, weights));
 	}
 
 
 	/++
-	Sets sample and recalculates alpha and mixture.
+	Sets sample and recalculates beta and mixture.
 	Params:
 		_sample = new sample with length less or equal `maxLength`
 	Throws: [FeaturesException](atmosphere/mixture/FeaturesException.html) if [isFeaturesCorrect](atmosphere/mixture/LikelihoodMaximization.isFeaturesCorrect.html) is false.
@@ -215,7 +215,7 @@ final:
 		_featuresT.reserveBackN(_sample.length);
 		this._sample[0.._sample.length] = _sample[];
 		_mean = sample.sum/sample.length;
-		updateAlpha;
+		updateBeta;
 		assert(_featuresT.matrix.width == _sample.length);
 		updateComponents;
 		if (!isFeaturesCorrect)
@@ -245,11 +245,11 @@ final:
 	}
 
 	/++
-	Returns: alpha
+	Returns: beta
 	+/
-	T alpha() @property const
+	T beta() @property const
 	{
-		return _alpha;
+		return _beta;
 	}
 
 
@@ -261,14 +261,14 @@ final:
 		return _grid;
 	}
 
-	package void updateAlpha()
+	package void updateBeta()
 	in
 	{
 		assert(weights.length == _grid.length);
 	}
 	body
 	{
-		_alpha =  _mean / dotProduct(weights, _grid);
+		_beta =  _mean / dotProduct(weights, _grid);
 	}
 
 
@@ -281,8 +281,8 @@ final:
 			import std.parallelism;
 			//TODO: choice workUnitSize
 			debug pragma(msg, "NormalVarianceMeanMixture.updateComponents: parallel");
-			auto pdfs = _grid.map!(u => PDF(alpha, u)).parallel;
-			foreach(i, pdf; _grid.map!(u => PDF(alpha, u)).parallel)
+			auto pdfs = _grid.map!(u => PDF(beta, u)).parallel;
+			foreach(i, pdf; _grid.map!(u => PDF(beta, u)).parallel)
 			{
 				auto r = m[i];
 				foreach(x; sample)
@@ -294,7 +294,7 @@ final:
 		}
 		else
 		{
-			foreach(pdf; _grid.map!(u => PDF(alpha, u)))
+			foreach(pdf; _grid.map!(u => PDF(beta, u)))
 			{
 				auto r = m.front;
 				m.popFront;
@@ -310,20 +310,20 @@ final:
 
 	static struct PDF
 	{
-		T alphau;
+		T betau;
 		T sqrtu;
 
-		this(T alpha, T u) inout
+		this(T beta, T u) inout
 		{
 			assert(u > 0);
-			this.alphau = alpha*u;
+			this.betau = beta*u;
 			this.sqrtu = sqrt(u);
 			assert(sqrtu > 0);
 		}
 
 		T opCall(T x) inout
 		{
-			immutable y = (x - alphau) / sqrtu;
+			immutable y = (x - betau) / sqrtu;
 			enum T c = 0.398942280401432677939946059934381868475858631164934657665925;
 			return c * exp(y * y / -2) / sqrtu;
 		}
