@@ -29,7 +29,7 @@ Table of separating mixtures algorithms:
 		$(TR $(TD [NormalVarianceMeanMixtureEMAndGradient](atmosphere/parametrized/nvmm/NormalVarianceMeanMixtureEMAndGradient.html)) $(TD ~10%) $(TD Yes) $(TD  slow ) $(TD No) $(TD Yes) )
 		$(TR $(TD [NormalVarianceMeanMixtureEMAndCoordinate](atmosphere/parametrized/nvmm/NormalVarianceMeanMixtureEMAndCoordinate.html)) $(TD ~5%) $(TD Partial) $(TD  slow ) $(TD No) $(TD Yes) ) )
 
-See_Also: [GitHub Example](http://github.com/9il/atmosphere_gm/blob/master/examples/normal_variance_mean_mixture/source/app.d)
+See_Also: [Atmosphere GM Test](https://github.com/9il/atmosphere_gm_test)
 
 +/
 module atmosphere;
