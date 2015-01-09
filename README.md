@@ -48,7 +48,6 @@ See [Atmosphere GM Test](https://github.com/9il/atmosphere_gm_test) for testing.
 2. Install [DUB registry](http://code.dlang.org/download)
 3. Read about [DUB](http://code.dlang.org/about)
 4. Read about [DUB package format](http://code.dlang.org/package-format)
-5. Start with [example](https://github.com/9il/atmosphere_gm_test)
 
 #### Atmosphere GM
 To use [this package](http://code.dlang.org/packages/atmosphere_gm), put the following dependency into your project's
@@ -61,5 +60,8 @@ To use [this package](http://code.dlang.org/packages/atmosphere_gm), put the fol
 	}
 }
 ```
+
+Start with [Atmosphere GM Test](https://github.com/9il/atmosphere_gm_test)
+
 # Bugs
 See [bug list](https://github.com/9il/atmosphere_gm/labels/bug).
