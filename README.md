@@ -2,8 +2,8 @@
 Atmosphere GM contains an experimental algorithms for new generation of likelihood maximization methods. The goal of this library is to create an reliable and simple in use technology that can be used by software engineers. Package is growing step by step with mathematical publications.
 
 #### Travis-CI Status
-+ [![Build Status](https://travis-ci.org/9il/atmosphere_gm.svg)](https://travis-ci.org/9il/atmosphere_gm) - [Atmosphere GM](https://github.com/9il/atmosphere_gm)
-+ [![Build Status](https://travis-ci.org/9il/atmosphere_gm_test.svg)](https://travis-ci.org/9il/atmosphere_gm_test) - [Atmosphere GM Test](https://github.com/9il/atmosphere_gm_test)
++ [![Build Status](https://travis-ci.org/9il/atmosphere_gm.svg)](https://travis-ci.org/9il/atmosphere_gm) - [Atmosphere GM](https://travis-ci.org/9il/atmosphere_gm)
++ [![Build Status](https://travis-ci.org/9il/atmosphere_gm_test.svg)](https://travis-ci.org/9il/atmosphere_gm_test) - [Atmosphere GM Test](https://travis-ci.org/9il/atmosphere_gm_test)
 
 
 #Features
