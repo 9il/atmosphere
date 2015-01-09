@@ -1,8 +1,8 @@
 /++
 Likelihood maximization algorithms for normal variance mean mixture with unknown scale parameter `beta`.
 ------
-F(x) = ∫_0^∞ Φ((x-αu_i)√u) dG(u) ≈ Σ_i p_i*Φ((x-αu_i)/sqrt(u))
-α - beta (unknown)
+F(x) = ∫_0^∞ Φ((x-αu_i)√u) dG(u) ≈ Σ_i p_i*Φ((x-βu_i)/sqrt(u))
+β - beta (unknown)
 Φ - standard normal distribution
 G - mixture distribution
 p - approximation of G, mixture weights (unknown)
