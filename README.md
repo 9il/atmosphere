@@ -50,7 +50,7 @@ See [Atmosphere GM Test](https://github.com/9il/atmosphere_gm_test) for testing.
 4. Read about [DUB package format](http://code.dlang.org/package-format)
 5. Start with [example](https://github.com/9il/atmosphere_gm_test)
 
-#### Package
+#### Atmosphere GM
 To use [this package](http://code.dlang.org/packages/atmosphere_gm), put the following dependency into your project's
 [dub](http://code.dlang.org/about).json into the dependencies section:
 ```json
