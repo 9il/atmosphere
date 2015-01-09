@@ -45,9 +45,9 @@
 </ul>
 </div>
 <div class="content">
-<div class="section ">Likelihood maximization algorithms for normal variance mean mixture with unknown scale parameter `alpha`.
-<pre><code>F(x) = ∫_0^∞ Φ((x-αu_i)√u) dG(u) ≈ Σ_i p_i*Φ((x-αu_i)/sqrt(u))
-α - alpha (unknown)
+<div class="section ">Likelihood maximization algorithms for normal variance mean mixture with unknown scale parameter `beta`.
+<pre><code>F(x) = ∫_0^∞ Φ((x-αu_i)√u) dG(u) ≈ Σ_i p_i*Φ((x-βu_i)/sqrt(u))
+β - beta (unknown)
 Φ - standard normal distribution
 G - mixture distribution
 p - approximation of G, mixture weights (unknown)</code></pre>
@@ -64,10 +64,10 @@ auto optimizer = new NormalVarianceMeanMixtureEMAndCoordinate!double(myGrid, myS
 
 optimizer.sample = mySample;
 optimizer.optimize(
-	(double alphaPrev, double alpha, double likelihoodPrev, double likelihood)
+	(double betaPrev, double beta, double likelihoodPrev, double likelihood)
 		=> likelihood - likelihoodPrev <= 1e-3);
 
-double alpha = optimizer.alpha;
+double beta = optimizer.beta;
 double[] mixtureWeights = optimizer.weights.dup;
 
 
@@ -81,10 +81,10 @@ assert(myNewSample.length <= 1050);
 // add new sample
 optimizer.sample = optimizer.sample~myNewSample;
 optimizer.optimize(
-	(double alphaPrev, double alpha, double likelihoodPrev, double likelihood)
+	(double betaPrev, double beta, double likelihoodPrev, double likelihood)
 		=> likelihood - likelihoodPrev <= 1e-3);
 
-double alpha2 = optimizer.alpha;
+double beta2 = optimizer.beta;
 double[] mixtureWeights2 = optimizer.weights.dup;</code></pre>
 
 </div>

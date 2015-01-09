@@ -51,7 +51,7 @@ var items = [
 {"atmosphere.parametrized.nvmm.NormalVarianceMeanMixture.sample" : "atmosphere/parametrized/nvmm/NormalVarianceMeanMixture.sample.html"},
 {"atmosphere.parametrized.nvmm.NormalVarianceMeanMixture.sample" : "atmosphere/parametrized/nvmm/NormalVarianceMeanMixture.sample.html"},
 {"atmosphere.parametrized.nvmm.NormalVarianceMeanMixture.mean" : "atmosphere/parametrized/nvmm/NormalVarianceMeanMixture.mean.html"},
-{"atmosphere.parametrized.nvmm.NormalVarianceMeanMixture.alpha" : "atmosphere/parametrized/nvmm/NormalVarianceMeanMixture.alpha.html"},
+{"atmosphere.parametrized.nvmm.NormalVarianceMeanMixture.beta" : "atmosphere/parametrized/nvmm/NormalVarianceMeanMixture.beta.html"},
 {"atmosphere.parametrized.nvmm.NormalVarianceMeanMixture.grid" : "atmosphere/parametrized/nvmm/NormalVarianceMeanMixture.grid.html"},
 {"atmosphere.parametrized.nvmm.NormalVarianceMeanMixtureEM" : "atmosphere/parametrized/nvmm/NormalVarianceMeanMixtureEM.html"},
 {"atmosphere.parametrized.nvmm.NormalVarianceMeanMixtureEM.this" : "atmosphere/parametrized/nvmm/NormalVarianceMeanMixtureEM.this.html"},

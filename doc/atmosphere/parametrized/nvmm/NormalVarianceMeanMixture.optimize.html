@@ -47,8 +47,8 @@
 <div class="content">
 <pre><code>public final void optimize(
     scope bool delegate(
-        T alphaPrev, 
-        T alpha, 
+        T betaPrev, 
+        T beta, 
         T log2LikelihoodValuePrev, 
         T log2LikelihoodValue, 
         in T[] weightsPrev, 
@@ -90,8 +90,8 @@
 </div>
 <hr/><pre><code>public final void optimize(
     scope bool delegate(
-        T alphaPrev, 
-        T alpha, 
+        T betaPrev, 
+        T beta, 
         T log2LikelihoodValuePrev, 
         T log2LikelihoodValue
         ) tolerance, 
@@ -131,8 +131,8 @@
 </div>
 <hr/><pre><code>public final void optimize(
     scope bool delegate(
-        T alphaPrev, 
-        T alpha, 
+        T betaPrev, 
+        T beta, 
         in T[] weightsPrev, 
         in T[] weights
         ) tolerance, 

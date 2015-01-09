@@ -45,7 +45,7 @@
 </ul>
 </div>
 <div class="content">
-<pre><code>public class CoordinateLikelihoodMaximization(T) : CoordinateDescentPartial!(a => -1 / a, T), LikelihoodMaximization!T
+<pre><code>public class CoordinateLikelihoodMaximization(T) : CoordinateDescentPartial!(a => cast(T)(-1) / a, T), LikelihoodMaximization!T
 if(isFloatingPoint!T)
 </code></pre>
 <div class="section "><h2>Functions</h2><table><tr><td><a href="atmosphere/mixture/CoordinateLikelihoodMaximization.this.html">this</a></td><td></td><td><p>Constructor
