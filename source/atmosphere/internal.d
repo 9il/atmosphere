@@ -16,6 +16,9 @@ n - length of sample, n may vary (sliding window).
 module atmosphere.internal;
 
 import core.stdc.tgmath : fabs;
+import std.math: isNaN;
+import std.numeric: findRoot;
+import std.algorithm;
 
 import atmosphere.utilities;
 
@@ -217,50 +220,6 @@ body
 	p.normalize;
 }
 
-
-
-//Returns: estimation of θ.
-T gRoot
-	(
-		alias grad,
-		T, 
-	)
-	(
-		in T[] mixture,
-		in T[] pi,
-		in T[] columni,
-		T[] xi,
-		T[] gamma,
-		in bool delegate(T, T) @nogc nothrow tolerance = (a, b) => false,
-	)
-{
-	T g(T theta)
-	{
-		foreach(j; 0..mixture.length)
-			xi[j] = mixture[j] + theta * pi[j];
-		grad(xi, gamma);
-		auto ret = dot(gamma, pi);
-		return gCorrectioin(ret);
-	}
-
-	T g_01(in T[] vec)
-	{
-		grad(vec, gamma);
-		auto ret = dot(gamma, pi);
-		return gCorrectioin(ret);
-	}
-
-	immutable g0 = g_01(mixture);
-	if(g0 > -T.min_normal)
-		return 0;
-	immutable g1 = g_01(columni);
-	if(g1 < +T.min_normal)
-		return 1;
-	auto r = findRoot(&g, cast(T)0.0, cast(T)1.0, g0, g1, tolerance);
-	return !(fabs(r[2]) > fabs(r[3])) ? r[0] : r[1];
-}
-
-
 /**
 One iteration of Expectation Maximization algorithm.
 Params:
@@ -304,6 +263,56 @@ body
 	p[] *= c[];
 	p.normalize;
 }
+
+
+
+/// Returns: estimation of θ.
+T gRoot
+	(
+		alias grad,
+		T, 
+	)
+	(
+		in T[] mixture,
+		in T[] pi,
+		in T[] columni,
+		T[] xi,
+		T[] gamma,
+		in bool delegate(T, T) @nogc nothrow tolerance = (a, b) => false,
+	)
+{
+	T g(T theta)
+	{
+		foreach(j; 0..mixture.length)
+			xi[j] = mixture[j] + theta * pi[j];
+		grad(xi, gamma);
+		auto ret = dot(gamma, pi);
+		return gCorrectioin(ret);
+	}
+
+	T g_01(in T[] vec)
+	{
+		grad(vec, gamma);
+		auto ret = dot(gamma, pi);
+		return gCorrectioin(ret);
+	}
+	immutable g0 = g_01(mixture);
+	if(g0 > -T.min_normal)
+		return 0;
+	if(g0.isNaN)
+		return 0;
+	immutable g1 = g_01(columni);
+	if(g1 < +T.min_normal)
+		return 1;
+	if(g1.isNaN)
+		return 0;
+	assert(g0 <= 0);
+	assert(g1 >= 0);
+	auto r = findRoot(&g, cast(T)0.0, cast(T)1.0, g0, g1, tolerance);
+	return !(fabs(r[2]) > fabs(r[3])) ? r[0] : r[1];
+}
+
+
 
 
 //ditto
@@ -383,13 +392,18 @@ body
 		auto ret = (ret0+ret1)+(ret2+ret3);
 		return gCorrectioin(ret);
 	}
-
 	immutable g0 = g_01(mixture);
 	if(g0 > -T.min_normal)
+		return 0;
+	if(g0.isNaN)
 		return 0;
 	immutable g1 = g_01(columni);
 	if(g1 < +T.min_normal)
 		return 1;
+	if(g1.isNaN)
+		return 0;
+	assert(g0 <= 0);
+	assert(g1 >= 0);
 	auto r = findRoot(&g, cast(T)0.0, cast(T)1.0, g0, g1, tolerance);
 	return !(fabs(r[2]) > fabs(r[3])) ? r[0] : r[1];
 }

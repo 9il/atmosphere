@@ -689,7 +689,7 @@ interface LikelihoodMaximization(T)
 
 /**
 */
-class CoordinateLikelihoodMaximization(T) : CoordinateDescentPartial!(a => -1/a, T), LikelihoodMaximization!T
+class CoordinateLikelihoodMaximization(T) : CoordinateDescentPartial!(a => cast(T)(-1)/a, T), LikelihoodMaximization!T
 	if(isFloatingPoint!T)
 {
 	/**

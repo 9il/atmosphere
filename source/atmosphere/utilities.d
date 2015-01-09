@@ -1,15 +1,10 @@
 module atmosphere.utilities;
 
+import core.stdc.string;
 import std.traits;
-import core.stdc.tgmath;
-import core.stdc.string : memmove;
+import std.math;
 
 package:
-
-public import std.numeric : findRoot;
-public import std.algorithm : minPos;
-public import std.math : isFinite;
-
 
 import cblas;
 import simple_matrix;
@@ -40,7 +35,7 @@ T sumOfLog2s(T)(T[] r)
             exp--;
         }
     }
-    return exp + log2(x); 
+    return exp + log2(x);
 }
 
 ///
