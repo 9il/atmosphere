@@ -446,8 +446,7 @@ final class NormalVarianceMeanMixtureEMAndCoordinate(T) : NormalVarianceMeanMixt
 
 	override void eval(scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null)
 	{
-		coordinateDescentIterationPartial!
-			(a => -1/a, T)
+		coordinateDescentIterationPartial!("-1/a", T)
 			(features, _weights, _mixture[0..mixture.length], pi[0..length], findRootTolerance is null ? (a, b) => false : findRootTolerance);
 		updateComponents;
 	}
@@ -455,7 +454,7 @@ final class NormalVarianceMeanMixtureEMAndCoordinate(T) : NormalVarianceMeanMixt
 
 
 unittest {
-	alias C0 = NormalVarianceMeanMixtureEM!(double);
-	alias C1 = NormalVarianceMeanMixtureEMAndCoordinate!(double);
-	alias C2 = NormalVarianceMeanMixtureEMAndGradient!(double);
+	alias C0 = NormalVarianceMeanMixtureEM!double;
+	alias C1 = NormalVarianceMeanMixtureEMAndCoordinate!double;
+	alias C2 = NormalVarianceMeanMixtureEMAndGradient!double;
 }

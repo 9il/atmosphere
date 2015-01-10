@@ -689,7 +689,7 @@ interface LikelihoodMaximization(T)
 
 /**
 */
-class CoordinateLikelihoodMaximization(T) : CoordinateDescentPartial!(a => cast(T)(-1)/a, T), LikelihoodMaximization!T
+class CoordinateLikelihoodMaximization(T) : CoordinateDescentPartial!("-1/a", T), LikelihoodMaximization!T
 	if(isFloatingPoint!T)
 {
 	/**
@@ -800,8 +800,8 @@ package mixin template LikelihoodMaximizationTemplate(T)
 
 unittest {
 	alias C0 = CoordinateDescent!((a, b){}, double);
-	alias C1 = LikelihoodMaximization!(double);
-	alias C10 = GradientLikelihoodMaximization!(double);
-	alias C11 = CoordinateLikelihoodMaximization!(double);
+	alias C1 = LikelihoodMaximization!double;
+	alias C10 = GradientLikelihoodMaximization!double;
+	alias C11 = CoordinateLikelihoodMaximization!double;
 	alias C2 = GradientDescent!((a, b){}, double);
 }

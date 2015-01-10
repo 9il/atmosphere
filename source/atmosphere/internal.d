@@ -19,6 +19,7 @@ import core.stdc.tgmath : fabs;
 import std.math: isNaN;
 import std.numeric: findRoot;
 import std.algorithm;
+import std.functional;
 
 import atmosphere.utilities;
 
@@ -150,7 +151,7 @@ body
 		foreach(j; 0..mixture.length)
 			pi[j] = columni[j] - mixture[j];
 		immutable theta = gRoot!grad(mixture, pi, columni, xi, gamma, tolerance);
-		if(!tolerance(0, theta))
+		if(theta != 0 && !tolerance(0, theta))
 		{
 			immutable onemtheta = 1 - theta;
 			p.scal(onemtheta);
@@ -207,8 +208,11 @@ body
 		auto columni = WTransposed[i];
 		foreach(j; 0..mixture.length)
 			pi[j] = columni[j] - mixture[j];
-		immutable theta = gRoot!PartialDerivative(mixture, pi, columni, tolerance);
-		if(!tolerance(0, theta))
+		static if(is(typeof(PartialDerivative) == string) && (PartialDerivative == "-1/a"))
+			immutable theta = gRoot(mixture, pi, columni, tolerance);
+		else
+			immutable theta = gRoot!(unaryFun!PartialDerivative)(mixture, pi, columni, tolerance);
+		if(theta != 0 && !tolerance(0, theta))
 		{
 			immutable onemtheta = 1 - theta;
 			p.scal(onemtheta);
@@ -387,6 +391,96 @@ body
 		for(; j < pi.length; j++)
 		{
 			ret0 += pi[j+0] * PartialDerivative(vec[j+0]);
+		}
+
+		auto ret = (ret0+ret1)+(ret2+ret3);
+		return gCorrectioin(ret);
+	}
+	immutable g0 = g_01(mixture);
+	if(g0 > -T.min_normal)
+		return 0;
+	if(g0.isNaN)
+		return 0;
+	immutable g1 = g_01(columni);
+	if(g1 < +T.min_normal)
+		return 1;
+	if(g1.isNaN)
+		return 0;
+	assert(g0 <= 0);
+	assert(g1 >= 0);
+	auto r = findRoot(&g, cast(T)0.0, cast(T)1.0, g0, g1, tolerance);
+	return !(fabs(r[2]) > fabs(r[3])) ? r[0] : r[1];
+}
+
+
+///ditto
+T gRoot(T)
+	(
+		in T[] mixture,
+		in T[] pi,
+		in T[] columni,
+		in bool delegate(T, T) @nogc nothrow tolerance = (a, b) => false,
+	)
+out(theta)
+{
+	assert(theta >= 0);
+	assert(theta <= 1);
+}
+body
+{
+	T g(T theta)
+	{
+		T ret0 = 0;
+		T ret1 = 0;
+		T ret2 = 0;
+		T ret3 = 0;
+
+		immutable L1= pi.length & -4;
+		size_t j;
+	 
+		for(; j < L1; j += 4)
+		{
+			immutable pi0 = pi[j+0];
+			immutable pi1 = pi[j+1];
+			immutable pi2 = pi[j+2];
+			immutable pi3 = pi[j+3];
+			ret0 -= pi0 / (mixture[j+0] + theta * pi0);
+			ret1 -= pi1 / (mixture[j+1] + theta * pi1);
+			ret2 -= pi2 / (mixture[j+2] + theta * pi2);
+			ret3 -= pi3 / (mixture[j+3] + theta * pi3);
+		}
+
+		for(; j < pi.length; j++)
+		{
+			immutable pi0 = pi[j+0];
+			ret0 -= pi0 / (mixture[j+0] + theta * pi0);
+		}
+
+		auto ret = (ret0+ret1)+(ret2+ret3);
+		return gCorrectioin(ret);
+	}
+
+	T g_01(in T[] vec)
+	{
+		T ret0 = 0;
+		T ret1 = 0;
+		T ret2 = 0;
+		T ret3 = 0;
+
+		immutable L1= pi.length & -4;
+		size_t j;
+	 
+		for(; j < L1; j += 4)
+		{
+			ret0 -= pi[j+0] / (vec[j+0]);
+			ret1 -= pi[j+1] / (vec[j+1]);
+			ret2 -= pi[j+2] / (vec[j+2]);
+			ret3 -= pi[j+3] / (vec[j+3]);
+		}
+
+		for(; j < pi.length; j++)
+		{
+			ret0 -= pi[j+0] / (vec[j+0]);
 		}
 
 		auto ret = (ret0+ret1)+(ret2+ret3);
