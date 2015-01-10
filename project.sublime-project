@@ -19,14 +19,6 @@
 					],
 					"name": "Run",
 					"shell": true
-				},
-				{
-					"cmd":
-					[
-						"dub run stddoc"
-					],
-					"name": "Docs",
-					"shell": true
 				}
 			],
 			"working_dir": "${project_path:${folder}}"
