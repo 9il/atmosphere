@@ -779,9 +779,27 @@ package mixin template LikelihoodMaximizationTemplate(T)
 }
 
 unittest {
+	alias C0 = CoordinateDescent!((a, b){}, float);
+	alias C1 = LikelihoodMaximization!float;
+	alias C10 = GradientLikelihoodMaximization!float;
+	alias C11 = CoordinateLikelihoodMaximization!float;
+	alias C2 = GradientDescent!((a, b){}, float);
+}
+
+
+unittest {
 	alias C0 = CoordinateDescent!((a, b){}, double);
 	alias C1 = LikelihoodMaximization!double;
 	alias C10 = GradientLikelihoodMaximization!double;
 	alias C11 = CoordinateLikelihoodMaximization!double;
 	alias C2 = GradientDescent!((a, b){}, double);
+}
+
+
+unittest {
+	alias C0 = CoordinateDescent!((a, b){}, real);
+	alias C1 = LikelihoodMaximization!real;
+	alias C10 = GradientLikelihoodMaximization!real;
+	alias C11 = CoordinateLikelihoodMaximization!real;
+	alias C2 = GradientDescent!((a, b){}, real);
 }
