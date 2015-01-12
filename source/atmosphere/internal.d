@@ -15,11 +15,9 @@ n - length of sample, n may vary (sliding window).
 */
 module atmosphere.internal;
 
-import core.stdc.tgmath : fabs;
-import std.math: isNaN;
+import std.math: isNaN, fabs;
 import std.numeric: findRoot;
 import std.algorithm;
-import std.functional;
 
 import atmosphere.utilities;
 
@@ -88,13 +86,71 @@ body
 	//gemv(WTransposed.transposed, p, mixture);
 	grad(mixture, xi); // xi = grad(mixture);
 	gemv(WTransposed, xi, c);
-	immutable i = c.length - c.minPos.length;
+	size_t i;
+	i = c.length - c.minPos.length;
 	const columni = WTransposed[i];
-	foreach(j, w; columni)
-		pi[j] = w - mixture[j];
+	foreach(j; 0..mixture.length)
+		pi[j] = columni[j] - mixture[j];
 	immutable theta = gRoot!grad(mixture, pi, columni, xi, gamma, tolerance);
 	immutable onemtheta = 1 - theta;
-	p.scal(onemtheta);
+	foreach(ref e; p)
+		e *= onemtheta;
+	p[i] += theta;
+	p.normalize;
+}
+
+/**
+One iteration of gradient descent optimization algorithm.
+
+Params:
+	PartialDerivative = Partial derivative `y` of objective convex function `u`: `du/dω_j = y(ω_j), 1 <= j <= n.
+	WTransposed = transposed version of W. n columns, k rows.
+	p = mixture weight. length = k.
+	mixture = Wp, length = n.
+	pi = temporary array, length = n.
+	tolerance = Defines an early termination condition. 
+				Receives the current upper and lower bounds on the root. 
+				The delegate must return true when these bounds are acceptable. 
+See_Also: $(MREF mix),
+	$(MREF coordinateDescentIteration),
+	$(STDREF numeric, findRoot)
+Preconditions:
+	mixture = Wp
+*/
+void gradientDescentIterationPartial(alias PartialDerivative, T)
+	(
+		Matrix!(const T) WTransposed,
+		T[] p,
+		T[] mixture,
+		T[] pi,
+		T[] xi,
+		T[] c,
+		in bool delegate(T, T) @nogc nothrow tolerance = (a, b) => false,
+	)
+in
+{
+	assert(WTransposed.height);
+	assert(WTransposed.width);
+	assert(WTransposed.height == p.length);
+	assert(WTransposed.width == mixture.length);
+	assert(WTransposed.width == pi.length);
+}
+body
+{	
+	//gemv(WTransposed.transposed, p, mixture);
+	// xi = grad(mixture);
+	foreach(j; 0..mixture.length)
+		xi[j] = unaryFun!PartialDerivative(mixture[j]);
+	gemv(WTransposed, xi, c);
+	size_t i;
+	i = c.length - c.minPos.length;
+	const columni = WTransposed[i];
+	//foreach(j; 0..mixture.length)
+	//	pi[j] = columni[j] - mixture[j];
+	immutable theta = gRoot!PartialDerivative(mixture, pi, columni, tolerance);
+	immutable onemtheta = 1 - theta;
+	foreach(ref e; p)
+		e *= onemtheta;
 	p[i] += theta;
 	p.normalize;
 }
@@ -154,7 +210,8 @@ body
 		if(theta != 0 && !tolerance(0, theta))
 		{
 			immutable onemtheta = 1 - theta;
-			p.scal(onemtheta);
+			foreach(ref e; p)
+				e *= onemtheta;
 			p[i] += theta;
 			foreach(j; 0..mixture.length)
 				mixture[j] = onemtheta * mixture[j] + theta * columni[j];
@@ -206,16 +263,14 @@ body
 	foreach(i; 0..p.length)
 	{
 		auto columni = WTransposed[i];
-		foreach(j; 0..mixture.length)
-			pi[j] = columni[j] - mixture[j];
-		static if(is(typeof(PartialDerivative) == string) && (PartialDerivative == "-1/a"))
-			immutable theta = gRoot(mixture, pi, columni, tolerance);
-		else
-			immutable theta = gRoot!(unaryFun!PartialDerivative)(mixture, pi, columni, tolerance);
+		//foreach(j; 0..mixture.length)
+		//	pi[j] = columni[j] - mixture[j];
+		immutable theta = gRoot!PartialDerivative(mixture, pi, columni, tolerance);
 		if(theta != 0 && !tolerance(0, theta))
 		{
 			immutable onemtheta = 1 - theta;
-			p.scal(onemtheta);
+			foreach(ref e; p)
+				e *= onemtheta;
 			p[i] += theta;
 			foreach(j; 0..mixture.length)
 				mixture[j] = onemtheta * mixture[j] + theta * columni[j];
@@ -268,9 +323,6 @@ body
 	p.normalize;
 }
 
-
-
-/// Returns: estimation of θ.
 T gRoot
 	(
 		alias grad,
@@ -278,48 +330,41 @@ T gRoot
 	)
 	(
 		in T[] mixture,
-		in T[] pi,
+		T[] pi,
 		in T[] columni,
 		T[] xi,
 		T[] gamma,
 		in bool delegate(T, T) @nogc nothrow tolerance = (a, b) => false,
 	)
 {
+	//return .gRoot!("-1/a", T)(mixture, pi, columni);
 	T g(T theta)
 	{
 		foreach(j; 0..mixture.length)
 			xi[j] = mixture[j] + theta * pi[j];
 		grad(xi, gamma);
-		auto ret = dot(gamma, pi);
+		auto ret = dotProduct(gamma, pi);
 		return gCorrectioin(ret);
 	}
 
 	T g_01(in T[] vec)
 	{
 		grad(vec, gamma);
-		auto ret = dot(gamma, pi);
+		auto ret = dotProduct(gamma, pi);
 		return gCorrectioin(ret);
 	}
 	immutable g0 = g_01(mixture);
 	if(g0 > -T.min_normal)
 		return 0;
-	if(g0.isNaN)
-		return 0;
 	immutable g1 = g_01(columni);
 	if(g1 < +T.min_normal)
 		return 1;
-	if(g1.isNaN)
-		return 0;
 	assert(g0 <= 0);
 	assert(g1 >= 0);
 	auto r = findRoot(&g, cast(T)0.0, cast(T)1.0, g0, g1, tolerance);
 	return !(fabs(r[2]) > fabs(r[3])) ? r[0] : r[1];
 }
 
-
-
-
-//ditto
 T gRoot
 	(
 		alias PartialDerivative,
@@ -327,7 +372,7 @@ T gRoot
 	)
 	(
 		in T[] mixture,
-		in T[] pi,
+		T[] pi,
 		in T[] columni,
 		in bool delegate(T, T) @nogc nothrow tolerance = (a, b) => false,
 	)
@@ -338,182 +383,63 @@ out(theta)
 }
 body
 {
-	T g(T theta)
-	{
-		T ret0 = 0;
-		T ret1 = 0;
-		T ret2 = 0;
-		T ret3 = 0;
-
-		immutable L1= pi.length & -4;
-		size_t j;
-	 
-		for(; j < L1; j += 4)
-		{
-			immutable pi0 = pi[j+0];
-			immutable pi1 = pi[j+1];
-			immutable pi2 = pi[j+2];
-			immutable pi3 = pi[j+3];
-			ret0 += pi0 * PartialDerivative(mixture[j+0] + theta * pi0);
-			ret1 += pi1 * PartialDerivative(mixture[j+1] + theta * pi1);
-			ret2 += pi2 * PartialDerivative(mixture[j+2] + theta * pi2);
-			ret3 += pi3 * PartialDerivative(mixture[j+3] + theta * pi3);
-		}
-
-		for(; j < pi.length; j++)
-		{
-			immutable pi0 = pi[j+0];
-			ret0 += pi0 * PartialDerivative(mixture[j+0] + theta * pi0);
-		}
-
-		auto ret = (ret0+ret1)+(ret2+ret3);
-		return gCorrectioin(ret);
-	}
-
-	T g_01(in T[] vec)
-	{
-		T ret0 = 0;
-		T ret1 = 0;
-		T ret2 = 0;
-		T ret3 = 0;
-
-		immutable L1= pi.length & -4;
-		size_t j;
-	 
-		for(; j < L1; j += 4)
-		{
-			ret0 += pi[j+0] * PartialDerivative(vec[j+0]);
-			ret1 += pi[j+1] * PartialDerivative(vec[j+1]);
-			ret2 += pi[j+2] * PartialDerivative(vec[j+2]);
-			ret3 += pi[j+3] * PartialDerivative(vec[j+3]);
-		}
-
-		for(; j < pi.length; j++)
-		{
-			ret0 += pi[j+0] * PartialDerivative(vec[j+0]);
-		}
-
-		auto ret = (ret0+ret1)+(ret2+ret3);
-		return gCorrectioin(ret);
-	}
-	immutable g0 = g_01(mixture);
+	immutable g0 = gCorrectioin(mixture.length - dotProductInverse(columni, mixture)); //g_01!PartialDerivative(pi, mixture);
+	import std.stdio;
 	if(g0 > -T.min_normal)
 		return 0;
-	if(g0.isNaN)
-		return 0;
-	immutable g1 = g_01(columni);
+	immutable g1 = gCorrectioin(dotProductInverse2(columni, mixture, pi) - mixture.length);
+	import atmosphere.utilities;
 	if(g1 < +T.min_normal)
 		return 1;
-	if(g1.isNaN)
-		return 0;
 	assert(g0 <= 0);
 	assert(g1 >= 0);
+	foreach(j; 0..mixture.length)
+		pi[j] = columni[j] - mixture[j];
+	T g(T theta) {return .g!PartialDerivative(pi, mixture, theta);}
 	auto r = findRoot(&g, cast(T)0.0, cast(T)1.0, g0, g1, tolerance);
 	return !(fabs(r[2]) > fabs(r[3])) ? r[0] : r[1];
 }
 
-
-///ditto
-T gRoot(T)
-	(
-		in T[] mixture,
-		in T[] pi,
-		in T[] columni,
-		in bool delegate(T, T) @nogc nothrow tolerance = (a, b) => false,
-	)
-out(theta)
+T g(alias PartialDerivative, T)(in T[] pi, in T[] mixture, T theta)
 {
-	assert(theta >= 0);
-	assert(theta <= 1);
-}
-body
-{
-	T g(T theta)
+	T ret = 0;
+	static if(is(typeof(PartialDerivative) == string) && (PartialDerivative == "-1/a"))
 	{
-		T ret0 = 0;
-		T ret1 = 0;
-		T ret2 = 0;
-		T ret3 = 0;
-
-		immutable L1= pi.length & -4;
-		size_t j;
-	 
-		for(; j < L1; j += 4)
-		{
-			immutable pi0 = pi[j+0];
-			immutable pi1 = pi[j+1];
-			immutable pi2 = pi[j+2];
-			immutable pi3 = pi[j+3];
-			ret0 -= pi0 / (mixture[j+0] + theta * pi0);
-			ret1 -= pi1 / (mixture[j+1] + theta * pi1);
-			ret2 -= pi2 / (mixture[j+2] + theta * pi2);
-			ret3 -= pi3 / (mixture[j+3] + theta * pi3);
-		}
-
-		for(; j < pi.length; j++)
-		{
-			immutable pi0 = pi[j+0];
-			ret0 -= pi0 / (mixture[j+0] + theta * pi0);
-		}
-
-		auto ret = (ret0+ret1)+(ret2+ret3);
-		return gCorrectioin(ret);
+		foreach(j; 0..pi.length)
+			version(LDC)
+				static if(is(Unqual!T == double))
+					ret = inlineIR!(`
+						%m = fmul fast double %1, %3
+						%a = fadd fast double %2, %m
+						%d = fdiv fast double %1, %a
+						%r = fadd fast double %0, %d
+						ret double %r`, double)(ret, pi[j], mixture[j], theta);
+				else
+				static if(is(Unqual!T == float))
+					ret = inlineIR!(`
+						%m = fmul fast float %1, %3
+						%a = fadd fast float %2, %m
+						%d = fdiv fast float %1, %a
+						%r = fadd fast float %0, %d
+						ret float %r`, float)(ret, pi[j], mixture[j], theta);
+				else
+					ret += pi[j] / (mixture[j] + theta * pi[j]);
+			else
+				ret += pi[j] / (mixture[j] + theta * pi[j]);
+		ret = -ret;
 	}
-
-	T g_01(in T[] vec)
-	{
-		T ret0 = 0;
-		T ret1 = 0;
-		T ret2 = 0;
-		T ret3 = 0;
-
-		immutable L1= pi.length & -4;
-		size_t j;
-	 
-		for(; j < L1; j += 4)
-		{
-			ret0 -= pi[j+0] / (vec[j+0]);
-			ret1 -= pi[j+1] / (vec[j+1]);
-			ret2 -= pi[j+2] / (vec[j+2]);
-			ret3 -= pi[j+3] / (vec[j+3]);
-		}
-
-		for(; j < pi.length; j++)
-		{
-			ret0 -= pi[j+0] / (vec[j+0]);
-		}
-
-		auto ret = (ret0+ret1)+(ret2+ret3);
-		return gCorrectioin(ret);
-	}
-	immutable g0 = g_01(mixture);
-	if(g0 > -T.min_normal)
-		return 0;
-	if(g0.isNaN)
-		return 0;
-	immutable g1 = g_01(columni);
-	if(g1 < +T.min_normal)
-		return 1;
-	if(g1.isNaN)
-		return 0;
-	assert(g0 <= 0);
-	assert(g1 >= 0);
-	auto r = findRoot(&g, cast(T)0.0, cast(T)1.0, g0, g1, tolerance);
-	return !(fabs(r[2]) > fabs(r[3])) ? r[0] : r[1];
+	else
+		foreach(j; 0..pi.length)
+			ret += pi[j] * unaryFun!PartialDerivative(mixture[j] + theta * pi[j]);
+	return gCorrectioin(ret);
 }
 
-
-/*
-Returns:
-	±T.max for ±∞ and x otherwise.
-*/
 T gCorrectioin(T)(T x)
 {
 	if(x == +T.infinity)
 		x = +T.max;
 	if(x == -T.infinity)
 		x = -T.max;
+	assert(!isNaN(x));
 	return x;
 }
-
-

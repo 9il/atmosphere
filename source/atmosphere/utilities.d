@@ -9,6 +9,12 @@ package:
 import cblas;
 import simple_matrix;
 
+version(LDC)
+{
+	pragma(LDC_inline_ir)
+	    R inlineIR(string s, R, P...)(P);
+}
+
 
 /**
 Computes accurate sum of binary logarithms of input range `r`.
@@ -17,7 +23,11 @@ Will be avalible in std.numeric with with DMD 2.068.
 public // @@BUG@@
 T sumOfLog2s(T)(T[] r) 
 {
-	import std.math : frexp; 
+	import std.compiler;
+	static if(version_minor < 68)
+		import core.stdc.tgmath : frexp;
+	else
+		import std.math : frexp; 
 	import std.traits : Unqual;
 
     long exp = 0;
@@ -27,7 +37,10 @@ T sumOfLog2s(T)(T[] r)
         if (e < 0)
             return typeof(return).nan;
         int lexp = void;
-        x *= frexp(e, lexp);
+		static if(version_minor < 68)
+    	    x *= frexp(e, &lexp);
+    	else
+    	    x *= frexp(e, lexp);
         exp += lexp;
         if (x < 0.5) 
         {
@@ -38,69 +51,44 @@ T sumOfLog2s(T)(T[] r)
     return exp + log2(x);
 }
 
-///
-auto sum(Range)(Range range) if(!isArray!Range)
+version(LDC)
 {
-	Unqual!(ForeachType!Range) s = 0;
-	foreach(elem; range)
-		s += elem;
-	return s;
+	T sum(T)(in T[] a)
+	{
+		T ret = 0;
+		foreach(j; 0..a.length)
+			static if(is(Unqual!T == double))
+			ret = inlineIR!(`
+				%r = fadd fast double %0, %1
+				ret double %r`, double)(ret, a[j]);
+			else
+			static if(is(Unqual!T == float))
+			ret = inlineIR!(`
+				%r = fadd fast float %0, %1
+				ret float %r`, float)(ret, a[j]);
+			else
+			ret += a[j];
+		return ret;
+	}
 }
-
-///
-F sum(F)(in F[] a)
+else
 {
-	F ret0 = 0;
-	F ret1 = 0;
-	F ret2 = 0;
-	F ret3 = 0;
-
-	const L1 = a.length & -0x10;
-	const L2 = a.length & -0x4;
-
-	size_t i;
-
-	for(; i < L1; i += 0x10)
+	T sum(T)(in T[] a)
 	{
-	    ret0 += a[i+0x0];
-	    ret1 += a[i+0x1];
-	    ret2 += a[i+0x2];
-	    ret3 += a[i+0x3];
-	    ret0 += a[i+0x4];
-	    ret1 += a[i+0x5];
-	    ret2 += a[i+0x6];
-	    ret3 += a[i+0x7];
-	    ret0 += a[i+0x8];
-	    ret1 += a[i+0x9];
-	    ret2 += a[i+0xA];
-	    ret3 += a[i+0xB];
-	    ret0 += a[i+0xC];
-	    ret1 += a[i+0xD];
-	    ret2 += a[i+0xE];
-	    ret3 += a[i+0xF];
+		T ret = 0;
+		foreach(j; 0..a.length)
+			ret += a[j];
+		return ret;
 	}
-
-	for(; i < L2; i += 0x4)
-	{
-	    ret0 += a[i+0x0];
-	    ret1 += a[i+0x1];
-	    ret2 += a[i+0x2];
-	    ret3 += a[i+0x3];
-	}
-
-	for(; i < a.length; i += 0x1)
-	{
-	    ret0 += a[i+0x0];
-	}
-
-	return (ret0+ret1)+(ret2+ret3);
 }
 
 unittest {
 	import std.range : iota, array;
+	static import std.algorithm;
 	foreach(i; 0.0..30.0)
-		assert(iota(i).sum == iota(i).array.sum);
+		assert(std.algorithm.sum(iota(i)) == iota(i).array.sum);
 }
+
 
 ///
 auto avg(Range)(Range range)
@@ -219,21 +207,119 @@ unittest
 
 }
 
-///
-auto dot(Range1, Range2)(Range1 r1, Range2 r2)
+
+version(LDC)
 {
-	return cblas.dot(cast(blasint)r1.length, r1.ptr, cast(blasint)r1.shift, r2.ptr, cast(blasint)r2.shift);
+	T dotProduct(T)(in T[] a, in T[] b)
+	{
+		T ret = 0;
+		foreach(j; 0..a.length)
+			static if(is(Unqual!T == double))
+			ret = inlineIR!(`
+				%d = fmul fast double %1, %2
+				%r = fadd fast double %0, %d
+				ret double %r`, double)(ret, a[j], b[j]);
+			else
+			static if(is(Unqual!T == float))
+			ret = inlineIR!(`
+				%d = fmul fast float %1, %2
+				%r = fadd fast float %0, %d
+				ret float %r`, float)(ret, a[j], b[j]);
+			else
+			ret += a[j] * b[j];
+		return ret;
+	}
+}
+else
+{
+	T dotProduct(T)(in T[] a, in T[] b)
+	{
+		T ret = 0;
+		foreach(j; 0..a.length)
+			ret += a[j] * b[j];
+		return ret;
+	}
 }
 
-///
-ptrdiff_t shift(F)(F[])
+version(LDC)
 {
-	return 1;
+	T dotProductInverse(T)(in T[] a, in T[] b)
+	{
+		T ret = 0;
+		foreach(j; 0..a.length)
+			static if(is(Unqual!T == double))
+			ret = inlineIR!(`
+				%d = fdiv fast double %1, %2
+				%r = fadd fast double %0, %d
+				ret double %r`, double)(ret, a[j], b[j]);
+			else
+			static if(is(Unqual!T == float))
+			ret = inlineIR!(`
+				%d = fdiv fast float %1, %2
+				%r = fadd fast float %0, %d
+				ret float %r`, float)(ret, a[j], b[j]);
+			else
+			ret += a[j] * b[j];
+		return ret;
+	}
+}
+else
+{
+	T dotProductInverse(T)(in T[] a, in T[] b)
+	{
+		T ret = 0;
+		foreach(j; 0..a.length)
+			ret += a[j] / b[j];
+		return ret;
+	}
 }
 
-void scal(Range, T)(Range r, T alpha)
+
+version(LDC)
 {
-	cblas.scal(cast(blasint)r.length, alpha, r.ptr, cast(blasint)r.shift);
+	T dotProductInverse2(T)(in T[] a, in T[] b, T[] c)
+	{
+		T ret = 0;
+		foreach(j; 0..a.length)
+		{
+			static if(is(Unqual!T == double))
+			{
+				ret = inlineIR!(`
+					%d = fdiv fast double %1, %2
+					%r = fadd fast double %0, %d
+					ret double %r`, double)(ret, b[j], a[j]);
+				c[j] = a[j] - b[j];
+			}
+			else
+			static if(is(Unqual!T == float))
+			{
+				ret = inlineIR!(`
+					%d = fdiv fast float %1, %2
+					%r = fadd fast float %0, %d
+					ret float %r`, float)(ret, b[j], a[j]);
+				c[j] = a[j] - b[j];
+			}
+			else
+			{
+				ret += b[j] / a[j];
+				c[j] = a[j] - b[j];
+			}
+		}
+		return ret;
+	}
+}
+else
+{
+	T dotProductInverse2(T)(in T[] a, in T[] b, T[] c)
+	{
+		T ret = 0;
+		foreach(j; 0..a.length)
+		{
+			ret += b[j] / a[j];
+			c[j] = a[j] - b[j];
+		}
+		return ret;
+	}
 }
 
 

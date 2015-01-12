@@ -92,7 +92,7 @@ import atmosphere.internal;
 import atmosphere.utilities : sumOfLog2s;
 import std.range;
 import std.traits;
-import std.numeric;
+import std.numeric : dotProduct;
 import std.algorithm;
 import std.math;
 
@@ -522,14 +522,6 @@ class GradientDescent(alias Gradient, T) : MixtureOptimizer!T
 		c = new T[k];
 	}
 
-	~this()
-	{
-		pi.destroy;
-		xi.destroy;
-		gamma.destroy;
-		c.destroy;
-	}
-
 	final override void eval(scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null)
 	{
 		gradientDescentIteration!(Gradient, T)(cast(Matrix!(const T))_featuresT.matrix, _weights, mixture, pi[0.._featuresT.matrix.width], xi[0.._featuresT.matrix.width], gamma[0.._featuresT.matrix.width], c, findRootTolerance is null ? (a, b) => false : findRootTolerance);
@@ -539,6 +531,39 @@ class GradientDescent(alias Gradient, T) : MixtureOptimizer!T
 	override void update(){};
 }
 
+/**
+Params:
+	PartialDerivative = Partial derivative `y` of objective convex function `u`: `du/dω_j = y(ω_j), 1 <= j <= n`.
+*/
+class GradientDescentPartial(alias PartialDerivative, T) : MixtureOptimizer!T
+	if(isFloatingPoint!T)
+{
+	private T[] pi;
+	private T[] xi;
+	private T[] c;
+
+	/**
+	Constructor
+	Params:
+		k = number of components
+		maxLength = maximal length of features. In terms of likelihood maximization maxLength is maximal length of a sample.
+	*/
+	this(size_t k, size_t maxLength)
+	{
+		super(k, maxLength);
+		pi = new T[maxLength];
+		xi = new T[maxLength];
+		c = new T[k];
+	}
+
+	final override void eval(scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null)
+	{
+		gradientDescentIterationPartial!(PartialDerivative, T)(cast(Matrix!(const T))_featuresT.matrix, _weights, _mixture[0.._featuresT.matrix.width], pi[0.._featuresT.matrix.width], xi[0.._featuresT.matrix.width], c, findRootTolerance is null ? (a, b) => false : findRootTolerance);
+		updateMixture;
+	}
+
+	override void update(){};
+}
 
 /**
 Params:
@@ -563,13 +588,6 @@ class CoordinateDescent(alias Gradient, T) : MixtureOptimizer!T
 		pi = new T[maxLength];
 		xi = new T[maxLength];
 		gamma = new T[maxLength];
-	}
-
-	~this()
-	{
-		pi.destroy;
-		xi.destroy;
-		gamma.destroy;
 	}
 
 	final override void eval(scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null)
@@ -603,11 +621,6 @@ class CoordinateDescentPartial(alias PartialDerivative, T) : MixtureOptimizer!T
 		pi = new T[maxLength];
 	}
 
-	~this()
-	{
-		pi.destroy;
-	}
-
 	final override void eval(scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null)
 	{
 		coordinateDescentIterationPartial!(PartialDerivative, T)(cast(Matrix!(const T))_featuresT.matrix, _weights, _mixture[0.._featuresT.matrix.width], pi[0.._featuresT.matrix.width], findRootTolerance is null ? (a, b) => false : findRootTolerance);
@@ -624,11 +637,6 @@ interface LikelihoodMaximization(T)
 	if(isFloatingPoint!T)
 {
 	/**
-	Set weights in proportion to the likelihood.
-	*/
-	void setWeightsInProportionToLikelihood();
-
-	/**
 	Params:
 		pdfs = Probability distribution *functions*
 		sample = Sample
@@ -636,11 +644,6 @@ interface LikelihoodMaximization(T)
 	*/
 	void put(PDFRange, SampleRange)(PDFRange pdfs, SampleRange sample)
 		if (isInputRange!PDFRange && hasLength!PDFRange && isCallable!(ElementType!PDFRange));
-
-	///ditto
-	void putAndSetWeightsInProportionToLikelihood(PDFRange, SampleRange)(PDFRange pdfs, SampleRange sample)
-		if (isInputRange!PDFRange && hasLength!PDFRange && isCallable!(ElementType!PDFRange));
-
 
 	/**
 	Performs optimization.
@@ -708,7 +711,7 @@ class CoordinateLikelihoodMaximization(T) : CoordinateDescentPartial!("-1/a", T)
 
 /**
 */
-class GradientLikelihoodMaximization(T) : GradientDescent!((a, b) {foreach(i, ai; a) b[i]=-1/ai;}, T), LikelihoodMaximization!T
+class GradientLikelihoodMaximization(T) : GradientDescentPartial!("-1/a", T), LikelihoodMaximization!T
 	if(isFloatingPoint!T)
 {
 	/**
@@ -728,16 +731,6 @@ class GradientLikelihoodMaximization(T) : GradientDescent!((a, b) {foreach(i, ai
 
 package mixin template LikelihoodMaximizationTemplate(T)
 {
-	void setWeightsInProportionToLikelihood()
-	{
-		features.map!sumOfLog2s.copy(_weights);
-		_weights[] -= _weights.reduce!max;
-		foreach(ref w; _weights)
-			w = exp2(w);
-		_weights.normalize;
-		updateMixture;
-	}
-
 	void put(PDFRange, SampleRange)(PDFRange pdfs, SampleRange sample)
 		if (isInputRange!PDFRange && hasLength!PDFRange && isCallable!(ElementType!PDFRange))
 	in
@@ -749,20 +742,6 @@ package mixin template LikelihoodMaximizationTemplate(T)
 		super.put(sample.map!(x => pdfs.map!(pdf => pdf(x))));
 		if (!isFeaturesCorrect)
 			throw new FeaturesException;
-	}
-
-	void putAndSetWeightsInProportionToLikelihood(PDFRange, SampleRange)(PDFRange pdfs, SampleRange sample)
-		if (isInputRange!PDFRange && hasLength!PDFRange && isCallable!(ElementType!PDFRange))
-	in
-	{
-		assert(pdfs.length == _featuresT.matrix.height);
-	}
-	body
-	{
-		.put(_featuresT, sample.map!(x => pdfs.map!(pdf => pdf(x))));
-		if (!isFeaturesCorrect)
-			throw new FeaturesException;
-		setWeightsInProportionToLikelihood();
 	}
 
 	void optimize
@@ -789,7 +768,8 @@ package mixin template LikelihoodMaximizationTemplate(T)
 
 	bool isFeaturesCorrect() const
 	{
-		return features.transposed.all!(any!isNormal);
+		immutable c = T(1) / features.length;
+		return features.transposed.all!(any!(x => isNormal(c * x)));
 	}
 
 	T log2Likelihood() @property const

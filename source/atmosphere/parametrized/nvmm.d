@@ -52,9 +52,8 @@ import std.algorithm;
 import std.range;
 import std.numeric;
 import std.traits;
-import core.stdc.tgmath;
+import std.math;
 import std.algorithm;
-import std.math : isNormal;
 
 static import std.math;
 
@@ -358,12 +357,6 @@ final class NormalVarianceMeanMixtureEM(T) : NormalVarianceMeanMixture!T
 		c = new T[_grid.length];
 	}
 
-	~this()
-	{
-		pi.destroy;
-		c.destroy;
-	}
-
 	override void eval(scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null)
 	{
 		EMIteration!
@@ -400,14 +393,6 @@ final class NormalVarianceMeanMixtureEMAndGradient(T) : NormalVarianceMeanMixtur
 		c = new T[_grid.length];
 	}
 
-	~this()
-	{
-		pi.destroy;
-		xi.destroy;
-		gamma.destroy;
-		c.destroy;
-	}
-
 	override void eval(scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null)
 	{
 		gradientDescentIteration!
@@ -437,11 +422,6 @@ final class NormalVarianceMeanMixtureEMAndCoordinate(T) : NormalVarianceMeanMixt
 	{
 		super(_grid, maxLength);
 		pi = new T[_sample.length];
-	}
-
-	~this()
-	{
-		pi.destroy;
 	}
 
 	override void eval(scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null)
