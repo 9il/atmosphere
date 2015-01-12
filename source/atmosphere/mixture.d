@@ -684,8 +684,7 @@ interface LikelihoodMaximization(T)
 
 
 	/**
-	Returns:
-		LogLikelihood base 2.
+	Returns: LogLikelihood base 2.
 	*/
 	T log2Likelihood() @property const;
 }
