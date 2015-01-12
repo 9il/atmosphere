@@ -22,12 +22,6 @@ Atmosphere GM contains an experimental algorithms for new generation of likeliho
 Documentation can be found [here](http://9il.github.io/atmosphere_gm/doc/atmosphere.html).
 ####Changelog
 See [release notes](https://github.com/9il/atmosphere_gm/releases).
-####Benchmarking and testing
-It is suggested the [llvm D compiler](https://github.com/ldc-developers/ldc/releases) be used for benchmarks.
-Project requires LDC version >= 0.15.0 or DMD >= 2.066, or corresponding GDC release.
-The [DMD](http://dlang.org/download.html) is easy way to start.
-
-See [Atmosphere GM Test](https://github.com/9il/atmosphere_gm_test) for testing. 
 
 #Installation
 #### BLAS & LAPACK
@@ -62,6 +56,30 @@ To use [this package](http://code.dlang.org/packages/atmosphere_gm), put the fol
 ```
 
 Start with [Atmosphere GM Test](https://github.com/9il/atmosphere_gm_test)
+
+# Compilers and optimization
+The [DMD](http://dlang.org/download.html) compiler is easy way to start.
+To compile your program in release mode use following build options
+```shell
+dub build --build=release
+```
+## LDC
+It is suggested the [LLVM D Compiler](https://github.com/ldc-developers/ldc/releases) be used for benchmarks.
+To compile your program in release mode with LDC use the following build options
+```
+dub build --build=release --compiler=ldc2
+```
+To fine-tune your program for native CPU add the following code into your `dub.json`:
+```
+{
+	...
+	"dflags-ldc": ["-mcpu=native"],
+}
+```
+For more options run `ldc2 -help`.
+
+See also [Atmosphere GM Test](https://github.com/9il/atmosphere_gm_test). 
+
 
 # Bugs
 See [bug list](https://github.com/9il/atmosphere_gm/labels/bug).
