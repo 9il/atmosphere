@@ -33,7 +33,7 @@ You need BLAS and LAPACL libraries installed.
 If you're on **Ubuntu**, you can install default package 
 ```
 sudo apt-get install libblas-dev liblapack-dev 
-```.
+```
 
 **OS X** comes with the [Accelerate framework](https://developer.apple.com/library/mac/documentation/Accelerate/Reference/BLAS_Ref/index.html#//apple_ref/doc/uid/TP40009457) built in. 
 
