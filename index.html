@@ -29,8 +29,8 @@
       <section>
         <p>Atmosphere GM contains an experimental algorithms for new generation of likelihood maximization methods. The goal of this library is to create an reliable and simple in use technology that can be used by software engineers. Package is growing step by step with mathematical publications.</p>
 
-<h4>
-<a id="travis-ci-status" class="anchor" href="#travis-ci-status" aria-hidden="true"><span class="octicon octicon-link"></span></a>Travis-CI Status</h4>
+<h1>
+<a id="travis-ci-status" class="anchor" href="#travis-ci-status" aria-hidden="true"><span class="octicon octicon-link"></span></a>Travis-CI Status</h1>
 
 <ul>
 <li>
@@ -45,6 +45,13 @@
 <a id="features" class="anchor" href="#features" aria-hidden="true"><span class="octicon octicon-link"></span></a>Features</h1>
 
 <ol>
+<li>Normal variance-mean mixtures
+
+<ul>
+<li>Generalized hyperbolic distribution</li>
+<li>Generalized variance-gamma distribution</li>
+</ul>
+</li>
 <li>Separating mixtures of probability distributions
 
 <ul>
@@ -57,7 +64,7 @@
 
 <ul>
 <li>Density functions</li>
-<li>Comulative functions</li>
+<li>Cumulative functions</li>
 <li>Quantiles</li>
 <li>Random observations generators</li>
 </ul>
@@ -69,42 +76,30 @@
 
 <p>Documentation can be found <a href="http://9il.github.io/atmosphere_gm/doc/atmosphere.html">here</a>.</p>
 
-<h4>
-<a id="changelog" class="anchor" href="#changelog" aria-hidden="true"><span class="octicon octicon-link"></span></a>Changelog</h4>
+<h2>
+<a id="changelog" class="anchor" href="#changelog" aria-hidden="true"><span class="octicon octicon-link"></span></a>Changelog</h2>
 
 <p>See <a href="https://github.com/9il/atmosphere_gm/releases">release notes</a>.</p>
 
 <h1>
 <a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h1>
 
-<h4>
-<a id="blas--lapack" class="anchor" href="#blas--lapack" aria-hidden="true"><span class="octicon octicon-link"></span></a>BLAS &amp; LAPACK</h4>
+<h2>
+<a id="blas--lapack" class="anchor" href="#blas--lapack" aria-hidden="true"><span class="octicon octicon-link"></span></a>BLAS &amp; LAPACK</h2>
 
-<ul>
-<li>If you're on <strong>Ubuntu</strong>, you can install default package <code>sudo apt-get install libblas-dev liblapack-dev</code> or compile and install optimized <a href="https://github.com/xianyi/OpenBLAS">OpenBLAS</a>.</li>
-<li>
-<strong>OS X</strong> comes with the <a href="https://developer.apple.com/library/mac/documentation/Accelerate/Reference/BLAS_Ref/index.html#//apple_ref/doc/uid/TP40009457">Accelerate framework</a> built in.</li>
-<li>Instruction for <strong>Windows x86</strong> (needs to be checked)
+<p>You need BLAS and LAPACL libraries installed.</p>
 
-<ol>
-<li>Download latest <code>Win32</code> BLAS from <a href="http://sourceforge.net/projects/openblas/files/">http://sourceforge.net/projects/openblas/files/</a>.</li>
-<li>Make link  <code>YourProject\blas.lib</code> to <code>lib\libopenblas.a</code>.</li>
-<li>Make link  <code>YourProject\lapack.lib</code> to <code>lib\libopenblas.a</code>.</li>
-</ol>
-</li>
-<li>Instruction for <strong>Windows x86_64</strong> (needs to be checked)
+<p>If you're on <strong>Ubuntu</strong>, you can install default package </p>
 
-<ol>
-<li>Download latest <code>Win64-Int32</code> BLAS from <a href="http://sourceforge.net/projects/openblas/files/">http://sourceforge.net/projects/openblas/files/</a>.</li>
-<li>Make link  <code>YourProject\blas.lib</code> to <code>lib\libopenblas.a</code>.</li>
-<li>Make link  <code>YourProject\lapack.lib</code> to <code>lib\libopenblas.a</code>.</li>
-<li>Use <code>dub --arch=x86_64</code> to run project.</li>
-</ol>
-</li>
-</ul>
+<pre><code>sudo apt-get install libblas-dev liblapack-dev 
+</code></pre>
 
-<h4>
-<a id="intro-to-d" class="anchor" href="#intro-to-d" aria-hidden="true"><span class="octicon octicon-link"></span></a>Intro to D</h4>
+<p><strong>OS X</strong> comes with the <a href="https://developer.apple.com/library/mac/documentation/Accelerate/Reference/BLAS_Ref/index.html#//apple_ref/doc/uid/TP40009457">Accelerate framework</a> built in. </p>
+
+<p>There is no instruction for <strong>Windows</strong>. You are welcome to create it.</p>
+
+<h2>
+<a id="intro-to-d" class="anchor" href="#intro-to-d" aria-hidden="true"><span class="octicon octicon-link"></span></a>Intro to D</h2>
 
 <ol>
 <li>Install D <a href="http://dlang.org/download.html">compiler</a>
@@ -117,8 +112,8 @@
 </li>
 </ol>
 
-<h4>
-<a id="atmosphere-gm" class="anchor" href="#atmosphere-gm" aria-hidden="true"><span class="octicon octicon-link"></span></a>Atmosphere GM</h4>
+<h2>
+<a id="atmosphere-gm" class="anchor" href="#atmosphere-gm" aria-hidden="true"><span class="octicon octicon-link"></span></a>Atmosphere GM</h2>
 
 <p>To use <a href="http://code.dlang.org/packages/atmosphere_gm">this package</a>, put the following dependency into your project's
 <a href="http://code.dlang.org/about">dub</a>.json into the dependencies section:</p>
