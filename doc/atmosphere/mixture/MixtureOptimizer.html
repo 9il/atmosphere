@@ -13,13 +13,11 @@
 <div class="main">
 <div class="breadcrumbs">
 <table id="results"></table>
-<a class="home" href=index.html>⌂</a>
-<input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
+<a href="index.html" class="home">⌂</a><input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
 <small>atmosphere.<a href=atmosphere/mixture.html>mixture</a>.</small><span class="highlight">MixtureOptimizer</span>
 </div>
 <div class="toc">
-<ul>
-<li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
+<ul><li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
 <ul id="atmosphere" style='display:block;'>
 <li><span class="selected"><small>atmosphere.</small><a href="atmosphere/mixture.html">mixture</a></span>
 </li>
@@ -42,6 +40,7 @@
 </ul>
 </li>
 <li><a href="simple_matrix.html">simple_matrix</a></li>
+
 </ul>
 </div>
 <div class="content">
@@ -77,11 +76,43 @@ if(isFloatingPoint!T)
 </td></tr><tr><td><a href="atmosphere/mixture/MixtureOptimizer.features.html">features</a><span class="extrainfo"><span class="method-attribs"><span class="attr-const">const</span></span></span></td><td></td><td>Returns: <p> Range of range of features for each component. A matrix with k rows and n columns.
 		This is internal representation, and can be discarded after any methods calls.
 </p>
-</td></tr><tr><td><a href="atmosphere/mixture/MixtureOptimizer.mixture.html">mixture</a><span class="extrainfo"><span class="method-attribs"><span class="attr-property">@property</span>, <span class="attr-const">const</span></span></span></td><td></td><td>Returns: <p> Const slice of the internal mixture representation.
-</p>
-</td></tr><tr><td><a href="atmosphere/mixture/MixtureOptimizer.weights.html">weights</a><span class="extrainfo"><span class="method-attribs"><span class="attr-property">@property</span>, <span class="attr-const">const</span></span></span></td><td></td><td>Returns: <p> Const slice of the internal weights representation.
-</p>
-</td></tr><tr><td><a href="atmosphere/mixture/MixtureOptimizer.weights.html">weights</a><span class="extrainfo"><span class="method-attribs"><span class="attr-property">@property</span></span></span></td><td></td><td><p>Set the mixture weights and calls <a href="update">update</a>.
+</td></tr><tr><td><a href="atmosphere/mixture/MixtureOptimizer.mixture.html">mixture</a><span class="extrainfo"><span class="method-attribs"><span class="attr-property">@property</span>, <span class="attr-const">const</span></span></span></td><td></td><td>Returns: 
+	<pre><code>	double objectiveFunction(in double[])
+	{
+		...
+	}
+
+	//save slice
+	auto <a href="atmosphere/mixture/MixtureOptimizer.mixture.html">mixture</a> = optimizer.<a href="atmosphere/mixture/MixtureOptimizer.mixture.html">mixture</a>;
+
+	auto value0 = objectiveFunction(<a href="atmosphere/mixture/MixtureOptimizer.mixture.html">mixture</a>);
+	optimizer.<a href="atmosphere/mixture/MixtureOptimizer.eval.html">eval</a>;
+	auto value1 = objectiveFunction(<a href="atmosphere/mixture/MixtureOptimizer.mixture.html">mixture</a>);
+
+
+	//use `.dup` or copy to save current <a href="atmosphere/mixture/MixtureOptimizer.mixture.html">mixture</a>
+
+	//1: .dup
+	auto mixtureSave1 = <a href="atmosphere/mixture/MixtureOptimizer.mixture.html">mixture</a>.dup;
+
+	//2: create array
+	auto mixtureSave2 = new double[<a href="atmosphere/mixture/MixtureOptimizer.mixture.html">mixture</a>.<a href="atmosphere/mixture/MixtureOptimizer.length.html">length</a>];
+	//2: copy
+	mixtureSave2[] = <a href="atmosphere/mixture/MixtureOptimizer.mixture.html">mixture</a>[];
+</code></pre></td></tr><tr><td><a href="atmosphere/mixture/MixtureOptimizer.weights.html">weights</a><span class="extrainfo"><span class="method-attribs"><span class="attr-property">@property</span>, <span class="attr-const">const</span></span></span></td><td></td><td>Returns: 
+	<pre><code>	//save slice
+	auto <a href="atmosphere/mixture/MixtureOptimizer.weights.html">weights</a> = optimizer.<a href="atmosphere/mixture/MixtureOptimizer.weights.html">weights</a>;
+
+	//use `.dup` or copy to save current <a href="atmosphere/mixture/MixtureOptimizer.weights.html">weights</a>
+
+	//1: .dup
+	auto weightsSave1 = <a href="atmosphere/mixture/MixtureOptimizer.weights.html">weights</a>.dup;
+
+	//2: create array
+	auto weightsSave2 = new double[<a href="atmosphere/mixture/MixtureOptimizer.weights.html">weights</a>.<a href="atmosphere/mixture/MixtureOptimizer.length.html">length</a>];
+	//2: copy
+	weightsSave2[] = <a href="atmosphere/mixture/MixtureOptimizer.weights.html">weights</a>[];
+</code></pre></td></tr><tr><td><a href="atmosphere/mixture/MixtureOptimizer.weights.html">weights</a><span class="extrainfo"><span class="method-attribs"><span class="attr-property">@property</span></span></span></td><td></td><td><p>Set the mixture weights and calls <a href="update">update</a>.
 </p>
 </td></tr></table>
 </div>

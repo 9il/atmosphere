@@ -13,13 +13,11 @@
 <div class="main">
 <div class="breadcrumbs">
 <table id="results"></table>
-<a class="home" href=index.html>⌂</a>
-<input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
+<a href="index.html" class="home">⌂</a><input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
 <small><a href=simple_matrix.html>simple_matrix</a>.</small><span class="highlight"><a href=simple_matrix/TransposedMatrix.html>TransposedMatrix</a>.opIndex</span>
 </div>
 <div class="toc">
-<ul>
-<li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
+<ul><li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
 <ul id="atmosphere">
 <li><small>atmosphere.</small><a href="atmosphere/mixture.html">mixture</a></li>
 <li><span class="package" onclick="show_hide('atmosphere.parametrized');">atmosphere.parametrized</span>
@@ -42,47 +40,48 @@
 </li>
 <li><span class="selected"><a href="simple_matrix.html">simple_matrix</a></span>
 </li>
+
 </ul>
 </div>
 <div class="content">
-<pre><code>public auto opIndex(size_t heightI) inout
+<pre><code>public auto <a href="simple_matrix/TransposedMatrix.opIndex.html">opIndex</a>(size_t heightI) inout
 </code></pre>
 <div class="section "><h2>Contracts</h2><pre><code>in
 {
-    assert (heightI < height);
+    assert (heightI < <a href="simple_matrix/TransposedMatrix.height.html">height</a>);
 }
 </code></pre>
 
 </div>
-<hr/><pre><code>public ref inout(T) opIndex(
+<hr/><pre><code>public ref inout(T) <a href="simple_matrix/TransposedMatrix.opIndex.html">opIndex</a>(
     size_t heightI, 
     size_t widthI) inout
 </code></pre>
 <div class="section "><h2>Contracts</h2><pre><code>in
 {
-    assert (heightI < height);
-    assert (widthI < width);
+    assert (heightI < <a href="simple_matrix/TransposedMatrix.height.html">height</a>);
+    assert (widthI < <a href="simple_matrix/TransposedMatrix.width.html">width</a>);
 }
 </code></pre>
 
 </div>
-<hr/><pre><code>public inout(typeof(this)) opIndex(size_t[2] range) inout
+<hr/><pre><code>public inout(typeof(this)) <a href="simple_matrix/TransposedMatrix.opIndex.html">opIndex</a>(size_t[2] range) inout
 </code></pre>
 <div class="section "><h2>Contracts</h2><pre><code>in
 {
-    assert (range[1] <= height);
+    assert (range[1] <= <a href="simple_matrix/TransposedMatrix.height.html">height</a>);
 }
 </code></pre>
 
 </div>
-<hr/><pre><code>public inout(typeof(this)) opIndex(
+<hr/><pre><code>public inout(typeof(this)) <a href="simple_matrix/TransposedMatrix.opIndex.html">opIndex</a>(
     size_t[2] range0, 
     size_t[2] range1) inout
 </code></pre>
 <div class="section "><h2>Contracts</h2><pre><code>in
 {
-    assert (range0[1] <= height);
-    assert (range1[1] <= width);
+    assert (range0[1] <= <a href="simple_matrix/TransposedMatrix.height.html">height</a>);
+    assert (range1[1] <= <a href="simple_matrix/TransposedMatrix.width.html">width</a>);
 }
 </code></pre>
 

@@ -13,13 +13,11 @@
 <div class="main">
 <div class="breadcrumbs">
 <table id="results"></table>
-<a class="home" href=index.html>⌂</a>
-<input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
+<a href="index.html" class="home">⌂</a><input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
 <small>atmosphere.<a href=atmosphere/mixture.html>mixture</a>.</small><span class="highlight">CoordinateLikelihoodMaximization</span>
 </div>
 <div class="toc">
-<ul>
-<li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
+<ul><li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
 <ul id="atmosphere" style='display:block;'>
 <li><span class="selected"><small>atmosphere.</small><a href="atmosphere/mixture.html">mixture</a></span>
 </li>
@@ -42,10 +40,11 @@
 </ul>
 </li>
 <li><a href="simple_matrix.html">simple_matrix</a></li>
+
 </ul>
 </div>
 <div class="content">
-<pre><code>public class CoordinateLikelihoodMaximization(T) : CoordinateDescentPartial!(a => cast(T)(-1) / a, T), LikelihoodMaximization!T
+<pre><code>public class CoordinateLikelihoodMaximization(T) : <a href="atmosphere/mixture/CoordinateDescentPartial.html">CoordinateDescentPartial</a>!("-1/a", T), <a href="atmosphere/mixture/LikelihoodMaximization.html">LikelihoodMaximization</a>!T
 if(isFloatingPoint!T)
 </code></pre>
 <div class="section "><h2>Functions</h2><table><tr><td><a href="atmosphere/mixture/CoordinateLikelihoodMaximization.this.html">this</a></td><td></td><td><p>Constructor

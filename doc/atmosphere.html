@@ -13,13 +13,11 @@
 <div class="main">
 <div class="breadcrumbs">
 <table id="results"></table>
-<a class="home" href=index.html>⌂</a>
-<input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
+<a href="index.html" class="home">⌂</a><input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
 <small>atmosphere</small>
 </div>
 <div class="toc">
-<ul>
-<li><span class="package selected" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
+<ul><li><span class="package selected" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
 <ul id="atmosphere" style='display:block;'>
 <li><small>atmosphere.</small><a href="atmosphere/mixture.html">mixture</a></li>
 <li><span class="package" onclick="show_hide('atmosphere.parametrized');">atmosphere.parametrized</span>
@@ -41,6 +39,7 @@
 </ul>
 </li>
 <li><a href="simple_matrix.html">simple_matrix</a></li>
+
 </ul>
 </div>
 <div class="content">
@@ -65,6 +64,8 @@
 <li><a href="atmosphere/mixture/MixtureOptimizer.html">MixtureOptimizer</a>
 <ul>
 <li><a href="atmosphere/mixture/GradientDescent.html">GradientDescent</a>
+</li>
+<li><a href="atmosphere/mixture/GradientDescentPartial.html">GradientDescentPartial</a>
 <ul>
 <li><a href="atmosphere/mixture/GradientLikelihoodMaximization.html">GradientLikelihoodMaximization</a> : <a href="atmosphere/mixture/LikelihoodMaximization.html">LikelihoodMaximization</a>
 </li>
@@ -96,7 +97,7 @@
 		<tr><td><a href="atmosphere/mixture/GradientDescent.html">GradientDescent</a>, number of mixture components > ~16</td> <td>~95-99%</td> <td>No</td> <td>normal </td> <td>Yes</td> <td>No</td> </tr>
 		<tr><td><a href="atmosphere/mixture/GradientDescent.html">GradientDescent</a>, number of mixture components < ~16</td> <td>~95-99%</td> <td>No</td> <td>fast </td> <td>Yes</td> <td>No</td> </tr>
 		<tr><td><a href="atmosphere/mixture/CoordinateDescent.html">CoordinateDescent</a></td> <td>~10-50%</td> <td>No</td> <td>fast </td> <td>Yes</td> <td>No</td> </tr>
-		<tr><td><a href="atmosphere/mixture/CoordinateLikelihoodMaximization.html">CoordinateLikelihoodMaximization</a></td> <td>~10-50%</td> <td>No</td> <td>fast, always faster then CoordinateDescent </td> <td>Yes</td> <td>No</td> </tr>
+		<tr><td><a href="atmosphere/mixture/CoordinateLikelihoodMaximization.html">CoordinateDescentPartial</a></td> <td>~10-50%</td> <td>No</td> <td>fast, always faster then CoordinateDescent </td> <td>Yes</td> <td>No</td> </tr>
 		<tr><td><a href="atmosphere/parametrized/nvmm/NormalVarianceMeanMixtureEM.html">NormalVarianceMeanMixtureEM</a></td> <td>~10%</td> <td>Yes</td> <td>slow </td> <td>No</td> <td>Yes</td> </tr>
 		<tr><td><a href="atmosphere/parametrized/nvmm/NormalVarianceMeanMixtureEMAndGradient.html">NormalVarianceMeanMixtureEMAndGradient</a></td> <td>~10%</td> <td>Yes</td> <td>slow </td> <td>No</td> <td>Yes</td> </tr>
 		<tr><td><a href="atmosphere/parametrized/nvmm/NormalVarianceMeanMixtureEMAndCoordinate.html">NormalVarianceMeanMixtureEMAndCoordinate</a></td> <td>~5%</td> <td>Partial</td> <td>slow </td> <td>No</td> <td>Yes</td> </tr> </table>

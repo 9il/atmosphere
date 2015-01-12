@@ -13,13 +13,11 @@
 <div class="main">
 <div class="breadcrumbs">
 <table id="results"></table>
-<a class="home" href=index.html>⌂</a>
-<input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
+<a href="index.html" class="home">⌂</a><input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
 <small>distribution.<a href=distribution/random.html>random</a>.</small><span class="highlight">NormalVarianceMeanMixtureRNG</span>
 </div>
 <div class="toc">
-<ul>
-<li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
+<ul><li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
 <ul id="atmosphere">
 <li><small>atmosphere.</small><a href="atmosphere/mixture.html">mixture</a></li>
 <li><span class="package" onclick="show_hide('atmosphere.parametrized');">atmosphere.parametrized</span>
@@ -42,10 +40,11 @@
 </ul>
 </li>
 <li><a href="simple_matrix.html">simple_matrix</a></li>
+
 </ul>
 </div>
 <div class="content">
-<pre><code>public class NormalVarianceMeanMixtureRNG(T, UniformRNG = Random) : DistributionRNG!T
+<pre><code>public class NormalVarianceMeanMixtureRNG(T, UniformRNG = Random) : <a href="distribution/random/DistributionRNG.html">DistributionRNG</a>!T
 if(isFloatingPoint!T)
 </code></pre>
 <div class="section "><p>Class to create normal variance-mean mixture random number generators.
@@ -57,11 +56,11 @@ Class constructs <code class="prettyprint">RNG</code> for <code class="prettypri
 </div>
 <div class="section "><h2>Example</h2>
 <pre><code>import std.random;
-class MyVarianceGammaRNG : NormalVarianceMeanMixtureRNG!double
+class MyVarianceGammaRNG : <a href="distribution/random/NormalVarianceMeanMixtureRNG.html">NormalVarianceMeanMixtureRNG</a>!double
 {
-	this(double beta, double shape, double scale)
+	<a href="distribution/random/NormalVarianceMeanMixtureRNG.this.html">this</a>(double beta, double shape, double scale)
 	{
-		auto components = new GammaRNG!double(rndGen, shape, scale);
+		auto components = new <a href="distribution/random/GammaRNG.html">GammaRNG</a>!double(rndGen, shape, scale);
 		super(rndGen, components, beta);
 	}
 }

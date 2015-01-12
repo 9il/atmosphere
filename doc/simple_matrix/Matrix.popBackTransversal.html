@@ -13,13 +13,11 @@
 <div class="main">
 <div class="breadcrumbs">
 <table id="results"></table>
-<a class="home" href=index.html>⌂</a>
-<input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
+<a href="index.html" class="home">⌂</a><input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
 <small><a href=simple_matrix.html>simple_matrix</a>.</small><span class="highlight"><a href=simple_matrix/Matrix.html>Matrix</a>.popBackTransversal</span>
 </div>
 <div class="toc">
-<ul>
-<li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
+<ul><li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
 <ul id="atmosphere">
 <li><small>atmosphere.</small><a href="atmosphere/mixture.html">mixture</a></li>
 <li><span class="package" onclick="show_hide('atmosphere.parametrized');">atmosphere.parametrized</span>
@@ -42,14 +40,15 @@
 </li>
 <li><span class="selected"><a href="simple_matrix.html">simple_matrix</a></span>
 </li>
+
 </ul>
 </div>
 <div class="content">
-<pre><code>public void popBackTransversal()
+<pre><code>public <a href="http://dlang.org/type.html#basic-data-types">void</a> <a href="simple_matrix/Matrix.popBackTransversal.html">popBackTransversal</a>()
 </code></pre>
 <div class="section "><h2>Contracts</h2><pre><code>in
 {
-    assert (!emptyTransveral);
+    assert (!<a href="simple_matrix/Matrix.emptyTransveral.html">emptyTransveral</a>);
 }
 </code></pre>
 

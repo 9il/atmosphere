@@ -13,13 +13,11 @@
 <div class="main">
 <div class="breadcrumbs">
 <table id="results"></table>
-<a class="home" href=index.html>⌂</a>
-<input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
+<a href="index.html" class="home">⌂</a><input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
 <small>distribution.<a href=distribution/cdf.html>cdf</a>.</small><span class="highlight">GeneralizedGammaCDF</span>
 </div>
 <div class="toc">
-<ul>
-<li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
+<ul><li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
 <ul id="atmosphere">
 <li><small>atmosphere.</small><a href="atmosphere/mixture.html">mixture</a></li>
 <li><span class="package" onclick="show_hide('atmosphere.parametrized');">atmosphere.parametrized</span>
@@ -42,10 +40,11 @@
 </ul>
 </li>
 <li><a href="simple_matrix.html">simple_matrix</a></li>
+
 </ul>
 </div>
 <div class="content">
-<pre><code>public final class GeneralizedGammaCDF(T) : CDF!T
+<pre><code>public final class GeneralizedGammaCDF(T) : <a href="distribution/cdf/CDF.html">CDF</a>!T
 if(isFloatingPoint!T)
 </code></pre>
 <div class="section "><p>Generalized gamma CDF
@@ -54,7 +53,7 @@ if(isFloatingPoint!T)
 
 </div>
 <div class="section "><h2>Example</h2>
-<pre><code>auto cdf = new GeneralizedGammaCDF!double(3, 2, 0.5);
+<pre><code>auto cdf = new <a href="distribution/cdf/GeneralizedGammaCDF.html">GeneralizedGammaCDF</a>!double(3, 2, 0.5);
 auto x = cdf(0.1);
 assert(isNormal(x));
 

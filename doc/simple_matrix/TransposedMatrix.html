@@ -13,13 +13,11 @@
 <div class="main">
 <div class="breadcrumbs">
 <table id="results"></table>
-<a class="home" href=index.html>⌂</a>
-<input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
+<a href="index.html" class="home">⌂</a><input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
 <small><a href=simple_matrix.html>simple_matrix</a>.</small><span class="highlight">TransposedMatrix</span>
 </div>
 <div class="toc">
-<ul>
-<li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
+<ul><li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
 <ul id="atmosphere">
 <li><small>atmosphere.</small><a href="atmosphere/mixture.html">mixture</a></li>
 <li><span class="package" onclick="show_hide('atmosphere.parametrized');">atmosphere.parametrized</span>
@@ -42,6 +40,7 @@
 </li>
 <li><span class="selected"><a href="simple_matrix.html">simple_matrix</a></span>
 </li>
+
 </ul>
 </div>
 <div class="content">
@@ -50,9 +49,9 @@
 <div class="section "><h2>Example</h2>
 <pre><code>import std.range;
 
-alias TransposedMatrixD = TransposedMatrix!double;
+alias TransposedMatrixD = <a href="simple_matrix/TransposedMatrix.html">TransposedMatrix</a>!double;
 
-static assert(is(ElementType!TransposedMatrixD == Vector!double));
+static assert(is(ElementType!TransposedMatrixD == <a href="simple_matrix/Vector.html">Vector</a>!double));
 static assert(hasSwappableElements!TransposedMatrixD == false);
 static assert(hasAssignableElements!TransposedMatrixD == false);
 static assert(hasLvalueElements!TransposedMatrixD == false);
@@ -64,7 +63,7 @@ static assert(hasLvalueElements!TransposedMatrixD == false);
 <pre><code>import std.range, std.traits;
 import std.typetuple;
 
-foreach(M; TypeTuple!(TransposedMatrix!double, TransposedMatrix!(const double)))
+foreach(M; TypeTuple!(<a href="simple_matrix/TransposedMatrix.html">TransposedMatrix</a>!double, <a href="simple_matrix/TransposedMatrix.html">TransposedMatrix</a>!(const double)))
 {
 	static assert(isRandomAccessRange!M);
 	static assert(hasMobileElements!M);
@@ -75,7 +74,7 @@ foreach(M; TypeTuple!(TransposedMatrix!double, TransposedMatrix!(const double)))
 </code></pre>
 
 </div>
-<div class="section "><h2>Variables</h2><table><tr><td><a href="simple_matrix/TransposedMatrix.matrix.html">matrix</a></td><td><pre><code>Matrix!T
+<div class="section "><h2>Variables</h2><table><tr><td><a href="simple_matrix/TransposedMatrix.matrix.html">matrix</a></td><td><pre><code><a href="simple_matrix/Matrix.html">Matrix</a>!T
 </code></pre>
 </td><td></td></tr></table><h2>Functions</h2><table><tr><td><a href="simple_matrix/TransposedMatrix.width.html">width</a><span class="extrainfo"><span class="method-attribs"><span class="attr-const">const</span>, <span class="attr-property">@property</span></span></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/TransposedMatrix.height.html">height</a><span class="extrainfo"><span class="method-attribs"><span class="attr-const">const</span>, <span class="attr-property">@property</span></span></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/TransposedMatrix.lengthTransveral.html">lengthTransveral</a><span class="extrainfo"><span class="method-attribs"><span class="attr-const">const</span>, <span class="attr-property">@property</span></span></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/TransposedMatrix.emptyTransveral.html">emptyTransveral</a><span class="extrainfo"><span class="method-attribs"><span class="attr-const">const</span>, <span class="attr-property">@property</span></span></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/TransposedMatrix.transposed.html">transposed</a><span class="extrainfo"><span class="method-attribs"><span class="attr-inout">inout</span>, <span class="attr-property">@property</span></span></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/TransposedMatrix.frontTransversal.html">frontTransversal</a><span class="extrainfo"><span class="method-attribs"><span class="attr-inout">inout</span>, <span class="attr-property">@property</span></span></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/TransposedMatrix.popFrontTransversal.html">popFrontTransversal</a><span class="extrainfo"></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/TransposedMatrix.popFrontNTransversal.html">popFrontNTransversal</a><span class="extrainfo"></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/TransposedMatrix.backTransversal.html">backTransversal</a><span class="extrainfo"><span class="method-attribs"><span class="attr-inout">inout</span>, <span class="attr-property">@property</span></span></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/TransposedMatrix.popBackTransversal.html">popBackTransversal</a><span class="extrainfo"></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/TransposedMatrix.popBackNTransversal.html">popBackNTransversal</a><span class="extrainfo"></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/TransposedMatrix.front.html">front</a><span class="extrainfo"><span class="method-attribs"><span class="attr-inout">inout</span>, <span class="attr-property">@property</span></span></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/TransposedMatrix.popFront.html">popFront</a><span class="extrainfo"></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/TransposedMatrix.popFrontN.html">popFrontN</a><span class="extrainfo"></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/TransposedMatrix.back.html">back</a><span class="extrainfo"><span class="method-attribs"><span class="attr-inout">inout</span>, <span class="attr-property">@property</span></span></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/TransposedMatrix.popBack.html">popBack</a><span class="extrainfo"></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/TransposedMatrix.popBackN.html">popBackN</a><span class="extrainfo"></span></td><td></td><td></td></tr><tr><td><span class="extrainfo"><span class="attribs"><span class="attr-auto">auto</span></span></span><a href="simple_matrix/TransposedMatrix.opIndex.html">opIndex</a><span class="extrainfo"><span class="method-attribs"><span class="attr-inout">inout</span></span></span></td><td></td><td></td></tr><tr><td><span class="extrainfo"><span class="attribs"><span class="attr-ref">ref</span></span></span><a href="simple_matrix/TransposedMatrix.opIndex.html">opIndex</a><span class="extrainfo"><span class="method-attribs"><span class="attr-inout">inout</span></span></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/TransposedMatrix.opIndex.html">opIndex</a><span class="extrainfo"><span class="method-attribs"><span class="attr-inout">inout</span></span></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/TransposedMatrix.opIndex.html">opIndex</a><span class="extrainfo"><span class="method-attribs"><span class="attr-inout">inout</span></span></span></td><td></td><td></td></tr></table>
 </div>

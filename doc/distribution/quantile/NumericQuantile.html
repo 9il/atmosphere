@@ -13,13 +13,11 @@
 <div class="main">
 <div class="breadcrumbs">
 <table id="results"></table>
-<a class="home" href=index.html>⌂</a>
-<input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
+<a href="index.html" class="home">⌂</a><input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
 <small>distribution.<a href=distribution/quantile.html>quantile</a>.</small><span class="highlight">NumericQuantile</span>
 </div>
 <div class="toc">
-<ul>
-<li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
+<ul><li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
 <ul id="atmosphere">
 <li><small>atmosphere.</small><a href="atmosphere/mixture.html">mixture</a></li>
 <li><span class="package" onclick="show_hide('atmosphere.parametrized');">atmosphere.parametrized</span>
@@ -42,10 +40,11 @@
 </ul>
 </li>
 <li><a href="simple_matrix.html">simple_matrix</a></li>
+
 </ul>
 </div>
 <div class="content">
-<pre><code>public abstract class NumericQuantile(T) : Quantile!T
+<pre><code>public abstract class NumericQuantile(T) : <a href="distribution/quantile/Quantile.html">Quantile</a>!T
 </code></pre>
 <div class="section "><p>Class to compute quantile function as root of it's cumulative density function
 </p>
@@ -57,12 +56,12 @@
 
 </div>
 <pre><code>import std.traits, std.mathspecial;
-import distribution.pdf;
-import distribution.cdf;
+import <a href="distribution/pdf.html">distribution.pdf</a>;
+import <a href="distribution/cdf.html">distribution.cdf</a>;
 
-class NormalPDF : PDF!real
+class NormalPDF : <a href="distribution/pdf/PDF.html">PDF</a>!real
 {
-	real opCall(real x)
+	real <a href="distribution/quantile/NumericQuantile.opCall.html">opCall</a>(real x)
 	{
 		// 1/sqrt(2 PI)
 		enum c = 0.398942280401432677939946L;
@@ -70,17 +69,17 @@ class NormalPDF : PDF!real
 	}
 }
 
-class NormalCDF : NumericCDF!real
+class NormalCDF : <a href="distribution/cdf/NumericCDF.html">NumericCDF</a>!real
 {
-	this()
+	<a href="distribution/quantile/NumericQuantile.this.html">this</a>()
 	{
 		super(new NormalPDF, [-3, -1, 0, 1, 3]);
 	}
 }
 
-class NormalQuantile : NumericQuantile!real
+class NormalQuantile : <a href="distribution/quantile/NumericQuantile.html">NumericQuantile</a>!real
 {
-	this()
+	<a href="distribution/quantile/NumericQuantile.this.html">this</a>()
 	{
 		super(new NormalCDF);
 	}
@@ -97,31 +96,31 @@ assert(approxEqual(qf(0.3), normalDistributionInverse(0.3)));
 <div class="section ">Numeric quantile function of Generalized Hyperbolic distribution
 
 </div>
-<pre><code>import distribution.pdf;
-import distribution.cdf;
-import distribution.params;
-import distribution.moment;
+<pre><code>import <a href="distribution/pdf.html">distribution.pdf</a>;
+import <a href="distribution/cdf.html">distribution.cdf</a>;
+import <a href="distribution/params.html">distribution.params</a>;
+import <a href="distribution/moment.html">distribution.moment</a>;
 
-class GHypCDF: NumericCDF!real
+class GHypCDF: <a href="distribution/cdf/NumericCDF.html">NumericCDF</a>!real
 {
-	this(real lambda, GHypChiPsi!real params)
+	<a href="distribution/quantile/NumericQuantile.this.html">this</a>(real lambda, <a href="distribution/params/GHypChiPsi.html">GHypChiPsi</a>!real params)
 	{
 		immutable mu = 0;
-		auto pdf = new GeneralizedHyperbolicPDF!real(lambda, params.alpha, params.beta, params.delta, mu);
-		immutable expectation = E_GHyp!real(lambda, params.beta, params.chi, params.psi);
+		auto pdf = new <a href="distribution/pdf/GeneralizedHyperbolicPDF.html">GeneralizedHyperbolicPDF</a>!real(lambda, params.alpha, params.beta, params.delta, mu);
+		immutable expectation = <a href="distribution/moment/E_GHyp.html">E_GHyp</a>!real(lambda, params.beta, params.chi, params.psi);
 		super(pdf, [expectation]);	
 	}
 }
 
-class GHypQuantile : NumericQuantile!real
+class GHypQuantile : <a href="distribution/quantile/NumericQuantile.html">NumericQuantile</a>!real
 {
-	this(real lambda, GHypChiPsi!real params)
+	<a href="distribution/quantile/NumericQuantile.this.html">this</a>(real lambda, <a href="distribution/params/GHypChiPsi.html">GHypChiPsi</a>!real params)
 	{
 		super(new GHypCDF(lambda, params), -1000, 1000);	
 	}
 }
 
-auto qf = new GHypQuantile(0.5, GHypChiPsi!real(5, 0.7, 0.6));
+auto qf = new GHypQuantile(0.5, <a href="distribution/params/GHypChiPsi.html">GHypChiPsi</a>!real(5, 0.7, 0.6));
 import std.stdio, std.conv;
 assert(approxEqual(qf(0.95), 40.9263));
 assert(approxEqual(qf(0.99), 64.977));

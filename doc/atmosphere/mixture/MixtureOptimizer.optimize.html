@@ -13,13 +13,11 @@
 <div class="main">
 <div class="breadcrumbs">
 <table id="results"></table>
-<a class="home" href=index.html>⌂</a>
-<input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
+<a href="index.html" class="home">⌂</a><input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
 <small>atmosphere.<a href=atmosphere/mixture.html>mixture</a>.</small><span class="highlight"><a href=atmosphere/mixture/MixtureOptimizer.html>MixtureOptimizer</a>.optimize</span>
 </div>
 <div class="toc">
-<ul>
-<li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
+<ul><li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
 <ul id="atmosphere" style='display:block;'>
 <li><span class="selected"><small>atmosphere.</small><a href="atmosphere/mixture.html">mixture</a></span>
 </li>
@@ -42,18 +40,19 @@
 </ul>
 </li>
 <li><a href="simple_matrix.html">simple_matrix</a></li>
+
 </ul>
 </div>
 <div class="content">
-<pre><code>public final void optimize(
+<pre><code>public final <a href="http://dlang.org/type.html#basic-data-types">void</a> <a href="atmosphere/mixture/MixtureOptimizer.optimize.html">optimize</a>(
     scope T delegate(in T[] mixture) objectiveFunction, 
-    scope bool delegate(
+    scope <a href="http://dlang.org/type.html#basic-data-types">bool</a> delegate(
         T objectiveFunctionValuePrev, 
         T objectiveFunctionValue, 
         in T[] weightsPrev, 
         in T[] weights
         ) tolerance, 
-    scope bool delegate(
+    scope <a href="http://dlang.org/type.html#basic-data-types">bool</a> delegate(
         T a, 
         T b
         ) @nogc nothrow findRootTolerance = null)
@@ -68,7 +67,7 @@
 <tr class="param"><td class="paramName">objectiveFunction</td><td class="paramDoc"><p>accepts mixture.
 </p>
 </td></tr>
-<tr class="param"><td class="paramName">tolerance</td><td class="paramDoc"><p>Defines an early termination condition.  Receives the current and previous versions of <code class="prettyprint">objectiveFunction(mixture))</code> and weights.  The delegate must return true when mixture and weights are acceptable. 
+<tr class="param"><td class="paramName">tolerance</td><td class="paramDoc"><p>Defines an early termination condition.  Receives the current and previous versions of <code class="prettyprint">objectiveFunction(<a href="atmosphere/mixture/MixtureOptimizer.mixture.html">mixture</a>))</code> and weights.  The delegate must return true when mixture and weights are acceptable. 
 </p>
 </td></tr>
 <tr class="param"><td class="paramName">findRootTolerance</td><td class="paramDoc"><p>Tolerance for inner optimization.
@@ -84,13 +83,13 @@
 
 </div>
 </div>
-<hr/><pre><code>public final void optimize(
+<hr/><pre><code>public final <a href="http://dlang.org/type.html#basic-data-types">void</a> <a href="atmosphere/mixture/MixtureOptimizer.optimize.html">optimize</a>(
     scope T delegate(in T[] mixture) objectiveFunction, 
-    scope bool delegate(
+    scope <a href="http://dlang.org/type.html#basic-data-types">bool</a> delegate(
         T objectiveFunctionValuePrev, 
         T objectiveFunctionValue
         ) tolerance, 
-    scope bool delegate(
+    scope <a href="http://dlang.org/type.html#basic-data-types">bool</a> delegate(
         T a, 
         T b
         ) @nogc nothrow findRootTolerance = null)
@@ -105,7 +104,7 @@
 <tr class="param"><td class="paramName">objectiveFunction</td><td class="paramDoc"><p>accepts mixture.
 </p>
 </td></tr>
-<tr class="param"><td class="paramName">tolerance</td><td class="paramDoc"><p>Defines an early termination condition.  Receives the current and previous versions of <code class="prettyprint">objectiveFunction(mixture))</code>.  The delegate must return true when mixture are acceptable. 
+<tr class="param"><td class="paramName">tolerance</td><td class="paramDoc"><p>Defines an early termination condition.  Receives the current and previous versions of <code class="prettyprint">objectiveFunction(<a href="atmosphere/mixture/MixtureOptimizer.mixture.html">mixture</a>))</code>.  The delegate must return true when mixture are acceptable. 
 </p>
 </td></tr>
 <tr class="param"><td class="paramName">findRootTolerance</td><td class="paramDoc"><p>Tolerance for inner optimization.
@@ -121,12 +120,12 @@
 
 </div>
 </div>
-<hr/><pre><code>public final void optimize(
-    scope bool delegate(
+<hr/><pre><code>public final <a href="http://dlang.org/type.html#basic-data-types">void</a> <a href="atmosphere/mixture/MixtureOptimizer.optimize.html">optimize</a>(
+    scope <a href="http://dlang.org/type.html#basic-data-types">bool</a> delegate(
         in T[] weightsPrev, 
         in T[] weights
         ) tolerance, 
-    scope bool delegate(
+    scope <a href="http://dlang.org/type.html#basic-data-types">bool</a> delegate(
         T a, 
         T b
         ) @nogc nothrow findRootTolerance = null)

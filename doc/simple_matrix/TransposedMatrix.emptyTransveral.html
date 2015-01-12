@@ -13,13 +13,11 @@
 <div class="main">
 <div class="breadcrumbs">
 <table id="results"></table>
-<a class="home" href=index.html>⌂</a>
-<input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
+<a href="index.html" class="home">⌂</a><input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
 <small><a href=simple_matrix.html>simple_matrix</a>.</small><span class="highlight"><a href=simple_matrix/TransposedMatrix.html>TransposedMatrix</a>.emptyTransveral</span>
 </div>
 <div class="toc">
-<ul>
-<li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
+<ul><li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
 <ul id="atmosphere">
 <li><small>atmosphere.</small><a href="atmosphere/mixture.html">mixture</a></li>
 <li><span class="package" onclick="show_hide('atmosphere.parametrized');">atmosphere.parametrized</span>
@@ -42,10 +40,11 @@
 </li>
 <li><span class="selected"><a href="simple_matrix.html">simple_matrix</a></span>
 </li>
+
 </ul>
 </div>
 <div class="content">
-<pre><code>public bool emptyTransveral() const @property
+<pre><code>public <a href="http://dlang.org/type.html#basic-data-types">bool</a> <a href="simple_matrix/TransposedMatrix.emptyTransveral.html">emptyTransveral</a>() const @property
 </code></pre>
 
 <script>hljs.initHighlightingOnLoad();</script>

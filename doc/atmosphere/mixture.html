@@ -13,13 +13,11 @@
 <div class="main">
 <div class="breadcrumbs">
 <table id="results"></table>
-<a class="home" href=index.html>⌂</a>
-<input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
+<a href="index.html" class="home">⌂</a><input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
 <small>atmosphere.mixture</small>
 </div>
 <div class="toc">
-<ul>
-<li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
+<ul><li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
 <ul id="atmosphere" style='display:block;'>
 <li><span class="selected"><small>atmosphere.</small><a href="atmosphere/mixture.html">mixture</a></span>
 </li>
@@ -42,6 +40,7 @@
 </ul>
 </li>
 <li><a href="simple_matrix.html">simple_matrix</a></li>
+
 </ul>
 </div>
 <div class="content">
@@ -81,7 +80,7 @@ n - length of sample, n may vary (sliding window).</code></pre>
 import std.math;
 
 //probability density function
-static struct PDF
+static struct <a href="distribution/pdf/PDF.html">PDF</a>
 {
 	double alphau;
 	double sqrtu;
@@ -103,10 +102,10 @@ static struct PDF
 }
 
 double[] mySample, myNewSample;
-PDF[] pdfs;
+<a href="distribution/pdf/PDF.html">PDF</a>[] pdfs;
 //... initialize pdfs and mySample.
 
-auto optimizer = new CoordinateLikelihoodMaximization!double(pdfs.length, mySample.length+1000);
+auto optimizer = new <a href="atmosphere/mixture/CoordinateLikelihoodMaximization.html">CoordinateLikelihoodMaximization</a>!double(pdfs.length, mySample.length+1000);
 
 bool delegate(double, double) tolerance = 
 	(likelihoodPrev, likelihood) 
@@ -133,7 +132,7 @@ double[] mixtureWeights2 = optimizer.weights.dup;</code></pre>
 </div>
 <div class="section "><h2>Interfaces</h2><table><tr><td><a href="atmosphere/mixture/LikelihoodMaximization.html">LikelihoodMaximization</a></td><td></td><td></td></tr></table><h2>Classes</h2><table><tr><td><a href="atmosphere/mixture/MixtureOptimizerException.html">MixtureOptimizerException</a></td><td></td><td><p>Exception thrown for MixtureOptimizer.
 </p>
-</td></tr><tr><td><a href="atmosphere/mixture/FeaturesException.html">FeaturesException</a></td><td></td><td></td></tr><tr><td><a href="atmosphere/mixture/MixtureOptimizer.html">MixtureOptimizer</a></td><td></td><td></td></tr><tr><td><a href="atmosphere/mixture/GradientDescent.html">GradientDescent</a></td><td></td><td></td></tr><tr><td><a href="atmosphere/mixture/CoordinateDescent.html">CoordinateDescent</a></td><td></td><td></td></tr><tr><td><a href="atmosphere/mixture/CoordinateDescentPartial.html">CoordinateDescentPartial</a></td><td></td><td></td></tr><tr><td><a href="atmosphere/mixture/CoordinateLikelihoodMaximization.html">CoordinateLikelihoodMaximization</a></td><td></td><td></td></tr><tr><td><a href="atmosphere/mixture/GradientLikelihoodMaximization.html">GradientLikelihoodMaximization</a></td><td></td><td></td></tr></table>
+</td></tr><tr><td><a href="atmosphere/mixture/FeaturesException.html">FeaturesException</a></td><td></td><td></td></tr><tr><td><a href="atmosphere/mixture/MixtureOptimizer.html">MixtureOptimizer</a></td><td></td><td></td></tr><tr><td><a href="atmosphere/mixture/GradientDescent.html">GradientDescent</a></td><td></td><td></td></tr><tr><td><a href="atmosphere/mixture/GradientDescentPartial.html">GradientDescentPartial</a></td><td></td><td></td></tr><tr><td><a href="atmosphere/mixture/CoordinateDescent.html">CoordinateDescent</a></td><td></td><td></td></tr><tr><td><a href="atmosphere/mixture/CoordinateDescentPartial.html">CoordinateDescentPartial</a></td><td></td><td></td></tr><tr><td><a href="atmosphere/mixture/CoordinateLikelihoodMaximization.html">CoordinateLikelihoodMaximization</a></td><td></td><td></td></tr><tr><td><a href="atmosphere/mixture/GradientLikelihoodMaximization.html">GradientLikelihoodMaximization</a></td><td></td><td></td></tr></table>
 </div>
 
 <script>hljs.initHighlightingOnLoad();</script>

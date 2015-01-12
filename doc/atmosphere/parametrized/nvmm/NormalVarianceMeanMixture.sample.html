@@ -13,13 +13,11 @@
 <div class="main">
 <div class="breadcrumbs">
 <table id="results"></table>
-<a class="home" href=index.html>⌂</a>
-<input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
+<a href="index.html" class="home">⌂</a><input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
 <small>atmosphere.parametrized.<a href=atmosphere/parametrized/nvmm.html>nvmm</a>.</small><span class="highlight"><a href=atmosphere/parametrized/nvmm/NormalVarianceMeanMixture.html>NormalVarianceMeanMixture</a>.sample</span>
 </div>
 <div class="toc">
-<ul>
-<li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
+<ul><li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
 <ul id="atmosphere" style='display:block;'>
 <li><small>atmosphere.</small><a href="atmosphere/mixture.html">mixture</a></li>
 <li><span class="package" onclick="show_hide('atmosphere.parametrized');">atmosphere.parametrized</span>
@@ -42,10 +40,11 @@
 </ul>
 </li>
 <li><a href="simple_matrix.html">simple_matrix</a></li>
+
 </ul>
 </div>
 <div class="content">
-<pre><code>public final void sample(in T[] _sample) @property
+<pre><code>public final <a href="http://dlang.org/type.html#basic-data-types">void</a> <a href="atmosphere/parametrized/nvmm/NormalVarianceMeanMixture.sample.html">sample</a>(in T[] _sample) @property
 </code></pre>
 <div class="section "><p>Sets sample and recalculates beta and mixture.
 </p>
@@ -54,7 +53,7 @@
 </div>
 <div class="section "><h2>Contracts</h2><pre><code>in
 {
-    assert (_sample.length <= this._sample.length);
+    assert (_sample.length <= <a href="atmosphere/parametrized/nvmm/NormalVarianceMeanMixture.this.html">this</a>._sample.length);
     
     foreach (s; _sample)
 {
@@ -78,7 +77,7 @@
 
 
 </div>
-<hr/><pre><code>public final const(T)[] sample() @property const
+<hr/><pre><code>public final const(T)[] <a href="atmosphere/parametrized/nvmm/NormalVarianceMeanMixture.sample.html">sample</a>() @property const
 </code></pre>
 <div class="section"><h2>Returns</h2>
 <p> Const slice of the internal sample representation.

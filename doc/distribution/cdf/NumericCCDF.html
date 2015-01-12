@@ -13,13 +13,11 @@
 <div class="main">
 <div class="breadcrumbs">
 <table id="results"></table>
-<a class="home" href=index.html>⌂</a>
-<input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
+<a href="index.html" class="home">⌂</a><input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
 <small>distribution.<a href=distribution/cdf.html>cdf</a>.</small><span class="highlight">NumericCCDF</span>
 </div>
 <div class="toc">
-<ul>
-<li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
+<ul><li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
 <ul id="atmosphere">
 <li><small>atmosphere.</small><a href="atmosphere/mixture.html">mixture</a></li>
 <li><span class="package" onclick="show_hide('atmosphere.parametrized');">atmosphere.parametrized</span>
@@ -42,10 +40,11 @@
 </ul>
 </li>
 <li><a href="simple_matrix.html">simple_matrix</a></li>
+
 </ul>
 </div>
 <div class="content">
-<pre><code>public abstract class NumericCCDF(T) : CDF!T
+<pre><code>public abstract class NumericCCDF(T) : <a href="distribution/cdf/CDF.html">CDF</a>!T
 </code></pre>
 <div class="section "><p>Class to compute complementary cumulative density function as integral of it's probability density function
 </p>
@@ -57,11 +56,11 @@
 
 </div>
 <pre><code>import std.traits, std.mathspecial;
-import distribution.pdf;
+import <a href="distribution/pdf.html">distribution.pdf</a>;
 
-class NormalPDF : PDF!real
+class NormalPDF : <a href="distribution/pdf/PDF.html">PDF</a>!real
 {
-	real opCall(real x)
+	real <a href="distribution/cdf/NumericCCDF.opCall.html">opCall</a>(real x)
 	{
 		// 1/sqrt(2 PI)
 		enum c = 0.398942280401432677939946L;
@@ -69,9 +68,9 @@ class NormalPDF : PDF!real
 	}
 }
 
-class NormalCCDF : NumericCCDF!real
+class NormalCCDF : <a href="distribution/cdf/NumericCCDF.html">NumericCCDF</a>!real
 {
-	this()
+	<a href="distribution/cdf/NumericCCDF.this.html">this</a>()
 	{
 		super(new NormalPDF, [-3, -1, 0, 1, 3]);
 	}

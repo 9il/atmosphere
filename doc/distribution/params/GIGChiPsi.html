@@ -13,13 +13,11 @@
 <div class="main">
 <div class="breadcrumbs">
 <table id="results"></table>
-<a class="home" href=index.html>⌂</a>
-<input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
+<a href="index.html" class="home">⌂</a><input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
 <small>distribution.<a href=distribution/params.html>params</a>.</small><span class="highlight">GIGChiPsi</span>
 </div>
 <div class="toc">
-<ul>
-<li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
+<ul><li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
 <ul id="atmosphere">
 <li><small>atmosphere.</small><a href="atmosphere/mixture.html">mixture</a></li>
 <li><span class="package" onclick="show_hide('atmosphere.parametrized');">atmosphere.parametrized</span>
@@ -42,6 +40,7 @@
 </ul>
 </li>
 <li><a href="simple_matrix.html">simple_matrix</a></li>
+
 </ul>
 </div>
 <div class="content">
@@ -57,16 +56,16 @@ if(isFloatingPoint!T)
 <pre><code>double _chi  = 3;
 double _psi  = 4;
 
-auto params  = GIGChiPsi!double(_chi, _psi);
+auto params  = <a href="distribution/params/GIGChiPsi.html">GIGChiPsi</a>!double(_chi, _psi);
 
-auto params1 = cast(GIGChiPsi    !real) params;
-auto params2 = cast(GIGEtaOmega  !real) params;
+auto params1 = cast(<a href="distribution/params/GIGChiPsi.html">GIGChiPsi</a>    !real) params;
+auto params2 = cast(<a href="distribution/params/GIGEtaOmega.html">GIGEtaOmega</a>  !real) params;
 
-double chi   = params.chi;
-double psi   = params.psi;
+double <a href="distribution/params/GIGChiPsi.chi.html">chi</a>   = params.<a href="distribution/params/GIGChiPsi.chi.html">chi</a>;
+double <a href="distribution/params/GIGChiPsi.psi.html">psi</a>   = params.<a href="distribution/params/GIGChiPsi.psi.html">psi</a>;
 
-double eta   = params.eta;
-double omega = params.omega;
+double <a href="distribution/params/GIGChiPsi.eta.html">eta</a>   = params.<a href="distribution/params/GIGChiPsi.eta.html">eta</a>;
+double <a href="distribution/params/GIGChiPsi.omega.html">omega</a> = params.<a href="distribution/params/GIGChiPsi.omega.html">omega</a>;
 
 </code></pre>
 
@@ -75,9 +74,9 @@ double omega = params.omega;
 </code></pre>
 </td><td></td></tr><tr><td><a href="distribution/params/GIGChiPsi.psi.html">psi</a></td><td><pre><code>T
 </code></pre>
-</td><td></td></tr></table><h2>Functions</h2><table><tr><td><a href="distribution/params/GIGChiPsi.eta.html">eta</a><span class="extrainfo"></span></td><td></td><td><p><code class="prettyprint">sqrt(chi / psi)</code>
+</td><td></td></tr></table><h2>Functions</h2><table><tr><td><a href="distribution/params/GIGChiPsi.eta.html">eta</a><span class="extrainfo"></span></td><td></td><td><p><code class="prettyprint">sqrt(<a href="distribution/params/GIGChiPsi.chi.html">chi</a> / <a href="distribution/params/GIGChiPsi.psi.html">psi</a>)</code>
 </p>
-</td></tr><tr><td><a href="distribution/params/GIGChiPsi.omega.html">omega</a><span class="extrainfo"></span></td><td></td><td><p><code class="prettyprint">sqrt(chi * psi)</code>
+</td></tr><tr><td><a href="distribution/params/GIGChiPsi.omega.html">omega</a><span class="extrainfo"></span></td><td></td><td><p><code class="prettyprint">sqrt(<a href="distribution/params/GIGChiPsi.chi.html">chi</a> * <a href="distribution/params/GIGChiPsi.psi.html">psi</a>)</code>
 </p>
 </td></tr><tr><td><a href="distribution/params/GIGChiPsi.opCast.html">opCast</a><span class="extrainfo"></span></td><td></td><td><p><code class="prettyprint">cast</code> operator overloading 
 </p>

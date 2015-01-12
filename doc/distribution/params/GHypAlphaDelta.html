@@ -13,13 +13,11 @@
 <div class="main">
 <div class="breadcrumbs">
 <table id="results"></table>
-<a class="home" href=index.html>⌂</a>
-<input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
+<a href="index.html" class="home">⌂</a><input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
 <small>distribution.<a href=distribution/params.html>params</a>.</small><span class="highlight">GHypAlphaDelta</span>
 </div>
 <div class="toc">
-<ul>
-<li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
+<ul><li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
 <ul id="atmosphere">
 <li><small>atmosphere.</small><a href="atmosphere/mixture.html">mixture</a></li>
 <li><span class="package" onclick="show_hide('atmosphere.parametrized');">atmosphere.parametrized</span>
@@ -42,6 +40,7 @@
 </ul>
 </li>
 <li><a href="simple_matrix.html">simple_matrix</a></li>
+
 </ul>
 </div>
 <div class="content">
@@ -55,26 +54,26 @@ if(isFloatingPoint!T)
 
 </div>
 <div class="section "><h2>Example</h2>
-<pre><code>double beta  = 2;
+<pre><code>double <a href="distribution/params/GHypAlphaDelta.beta.html">beta</a>  = 2;
 double _alpha= 3;
 double _delta= 4;
 
-auto params  = GHypAlphaDelta!double(_alpha, beta, _delta);
+auto params  = <a href="distribution/params/GHypAlphaDelta.html">GHypAlphaDelta</a>!double(_alpha, <a href="distribution/params/GHypAlphaDelta.beta.html">beta</a>, _delta);
 
-auto params0 = cast(GHypAlphaDelta!real) params;
-auto params1 = cast(GHypChiPsi    !real) params;
-auto params2 = cast(GHypEtaOmega  !real) params;
-auto params3 = cast(GIGChiPsi     !real) params;
-auto params4 = cast(GIGEtaOmega   !real) params;
+auto params0 = cast(<a href="distribution/params/GHypAlphaDelta.html">GHypAlphaDelta</a>!real) params;
+auto params1 = cast(<a href="distribution/params/GHypChiPsi.html">GHypChiPsi</a>    !real) params;
+auto params2 = cast(<a href="distribution/params/GHypEtaOmega.html">GHypEtaOmega</a>  !real) params;
+auto params3 = cast(<a href="distribution/params/GIGChiPsi.html">GIGChiPsi</a>     !real) params;
+auto params4 = cast(<a href="distribution/params/GIGEtaOmega.html">GIGEtaOmega</a>   !real) params;
 
-double alpha = params.alpha;
-double delta = params.delta;
+double <a href="distribution/params/GHypAlphaDelta.alpha.html">alpha</a> = params.<a href="distribution/params/GHypAlphaDelta.alpha.html">alpha</a>;
+double <a href="distribution/params/GHypAlphaDelta.delta.html">delta</a> = params.<a href="distribution/params/GHypAlphaDelta.delta.html">delta</a>;
 
-double chi   = params.chi;
-double psi   = params.psi;
+double <a href="distribution/params/GHypAlphaDelta.chi.html">chi</a>   = params.<a href="distribution/params/GHypAlphaDelta.chi.html">chi</a>;
+double <a href="distribution/params/GHypAlphaDelta.psi.html">psi</a>   = params.<a href="distribution/params/GHypAlphaDelta.psi.html">psi</a>;
 
-double eta   = params.eta;
-double omega = params.omega;
+double <a href="distribution/params/GHypAlphaDelta.eta.html">eta</a>   = params.<a href="distribution/params/GHypAlphaDelta.eta.html">eta</a>;
+double <a href="distribution/params/GHypAlphaDelta.omega.html">omega</a> = params.<a href="distribution/params/GHypAlphaDelta.omega.html">omega</a>;
 
 </code></pre>
 
@@ -85,13 +84,13 @@ double omega = params.omega;
 </code></pre>
 </td><td></td></tr><tr><td><a href="distribution/params/GHypAlphaDelta.delta.html">delta</a></td><td><pre><code>T
 </code></pre>
-</td><td></td></tr></table><h2>Functions</h2><table><tr><td><a href="distribution/params/GHypAlphaDelta.chi.html">chi</a><span class="extrainfo"></span></td><td></td><td><p><code class="prettyprint">delta^^2</code>
+</td><td></td></tr></table><h2>Functions</h2><table><tr><td><a href="distribution/params/GHypAlphaDelta.chi.html">chi</a><span class="extrainfo"></span></td><td></td><td><p><code class="prettyprint"><a href="distribution/params/GHypAlphaDelta.delta.html">delta</a>^^2</code>
 </p>
-</td></tr><tr><td><a href="distribution/params/GHypAlphaDelta.psi.html">psi</a><span class="extrainfo"></span></td><td></td><td><p><code class="prettyprint">alpha^^2 - beta^^2</code>
+</td></tr><tr><td><a href="distribution/params/GHypAlphaDelta.psi.html">psi</a><span class="extrainfo"></span></td><td></td><td><p><code class="prettyprint"><a href="distribution/params/GHypAlphaDelta.alpha.html">alpha</a>^^2 - <a href="distribution/params/GHypAlphaDelta.beta.html">beta</a>^^2</code>
 </p>
-</td></tr><tr><td><a href="distribution/params/GHypAlphaDelta.eta.html">eta</a><span class="extrainfo"></span></td><td></td><td><p><code class="prettyprint">sqrt(chi / psi)</code>
+</td></tr><tr><td><a href="distribution/params/GHypAlphaDelta.eta.html">eta</a><span class="extrainfo"></span></td><td></td><td><p><code class="prettyprint">sqrt(<a href="distribution/params/GHypAlphaDelta.chi.html">chi</a> / <a href="distribution/params/GHypAlphaDelta.psi.html">psi</a>)</code>
 </p>
-</td></tr><tr><td><a href="distribution/params/GHypAlphaDelta.omega.html">omega</a><span class="extrainfo"></span></td><td></td><td><p><code class="prettyprint">sqrt(chi * psi)</code>
+</td></tr><tr><td><a href="distribution/params/GHypAlphaDelta.omega.html">omega</a><span class="extrainfo"></span></td><td></td><td><p><code class="prettyprint">sqrt(<a href="distribution/params/GHypAlphaDelta.chi.html">chi</a> * <a href="distribution/params/GHypAlphaDelta.psi.html">psi</a>)</code>
 </p>
 </td></tr><tr><td><a href="distribution/params/GHypAlphaDelta.opCast.html">opCast</a><span class="extrainfo"></span></td><td></td><td><p><code class="prettyprint">cast</code> operator overloading 
 </p>

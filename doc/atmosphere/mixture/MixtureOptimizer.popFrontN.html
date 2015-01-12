@@ -13,13 +13,11 @@
 <div class="main">
 <div class="breadcrumbs">
 <table id="results"></table>
-<a class="home" href=index.html>⌂</a>
-<input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
+<a href="index.html" class="home">⌂</a><input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
 <small>atmosphere.<a href=atmosphere/mixture.html>mixture</a>.</small><span class="highlight"><a href=atmosphere/mixture/MixtureOptimizer.html>MixtureOptimizer</a>.popFrontN</span>
 </div>
 <div class="toc">
-<ul>
-<li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
+<ul><li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
 <ul id="atmosphere" style='display:block;'>
 <li><span class="selected"><small>atmosphere.</small><a href="atmosphere/mixture.html">mixture</a></span>
 </li>
@@ -42,10 +40,11 @@
 </ul>
 </li>
 <li><a href="simple_matrix.html">simple_matrix</a></li>
+
 </ul>
 </div>
 <div class="content">
-<pre><code>public final void popFrontN(size_t n)
+<pre><code>public final <a href="http://dlang.org/type.html#basic-data-types">void</a> <a href="atmosphere/mixture/MixtureOptimizer.popFrontN.html">popFrontN</a>(size_t n)
 </code></pre>
 <div class="section "><p>Remove n front features for each component.
 </p>
@@ -54,7 +53,7 @@
 </div>
 <div class="section "><h2>Contracts</h2><pre><code>in
 {
-    assert (length >= n);
+    assert (<a href="atmosphere/mixture/MixtureOptimizer.length.html">length</a> >= n);
 }
 </code></pre>
 

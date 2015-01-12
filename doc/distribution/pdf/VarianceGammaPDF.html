@@ -13,13 +13,11 @@
 <div class="main">
 <div class="breadcrumbs">
 <table id="results"></table>
-<a class="home" href=index.html>⌂</a>
-<input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
+<a href="index.html" class="home">⌂</a><input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
 <small>distribution.<a href=distribution/pdf.html>pdf</a>.</small><span class="highlight">VarianceGammaPDF</span>
 </div>
 <div class="toc">
-<ul>
-<li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
+<ul><li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
 <ul id="atmosphere">
 <li><small>atmosphere.</small><a href="atmosphere/mixture.html">mixture</a></li>
 <li><span class="package" onclick="show_hide('atmosphere.parametrized');">atmosphere.parametrized</span>
@@ -42,10 +40,11 @@
 </ul>
 </li>
 <li><a href="simple_matrix.html">simple_matrix</a></li>
+
 </ul>
 </div>
 <div class="content">
-<pre><code>public final class VarianceGammaPDF(T) : PDF!T
+<pre><code>public final class VarianceGammaPDF(T) : <a href="distribution/pdf/PDF.html">PDF</a>!T
 if(isFloatingPoint!T)
 </code></pre>
 <div class="section "><p>Variance gamma (gamma mixture of normals) PDF
@@ -62,7 +61,7 @@ if(isFloatingPoint!T)
 </div>
 </div>
 <div class="section "><h2>Example</h2>
-<pre><code>auto pdf = new VarianceGammaPDF!double(1.1, 1.1, 1.0, 1.1);
+<pre><code>auto pdf = new <a href="distribution/pdf/VarianceGammaPDF.html">VarianceGammaPDF</a>!double(1.1, 1.1, 1.0, 1.1);
 auto x = pdf(0.1);
 assert(x.isNormal);
 
