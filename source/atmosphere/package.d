@@ -9,6 +9,7 @@ import atmosphere;
 Class_hierarchy:
 - [MixtureOptimizer](atmosphere/mixture/MixtureOptimizer.html)
 	- [GradientDescent](atmosphere/mixture/GradientDescent.html)
+	- [GradientDescentPartial](atmosphere/mixture/GradientDescentPartial.html)
 		- [GradientLikelihoodMaximization](atmosphere/mixture/GradientLikelihoodMaximization.html) : [LikelihoodMaximization](atmosphere/mixture/LikelihoodMaximization.html)
 	- [CoordinateDescent](atmosphere/mixture/CoordinateDescent.html)
 	- [CoordinateDescentPartial](atmosphere/mixture/CoordinateDescentPartial.html)
