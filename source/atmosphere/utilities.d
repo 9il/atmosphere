@@ -3,6 +3,7 @@ module atmosphere.utilities;
 import core.stdc.string;
 import std.traits;
 import std.math;
+import std.range;
 
 package:
 
@@ -107,14 +108,13 @@ void normalize(F)(F[] range)
 }
 
 ///
-void gemv(M, F)(in M m, in F[] a, F[] b)
+void gemv(M, F)(M m, in F[] a, F[] b)
 in {
 	assert (m.width == a.length);
 	assert (m.height == b.length);
 }
 body {
-
-	static if(is(M : Matrix!(T), T))
+	static if(is(M : Matrix!(T), T) && (is(Unqual!T == double) || is(Unqual!T == float)))
 	{
 		assert(m.ptr);
 		assert(m.shift >= m.width);
@@ -133,7 +133,7 @@ body {
 			1);
 	}
 	else
-	static if(is(M : TransposedMatrix!T, T))
+	static if(is(M : TransposedMatrix!T, T) && is(Unqual!T == double) || is(Unqual!T == float))
 	{
 		assert(m.matrix.ptr);
 		assert(m.matrix.shift >= m.matrix.width);
@@ -153,8 +153,12 @@ body {
 	}
 	else
 	{
-		import std.string : format;
-		static assert(0, format("gemv for %s not implimented", M.stringof));
+		foreach(ref e; b)
+		{
+			assert(!m.empty);
+			e = dotProduct(a, m.front);
+			m.popFront;
+		}
 	}
 }
 
@@ -207,6 +211,61 @@ unittest
 
 }
 
+
+version(LDC)
+{
+	auto dotProduct(Range1, Range2)(Range1 a, Range2 b)
+		if(isInputRange!Range1
+		&& isInputRange!Range2 
+		&& (!isArray!Range1 || !isArray!Range2)
+		&& is(Unqual!(ElementType!Range1) == Unqual!(ElementType!Range2))
+		)
+	{
+		alias T = Unqual!(ElementType!Range1);
+		T ret = 0;
+		while(!a.empty)
+		{
+			static if(is(Unqual!T == double))
+				ret = inlineIR!(`
+					%d = fmul fast double %1, %2
+					%r = fadd fast double %0, %d
+					ret double %r`, double)(ret, a.front, b.front);
+			else
+			static if(is(Unqual!T == float))
+				ret = inlineIR!(`
+					%d = fmul fast float %1, %2
+					%r = fadd fast float %0, %d
+					ret float %r`, float)(ret, a.front, b.front);
+			else
+				ret += a.front * b.front;
+			a.popFront;
+			b.popFront;
+		}
+		assert(b.empty);
+		return ret;
+	}
+}
+else
+{
+	auto dotProduct(Range1, Range2)(Range1 a, Range2 b)
+		if(isInputRange!Range1
+		&& isInputRange!Range2 
+		&& (!isArray!Range1 || !isArray!Range2)
+		&& is(Unqual!(ElementType!Range1) == Unqual!(ElementType!Range2))
+		)
+	{
+		alias T = Unqual!(ElementType!Range1);
+		T ret = 0;
+		while(!a.empty)
+		{
+			ret += a.front * b.front;
+			a.popFront;
+			b.popFront;
+		}
+		assert(b.empty);
+		return ret;
+	}
+}
 
 version(LDC)
 {
