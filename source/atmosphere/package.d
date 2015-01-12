@@ -25,7 +25,7 @@ Table of separating mixtures algorithms:
 		$(TR $(TD [GradientDescent](atmosphere/mixture/GradientDescent.html), number of mixture components > ~16) $(TD ~95-99%) $(TD No) $(TD  normal ) $(TD Yes) $(TD No) )
 		$(TR $(TD [GradientDescent](atmosphere/mixture/GradientDescent.html), number of mixture components < ~16) $(TD ~95-99%) $(TD No) $(TD  fast ) $(TD Yes) $(TD No) )
 		$(TR $(TD [CoordinateDescent](atmosphere/mixture/CoordinateDescent.html)) $(TD ~10-50%) $(TD No) $(TD  fast ) $(TD Yes) $(TD No) )
-		$(TR $(TD [CoordinateLikelihoodMaximization](atmosphere/mixture/CoordinateLikelihoodMaximization.html)) $(TD ~10-50%) $(TD No) $(TD  fast, always faster then CoordinateDescent ) $(TD Yes) $(TD No) )
+		$(TR $(TD [CoordinateDescentPartial](atmosphere/mixture/CoordinateLikelihoodMaximization.html)) $(TD ~10-50%) $(TD No) $(TD  fast, always faster then CoordinateDescent ) $(TD Yes) $(TD No) )
 		$(TR $(TD [NormalVarianceMeanMixtureEM](atmosphere/parametrized/nvmm/NormalVarianceMeanMixtureEM.html)) $(TD ~10%) $(TD Yes) $(TD  slow ) $(TD No) $(TD Yes) )
 		$(TR $(TD [NormalVarianceMeanMixtureEMAndGradient](atmosphere/parametrized/nvmm/NormalVarianceMeanMixtureEMAndGradient.html)) $(TD ~10%) $(TD Yes) $(TD  slow ) $(TD No) $(TD Yes) )
 		$(TR $(TD [NormalVarianceMeanMixtureEMAndCoordinate](atmosphere/parametrized/nvmm/NormalVarianceMeanMixtureEMAndCoordinate.html)) $(TD ~5%) $(TD Partial) $(TD  slow ) $(TD No) $(TD Yes) ) )
