@@ -74,15 +74,6 @@
 
 <p>See <a href="https://github.com/9il/atmosphere_gm/releases">release notes</a>.</p>
 
-<h4>
-<a id="benchmarking-and-testing" class="anchor" href="#benchmarking-and-testing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Benchmarking and testing</h4>
-
-<p>It is suggested the <a href="https://github.com/ldc-developers/ldc/releases">llvm D compiler</a> be used for benchmarks.
-Project requires LDC version &gt;= 0.15.0 or DMD &gt;= 2.066, or corresponding GDC release.
-The <a href="http://dlang.org/download.html">DMD</a> is easy way to start.</p>
-
-<p>See <a href="https://github.com/9il/atmosphere_gm_test">Atmosphere GM Test</a> for testing. </p>
-
 <h1>
 <a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h1>
 
@@ -140,6 +131,35 @@ The <a href="http://dlang.org/download.html">DMD</a> is easy way to start.</p>
 }</pre></div>
 
 <p>Start with <a href="https://github.com/9il/atmosphere_gm_test">Atmosphere GM Test</a></p>
+
+<h1>
+<a id="compilers-and-optimization" class="anchor" href="#compilers-and-optimization" aria-hidden="true"><span class="octicon octicon-link"></span></a>Compilers and optimization</h1>
+
+<p>The <a href="http://dlang.org/download.html">DMD</a> compiler is easy way to start.
+To compile your program in release mode use the following build options</p>
+
+<div class="highlight highlight-shell"><pre>dub build --build=release</pre></div>
+
+<h2>
+<a id="ldc" class="anchor" href="#ldc" aria-hidden="true"><span class="octicon octicon-link"></span></a>LDC</h2>
+
+<p>It is suggested the <a href="https://github.com/ldc-developers/ldc/releases">LLVM D Compiler</a> be used for benchmarks.
+To compile your program in release mode with LDC use the following build options</p>
+
+<pre><code>dub build --build=release --compiler=ldc2
+</code></pre>
+
+<p>To fine-tune your program for native CPU add the following code into your <code>dub.json</code>:</p>
+
+<pre><code>{
+    ...
+    "dflags-ldc": ["-mcpu=native"],
+}
+</code></pre>
+
+<p>For more options run <code>ldc2 -help</code>.</p>
+
+<p>See also <a href="https://github.com/9il/atmosphere_gm_test">Atmosphere GM Test</a>. </p>
 
 <h1>
 <a id="bugs" class="anchor" href="#bugs" aria-hidden="true"><span class="octicon octicon-link"></span></a>Bugs</h1>
