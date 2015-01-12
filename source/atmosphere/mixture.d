@@ -677,7 +677,7 @@ interface LikelihoodMaximization(T)
 	);
 
 	/**
-	Returns true if for all values in sample exists probability density function from mixture such that `isNormal(PDF(value))`
+	Returns true if for all values in sample exists probability density function from mixture such that `isNormal(PDF(value) * (1.0 / sample.length))`
 	See_Also: $(STDREF math, isNormal)
 	*/
 	bool isFeaturesCorrect() const;
