@@ -59,7 +59,7 @@ Start with [Atmosphere GM Test](https://github.com/9il/atmosphere_gm_test)
 
 # Compilers and optimization
 The [DMD](http://dlang.org/download.html) compiler is easy way to start.
-To compile your program in release mode use following build options
+To compile your program in release mode use the following build options
 ```shell
 dub build --build=release
 ```
