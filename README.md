@@ -7,7 +7,7 @@ Atmosphere GM contains an experimental algorithms for new generation of likeliho
 #Features
  1. Normal variance-mean mixtures
   + Generalized hyperbolic distribution
-  + Generalized variance-gamma distribution
+  + Generalized variance-gamma distribution (in progress)
  2. Separating mixtures of probability distributions
   + Grid methods
   + Likelihood maximization
@@ -20,7 +20,7 @@ Atmosphere GM contains an experimental algorithms for new generation of likeliho
 
 
 #Documentation
-Documentation can be found [here](http://9il.github.io/atmosphere_gm/doc/atmosphere.html).
+Documentation (API) can be found [here](http://9il.github.io/atmosphere_gm/doc/atmosphere.html).
 ## Changelog
 See [release notes](https://github.com/9il/atmosphere_gm/releases).
 
@@ -80,3 +80,14 @@ See also [Atmosphere GM Test](https://github.com/9il/atmosphere_gm_test).
 
 # Bugs
 See [bug list](https://github.com/9il/atmosphere_gm/labels/bug).
+
+# TODO & Contribution
+Contribution is welcome.
+#### TODO list
++ **Windows** instruction for BLAS & LAPACK installation.
++ Generalized variance-gamma distribution PDF.
++ Parameter estimation algorithms for generalized inverse Gaussian and variance-gamma samples.
++ Publication references
++ More `unittest`s
++ Examples
++ [ReadTheDocs](https://readthedocs.org) documentation.
