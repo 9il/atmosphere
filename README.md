@@ -18,6 +18,8 @@ Atmosphere GM contains an experimental algorithms for new generation of likeliho
   + Quantiles
   + Random observations generators
 
+#### What can I use this package for? 
+Atmosphere GM can be used for risk management in economics, finance and thermonuclear reactors ;-)
 
 #Documentation
 Documentation (API) can be found [here](http://9il.github.io/atmosphere_gm/doc/atmosphere.html).
