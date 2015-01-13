@@ -85,7 +85,7 @@ See [bug list](https://github.com/9il/atmosphere_gm/labels/bug).
 Contribution is welcome.
 #### TODO list
 + **Windows** instruction for BLAS & LAPACK installation.
-+ Generalized variance-gamma distribution PDF.
++ Generalized variance-gamma probability density function.
 + Parameter estimation algorithms for generalized inverse Gaussian and variance-gamma samples.
 + Publication references
 + More `unittest`s
