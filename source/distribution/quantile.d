@@ -182,9 +182,11 @@ final class GammaQuantile(T) : Quantile!T
 	}
 
 	T opCall(T x)
-	{
+	in {
 		assert(x >= 0);
-		assert(x <= 1);
+		assert(x <= 1);		
+	}
+	body {
 		return scale * gammaIncompleteComplInverse(shape, 1-x);
 	}
 }
@@ -220,9 +222,11 @@ final class InverseGammaQuantile(T) : Quantile!T
 	}
 
 	T opCall(T x)
-	{
+	in {
 		assert(x >= 0);
-		assert(x <= 1);
+		assert(x <= 1);		
+	}
+	body {
 		return scale / gammaIncompleteComplInverse(shape, 1-x);
 	}
 }
