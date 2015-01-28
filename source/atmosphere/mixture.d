@@ -138,7 +138,6 @@ class FeaturesException : MixtureOptimizerException
 	}
 }
 
-struct attri {}
 
 /**
 */
@@ -499,6 +498,39 @@ final:
 Params:
 	Gradient = Gradient of the objective function. `Gradient(a, b)` should perform `b = grad_f(a)`.
 */
+class EMDescent(alias Gradient, T) : MixtureOptimizer!T
+	if(isFloatingPoint!T)
+{
+	private T[] pi;
+	private T[] c;
+
+	/**
+	Constructor
+	Params:
+		k = number of components
+		maxLength = maximal length of features. In terms of likelihood maximization maxLength is maximal length of a sample.
+	*/
+	this(size_t k, size_t maxLength)
+	{
+		super(k, maxLength);
+		pi = new T[maxLength];
+		c = new T[k];
+	}
+
+	final override void eval(scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null)
+	{
+		EMIteration!(Gradient, T)(cast(Matrix!(const T))_featuresT.matrix, _weights, mixture, pi[0.._featuresT.matrix.width], c);
+		updateMixture;
+	}
+
+	override void update(){};
+}
+
+
+/**
+Params:
+	Gradient = Gradient of the objective function. `Gradient(a, b)` should perform `b = grad_f(a)`.
+*/
 class GradientDescent(alias Gradient, T) : MixtureOptimizer!T
 	if(isFloatingPoint!T)
 {
@@ -530,6 +562,7 @@ class GradientDescent(alias Gradient, T) : MixtureOptimizer!T
 
 	override void update(){};
 }
+
 
 /**
 Params:
@@ -564,6 +597,7 @@ class GradientDescentPartial(alias PartialDerivative, T) : MixtureOptimizer!T
 
 	override void update(){};
 }
+
 
 /**
 Params:
@@ -689,6 +723,7 @@ interface LikelihoodMaximization(T)
 	T log2Likelihood() @property const;
 }
 
+
 /**
 */
 class CoordinateLikelihoodMaximization(T) : CoordinateDescentPartial!("-1/a", T), LikelihoodMaximization!T
@@ -707,6 +742,7 @@ class CoordinateLikelihoodMaximization(T) : CoordinateDescentPartial!("-1/a", T)
 
 	mixin LikelihoodMaximizationTemplate!T;
 }
+
 
 /**
 */
@@ -777,8 +813,10 @@ package mixin template LikelihoodMaximizationTemplate(T)
 	}
 }
 
+
 unittest {
 	alias C0 = CoordinateDescent!((a, b){}, float);
+	alias C3 = EMDescent!((a, b){}, float);
 	alias C1 = LikelihoodMaximization!float;
 	alias C10 = GradientLikelihoodMaximization!float;
 	alias C11 = CoordinateLikelihoodMaximization!float;
@@ -788,6 +826,7 @@ unittest {
 
 unittest {
 	alias C0 = CoordinateDescent!((a, b){}, double);
+	alias C3 = EMDescent!((a, b){}, double);
 	alias C1 = LikelihoodMaximization!double;
 	alias C10 = GradientLikelihoodMaximization!double;
 	alias C11 = CoordinateLikelihoodMaximization!double;
@@ -797,6 +836,7 @@ unittest {
 
 unittest {
 	alias C0 = CoordinateDescent!((a, b){}, real);
+	alias C3 = EMDescent!((a, b){}, real);
 	alias C1 = LikelihoodMaximization!real;
 	alias C10 = GradientLikelihoodMaximization!real;
 	alias C11 = CoordinateLikelihoodMaximization!real;
