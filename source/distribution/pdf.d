@@ -386,6 +386,8 @@ unittest
 
 /++
 Proper generalized inverse Gaussian PDF
+
+See_Also: [distribution.params](distribution/params.html)
 +/
 final class ProperGeneralizedInverseGaussianPDF(T) : PDF!T
 	if(isFloatingPoint!T)
@@ -755,12 +757,6 @@ final class GeneralizedHyperbolicPDF(T) : PDF!T
 
 	/++
 	Constructor
-	Params:
-		lambda = 
-		alpha = 
-		beta = 
-		delta = 
-		mu = location
 	+/
 	this(T lambda, T alpha, T beta, T delta, T mu)
 	in {

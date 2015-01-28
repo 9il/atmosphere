@@ -221,10 +221,15 @@ unittest
 }
 
 
-///
-class GeneralizedHyperbolicCDF(T): NumericCDF!T
+/++
+Generalized hyperbolic (generalized inverse Gaussian mixture of normals) CDF
+
+See_Also: [distribution.params](distribution/params.html)
++/
+final class GeneralizedHyperbolicCDF(T): NumericCDF!T
 {
 	/++
+	Constructor
 	+/
 	this(T lambda, T alpha, T beta, T delta, T mu)
 	{
@@ -244,10 +249,15 @@ unittest
 }
 
 
-///
-class ProperGeneralizedInverseGaussianCDF(T): NumericCDF!T
+/++
+Proper generalized inverse Gaussian CDF
+
+See_Also: [distribution.params](distribution/params.html)
++/
+final class ProperGeneralizedInverseGaussianCDF(T): NumericCDF!T
 {
 	/++
+	Constructor
 	+/
 	this(T lambda, T eta, T omega)
 	{
@@ -351,10 +361,19 @@ unittest
 }
 
 
-///
-class GeneralizedVarianceGammaCDF(T): NormalVarianceMeanMixtureCDF!T
+/++
+Generalized variance-gamma (generalized gamma mixture of normals) CDF
++/
+final class GeneralizedVarianceGammaCDF(T): NormalVarianceMeanMixtureCDF!T
 {
 	/++
+	Constructor
+	Params:
+		shape = shape parameter (generalized gamma)
+		power = power parameter (generalized gamma)
+		scale = scale parameter (generalized gamma)
+		beta = NVMM scale
+		mu = NVMM location
 	+/
 	this(T shape, T power, T scale, T beta, T mu)
 	{
@@ -503,7 +522,7 @@ unittest
 
 
 /++
-Inverse Gaussian PDF
+Inverse Gaussian CDF
 +/
 final class InverseGaussianCDF(T) : CDF!T
 	if(isFloatingPoint!T)
