@@ -118,7 +118,7 @@ unittest
 			with(params)
 			{
 				auto pgig  = new ProperGeneralizedInverseGaussianPDF!T(lambda, eta, omega);
-				auto e = mu + GeneralizedInverseGaussianMean(lambda, eta, omega);
+				auto e = mu + ProperGeneralizedInverseGaussianMean(lambda, eta, omega);
 				super(pgig, params.beta, mu, [e]);				
 			}
 		}
