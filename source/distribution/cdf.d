@@ -56,6 +56,7 @@ abstract class NumericCDF(T) : CDF!T
 	Constructor
     Params:
 		pdf     = The PDF to _integrate.
+		subdivisions     = TODO.
 		a	= (optional) The lower limit of integration.
 		epsRel  = (optional) The requested relative accuracy.
 		epsAbs  = (optional) The requested absolute accuracy.
@@ -125,6 +126,104 @@ unittest
 	auto cdf = new NormalCDF;
 
 	assert(approxEqual(cdf(1.3), normalDistribution(1.3)));
+}
+
+
+/++
+Variance-mean mixture of normals
++/
+abstract class NormalVarianceMeanMixtureCDF(T) : CDF!T
+	if(isFloatingPoint!T)
+{
+	import distribution.pdf : PDF;
+	private PDF!T pdf;
+	private T beta, mu;
+	private T epsRel, epsAbs;
+	private T[] subdivisions;
+
+	/++
+	Constructor
+    Params:
+		pdf     = The PDF to _integrate.
+		beta = NVMM scale
+		mu = NVMM location
+		subdivisions     = TODO.
+		epsRel  = (optional) The requested relative accuracy.
+		epsAbs  = (optional) The requested absolute accuracy.
+	See_also: [struct Result](https://github.com/kyllingstad/scid/blob/a9f3916526e4bf9a4da35d14a969e1abfa17a496/source/scid/types.d)
+	+/
+	this(PDF!T pdf, T beta, T mu, T[] subdivisions = null, T epsRel = 1e-6, T epsAbs = 0)
+	in {
+		assert(subdivisions.all!isFinite);
+		assert(subdivisions.all!(s => s > 0));
+		assert(subdivisions.isSorted);
+		assert(subdivisions.findAdjacent.empty);
+	}
+	body {
+		this.pdf = pdf;
+		this.beta = beta;
+		this.mu = mu;
+		this.epsRel = epsRel;
+		this.epsAbs = epsAbs;
+		this.subdivisions = subdivisions;
+	}
+
+
+	T opCall(T x)
+	{
+		import scid.calculus : integrate;
+		T f(T z) {
+			return normalDistribution((x - (mu + beta * z)) / sqrt(z)) * pdf(z);
+		}
+		T sum = 0;
+		T a = 0;
+		foreach(s; subdivisions)
+		{
+			sum += integrate(&f, a, s, epsRel, epsAbs);
+			a = s;
+		}
+		sum += integrate(&f, a, T.infinity);
+		return sum;
+	}
+}
+
+///
+unittest
+{
+	class GeneralizedHyperbolicCDF(T): NumericCDF!T
+	{
+		this(T lambda, GHypEtaOmega!T params, T mu)
+		{
+			import distribution.moment;
+			auto pdf = new GeneralizedHyperbolicPDF!T(lambda, params.alpha, params.beta, params.delta, mu);
+			immutable mean = mu + GeneralizedHyperbolicMean(lambda, params.beta, params.chi, params.psi);
+			super(pdf, [mean]);	
+		}
+	}
+
+	class MyGeneralizedHyperbolicCDF(T) : NormalVarianceMeanMixtureCDF!T
+	{
+		this(T lambda, GHypEtaOmega!T params, T mu)
+		{
+			import distribution.moment;
+			import distribution.pdf;
+			with(params)
+			{
+				auto pgig  = new ProperGeneralizedInverseGaussianPDF!T(lambda, eta, omega);
+				auto e = mu + GeneralizedInverseGaussianMean(lambda, eta, omega);
+				super(pgig, params.beta, mu, [e]);				
+			}
+		}
+	}
+
+	import distribution.params;
+	immutable double lambda = 2;
+	immutable double mu = 0.3;
+	immutable params = GHypEtaOmega!double(2, 3, 4);
+	auto cghyp = new GeneralizedHyperbolicCDF!double(lambda, params, mu);
+	auto cnvmm = new MyGeneralizedHyperbolicCDF!double(lambda, params, mu);
+	foreach(i; [-100, 10, 0, 10, 100])
+		assert(approxEqual(cghyp(i), cnvmm(i)));
 }
 
 
@@ -315,7 +414,7 @@ final class GeneralizedGammaCDF(T) : CDF!T
 		power = power parameter
 		scale = scale parameter
 	+/
-	this(T shape, T power, T scale = 1)
+	this(T shape, T power, T scale)
 	in {
 		assert(shape.isNormal);
 		assert(shape > 0);
