@@ -16,32 +16,44 @@
 <a href="index.html" class="home">⌂</a><input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
 <small>distribution.<a href=distribution/pdf.html>pdf</a>.</small><span class="highlight">VarianceGammaPDF</span>
 </div>
-<div class="toc">
+<div class="sidebar">
+<a href="distribution/pdf.html#hide-toc" class="hide" id="hide-toc">&#171;</a>
+<a href="distribution/pdf.html#show-toc" class="show" id="show-toc">&#187;</a>
+<div id="toc-id" class="toc">
+<div class="toc-additional">
+<div class="section "><p>missing file
+</p>
+
+
+</div>
+
+</div>
 <ul><li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
 <ul id="atmosphere">
-<li><small>atmosphere.</small><a href="atmosphere/mixture.html">mixture</a></li>
+<li>atmosphere.<a href="atmosphere/mixture.html">mixture</a></li>
 <li><span class="package" onclick="show_hide('atmosphere.parametrized');">atmosphere.parametrized</span>
 <ul id="atmosphere.parametrized">
-<li><small>atmosphere.parametrized.</small><a href="atmosphere/parametrized/nvmm.html">nvmm</a></li>
+<li>atmosphere.parametrized.<a href="atmosphere/parametrized/nvmm.html">nvmm</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li><span class="package" onclick="show_hide('distribution');"><a href="distribution.html">distribution</a></span>
-<ul id="distribution" style='display:block;'>
-<li><small>distribution.</small><a href="distribution/cdf.html">cdf</a></li>
-<li><small>distribution.</small><a href="distribution/derivative.html">derivative</a></li>
-<li><small>distribution.</small><a href="distribution/moment.html">moment</a></li>
-<li><small>distribution.</small><a href="distribution/params.html">params</a></li>
-<li><span class="selected"><small>distribution.</small><a href="distribution/pdf.html">pdf</a></span>
+<ul id="distribution" style='display:block'>
+<li>distribution.<a href="distribution/cdf.html">cdf</a></li>
+<li>distribution.<a href="distribution/derivative.html">derivative</a></li>
+<li>distribution.<a href="distribution/moment.html">moment</a></li>
+<li>distribution.<a href="distribution/params.html">params</a></li>
+<li><span class=" selected">distribution.<a href="distribution/pdf.html">pdf</a></span>
 </li>
-<li><small>distribution.</small><a href="distribution/quantile.html">quantile</a></li>
-<li><small>distribution.</small><a href="distribution/random.html">random</a></li>
+<li>distribution.<a href="distribution/quantile.html">quantile</a></li>
+<li>distribution.<a href="distribution/random.html">random</a></li>
 </ul>
 </li>
 <li><a href="simple_matrix.html">simple_matrix</a></li>
 
 </ul>
+</div>
 </div>
 <div class="content">
 <pre><code>public final class VarianceGammaPDF(T) : <a href="distribution/pdf/PDF.html">PDF</a>!T
@@ -76,9 +88,12 @@ assert(abs(result.value - 1) < result.error);
 </p>
 </td></tr></table>
 </div>
-
 <script>hljs.initHighlightingOnLoad();</script>
+
 </div>
+<footer>
+Generated with <a href="https://github.com/kiith-sa/harbored-mod">harbored-mod</a>
+</footer>
 </div>
 </body>
 </html>

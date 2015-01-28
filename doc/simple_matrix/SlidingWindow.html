@@ -16,32 +16,44 @@
 <a href="index.html" class="home">⌂</a><input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
 <small><a href=simple_matrix.html>simple_matrix</a>.</small><span class="highlight">SlidingWindow</span>
 </div>
-<div class="toc">
+<div class="sidebar">
+<a href="simple_matrix.html#hide-toc" class="hide" id="hide-toc">&#171;</a>
+<a href="simple_matrix.html#show-toc" class="show" id="show-toc">&#187;</a>
+<div id="toc-id" class="toc">
+<div class="toc-additional">
+<div class="section "><p>missing file
+</p>
+
+
+</div>
+
+</div>
 <ul><li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
 <ul id="atmosphere">
-<li><small>atmosphere.</small><a href="atmosphere/mixture.html">mixture</a></li>
+<li>atmosphere.<a href="atmosphere/mixture.html">mixture</a></li>
 <li><span class="package" onclick="show_hide('atmosphere.parametrized');">atmosphere.parametrized</span>
 <ul id="atmosphere.parametrized">
-<li><small>atmosphere.parametrized.</small><a href="atmosphere/parametrized/nvmm.html">nvmm</a></li>
+<li>atmosphere.parametrized.<a href="atmosphere/parametrized/nvmm.html">nvmm</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li><span class="package" onclick="show_hide('distribution');"><a href="distribution.html">distribution</a></span>
 <ul id="distribution">
-<li><small>distribution.</small><a href="distribution/cdf.html">cdf</a></li>
-<li><small>distribution.</small><a href="distribution/derivative.html">derivative</a></li>
-<li><small>distribution.</small><a href="distribution/moment.html">moment</a></li>
-<li><small>distribution.</small><a href="distribution/params.html">params</a></li>
-<li><small>distribution.</small><a href="distribution/pdf.html">pdf</a></li>
-<li><small>distribution.</small><a href="distribution/quantile.html">quantile</a></li>
-<li><small>distribution.</small><a href="distribution/random.html">random</a></li>
+<li>distribution.<a href="distribution/cdf.html">cdf</a></li>
+<li>distribution.<a href="distribution/derivative.html">derivative</a></li>
+<li>distribution.<a href="distribution/moment.html">moment</a></li>
+<li>distribution.<a href="distribution/params.html">params</a></li>
+<li>distribution.<a href="distribution/pdf.html">pdf</a></li>
+<li>distribution.<a href="distribution/quantile.html">quantile</a></li>
+<li>distribution.<a href="distribution/random.html">random</a></li>
 </ul>
 </li>
-<li><span class="selected"><a href="simple_matrix.html">simple_matrix</a></span>
+<li><span class=" selected"><a href="simple_matrix.html">simple_matrix</a></span>
 </li>
 
 </ul>
+</div>
 </div>
 <div class="content">
 <pre><code>public struct SlidingWindow(T)
@@ -52,10 +64,10 @@
 
 </div>
 <div class="section "><h2>Example</h2>
-<pre><code>auto sl = <a href="simple_matrix/SlidingWindow.html">SlidingWindow</a>!double(4, 3);
-sl.<a href="simple_matrix/SlidingWindow.put.html">put</a>([0, 3, 6, 9]);
-sl.<a href="simple_matrix/SlidingWindow.put.html">put</a>([1, 4, 7, 9]);
-sl.<a href="simple_matrix/SlidingWindow.put.html">put</a>([2, 5, 8, 0]);
+<pre><code>auto sl = <a href="simple_matrix.SlidingWindow.html">SlidingWindow</a>!double(4, 3);
+sl.<a href="simple_matrix.SlidingWindow.put.html">put</a>([0, 3, 6, 9]);
+sl.<a href="simple_matrix.SlidingWindow.put.html">put</a>([1, 4, 7, 9]);
+sl.<a href="simple_matrix.SlidingWindow.put.html">put</a>([2, 5, 8, 0]);
 assert(sl[1, 2] == 7);
 assert(sl.matrix[2, 1] == 7);
 sl.front.equal([0, 3, 6, 9]);
@@ -64,12 +76,12 @@ sl.front.equal([1, 4, 7, 9]);
 sl.backTransversal == [9, 0];
 foreach(i; 0..4)
 {
-	assert(sl.matrix.ptr != sl.<a href="simple_matrix/SlidingWindow.data.html">data</a>.ptr);
-	sl.<a href="simple_matrix/SlidingWindow.put.html">put</a>([i,i+4,i+8, 0]);
+	assert(sl.matrix.ptr != sl.<a href="simple_matrix.SlidingWindow.data.html">data</a>.ptr);
+	sl.<a href="simple_matrix.SlidingWindow.put.html">put</a>([i,i+4,i+8, 0]);
 	sl.popFront();
 }
-assert(sl.matrix.ptr-1 == sl.<a href="simple_matrix/SlidingWindow.data.html">data</a>.ptr);
-sl.<a href="simple_matrix/SlidingWindow.put.html">put</a>([6, 7, 0, 3]);
+assert(sl.matrix.ptr-1 == sl.<a href="simple_matrix.SlidingWindow.data.html">data</a>.ptr);
+sl.<a href="simple_matrix.SlidingWindow.put.html">put</a>([6, 7, 0, 3]);
 assert(sl.length == 3);
 assert(sl.matrix.length == 4);
 assert(sl.transversal(1) == [6, 7, 7]);
@@ -79,13 +91,16 @@ assert(sl.transversal(1) == [6, 7, 7]);
 </div>
 <div class="section "><h2>Variables</h2><table><tr><td><a href="simple_matrix/SlidingWindow.data.html">data</a></td><td><pre><code>T[]
 </code></pre>
-</td><td></td></tr><tr><td><a href="simple_matrix/SlidingWindow.transposedMatrix.html">transposedMatrix</a></td><td><pre><code><a href="simple_matrix/TransposedMatrix.html">TransposedMatrix</a>!T
+</td><td></td></tr><tr><td><a href="simple_matrix/SlidingWindow.transposedMatrix.html">transposedMatrix</a></td><td><pre><code><a href="simple_matrix.TransposedMatrix.html">TransposedMatrix</a>!T
 </code></pre>
 </td><td></td></tr></table><h2>Functions</h2><table><tr><td><a href="simple_matrix/SlidingWindow.this.html">this</a></td><td></td><td></td></tr><tr><td><a href="simple_matrix/SlidingWindow.reset.html">reset</a><span class="extrainfo"></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/SlidingWindow.put.html">put</a><span class="extrainfo"></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/SlidingWindow.reserveBackN.html">reserveBackN</a><span class="extrainfo"></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/SlidingWindow.moveToFront.html">moveToFront</a><span class="extrainfo"></span></td><td></td><td></td></tr></table>
 </div>
-
 <script>hljs.initHighlightingOnLoad();</script>
+
 </div>
+<footer>
+Generated with <a href="https://github.com/kiith-sa/harbored-mod">harbored-mod</a>
+</footer>
 </div>
 </body>
 </html>

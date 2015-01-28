@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<link rel="stylesheet" type="text/css" href="../../style.css"/>
+<script src="../../highlight.pack.js"></script>
+<title>NormalVarianceMeanMixtureCDF</title>
+<base href="../../"/>
+<script src="search.js"></script>
+<script src="show_hide.js"></script>
+</head>
+<body>
+<div class="main">
+<div class="breadcrumbs">
+<table id="results"></table>
+<a href="index.html" class="home">⌂</a><input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
+<small>distribution.<a href=distribution/cdf.html>cdf</a>.</small><span class="highlight">NormalVarianceMeanMixtureCDF</span>
+</div>
+<div class="sidebar">
+<a href="distribution/cdf.html#hide-toc" class="hide" id="hide-toc">&#171;</a>
+<a href="distribution/cdf.html#show-toc" class="show" id="show-toc">&#187;</a>
+<div id="toc-id" class="toc">
+<div class="toc-additional">
+<div class="section "><p>missing file
+</p>
+
+
+</div>
+
+</div>
+<ul><li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
+<ul id="atmosphere">
+<li>atmosphere.<a href="atmosphere/mixture.html">mixture</a></li>
+<li><span class="package" onclick="show_hide('atmosphere.parametrized');">atmosphere.parametrized</span>
+<ul id="atmosphere.parametrized">
+<li>atmosphere.parametrized.<a href="atmosphere/parametrized/nvmm.html">nvmm</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><span class="package" onclick="show_hide('distribution');"><a href="distribution.html">distribution</a></span>
+<ul id="distribution" style='display:block'>
+<li><span class=" selected">distribution.<a href="distribution/cdf.html">cdf</a></span>
+</li>
+<li>distribution.<a href="distribution/derivative.html">derivative</a></li>
+<li>distribution.<a href="distribution/moment.html">moment</a></li>
+<li>distribution.<a href="distribution/params.html">params</a></li>
+<li>distribution.<a href="distribution/pdf.html">pdf</a></li>
+<li>distribution.<a href="distribution/quantile.html">quantile</a></li>
+<li>distribution.<a href="distribution/random.html">random</a></li>
+</ul>
+</li>
+<li><a href="simple_matrix.html">simple_matrix</a></li>
+
+</ul>
+</div>
+</div>
+<div class="content">
+<pre><code>public abstract class NormalVarianceMeanMixtureCDF(T) : <a href="distribution/cdf/CDF.html">CDF</a>!T
+if(isFloatingPoint!T)
+</code></pre>
+<div class="section "><p>Variance-mean mixture of normals
+</p>
+
+
+</div>
+<div class="section "><h2>Example</h2>
+<pre><code>import distribution;
+
+class MyGeneralizedHyperbolicCDF(T) : <a href="distribution/cdf/NormalVarianceMeanMixtureCDF.html">NormalVarianceMeanMixtureCDF</a>!T
+{
+	<a href="distribution/cdf/NormalVarianceMeanMixtureCDF.this.html">this</a>(T lambda, <a href="distribution/params/GHypEtaOmega.html">GHypEtaOmega</a>!T params, T mu)
+	{
+		with(params)
+		{
+			auto pgig  = new <a href="distribution/pdf/ProperGeneralizedInverseGaussianPDF.html">ProperGeneralizedInverseGaussianPDF</a>!T(lambda, eta, omega);
+			auto mean = <a href="distribution/moment/ProperGeneralizedInverseGaussianMean.html">ProperGeneralizedInverseGaussianMean</a>(lambda, eta, omega);
+			super(pgig, params.beta, mu, [mean]);				
+		}
+	}
+}
+
+immutable double lambda = 2;
+immutable double mu = 0.3;
+immutable params = <a href="distribution/params/GHypEtaOmega.html">GHypEtaOmega</a>!double(2, 3, 4);
+auto cghyp = new <a href="distribution/cdf/GeneralizedHyperbolicCDF.html">GeneralizedHyperbolicCDF</a>!double(lambda, params.alpha, params.beta, params.delta, mu);
+auto cnvmm = new MyGeneralizedHyperbolicCDF!double(lambda, params, mu);
+foreach(i; [-100, 10, 0, 10, 100])
+	assert(approxEqual(cghyp(i), cnvmm(i)));
+
+</code></pre>
+
+</div>
+<div class="section "><h2>Functions</h2><table><tr><td><a href="distribution/cdf/NormalVarianceMeanMixtureCDF.this.html">this</a></td><td></td><td><p>Constructor
+</p>
+</td></tr></table>
+</div>
+<script>hljs.initHighlightingOnLoad();</script>
+
+</div>
+<footer>
+Generated with <a href="https://github.com/kiith-sa/harbored-mod">harbored-mod</a>
+</footer>
+</div>
+</body>
+</html>
