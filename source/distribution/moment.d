@@ -5,13 +5,43 @@ module distribution.moment;
 
 import bessel;
 import std.typecons;
-import std.math;
+import std.mathspecial;
 
 
 /++
-Raw moment
+Moments of the Generalized gamma distribution
 +/
-T E_GIG(T)(T lambda, T eta, T omega, uint order = 1)
+T GeneralizedGammaMean(T)(T shape, T scale, T power, uint order = 1)
+{
+	return scale^^order * (gamma(shape+order/power) / gamma(shape));
+}
+
+///
+unittest
+{
+	auto expectation     = GeneralizedGammaMean!double(2.0, 3.0, 4.0);
+	auto secondRowMoment = GeneralizedGammaMean!double(2.0, 3.0, 4.0, 2);
+}
+
+/++
+Moments of the Generalized variance-gamma distribution
++/
+T GeneralizedVarianceGammaMean(T)(T shape, T scale, T power, T beta)
+{
+	return beta * GeneralizedGammaMean(shape, scale, power);
+}
+
+///
+unittest
+{
+	auto expectation = GeneralizedVarianceGammaMean!double(2.0, 3.0, 4.0, 5.0);
+}
+
+
+/++
+Moments of the Generalized inverse Gaussian distribution
++/
+T GeneralizedInverseGaussianMean(T)(T lambda, T eta, T omega, uint order = 1)
 {
 	immutable k0 = besselK(omega, lambda        , Flag!"ExponentiallyScaled".yes);
 	immutable kr = besselK(omega, lambda + order, Flag!"ExponentiallyScaled".yes);
@@ -21,15 +51,15 @@ T E_GIG(T)(T lambda, T eta, T omega, uint order = 1)
 ///
 unittest
 {
-	auto expectation     = E_GIG!double(2.0, 3.0, 4.0);
-	auto secondRowMoment = E_GIG!double(2.0, 3.0, 4.0, 2);
+	auto expectation     = GeneralizedInverseGaussianMean!double(2.0, 3.0, 4.0);
+	auto secondRowMoment = GeneralizedInverseGaussianMean!double(2.0, 3.0, 4.0, 2);
 }
 
 
 /++
-Variance
+Variance of the Generalized inverse Gaussian distribution
 +/
-T V_GIG(T)(T lambda, T eta, T omega)
+T GeneralizedInverseGaussianVariance(T)(T lambda, T eta, T omega)
 {
 	immutable k0 = besselK(omega, lambda    , Flag!"ExponentiallyScaled".yes);
 	immutable k1 = besselK(omega, lambda + 1, Flag!"ExponentiallyScaled".yes);
@@ -40,32 +70,32 @@ T V_GIG(T)(T lambda, T eta, T omega)
 ///
 unittest
 {
-	auto expectation     = E_GIG!double(2.0, 3.0, 4.0);
-	auto secondRowMoment = E_GIG!double(2.0, 3.0, 4.0, 2);
-	auto variance        = V_GIG!double(2.0, 3.0, 4.0);
+	auto expectation     = GeneralizedInverseGaussianMean!double(2.0, 3.0, 4.0);
+	auto secondRowMoment = GeneralizedInverseGaussianMean!double(2.0, 3.0, 4.0, 2);
+	auto variance        = GeneralizedInverseGaussianVariance!double(2.0, 3.0, 4.0);
 	assert(approxEqual(secondRowMoment - expectation^^2, variance));
 }
 
 
 /++
-Expectation
+Mean of the Generalized Hyperbolic distribution
 +/
-T E_GHyp(T)(T lambda, T beta, T eta, T omega)
+T GeneralizedHyperbolicMean(T)(T lambda, T beta, T eta, T omega)
 {
-	return beta * E_GIG(lambda, eta, omega);
+	return beta * GeneralizedInverseGaussianMean(lambda, eta, omega);
 }
 
 ///
 unittest
 {
-	auto expectation = E_GHyp!double(2.0, 5.0, 3.0, 4.0);
+	auto expectation = GeneralizedHyperbolicMean!double(2.0, 5.0, 3.0, 4.0);
 }
 
 
 /++
-Variance
+Variance of the Generalized Hyperbolic distribution
 +/
-T V_GHyp(T)(T lambda, T beta, T eta, T omega)
+T GeneralizedHyperbolicVariance(T)(T lambda, T beta, T eta, T omega)
 {
 	immutable k0 = besselK(omega, lambda    , Flag!"ExponentiallyScaled".yes);
 	immutable k1 = besselK(omega, lambda + 1, Flag!"ExponentiallyScaled".yes);
@@ -76,5 +106,5 @@ T V_GHyp(T)(T lambda, T beta, T eta, T omega)
 ///
 unittest
 {
-	auto variance = V_GHyp!double(2.0, 5.0, 3.0, 4.0);
+	auto variance = GeneralizedHyperbolicVariance!double(2.0, 5.0, 3.0, 4.0);
 }
