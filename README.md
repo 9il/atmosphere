@@ -46,7 +46,7 @@ There is no instruction for **Windows**. You are welcome to create it.
 4. Read about [DUB package format](http://code.dlang.org/package-format)
 
 ## Atmosphere GM
-To use [this package](http://code.dlang.org/packages/atmosphere_gm), put the following dependency into your project's
+To use [this package](http://code.dlang.org/packages/atmosphere_gm) put the following dependency into your project's
 [dub](http://code.dlang.org/about).json into the dependencies section:
 ```json
 {
@@ -55,6 +55,11 @@ To use [this package](http://code.dlang.org/packages/atmosphere_gm), put the fol
 		"atmosphere_gm": ">=0.0.11"
 	}
 }
+```
+and the following imports into your program
+```D
+import atmosphere;
+import distribution;
 ```
 
 # Compilers and optimization
