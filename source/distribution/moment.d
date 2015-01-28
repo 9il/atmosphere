@@ -41,7 +41,7 @@ unittest
 /++
 Moments of the Generalized inverse Gaussian distribution
 +/
-T GeneralizedInverseGaussianMean(T)(T lambda, T eta, T omega, uint order = 1)
+T ProperGeneralizedInverseGaussianMean(T)(T lambda, T eta, T omega, uint order = 1)
 {
 	immutable k0 = besselK(omega, lambda        , Flag!"ExponentiallyScaled".yes);
 	immutable kr = besselK(omega, lambda + order, Flag!"ExponentiallyScaled".yes);
@@ -51,15 +51,15 @@ T GeneralizedInverseGaussianMean(T)(T lambda, T eta, T omega, uint order = 1)
 ///
 unittest
 {
-	auto expectation     = GeneralizedInverseGaussianMean!double(2.0, 3.0, 4.0);
-	auto secondRowMoment = GeneralizedInverseGaussianMean!double(2.0, 3.0, 4.0, 2);
+	auto expectation     = ProperGeneralizedInverseGaussianMean!double(2.0, 3.0, 4.0);
+	auto secondRowMoment = ProperGeneralizedInverseGaussianMean!double(2.0, 3.0, 4.0, 2);
 }
 
 
 /++
 Variance of the Generalized inverse Gaussian distribution
 +/
-T GeneralizedInverseGaussianVariance(T)(T lambda, T eta, T omega)
+T ProperGeneralizedInverseGaussianVariance(T)(T lambda, T eta, T omega)
 {
 	immutable k0 = besselK(omega, lambda    , Flag!"ExponentiallyScaled".yes);
 	immutable k1 = besselK(omega, lambda + 1, Flag!"ExponentiallyScaled".yes);
@@ -70,9 +70,9 @@ T GeneralizedInverseGaussianVariance(T)(T lambda, T eta, T omega)
 ///
 unittest
 {
-	auto expectation     = GeneralizedInverseGaussianMean!double(2.0, 3.0, 4.0);
-	auto secondRowMoment = GeneralizedInverseGaussianMean!double(2.0, 3.0, 4.0, 2);
-	auto variance        = GeneralizedInverseGaussianVariance!double(2.0, 3.0, 4.0);
+	auto expectation     = ProperGeneralizedInverseGaussianMean!double(2.0, 3.0, 4.0);
+	auto secondRowMoment = ProperGeneralizedInverseGaussianMean!double(2.0, 3.0, 4.0, 2);
+	auto variance        = ProperGeneralizedInverseGaussianVariance!double(2.0, 3.0, 4.0);
 	assert(approxEqual(secondRowMoment - expectation^^2, variance));
 }
 
@@ -82,7 +82,7 @@ Mean of the Generalized Hyperbolic distribution
 +/
 T GeneralizedHyperbolicMean(T)(T lambda, T beta, T eta, T omega)
 {
-	return beta * GeneralizedInverseGaussianMean(lambda, eta, omega);
+	return beta * ProperGeneralizedInverseGaussianMean(lambda, eta, omega);
 }
 
 ///
