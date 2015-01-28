@@ -9,6 +9,8 @@ import std.numeric;
 import std.math;
 import std.mathspecial;
 import std.typecons;
+import std.algorithm;
+import std.array;
 
 import distribution.params;
 
@@ -167,7 +169,7 @@ final class GeneralizedGammaPDF(T) : PDF!T
 		power = power parameter
 		scale = scale parameter
 	+/
-	this(T shape, T power, T scale = 1)
+	this(T shape, T power, T scale)
 	in {
 		assert(shape.isNormal);
 		assert(shape > 0);
@@ -621,7 +623,7 @@ final class GeneralizedHyperbolicPDF(T) : PDF!T
 	/++
 	Constructor
 	Params:
-		lambda =
+		lambda = 
 		alpha = 
 		beta = 
 		delta = 
@@ -660,6 +662,139 @@ final class GeneralizedHyperbolicPDF(T) : PDF!T
 unittest 
 {
 	auto pdf = new GeneralizedHyperbolicPDF!double(1.1, 1.1, 0.9, 1.1, 1.1);
+	auto x = pdf(0.1);
+	assert(x.isNormal);
+
+	import scid.calculus : integrate;
+	auto result = pdf.integrate(-double.infinity, double.infinity);
+	assert(abs(result.value - 1) < result.error);
+}
+
+
+/++
+Normal variance mean mixture
++/
+abstract class NormalVarianceMeanMixturePDF(T) : PDF!T
+	if(isFloatingPoint!T)
+{
+	private PDF!T pdf;
+	private T beta, mu;
+	private T epsRel, epsAbs;
+	private T[] subdivisions;
+
+	/++
+	Constructor
+    Params:
+		pdf     = The PDF to _integrate.
+		beta = NVMM scale
+		mu = NVMM location
+		subdivisions     = TODO.
+		epsRel  = (optional) The requested relative accuracy.
+		epsAbs  = (optional) The requested absolute accuracy.
+	See_also: [struct Result](https://github.com/kyllingstad/scid/blob/a9f3916526e4bf9a4da35d14a969e1abfa17a496/source/scid/types.d)
+	+/
+	this(PDF!T pdf, T beta, T mu, T[] subdivisions = null, T epsRel = 1e-6, T epsAbs = 0)
+	in {
+		assert(subdivisions.all!isFinite);
+		assert(subdivisions.all!(s => s > 0));
+		assert(subdivisions.isSorted);
+		assert(subdivisions.findAdjacent.empty);
+	}
+	body {
+		this.pdf = pdf;
+		this.beta = beta;
+		this.mu = mu;
+		this.epsRel = epsRel;
+		this.epsAbs = epsAbs;
+		this.subdivisions = subdivisions;
+	}
+
+
+	T opCall(T x)
+	{
+		import scid.calculus : integrate;
+		T f(T z) {
+			return exp(-0.5f * (x - (mu + beta * z)) ^^ 2 / z) / sqrt(2*PI*z) * pdf(z);
+		}
+		T sum = 0;
+		T a = 0;
+		foreach(s; subdivisions)
+		{
+			sum += integrate(&f, a, s, epsRel, epsAbs);
+			a = s;
+		}
+		sum += integrate(&f, a, T.infinity);
+		return sum;
+	}
+}
+
+///
+unittest
+{
+	class MyGHyp(T) : NormalVarianceMeanMixturePDF!T
+	{
+		import distribution.moment;
+		this(T lambda, GHypEtaOmega!T params, T mu)
+		{
+			with(params)
+			{
+				auto pgig  = new ProperGeneralizedInverseGaussianPDF!double(lambda, eta, omega);
+				auto e = GeneralizedInverseGaussianMean(lambda, eta, omega);
+				super(pgig, params.beta, mu, [e]);				
+			}
+		}
+	}
+
+	import distribution.params;
+	immutable double lambda = 2;
+	immutable double mu = 0.3;
+	immutable params = GHypEtaOmega!double(2, 3, 4);
+	auto pghyp = new GeneralizedHyperbolicPDF!double(lambda, params.alpha, params.beta, params.delta, mu);
+	auto pnvmm = new MyGHyp!double(lambda, params, mu);
+	foreach(i; 0..5)
+		assert(approxEqual(pghyp(i), pnvmm(i)));
+}
+
+
+/++
+Generalized variance-gamma (generalized gamma mixture of normals) PDF
++/
+final class GeneralizedVarianceGammaPDF(T) : NormalVarianceMeanMixturePDF!T
+	if(isFloatingPoint!T)
+{
+	/++
+	Constructor
+	Params:
+		shape = shape parameter (generalized gamma)
+		power = power parameter (generalized gamma)
+		scale = scale parameter (generalized gamma)
+		beta = NVMM scale
+		mu = NVMM location
+	+/
+	this(T shape, T power, T scale, T beta, T mu)
+	in {
+		assert(shape.isNormal);
+		assert(shape > 0);
+		assert(power.isFinite);
+		assert(scale.isNormal);
+		assert(scale > 0);
+		assert(beta.isFinite);
+		assert(mu.isFinite);
+	}
+	body {
+		import distribution.moment : GeneralizedGammaMean;
+		auto p  = new GeneralizedGammaPDF!double(shape, power, scale);
+		auto e = GeneralizedGammaMean(shape, power, scale);
+		assert(e > 0);
+		assert(e.isFinite);
+		super(p, beta, mu, [e]);
+	}
+}
+
+///
+unittest 
+{
+	auto pdf = new GeneralizedVarianceGammaPDF!double(1.1, 1.1, 0.9, 1.1, 1.1);
 	auto x = pdf(0.1);
 	assert(x.isNormal);
 
