@@ -764,6 +764,26 @@ class GradientLikelihoodMaximization(T) : GradientDescentPartial!("-1/a", T), Li
 }
 
 
+/**
+*/
+class EMLikelihoodMaximization(T) : EMDescent!((a, b){foreach(i, e; a) b[i] = -1/e;}, T), LikelihoodMaximization!T
+	if(isFloatingPoint!T)
+{
+	/**
+	Constructor
+	Params:
+		k = number of components
+		maxLength = maximal length of features. In terms of likelihood maximization maxLength is maximal length of a sample.
+	*/
+	this(size_t k, size_t maxLength)
+	{
+		super(k, maxLength);
+	}
+
+	mixin LikelihoodMaximizationTemplate!T;
+}
+
+
 package mixin template LikelihoodMaximizationTemplate(T)
 {
 	void put(PDFRange, SampleRange)(PDFRange pdfs, SampleRange sample)
@@ -820,6 +840,7 @@ unittest {
 	alias C1 = LikelihoodMaximization!float;
 	alias C10 = GradientLikelihoodMaximization!float;
 	alias C11 = CoordinateLikelihoodMaximization!float;
+	alias C12 = EMLikelihoodMaximization!float;
 	alias C2 = GradientDescent!((a, b){}, float);
 }
 
@@ -830,6 +851,7 @@ unittest {
 	alias C1 = LikelihoodMaximization!double;
 	alias C10 = GradientLikelihoodMaximization!double;
 	alias C11 = CoordinateLikelihoodMaximization!double;
+	alias C12 = EMLikelihoodMaximization!double;
 	alias C2 = GradientDescent!((a, b){}, double);
 }
 
@@ -840,5 +862,6 @@ unittest {
 	alias C1 = LikelihoodMaximization!real;
 	alias C10 = GradientLikelihoodMaximization!real;
 	alias C11 = CoordinateLikelihoodMaximization!real;
+	alias C12 = EMLikelihoodMaximization!real;
 	alias C2 = GradientDescent!((a, b){}, real);
 }
