@@ -1,4 +1,4 @@
-Atmosphere GM contains an experimental algorithms for new generation of likelihood maximization methods. The goal of this library is to create an reliable and simple in use technology that can be used by software engineers. Package is growing step by step with mathematical publications.
+Atmosphere GM contains an experimental algorithms for new generation of likelihood maximization methods. The goal of this library is to create a reliable and simple in use technology that can be used by software engineers. Package is growing step by step with mathematical publications.
 
 # Travis-CI Status
 + [![Build Status](https://travis-ci.org/9il/atmosphere_gm.svg)](https://travis-ci.org/9il/atmosphere_gm) - [Atmosphere GM](https://travis-ci.org/9il/atmosphere_gm)
@@ -7,7 +7,7 @@ Atmosphere GM contains an experimental algorithms for new generation of likeliho
 #Features
  1. Normal variance-mean mixtures
   + Generalized hyperbolic distribution
-  + Generalized variance-gamma distribution
+  + Generalized variance-gamma distribution (in progress)
  2. Separating mixtures of probability distributions
   + Grid methods
   + Likelihood maximization
@@ -18,9 +18,11 @@ Atmosphere GM contains an experimental algorithms for new generation of likeliho
   + Quantiles
   + Random observations generators
 
+#### What can I use this package for? 
+Atmosphere GM can be used for risk management in economics, finance and thermonuclear reactors ;-)
 
 #Documentation
-Documentation can be found [here](http://9il.github.io/atmosphere_gm/doc/atmosphere.html).
+Documentation (API) can be found [here](http://9il.github.io/atmosphere_gm/doc/atmosphere.html).
 ## Changelog
 See [release notes](https://github.com/9il/atmosphere_gm/releases).
 
@@ -80,3 +82,14 @@ See also [Atmosphere GM Test](https://github.com/9il/atmosphere_gm_test).
 
 # Bugs
 See [bug list](https://github.com/9il/atmosphere_gm/labels/bug).
+
+# TODO & Contribution
+Contribution is welcome.
+#### TODO list
++ **Windows** instruction for BLAS & LAPACK installation.
++ Generalized variance-gamma probability density function.
++ Parameter estimation algorithms for generalized inverse Gaussian and variance-gamma samples.
++ Publication references
++ More `unittest`s
++ Examples
++ [ReadTheDocs](https://readthedocs.org) documentation.
