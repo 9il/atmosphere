@@ -118,7 +118,7 @@ unittest
 			with(params)
 			{
 				auto pgig  = new ProperGeneralizedInverseGaussianPDF!T(lambda, eta, omega);
-				auto e = mu + ProperGeneralizedInverseGaussianMean(lambda, eta, omega);
+				auto e = mu + properGeneralizedInverseGaussianMean(lambda, eta, omega);
 				super(pgig, params.beta, mu, [e]);				
 			}
 		}
@@ -161,9 +161,9 @@ final class GeneralizedVarianceGammaPDF(T) : NormalVarianceMeanMixturePDF!T
 		assert(mu.isFinite);
 	}
 	body {
-		import distribution.moment : GeneralizedGammaMean;
+		import distribution.moment : generalizedGammaMean;
 		auto p  = new GeneralizedGammaPDF!double(shape, power, scale);
-		auto e = GeneralizedGammaMean(shape, power, scale);
+		auto e = generalizedGammaMean(shape, power, scale);
 		assert(e > 0);
 		assert(e.isFinite);
 		super(p, beta, mu, [e]);

@@ -140,7 +140,7 @@ unittest
 		{
 			immutable mu = 0;
 			auto pdf = new GeneralizedHyperbolicPDF!real(lambda, params.alpha, params.beta, params.delta, mu);
-			immutable mean = GeneralizedHyperbolicMean!real(lambda, params.beta, params.chi, params.psi);
+			immutable mean = generalizedHyperbolicMean!real(lambda, params.beta, params.chi, params.psi);
 			super(pdf, [mean]);	
 		}
 	}

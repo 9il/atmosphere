@@ -235,7 +235,7 @@ final class GeneralizedHyperbolicCDF(T): NumericCDF!T
 	{
 		immutable params = GHypAlphaDelta!T(alpha, beta, delta);
 		auto pdf = new GeneralizedHyperbolicPDF!T(lambda, alpha, beta, delta, mu);
-		immutable mean = mu + GeneralizedHyperbolicMean(lambda, beta, params.chi, params.psi);
+		immutable mean = mu + generalizedHyperbolicMean(lambda, beta, params.chi, params.psi);
 		super(pdf, [mean]);	
 	}
 }
@@ -262,7 +262,7 @@ final class ProperGeneralizedInverseGaussianCDF(T): NumericCDF!T
 	this(T lambda, T eta, T omega)
 	{
 		auto pdf = new ProperGeneralizedInverseGaussianPDF!T(lambda, eta, omega);
-		immutable mean = ProperGeneralizedInverseGaussianMean(lambda, eta, omega);
+		immutable mean = properGeneralizedInverseGaussianMean(lambda, eta, omega);
 		super(pdf, [mean], 0);	
 	}
 }
@@ -345,7 +345,7 @@ unittest
 			with(params)
 			{
 				auto pgig  = new ProperGeneralizedInverseGaussianPDF!T(lambda, eta, omega);
-				auto mean = ProperGeneralizedInverseGaussianMean(lambda, eta, omega);
+				auto mean = properGeneralizedInverseGaussianMean(lambda, eta, omega);
 				super(pgig, params.beta, mu, [mean]);				
 			}
 		}
@@ -378,7 +378,7 @@ final class GeneralizedVarianceGammaCDF(T): NormalVarianceMeanMixtureCDF!T
 	this(T shape, T power, T scale, T beta, T mu)
 	{
 		auto pdf = new GeneralizedGammaPDF!T(shape, power, scale);
-		immutable mean = GeneralizedGammaMean(shape, power, scale);
+		immutable mean = generalizedGammaMean(shape, power, scale);
 		super(pdf, beta, mu, [mean]);	
 	}
 }
