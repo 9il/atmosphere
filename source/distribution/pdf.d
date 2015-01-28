@@ -51,7 +51,7 @@ unittest
 
 
 /++
-Normal variance mean mixture
+Variance-mean mixture of normals
 +/
 abstract class NormalVarianceMeanMixturePDF(T) : PDF!T
 	if(isFloatingPoint!T)
