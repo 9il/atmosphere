@@ -119,7 +119,7 @@ class GHypCDF: <a href="distribution/cdf/NumericCDF.html">NumericCDF</a>!real
 	{
 		immutable mu = 0;
 		auto pdf = new <a href="distribution/pdf/GeneralizedHyperbolicPDF.html">GeneralizedHyperbolicPDF</a>!real(lambda, params.alpha, params.beta, params.delta, mu);
-		immutable mean = <a href="distribution/moment/GeneralizedHyperbolicMean.html">GeneralizedHyperbolicMean</a>!real(lambda, params.beta, params.chi, params.psi);
+		immutable mean = <a href="distribution/moment/generalizedHyperbolicMean.html">generalizedHyperbolicMean</a>!real(lambda, params.beta, params.chi, params.psi);
 		super(pdf, [mean]);	
 	}
 }

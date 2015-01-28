@@ -74,7 +74,7 @@ class MyGeneralizedHyperbolicCDF(T) : <a href="distribution/cdf/NormalVarianceMe
 		with(params)
 		{
 			auto pgig  = new <a href="distribution/pdf/ProperGeneralizedInverseGaussianPDF.html">ProperGeneralizedInverseGaussianPDF</a>!T(lambda, eta, omega);
-			auto mean = <a href="distribution/moment/ProperGeneralizedInverseGaussianMean.html">ProperGeneralizedInverseGaussianMean</a>(lambda, eta, omega);
+			auto mean = <a href="distribution/moment/properGeneralizedInverseGaussianMean.html">properGeneralizedInverseGaussianMean</a>(lambda, eta, omega);
 			super(pgig, params.beta, mu, [mean]);				
 		}
 	}
