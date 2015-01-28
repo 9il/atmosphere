@@ -49,7 +49,7 @@
 
 <ul>
 <li>Generalized hyperbolic distribution</li>
-<li>Generalized variance-gamma distribution (in progress)</li>
+<li>Generalized variance-gamma distribution</li>
 </ul>
 </li>
 <li>Separating mixtures of probability distributions
@@ -120,15 +120,20 @@
 <h2>
 <a id="atmosphere-gm" class="anchor" href="#atmosphere-gm" aria-hidden="true"><span class="octicon octicon-link"></span></a>Atmosphere GM</h2>
 
-<p>To use <a href="http://code.dlang.org/packages/atmosphere_gm">this package</a>, put the following dependency into your project's
+<p>To use <a href="http://code.dlang.org/packages/atmosphere_gm">this package</a> put the following dependency into your project's
 <a href="http://code.dlang.org/about">dub</a>.json into the dependencies section:</p>
 
 <div class="highlight highlight-json"><pre>{
     <span class="pl-ii">...</span>
     <span class="pl-s1"><span class="pl-pds">"</span>dependencies<span class="pl-pds">"</span></span>: {
-        <span class="pl-s1"><span class="pl-pds">"</span>atmosphere_gm<span class="pl-pds">"</span></span>: <span class="pl-s1"><span class="pl-pds">"</span>&gt;=0.0.10<span class="pl-pds">"</span></span>
+        <span class="pl-s1"><span class="pl-pds">"</span>atmosphere_gm<span class="pl-pds">"</span></span>: <span class="pl-s1"><span class="pl-pds">"</span>&gt;=0.0.11<span class="pl-pds">"</span></span>
     }
 }</pre></div>
+
+<p>and the following imports into your program</p>
+
+<div class="highlight highlight-D"><pre><span class="pl-k">import</span> atmosphere;
+<span class="pl-k">import</span> distribution;</pre></div>
 
 <h1>
 <a id="compilers-and-optimization" class="anchor" href="#compilers-and-optimization" aria-hidden="true"><span class="octicon octicon-link"></span></a>Compilers and optimization</h1>
@@ -175,8 +180,7 @@ To compile your program in release mode with LDC use the following build options
 <ul>
 <li>
 <strong>Windows</strong> instruction for BLAS &amp; LAPACK installation.</li>
-<li>Generalized variance-gamma probability density function.</li>
-<li>Parameter estimation algorithms for generalized inverse Gaussian and variance-gamma samples.</li>
+<li>Parameter estimation algorithms for generalized inverse Gaussian and generalized gamma samples.</li>
 <li>Publication references</li>
 <li>More <code>unittest</code>s</li>
 <li>Examples</li>
