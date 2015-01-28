@@ -1,4 +1,4 @@
-/**
+/++
 Module contains classes that perform optimization of mixture weights over sliding window.
 ------
 problem: p' = argmin f(p), p_i >= 0, Σ_i p_i = 1.
@@ -84,7 +84,7 @@ optimizer.optimize(tolerance);
 
 double[] mixtureWeights2 = optimizer.weights.dup;
 -------
-*/
++/
 module atmosphere.mixture;
 
 
@@ -98,18 +98,18 @@ import std.math;
 
 import atmosphere.internal;
 
-/**
+/++
 Exception thrown for MixtureOptimizer.
-*/
++/
 class MixtureOptimizerException : Exception
 {
-	/**
+	/++
 	Constructor which takes an error message.
 	Params:
 		msg  = Message describing the error.
 		file = The file where the error occurred.
 		line = The line where the error occurred.
-	*/
+	+/
 	this(string msg, 
 		string file = __FILE__, 
 		size_t line = __LINE__) 
@@ -122,13 +122,13 @@ class MixtureOptimizerException : Exception
 ///
 class FeaturesException : MixtureOptimizerException
 {
-	/**
+	/++
 	Constructor which takes an error message.
 	Params:
 		msg  = Message describing the error.
 		file = The file where the error occurred.
 		line = The line where the error occurred.
-	*/
+	+/
 	this(string msg = "There is value in the sample that incompatible with all PDFs or machine precision is insufficient.", 
 		string file = __FILE__, 
 		size_t line = __LINE__) 
@@ -139,8 +139,8 @@ class FeaturesException : MixtureOptimizerException
 }
 
 
-/**
-*/
+/++
++/
 abstract class MixtureOptimizer(T)
 	if(isFloatingPoint!T)
 {
@@ -148,12 +148,12 @@ abstract class MixtureOptimizer(T)
 	package T[] _weights;
 	package T[] _mixture;
 
-	/**
+	/++
 	Constructor
 	Params:
 		k = number of components
 		maxLength = maximal length of features. In terms of likelihood maximization maxLength is maximal length of a sample.
-	*/
+	+/
 	this(size_t k, size_t maxLength)
 	in
 	{
@@ -168,24 +168,24 @@ abstract class MixtureOptimizer(T)
 		_mixture = new T[maxLength];
 	}
 
-	/**
+	/++
 	Perform k (1) iterations of coordinate (gradient or EM) descent optimization algorithm.
 	Params:
 	findRootTolerance = Defines an early termination condition. 
 			Receives the current upper and lower bounds on the root. 
 			The delegate must return true when these bounds are acceptable.
 	See_Also: $(STDREF numeric, findRoot)
-	*/
+	+/
 	abstract void eval(scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null);
 
-	/**
+	/++
 	update method is called when mixture changes occur.
-	*/
+	+/
 	abstract void update();
 
 final:
 
-	/**
+	/++
 	Performs optimization.
 	Params:
 		objectiveFunction = accepts mixture.
@@ -194,7 +194,7 @@ final:
 			The delegate must return true when mixture and weights are acceptable. 
 		findRootTolerance = Tolerance for inner optimization.
 	See_Also: $(STDREF numeric, findRoot)
-	*/
+	+/
 	void optimize(
 			scope T delegate(in T[] mixture) objectiveFunction, 
 			scope bool delegate (T objectiveFunctionValuePrev, T objectiveFunctionValue, in T[] weightsPrev, in T[] weights) tolerance,
@@ -215,7 +215,7 @@ final:
 		while(!tolerance(objectiveFunctionValuePrev, objectiveFunctionValue, weightsPrev, weights));
 	}
 
-	/**
+	/++
 	Performs optimization.
 	Params:
 		objectiveFunction = accepts mixture.
@@ -224,7 +224,7 @@ final:
 			The delegate must return true when mixture are acceptable. 
 		findRootTolerance = Tolerance for inner optimization.
 	See_Also: $(STDREF numeric, findRoot)
-	*/
+	+/
 	void optimize
 	(
 		scope T delegate(in T[] mixture) objectiveFunction, 
@@ -244,7 +244,7 @@ final:
 		while(!tolerance(objectiveFunctionValuePrev, objectiveFunctionValue));
 	}
 
-	/**
+	/++
 	Performs optimization.
 	Params:
 		tolerance = Defines an early termination condition. 
@@ -252,7 +252,7 @@ final:
 			The delegate must return true when mixture and weights are acceptable. 
 		findRootTolerance = Tolerance for inner optimization.
 	See_Also: $(STDREF numeric, findRoot)
-	*/
+	+/
 	void optimize
 	(
 		scope bool delegate (in T[] weightsPrev, in T[] weights) tolerance,
@@ -269,11 +269,11 @@ final:
 		while(!tolerance(weightsPrev, weights));
 	}
 
-	/**
+	/++
 	Puts back new feature for each components.
 	Params:
 		features = One feature per component.
-	*/
+	+/
 	void put(Range)(Range features)
 	if (isInputRange!Range && hasLength!Range && isNumeric!(ElementType!Range))
 	in
@@ -287,11 +287,11 @@ final:
 		updateMixtureBack;
 	}
 
-	/**
+	/++
 	Puts back new features for each components.
 	Params:
 		featuresROR = Range of ranges of features per component.
-	*/
+	+/
 	void put(RangeOfRanges)(RangeOfRanges featuresROR)
 	if (isInputRange!RangeOfRanges && hasLength!RangeOfRanges && 
 		isInputRange!(ElementType!RangeOfRanges) && hasLength!(ElementType!RangeOfRanges) && 
@@ -308,34 +308,34 @@ final:
 		updateMixtureBackN(n);
 	}
 
-	/**
+	/++
 	Returns: current length of features for each component
-	*/
+	+/
 	size_t length() @property const
 	{
 		return _featuresT.matrix.width;
 	}
 
-	/**
+	/++
 	Returns: maximal allowed length of features
-	*/
+	+/
 	size_t maxLength() @property const
 	{
 		return _featuresT.matrix.shift;
 	}
 
 
-	/**
+	/++
 	Reset length of features to zero.
-	*/
+	+/
 	void reset()
 	{
 		_featuresT.reset;
 	}
 
-	/**
+	/++
 	Remove one front feature for each component.
-	*/
+	+/
 	void popFront()
 	in
 	{
@@ -347,11 +347,11 @@ final:
 		_mixture[0.._featuresT.length] = _mixture[1.._featuresT.length+1];
 	}
 
-	/**
+	/++
 	Remove n front features for each component.
 	Params:
 		n = features will be removed
-	*/
+	+/
 	void popFrontN(size_t n)
 	in
 	{
@@ -363,16 +363,16 @@ final:
 		_mixture[0.._featuresT.length] = _mixture[n.._featuresT.length+n];
 	}
 
-	/**
+	/++
 	Returns: Range of range of features for each component. A matrix with k rows and n columns.
 		This is internal representation, and can be discarded after any methods calls.
-	*/
+	+/
 	Matrix!(const(T)) features() const
 	{
 		return cast(typeof(return))_featuresT.matrix;
 	}
 
-	/**
+	/++
 	Returns: Const slice of the internal mixture representation.
 	Example:
 	---
@@ -399,13 +399,13 @@ final:
 	//2: copy
 	mixtureSave2[] = mixture[];
 	---
-	*/
+	+/
 	const(T)[] mixture() @property const
 	{
 		return _mixture[0.._featuresT.length];
 	}
 
-	/**
+	/++
 	Returns: Const slice of the internal weights representation.
 	Example:
 	---
@@ -422,17 +422,17 @@ final:
 	//2: copy
 	weightsSave2[] = weights[];
 	---
-	*/
+	+/
 	const(T)[] weights() @property const
 	{
 		return _weights;
 	}
 
-	/**
+	/++
 	Set the mixture weights and calls [update](update).
 	Params:
 		_weights = new mixture weights
-	*/
+	+/
 	void weights(Range)(Range _weights) @property
 		if(isInputRange!Range) 
 	{
@@ -494,22 +494,22 @@ final:
 }
 
 
-/**
+/++
 Params:
 	Gradient = Gradient of the objective function. `Gradient(a, b)` should perform `b = grad_f(a)`.
-*/
++/
 class EMDescent(alias Gradient, T) : MixtureOptimizer!T
 	if(isFloatingPoint!T)
 {
 	private T[] pi;
 	private T[] c;
 
-	/**
+	/++
 	Constructor
 	Params:
 		k = number of components
 		maxLength = maximal length of features. In terms of likelihood maximization maxLength is maximal length of a sample.
-	*/
+	+/
 	this(size_t k, size_t maxLength)
 	{
 		super(k, maxLength);
@@ -527,10 +527,10 @@ class EMDescent(alias Gradient, T) : MixtureOptimizer!T
 }
 
 
-/**
+/++
 Params:
 	Gradient = Gradient of the objective function. `Gradient(a, b)` should perform `b = grad_f(a)`.
-*/
++/
 class GradientDescent(alias Gradient, T) : MixtureOptimizer!T
 	if(isFloatingPoint!T)
 {
@@ -539,12 +539,12 @@ class GradientDescent(alias Gradient, T) : MixtureOptimizer!T
 	private T[] gamma;
 	private T[] c;
 
-	/**
+	/++
 	Constructor
 	Params:
 		k = number of components
 		maxLength = maximal length of features. In terms of likelihood maximization maxLength is maximal length of a sample.
-	*/
+	+/
 	this(size_t k, size_t maxLength)
 	{
 		super(k, maxLength);
@@ -564,10 +564,10 @@ class GradientDescent(alias Gradient, T) : MixtureOptimizer!T
 }
 
 
-/**
+/++
 Params:
 	PartialDerivative = Partial derivative `y` of objective convex function `u`: `du/dω_j = y(ω_j), 1 <= j <= n`.
-*/
++/
 class GradientDescentPartial(alias PartialDerivative, T) : MixtureOptimizer!T
 	if(isFloatingPoint!T)
 {
@@ -575,12 +575,12 @@ class GradientDescentPartial(alias PartialDerivative, T) : MixtureOptimizer!T
 	private T[] xi;
 	private T[] c;
 
-	/**
+	/++
 	Constructor
 	Params:
 		k = number of components
 		maxLength = maximal length of features. In terms of likelihood maximization maxLength is maximal length of a sample.
-	*/
+	+/
 	this(size_t k, size_t maxLength)
 	{
 		super(k, maxLength);
@@ -599,10 +599,10 @@ class GradientDescentPartial(alias PartialDerivative, T) : MixtureOptimizer!T
 }
 
 
-/**
+/++
 Params:
 	Gradient = Gradient of the objective function. `Gradient(a, b)` should perform `b = grad_f(a)`.
-*/
++/
 class CoordinateDescent(alias Gradient, T) : MixtureOptimizer!T
 	if(isFloatingPoint!T)
 {
@@ -610,12 +610,12 @@ class CoordinateDescent(alias Gradient, T) : MixtureOptimizer!T
 	private T[] xi;
 	private T[] gamma;
 
-	/**
+	/++
 	Constructor
 	Params:
 		k = number of components
 		maxLength = maximal length of features. In terms of likelihood maximization maxLength is maximal length of a sample.
-	*/
+	+/
 	this(size_t k, size_t maxLength)
 	{
 		super(k, maxLength);
@@ -634,21 +634,21 @@ class CoordinateDescent(alias Gradient, T) : MixtureOptimizer!T
 }
 
 
-/**
+/++
 Params:
 	PartialDerivative = Partial derivative `y` of objective convex function `u`: `du/dω_j = y(ω_j), 1 <= j <= n`.
-*/
++/
 class CoordinateDescentPartial(alias PartialDerivative, T) : MixtureOptimizer!T
 	if(isFloatingPoint!T)
 {
 	private T[] pi;
 
-	/**
+	/++
 	Constructor
 	Params:
 		k = number of components
 		maxLength = maximal length of features. In terms of likelihood maximization maxLength is maximal length of a sample.
-	*/
+	+/
 	this(size_t k, size_t maxLength)
 	{
 		super(k, maxLength);
@@ -665,21 +665,21 @@ class CoordinateDescentPartial(alias PartialDerivative, T) : MixtureOptimizer!T
 }
 
 
-/**
-*/
+/++
++/
 interface LikelihoodMaximization(T)
 	if(isFloatingPoint!T)
 {
-	/**
+	/++
 	Params:
 		pdfs = Probability distribution *functions*
 		sample = Sample
 	See_Also: $(STDREF traits, isCallable)
-	*/
+	+/
 	void put(PDFRange, SampleRange)(PDFRange pdfs, SampleRange sample)
 		if (isInputRange!PDFRange && hasLength!PDFRange && isCallable!(ElementType!PDFRange));
 
-	/**
+	/++
 	Performs optimization.
 	Params:
 		tolerance = Defines an early termination condition. 
@@ -687,14 +687,14 @@ interface LikelihoodMaximization(T)
 			The delegate must return true when likelihood and weights are acceptable. 
 		findRootTolerance = Tolerance for inner optimization.
 	See_Also: $(STDREF numeric, findRoot)
-	*/
+	+/
 	void optimize
 	(
 		scope bool delegate (T log2LikelihoodValuePrev, T log2LikelihoodValue, in T[] weightsPrev, in T[] weights) tolerance,
 		scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null,
 	);
 
-	/**
+	/++
 	Performs optimization.
 	Params:
 		tolerance = Defines an early termination condition. 
@@ -703,38 +703,38 @@ interface LikelihoodMaximization(T)
 		findRootTolerance = Tolerance for inner optimization.
 	Throws: [FeaturesException](atmosphere/mixture/FeaturesException.html) if [isFeaturesCorrect](atmosphere/mixture/LikelihoodMaximization.isFeaturesCorrect.html) is false.
 	See_Also: $(STDREF numeric, findRoot)
-	*/
+	+/
 	void optimize
 	(
 		scope bool delegate (T log2LikelihoodValuePrev, T log2LikelihoodValue) tolerance,
 		scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null,
 	);
 
-	/**
+	/++
 	Returns true if for all values in sample exists probability density function from mixture such that `isNormal(PDF(value) * (1.0 / sample.length))`
 	See_Also: $(STDREF math, isNormal)
-	*/
+	+/
 	bool isFeaturesCorrect() const;
 
 
-	/**
+	/++
 	Returns: LogLikelihood base 2.
-	*/
+	+/
 	T log2Likelihood() @property const;
 }
 
 
-/**
-*/
+/++
++/
 class CoordinateLikelihoodMaximization(T) : CoordinateDescentPartial!("-1/a", T), LikelihoodMaximization!T
 	if(isFloatingPoint!T)
 {
-	/**
+	/++
 	Constructor
 	Params:
 		k = number of components
 		maxLength = maximal length of features. In terms of likelihood maximization maxLength is maximal length of a sample.
-	*/
+	+/
 	this(size_t k, size_t maxLength)
 	{
 		super(k, maxLength);
@@ -744,17 +744,17 @@ class CoordinateLikelihoodMaximization(T) : CoordinateDescentPartial!("-1/a", T)
 }
 
 
-/**
-*/
+/++
++/
 class GradientLikelihoodMaximization(T) : GradientDescentPartial!("-1/a", T), LikelihoodMaximization!T
 	if(isFloatingPoint!T)
 {
-	/**
+	/++
 	Constructor
 	Params:
 		k = number of components
 		maxLength = maximal length of features. In terms of likelihood maximization maxLength is maximal length of a sample.
-	*/
+	+/
 	this(size_t k, size_t maxLength)
 	{
 		super(k, maxLength);
@@ -764,17 +764,17 @@ class GradientLikelihoodMaximization(T) : GradientDescentPartial!("-1/a", T), Li
 }
 
 
-/**
-*/
+/++
++/
 class EMLikelihoodMaximization(T) : EMDescent!((a, b){foreach(i, e; a) b[i] = -1/e;}, T), LikelihoodMaximization!T
 	if(isFloatingPoint!T)
 {
-	/**
+	/++
 	Constructor
 	Params:
 		k = number of components
 		maxLength = maximal length of features. In terms of likelihood maximization maxLength is maximal length of a sample.
-	*/
+	+/
 	this(size_t k, size_t maxLength)
 	{
 		super(k, maxLength);
