@@ -392,6 +392,25 @@ unittest
 }
 
 
+///
+unittest
+{
+	final class MyGeneralizedVarianceGammaCDF(T): NumericCDF!T
+	{
+		this(T shape, T power, T scale, T beta, T mu)
+		{
+			auto pdf = new GeneralizedVarianceGammaPDF!T(shape, power, scale, beta, mu);
+			immutable mean = mu + generalizedVarianceGammaMean(shape, power, scale, beta);
+			super(pdf, [mean]);	
+		}
+	}
+	immutable double shape = 2, power = 1.2, scale = 0.3, beta = 3, mu = -1;
+	auto p0 = new GeneralizedVarianceGammaCDF!double(shape, power, scale, beta, mu);
+	auto p1 = new MyGeneralizedVarianceGammaCDF!double(shape, power, scale, beta, mu);
+	foreach(i; 0..10)
+		assert(approxEqual(p0(i), p1(i)));
+}
+
 /++
 Gamma CDF
 +/
