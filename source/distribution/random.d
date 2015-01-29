@@ -415,11 +415,11 @@ final class VarianceGammaRNG(T, UniformRNG = Random) : NormalVarianceMeanMixture
 	Constructor
 	Params:
 		rng = uniform random number generator
-		beta = mixture scale parameter: `Y*U^(1/2)+beta*U`
 		shape = gamma shape parameter
 		scale = gamma scale parameter
+		beta = mixture scale parameter: `Y*U^(1/2)+beta*U`
 	+/
-	this(ref UniformRNG rng, T beta, T shape, T scale = 1)
+	this(ref UniformRNG rng, T shape, T scale, T beta)
 	{
 		super(rng, new GammaRNG!(T, UniformRNG)(rng, shape, scale), beta);
 	}
@@ -448,11 +448,11 @@ final class HyperbolicAsymmetricTRNG(T, UniformRNG = Random) : NormalVarianceMea
 	Constructor
 	Params:
 		rng = uniform random number generator
-		beta = mixture scale parameter: `Y*U^(1/2)+beta*U`
 		shape = inverse-gamma shape parameter
 		scale = inverse-gamma scale parameter
+		beta = mixture scale parameter: `Y*U^(1/2)+beta*U`
 	+/
-	this(ref UniformRNG rng, T beta, T shape, T scale = 1)
+	this(ref UniformRNG rng, T beta, T shape, T scale)
 	{
 		super(rng, new InverseGammaRNG!(T, UniformRNG)(rng, shape, scale), beta);
 	}
@@ -481,12 +481,12 @@ final class GeneralizedVarianceGammaRNG(T, UniformRNG = Random) : NormalVariance
 	Constructor
 	Params:
 		rng = uniform random number generator
-		beta = mixture scale parameter: `Y*U^(1/2)+beta*U`
 		shape = generalized gamma shape parameter
 		power = generalized gamma power parameter
 		scale = generalized gamma scale parameter
+		beta = mixture scale parameter: `Y*U^(1/2)+beta*U`
 	+/
-	this(ref UniformRNG rng, T beta, T shape, T power, T scale = 1)
+	this(ref UniformRNG rng, T shape, T power, T scale, T beta)
 	{
 		super(rng, new GeneralizedGammaRNG!(T, UniformRNG)(rng, shape, power, scale), beta);
 	}
@@ -515,11 +515,11 @@ final class NormalInverseGaussianRNG(T, UniformRNG = Random) : NormalVarianceMea
 	Constructor
 	Params:
 		rng = uniform random number generator
-		beta = mixture scale parameter: `Y*U^(1/2) + beta*U`
 		mu = inverse Gaussian mu parameter
 		lambda = inverse Gaussian lambda parameter
+		beta = mixture scale parameter: `Y*U^(1/2) + beta*U`
 	+/
-	this(ref UniformRNG rng, T beta, T mu, T lambda)
+	this(ref UniformRNG rng, T lambda, T mu, T beta)
 	{
 		super(rng, new InverseGaussianRNG!(T, UniformRNG)(rng, mu, lambda), beta);
 	}
@@ -551,11 +551,11 @@ final class ProperGeneralizedHyperbolicRNG(T, UniformRNG = Random) : NormalVaria
 	Params:
 		rng = uniform random number generator
 		lambda = proper generalized inverse Gaussian lambda parameter
-		beta = mixture scale parameter: `Y*U^(1/2)+beta*U`
 		eta = proper generalized inverse Gaussian eta parameter
 		omega = proper generalized inverse Gaussian omega parameter
+		beta = mixture scale parameter: `Y*U^(1/2)+beta*U`
 	+/
-	this(ref UniformRNG rng, T beta, T lambda, T eta, T omega)
+	this(ref UniformRNG rng, T lambda, T eta, T omega, T beta)
 	{
 		super(rng, new ProperGeneralizedInverseGaussianRNG!(T, UniformRNG)(rng, lambda, eta, omega), beta);
 	}
@@ -587,11 +587,11 @@ final class GeneralizedHyperbolicRNG(T, UniformRNG = Random) : NormalVarianceMea
 	Params:
 		rng = uniform random number generator
 		lambda = generalized inverse Gaussian lambda parameter
-		beta = mixture scale parameter: `Y*U^(1/2)+beta*U`
 		chi = generalized inverse Gaussian chi parameter
 		psi = generalized inverse Gaussian psi parameter
+		beta = mixture scale parameter: `Y*U^(1/2)+beta*U`
 	+/
-	this(ref UniformRNG rng, T lambda, T beta, T chi, T psi)
+	this(ref UniformRNG rng, T lambda, T chi, T psi, T beta)
 	{
 		super(rng, new GeneralizedInverseGaussianRNG!(T, UniformRNG)(rng, lambda, chi, psi), beta);
 	}
