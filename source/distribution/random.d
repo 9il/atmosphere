@@ -86,7 +86,7 @@ unittest
 	import std.random;
 	class MyVarianceGammaRNG : NormalVarianceMeanMixtureRNG!double
 	{
-		this(double beta, double shape, double scale)
+		this(double shape, double scale, double beta)
 		{
 			auto components = new GammaRNG!double(rndGen, shape, scale);
 			super(rndGen, components, beta);
@@ -452,7 +452,7 @@ final class HyperbolicAsymmetricTRNG(T, UniformRNG = Random) : NormalVarianceMea
 		scale = inverse-gamma scale parameter
 		beta = mixture scale parameter: `Y*U^(1/2)+beta*U`
 	+/
-	this(ref UniformRNG rng, T beta, T shape, T scale)
+	this(ref UniformRNG rng, T shape, T scale, T beta)
 	{
 		super(rng, new InverseGammaRNG!(T, UniformRNG)(rng, shape, scale), beta);
 	}
