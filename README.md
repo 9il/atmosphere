@@ -18,6 +18,9 @@ Atmosphere GM contains an experimental algorithms for new generation of likeliho
   + Quantiles
   + Random observations generators
 
+<img src="http://9il.github.io/atmosphere_gm/view/images/GHyp_0148.svg" alt="Generalized hyperbolic distribution" width="250" />
+<img src="http://9il.github.io/atmosphere_gm/view/images/GV-gamma_0120.svg" alt="Generalized variance-gamma distribution" width="250" />
+
 #### What can I use this package for? 
 Atmosphere GM can be used for risk management in economics, finance and thermonuclear reactors ;-)
 
