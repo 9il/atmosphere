@@ -498,7 +498,7 @@ final:
 Params:
 	Gradient = Gradient of the objective function. `Gradient(a, b)` should perform `b = grad_f(a)`.
 +/
-class EMDescent(alias Gradient, T) : MixtureOptimizer!T
+class EM(alias Gradient, T) : MixtureOptimizer!T
 	if(isFloatingPoint!T)
 {
 	private T[] pi;
@@ -766,7 +766,7 @@ class GradientLikelihoodMaximization(T) : GradientDescentPartial!("-1/a", T), Li
 
 /++
 +/
-class EMLikelihoodMaximization(T) : EMDescent!((a, b){foreach(i, e; a) b[i] = -1/e;}, T), LikelihoodMaximization!T
+class EMLikelihoodMaximization(T) : EM!((a, b){foreach(i, e; a) b[i] = 1/e;}, T), LikelihoodMaximization!T
 	if(isFloatingPoint!T)
 {
 	/++
@@ -836,7 +836,7 @@ package mixin template LikelihoodMaximizationTemplate(T)
 
 unittest {
 	alias C0 = CoordinateDescent!((a, b){}, float);
-	alias C3 = EMDescent!((a, b){}, float);
+	alias C3 = EM!((a, b){}, float);
 	alias C1 = LikelihoodMaximization!float;
 	alias C10 = GradientLikelihoodMaximization!float;
 	alias C11 = CoordinateLikelihoodMaximization!float;
@@ -847,7 +847,7 @@ unittest {
 
 unittest {
 	alias C0 = CoordinateDescent!((a, b){}, double);
-	alias C3 = EMDescent!((a, b){}, double);
+	alias C3 = EM!((a, b){}, double);
 	alias C1 = LikelihoodMaximization!double;
 	alias C10 = GradientLikelihoodMaximization!double;
 	alias C11 = CoordinateLikelihoodMaximization!double;
@@ -858,7 +858,7 @@ unittest {
 
 unittest {
 	alias C0 = CoordinateDescent!((a, b){}, real);
-	alias C3 = EMDescent!((a, b){}, real);
+	alias C3 = EM!((a, b){}, real);
 	alias C1 = LikelihoodMaximization!real;
 	alias C10 = GradientLikelihoodMaximization!real;
 	alias C11 = CoordinateLikelihoodMaximization!real;
