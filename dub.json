@@ -1,0 +1,8 @@
+{
+	"name": "atmosphere_gm",
+	"description": "Statistical package",
+	"homepage": "http://9il.github.io/atmosphere_gm",
+	"copyright": "Copyright © 2014 Ilya Yaroshenko",
+	"authors": ["Ilya Yaroshenko"],
+	"license": "Subject to the terms of the MIT license, as written in the included LICENSE.md file.",
+}

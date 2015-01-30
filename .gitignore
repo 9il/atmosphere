@@ -1,6 +1,7 @@
 examples
 .dub
-dub.*
 *.sublime*
 *.a
 __test__library__
+
+dub.selections.json
