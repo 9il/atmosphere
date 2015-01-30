@@ -52,7 +52,7 @@ To use [this package](http://code.dlang.org/packages/atmosphere_gm) put the foll
 {
 	...
 	"dependencies": {
-		"atmosphere_gm": ">=0.0.11"
+		"atmosphere_gm": ">=0.0.12"
 	}
 }
 ```
