@@ -18,3 +18,9 @@ examples/normal_variance_mean_mixture/coordinate.txt
 *.sublime-workspace
 
 c/catmosphere
+
+*.html
+
+*.js
+
+*.css
