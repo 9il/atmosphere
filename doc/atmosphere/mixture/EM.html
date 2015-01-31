@@ -4,7 +4,7 @@
 <meta charset="utf-8"/>
 <link rel="stylesheet" type="text/css" href="../../style.css"/>
 <script src="../../highlight.pack.js"></script>
-<title>this</title>
+<title>EM</title>
 <base href="../../"/>
 <script src="search.js"></script>
 <script src="show_hide.js"></script>
@@ -14,7 +14,7 @@
 <div class="breadcrumbs">
 <table id="results"></table>
 <a href="index.html" class="home">⌂</a><input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
-<small>atmosphere.<a href=atmosphere/mixture.html>mixture</a>.</small><span class="highlight"><a href=atmosphere/mixture/MixtureOptimizer.html>MixtureOptimizer</a>.this</span>
+<small>atmosphere.<a href=atmosphere/mixture.html>mixture</a>.</small><span class="highlight">EM</span>
 </div>
 <div class="sidebar">
 <a href="atmosphere/mixture.html#hide-toc" class="hide" id="hide-toc">&#171;</a>
@@ -53,24 +53,25 @@
 <li><a href="simple_matrix.html">simple_matrix</a></li>
 
 </ul>
-</div>
-</div>
+</div></div>
 <div class="content">
-<pre><code>public this(
+<div class="aggregate-symbol"><div class="description"><pre><code>public class EM(alias Gradient, T) : <a href="atmosphere/mixture/MixtureOptimizer.html">MixtureOptimizer</a>!T
+if(isFloatingPoint!T)
+</code></pre>
+<div class="section"><h2>Parameters</h2>
+<table class="params">
+<tr class="param"><td class="paramName">Gradient</td><td class="paramDoc"><p>Gradient of the objective function. <code class="prettyprint">Gradient(a, b)</code> should perform <code class="prettyprint">b = grad_f(a)</code>.
+</p>
+</td></tr>
+</table>
+</div>
+</div><a class="anchor" id="this"></a><div class="symbol"><div class="description"><pre><code>public this(
     size_t k, 
     size_t maxLength)
 </code></pre>
 <div class="section "><p>Constructor
 </p>
 
-
-</div>
-<div class="section "><h2>Contracts</h2><pre><code>in
-{
-    assert (k);
-    assert (<a href="atmosphere/mixture/MixtureOptimizer.maxLength.html">maxLength</a>);
-}
-</code></pre>
 
 </div>
 <div class="section"><h2>Parameters</h2>
@@ -83,7 +84,11 @@
 </td></tr>
 </table>
 </div>
-<script>hljs.initHighlightingOnLoad();</script>
+</div></div><div class="section members"><h2>Functions</h2><table><tr><td><a href="atmosphere/mixture/EM.html#this">this</a></td><td></td><td><p>Constructor
+</p>
+</td></tr></table>
+</div>
+</div><script>hljs.initHighlightingOnLoad();</script>
 
 </div>
 <footer>

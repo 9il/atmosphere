@@ -53,17 +53,16 @@
 </li>
 
 </ul>
-</div>
-</div>
+</div></div>
 <div class="content">
-<pre><code>public struct TransposedMatrix(T)
+<div class="aggregate-symbol"><div class="description"><pre><code>public struct TransposedMatrix(T)
 </code></pre>
 <div class="section "><h2>Example</h2>
 <pre><code>import std.range;
 
-alias TransposedMatrixD = <a href="simple_matrix.TransposedMatrix.html">TransposedMatrix</a>!double;
+alias TransposedMatrixD = <a href="simple_matrix/TransposedMatrix.html">TransposedMatrix</a>!double;
 
-static assert(is(ElementType!TransposedMatrixD == <a href="simple_matrix.Vector.html">Vector</a>!double));
+static assert(is(ElementType!TransposedMatrixD == <a href="simple_matrix/Vector.html">Vector</a>!double));
 static assert(hasSwappableElements!TransposedMatrixD == false);
 static assert(hasAssignableElements!TransposedMatrixD == false);
 static assert(hasLvalueElements!TransposedMatrixD == false);
@@ -75,7 +74,7 @@ static assert(hasLvalueElements!TransposedMatrixD == false);
 <pre><code>import std.range, std.traits;
 import std.typetuple;
 
-foreach(M; TypeTuple!(<a href="simple_matrix.TransposedMatrix.html">TransposedMatrix</a>!double, <a href="simple_matrix.TransposedMatrix.html">TransposedMatrix</a>!(const double)))
+foreach(M; TypeTuple!(<a href="simple_matrix/TransposedMatrix.html">TransposedMatrix</a>!double, <a href="simple_matrix/TransposedMatrix.html">TransposedMatrix</a>!(const double)))
 {
 	static assert(isRandomAccessRange!M);
 	static assert(hasMobileElements!M);
@@ -86,11 +85,173 @@ foreach(M; TypeTuple!(<a href="simple_matrix.TransposedMatrix.html">TransposedMa
 </code></pre>
 
 </div>
-<div class="section "><h2>Variables</h2><table><tr><td><a href="simple_matrix/TransposedMatrix.matrix.html">matrix</a></td><td><pre><code><a href="simple_matrix.Matrix.html">Matrix</a>!T
+</div><a class="anchor" id="matrix"></a><div class="symbol"><div class="description"><pre><code>public <a href="simple_matrix/Matrix.html">Matrix</a>!T matrix
 </code></pre>
-</td><td></td></tr></table><h2>Functions</h2><table><tr><td><a href="simple_matrix/TransposedMatrix.width.html">width</a><span class="extrainfo"><span class="method-attribs"><span class="attr-const">const</span>, <span class="attr-property">@property</span></span></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/TransposedMatrix.height.html">height</a><span class="extrainfo"><span class="method-attribs"><span class="attr-const">const</span>, <span class="attr-property">@property</span></span></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/TransposedMatrix.lengthTransveral.html">lengthTransveral</a><span class="extrainfo"><span class="method-attribs"><span class="attr-const">const</span>, <span class="attr-property">@property</span></span></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/TransposedMatrix.emptyTransveral.html">emptyTransveral</a><span class="extrainfo"><span class="method-attribs"><span class="attr-const">const</span>, <span class="attr-property">@property</span></span></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/TransposedMatrix.transposed.html">transposed</a><span class="extrainfo"><span class="method-attribs"><span class="attr-inout">inout</span>, <span class="attr-property">@property</span></span></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/TransposedMatrix.frontTransversal.html">frontTransversal</a><span class="extrainfo"><span class="method-attribs"><span class="attr-inout">inout</span>, <span class="attr-property">@property</span></span></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/TransposedMatrix.popFrontTransversal.html">popFrontTransversal</a><span class="extrainfo"></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/TransposedMatrix.popFrontNTransversal.html">popFrontNTransversal</a><span class="extrainfo"></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/TransposedMatrix.backTransversal.html">backTransversal</a><span class="extrainfo"><span class="method-attribs"><span class="attr-inout">inout</span>, <span class="attr-property">@property</span></span></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/TransposedMatrix.popBackTransversal.html">popBackTransversal</a><span class="extrainfo"></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/TransposedMatrix.popBackNTransversal.html">popBackNTransversal</a><span class="extrainfo"></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/TransposedMatrix.front.html">front</a><span class="extrainfo"><span class="method-attribs"><span class="attr-inout">inout</span>, <span class="attr-property">@property</span></span></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/TransposedMatrix.popFront.html">popFront</a><span class="extrainfo"></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/TransposedMatrix.popFrontN.html">popFrontN</a><span class="extrainfo"></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/TransposedMatrix.back.html">back</a><span class="extrainfo"><span class="method-attribs"><span class="attr-inout">inout</span>, <span class="attr-property">@property</span></span></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/TransposedMatrix.popBack.html">popBack</a><span class="extrainfo"></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/TransposedMatrix.popBackN.html">popBackN</a><span class="extrainfo"></span></td><td></td><td></td></tr><tr><td><span class="extrainfo"><span class="attribs"><span class="attr-auto">auto</span></span></span><a href="simple_matrix/TransposedMatrix.opIndex.html">opIndex</a><span class="extrainfo"><span class="method-attribs"><span class="attr-inout">inout</span></span></span></td><td></td><td></td></tr><tr><td><span class="extrainfo"><span class="attribs"><span class="attr-ref">ref</span></span></span><a href="simple_matrix/TransposedMatrix.opIndex.html">opIndex</a><span class="extrainfo"><span class="method-attribs"><span class="attr-inout">inout</span></span></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/TransposedMatrix.opIndex.html">opIndex</a><span class="extrainfo"><span class="method-attribs"><span class="attr-inout">inout</span></span></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/TransposedMatrix.opIndex.html">opIndex</a><span class="extrainfo"><span class="method-attribs"><span class="attr-inout">inout</span></span></span></td><td></td><td></td></tr></table>
+</div></div><a class="anchor" id="width"></a><div class="symbol"><div class="description"><pre><code>public size_t <a href="simple_matrix/TransposedMatrix.html#width">width</a>() const @property
+</code></pre>
+</div></div><a class="anchor" id="height"></a><div class="symbol"><div class="description"><pre><code>public size_t <a href="simple_matrix/TransposedMatrix.html#height">height</a>() const @property
+</code></pre>
+</div></div><a class="anchor" id="lengthTransveral"></a><div class="symbol"><div class="description"><pre><code>public size_t <a href="simple_matrix/TransposedMatrix.html#lengthTransveral">lengthTransveral</a>() const @property
+</code></pre>
+</div></div><a class="anchor" id="emptyTransveral"></a><div class="symbol"><div class="description"><pre><code>public <a href="http://dlang.org/type.html#basic-data-types">bool</a> <a href="simple_matrix/TransposedMatrix.html#emptyTransveral">emptyTransveral</a>() const @property
+</code></pre>
+</div></div><a class="anchor" id="transposed"></a><div class="symbol"><div class="description"><pre><code>public inout(<a href="simple_matrix/Matrix.html">Matrix</a>!T) <a href="simple_matrix/TransposedMatrix.html#transposed">transposed</a>() inout @property
+</code></pre>
+</div></div><a class="anchor" id="frontTransversal"></a><div class="symbol"><div class="description"><pre><code>public inout(T)[] <a href="simple_matrix/TransposedMatrix.html#frontTransversal">frontTransversal</a>() inout @property
+</code></pre>
+<div class="section "><h2>Contracts</h2><pre><code>in
+{
+    assert (!<a href="simple_matrix/TransposedMatrix.html#emptyTransveral">emptyTransveral</a>);
+}
+</code></pre>
+
 </div>
-<script>hljs.initHighlightingOnLoad();</script>
+</div></div><a class="anchor" id="popFrontTransversal"></a><div class="symbol"><div class="description"><pre><code>public <a href="http://dlang.org/type.html#basic-data-types">void</a> <a href="simple_matrix/TransposedMatrix.html#popFrontTransversal">popFrontTransversal</a>()
+</code></pre>
+<div class="section "><h2>Contracts</h2><pre><code>in
+{
+    assert (!<a href="simple_matrix/TransposedMatrix.html#emptyTransveral">emptyTransveral</a>);
+}
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="popFrontNTransversal"></a><div class="symbol"><div class="description"><pre><code>public <a href="http://dlang.org/type.html#basic-data-types">void</a> <a href="simple_matrix/TransposedMatrix.html#popFrontNTransversal">popFrontNTransversal</a>(size_t n)
+</code></pre>
+<div class="section "><h2>Contracts</h2><pre><code>in
+{
+    assert (n <= <a href="simple_matrix/TransposedMatrix.html#lengthTransveral">lengthTransveral</a>);
+}
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="backTransversal"></a><div class="symbol"><div class="description"><pre><code>public inout(T)[] <a href="simple_matrix/TransposedMatrix.html#backTransversal">backTransversal</a>() inout @property
+</code></pre>
+<div class="section "><h2>Contracts</h2><pre><code>in
+{
+    assert (!<a href="simple_matrix/TransposedMatrix.html#emptyTransveral">emptyTransveral</a>);
+}
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="popBackTransversal"></a><div class="symbol"><div class="description"><pre><code>public <a href="http://dlang.org/type.html#basic-data-types">void</a> <a href="simple_matrix/TransposedMatrix.html#popBackTransversal">popBackTransversal</a>()
+</code></pre>
+<div class="section "><h2>Contracts</h2><pre><code>in
+{
+    assert (!<a href="simple_matrix/TransposedMatrix.html#emptyTransveral">emptyTransveral</a>);
+}
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="popBackNTransversal"></a><div class="symbol"><div class="description"><pre><code>public <a href="http://dlang.org/type.html#basic-data-types">void</a> <a href="simple_matrix/TransposedMatrix.html#popBackNTransversal">popBackNTransversal</a>(size_t n)
+</code></pre>
+<div class="section "><h2>Contracts</h2><pre><code>in
+{
+    assert (n <= <a href="simple_matrix/TransposedMatrix.html#lengthTransveral">lengthTransveral</a>);
+}
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="front"></a><div class="symbol"><div class="description"><pre><code>public inout(<a href="simple_matrix/Vector.html">Vector</a>!T) <a href="simple_matrix/TransposedMatrix.html#front">front</a>() inout @property
+</code></pre>
+<div class="section "><h2>Contracts</h2><pre><code>in
+{
+    assert (!empty);
+}
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="popFront"></a><div class="symbol"><div class="description"><pre><code>public <a href="http://dlang.org/type.html#basic-data-types">void</a> <a href="simple_matrix/TransposedMatrix.html#popFront">popFront</a>()
+</code></pre>
+<div class="section "><h2>Contracts</h2><pre><code>in
+{
+    assert (!empty);
+}
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="popFrontN"></a><div class="symbol"><div class="description"><pre><code>public <a href="http://dlang.org/type.html#basic-data-types">void</a> <a href="simple_matrix/TransposedMatrix.html#popFrontN">popFrontN</a>(size_t n)
+</code></pre>
+<div class="section "><h2>Contracts</h2><pre><code>in
+{
+    assert (n <= length);
+}
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="back"></a><div class="symbol"><div class="description"><pre><code>public inout(<a href="simple_matrix/Vector.html">Vector</a>!T) <a href="simple_matrix/TransposedMatrix.html#back">back</a>() inout @property
+</code></pre>
+<div class="section "><h2>Contracts</h2><pre><code>in
+{
+    assert (!empty);
+}
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="popBack"></a><div class="symbol"><div class="description"><pre><code>public <a href="http://dlang.org/type.html#basic-data-types">void</a> <a href="simple_matrix/TransposedMatrix.html#popBack">popBack</a>()
+</code></pre>
+<div class="section "><h2>Contracts</h2><pre><code>in
+{
+    assert (!empty);
+}
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="popBackN"></a><div class="symbol"><div class="description"><pre><code>public <a href="http://dlang.org/type.html#basic-data-types">void</a> <a href="simple_matrix/TransposedMatrix.html#popBackN">popBackN</a>(size_t n)
+</code></pre>
+<div class="section "><h2>Contracts</h2><pre><code>in
+{
+    assert (n <= length);
+}
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="opIndex"></a><div class="symbol"><div class="description"><pre><code>public auto <a href="simple_matrix/TransposedMatrix.html#opIndex">opIndex</a>(size_t heightI) inout
+</code></pre>
+<div class="section "><h2>Contracts</h2><pre><code>in
+{
+    assert (heightI < <a href="simple_matrix/TransposedMatrix.html#height">height</a>);
+}
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="opIndex"></a><div class="symbol"><div class="description"><pre><code>public ref inout(T) <a href="simple_matrix/TransposedMatrix.html#opIndex">opIndex</a>(
+    size_t heightI, 
+    size_t widthI) inout
+</code></pre>
+<div class="section "><h2>Contracts</h2><pre><code>in
+{
+    assert (heightI < <a href="simple_matrix/TransposedMatrix.html#height">height</a>);
+    assert (widthI < <a href="simple_matrix/TransposedMatrix.html#width">width</a>);
+}
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="opIndex"></a><div class="symbol"><div class="description"><pre><code>public inout(typeof(this)) <a href="simple_matrix/TransposedMatrix.html#opIndex">opIndex</a>(size_t[2] range) inout
+</code></pre>
+<div class="section "><h2>Contracts</h2><pre><code>in
+{
+    assert (range[1] <= <a href="simple_matrix/TransposedMatrix.html#height">height</a>);
+}
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="opIndex"></a><div class="symbol"><div class="description"><pre><code>public inout(typeof(this)) <a href="simple_matrix/TransposedMatrix.html#opIndex">opIndex</a>(
+    size_t[2] range0, 
+    size_t[2] range1) inout
+</code></pre>
+<div class="section "><h2>Contracts</h2><pre><code>in
+{
+    assert (range0[1] <= <a href="simple_matrix/TransposedMatrix.html#height">height</a>);
+    assert (range1[1] <= <a href="simple_matrix/TransposedMatrix.html#width">width</a>);
+}
+</code></pre>
+
+</div>
+</div></div><div class="section members"><h2>Variables</h2><table><tr><td><a href="simple_matrix/TransposedMatrix.html#matrix">matrix</a></td><td><pre><code><a href="simple_matrix/Matrix.html">Matrix</a>!T
+</code></pre>
+</td><td></td></tr></table><h2>Functions</h2><table><tr><td><a href="simple_matrix/TransposedMatrix.html#width">width</a><span class="extrainfo"><span class="method-attribs"><span class="attr-const">const</span>, <span class="attr-property">@property</span></span></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/TransposedMatrix.html#height">height</a><span class="extrainfo"><span class="method-attribs"><span class="attr-const">const</span>, <span class="attr-property">@property</span></span></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/TransposedMatrix.html#lengthTransveral">lengthTransveral</a><span class="extrainfo"><span class="method-attribs"><span class="attr-const">const</span>, <span class="attr-property">@property</span></span></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/TransposedMatrix.html#emptyTransveral">emptyTransveral</a><span class="extrainfo"><span class="method-attribs"><span class="attr-const">const</span>, <span class="attr-property">@property</span></span></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/TransposedMatrix.html#transposed">transposed</a><span class="extrainfo"><span class="method-attribs"><span class="attr-inout">inout</span>, <span class="attr-property">@property</span></span></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/TransposedMatrix.html#frontTransversal">frontTransversal</a><span class="extrainfo"><span class="method-attribs"><span class="attr-inout">inout</span>, <span class="attr-property">@property</span></span></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/TransposedMatrix.html#popFrontTransversal">popFrontTransversal</a><span class="extrainfo"></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/TransposedMatrix.html#popFrontNTransversal">popFrontNTransversal</a><span class="extrainfo"></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/TransposedMatrix.html#backTransversal">backTransversal</a><span class="extrainfo"><span class="method-attribs"><span class="attr-inout">inout</span>, <span class="attr-property">@property</span></span></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/TransposedMatrix.html#popBackTransversal">popBackTransversal</a><span class="extrainfo"></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/TransposedMatrix.html#popBackNTransversal">popBackNTransversal</a><span class="extrainfo"></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/TransposedMatrix.html#front">front</a><span class="extrainfo"><span class="method-attribs"><span class="attr-inout">inout</span>, <span class="attr-property">@property</span></span></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/TransposedMatrix.html#popFront">popFront</a><span class="extrainfo"></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/TransposedMatrix.html#popFrontN">popFrontN</a><span class="extrainfo"></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/TransposedMatrix.html#back">back</a><span class="extrainfo"><span class="method-attribs"><span class="attr-inout">inout</span>, <span class="attr-property">@property</span></span></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/TransposedMatrix.html#popBack">popBack</a><span class="extrainfo"></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/TransposedMatrix.html#popBackN">popBackN</a><span class="extrainfo"></span></td><td></td><td></td></tr><tr><td><span class="extrainfo"><span class="attribs"><span class="attr-auto">auto</span></span></span><a href="simple_matrix/TransposedMatrix.html#opIndex">opIndex</a><span class="extrainfo"><span class="method-attribs"><span class="attr-inout">inout</span></span></span></td><td></td><td></td></tr><tr><td><span class="extrainfo"><span class="attribs"><span class="attr-ref">ref</span></span></span><a href="simple_matrix/TransposedMatrix.html#opIndex">opIndex</a><span class="extrainfo"><span class="method-attribs"><span class="attr-inout">inout</span></span></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/TransposedMatrix.html#opIndex">opIndex</a><span class="extrainfo"><span class="method-attribs"><span class="attr-inout">inout</span></span></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/TransposedMatrix.html#opIndex">opIndex</a><span class="extrainfo"><span class="method-attribs"><span class="attr-inout">inout</span></span></span></td><td></td><td></td></tr></table>
+</div>
+</div><script>hljs.initHighlightingOnLoad();</script>
 
 </div>
 <footer>

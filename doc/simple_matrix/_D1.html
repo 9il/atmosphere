@@ -53,14 +53,32 @@
 </li>
 
 </ul>
-</div>
-</div>
+</div></div>
 <div class="content">
-<pre><code>private template _D1(alias This, T)
+<div class="aggregate-symbol"><div class="description"><pre><code>private template _D1(alias This, T)
 </code></pre>
-<div class="section "><h2>Functions</h2><table><tr><td><a href="simple_matrix/_D1.empty.html">empty</a><span class="extrainfo"><span class="method-attribs"><span class="attr-const">const</span>, <span class="attr-property">@property</span></span></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/_D1.save.html">save</a><span class="extrainfo"><span class="method-attribs"><span class="attr-inout">inout</span>, <span class="attr-property">@property</span></span></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/_D1.opIndex.html">opIndex</a><span class="extrainfo"><span class="method-attribs"><span class="attr-inout">inout</span></span></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/_D1.opDollar.html">opDollar</a><span class="extrainfo"><span class="method-attribs"><span class="attr-const">const</span></span></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/_D1.opSlice.html">opSlice</a><span class="extrainfo"><span class="method-attribs"><span class="attr-const">const</span></span></span></td><td></td><td></td></tr></table>
+</div><a class="anchor" id="empty"></a><div class="symbol"><div class="description"><pre><code>private <a href="http://dlang.org/type.html#basic-data-types">bool</a> <a href="simple_matrix/_D1.html#empty">empty</a>() const @property
+</code></pre>
+</div></div><a class="anchor" id="save"></a><div class="symbol"><div class="description"><pre><code>private inout(typeof(this)) <a href="simple_matrix/_D1.html#save">save</a>() inout @property
+</code></pre>
+</div></div><a class="anchor" id="opIndex"></a><div class="symbol"><div class="description"><pre><code>private inout(typeof(this)) <a href="simple_matrix/_D1.html#opIndex">opIndex</a>() inout
+</code></pre>
+</div></div><a class="anchor" id="opDollar"></a><div class="symbol"><div class="description"><pre><code>private size_t <a href="simple_matrix/_D1.html#opDollar">opDollar</a>(size_t pos : 0)() const
+</code></pre>
+</div></div><a class="anchor" id="opSlice"></a><div class="symbol"><div class="description"><pre><code>private size_t[2] <a href="simple_matrix/_D1.html#opSlice">opSlice</a>(size_t op)(
+    size_t lb, 
+    size_t rb) const
+</code></pre>
+<div class="section "><h2>Contracts</h2><pre><code>in
+{
+    assert (lb <= rb);
+}
+</code></pre>
+
 </div>
-<script>hljs.initHighlightingOnLoad();</script>
+</div></div><div class="section members"><h2>Functions</h2><table><tr><td><a href="simple_matrix/_D1.html#empty">empty</a><span class="extrainfo"><span class="method-attribs"><span class="attr-const">const</span>, <span class="attr-property">@property</span></span></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/_D1.html#save">save</a><span class="extrainfo"><span class="method-attribs"><span class="attr-inout">inout</span>, <span class="attr-property">@property</span></span></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/_D1.html#opIndex">opIndex</a><span class="extrainfo"><span class="method-attribs"><span class="attr-inout">inout</span></span></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/_D1.html#opDollar">opDollar</a><span class="extrainfo"><span class="method-attribs"><span class="attr-const">const</span></span></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/_D1.html#opSlice">opSlice</a><span class="extrainfo"><span class="method-attribs"><span class="attr-const">const</span></span></span></td><td></td><td></td></tr></table>
+</div>
+</div><script>hljs.initHighlightingOnLoad();</script>
 
 </div>
 <footer>

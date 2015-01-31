@@ -53,10 +53,9 @@
 </li>
 
 </ul>
-</div>
-</div>
+</div></div>
 <div class="content">
-<pre><code>public struct SlidingWindow(T)
+<div class="aggregate-symbol"><div class="description"><pre><code>public struct SlidingWindow(T)
 </code></pre>
 <div class="section "><p>Stack of columns.
 </p>
@@ -64,10 +63,10 @@
 
 </div>
 <div class="section "><h2>Example</h2>
-<pre><code>auto sl = <a href="simple_matrix.SlidingWindow.html">SlidingWindow</a>!double(4, 3);
-sl.<a href="simple_matrix.SlidingWindow.put.html">put</a>([0, 3, 6, 9]);
-sl.<a href="simple_matrix.SlidingWindow.put.html">put</a>([1, 4, 7, 9]);
-sl.<a href="simple_matrix.SlidingWindow.put.html">put</a>([2, 5, 8, 0]);
+<pre><code>auto sl = <a href="simple_matrix/SlidingWindow.html">SlidingWindow</a>!double(4, 3);
+sl.<a href="simple_matrix/SlidingWindow.html#put">put</a>([0, 3, 6, 9]);
+sl.<a href="simple_matrix/SlidingWindow.html#put">put</a>([1, 4, 7, 9]);
+sl.<a href="simple_matrix/SlidingWindow.html#put">put</a>([2, 5, 8, 0]);
 assert(sl[1, 2] == 7);
 assert(sl.matrix[2, 1] == 7);
 sl.front.equal([0, 3, 6, 9]);
@@ -76,12 +75,12 @@ sl.front.equal([1, 4, 7, 9]);
 sl.backTransversal == [9, 0];
 foreach(i; 0..4)
 {
-	assert(sl.matrix.ptr != sl.<a href="simple_matrix.SlidingWindow.data.html">data</a>.ptr);
-	sl.<a href="simple_matrix.SlidingWindow.put.html">put</a>([i,i+4,i+8, 0]);
+	assert(sl.matrix.ptr != sl.<a href="simple_matrix/SlidingWindow.html#data">data</a>.ptr);
+	sl.<a href="simple_matrix/SlidingWindow.html#put">put</a>([i,i+4,i+8, 0]);
 	sl.popFront();
 }
-assert(sl.matrix.ptr-1 == sl.<a href="simple_matrix.SlidingWindow.data.html">data</a>.ptr);
-sl.<a href="simple_matrix.SlidingWindow.put.html">put</a>([6, 7, 0, 3]);
+assert(sl.matrix.ptr-1 == sl.<a href="simple_matrix/SlidingWindow.html#data">data</a>.ptr);
+sl.<a href="simple_matrix/SlidingWindow.html#put">put</a>([6, 7, 0, 3]);
 assert(sl.length == 3);
 assert(sl.matrix.length == 4);
 assert(sl.transversal(1) == [6, 7, 7]);
@@ -89,13 +88,45 @@ assert(sl.transversal(1) == [6, 7, 7]);
 </code></pre>
 
 </div>
-<div class="section "><h2>Variables</h2><table><tr><td><a href="simple_matrix/SlidingWindow.data.html">data</a></td><td><pre><code>T[]
+</div><a class="anchor" id="data"></a><div class="symbol"><div class="description"><pre><code>public T[] data
 </code></pre>
-</td><td></td></tr><tr><td><a href="simple_matrix/SlidingWindow.transposedMatrix.html">transposedMatrix</a></td><td><pre><code><a href="simple_matrix.TransposedMatrix.html">TransposedMatrix</a>!T
+</div></div><a class="anchor" id="transposedMatrix"></a><div class="symbol"><div class="description"><pre><code>public <a href="simple_matrix/TransposedMatrix.html">TransposedMatrix</a>!T transposedMatrix
 </code></pre>
-</td><td></td></tr></table><h2>Functions</h2><table><tr><td><a href="simple_matrix/SlidingWindow.this.html">this</a></td><td></td><td></td></tr><tr><td><a href="simple_matrix/SlidingWindow.reset.html">reset</a><span class="extrainfo"></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/SlidingWindow.put.html">put</a><span class="extrainfo"></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/SlidingWindow.reserveBackN.html">reserveBackN</a><span class="extrainfo"></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/SlidingWindow.moveToFront.html">moveToFront</a><span class="extrainfo"></span></td><td></td><td></td></tr></table>
+</div></div><a class="anchor" id="this"></a><div class="symbol"><div class="description"><pre><code>public this(
+    size_t height, 
+    size_t maxWidth)
+</code></pre>
+</div></div><a class="anchor" id="reset"></a><div class="symbol"><div class="description"><pre><code>public <a href="http://dlang.org/type.html#basic-data-types">void</a> <a href="simple_matrix/SlidingWindow.html#reset">reset</a>()
+</code></pre>
+</div></div><a class="anchor" id="put"></a><div class="symbol"><div class="description"><pre><code>public <a href="http://dlang.org/type.html#basic-data-types">void</a> <a href="simple_matrix/SlidingWindow.html#put">put</a>(Range)(Range range) 
+if(isInputRange!Range && hasLength!Range)
+</code></pre>
+<div class="section "><h2>Contracts</h2><pre><code>in
+{
+    assert (range.length == width);
+}
+</code></pre>
+
 </div>
-<script>hljs.initHighlightingOnLoad();</script>
+</div></div><a class="anchor" id="reserveBackN"></a><div class="symbol"><div class="description"><pre><code>public <a href="http://dlang.org/type.html#basic-data-types">void</a> <a href="simple_matrix/SlidingWindow.html#reserveBackN">reserveBackN</a>(size_t n)
+</code></pre>
+<div class="section "><h2>Contracts</h2><pre><code>in
+{
+    assert (n <= matrix.shift);
+    assert (n + matrix.width <= matrix.shift);
+}
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="moveToFront"></a><div class="symbol"><div class="description"><pre><code>public <a href="http://dlang.org/type.html#basic-data-types">void</a> <a href="simple_matrix/SlidingWindow.html#moveToFront">moveToFront</a>()
+</code></pre>
+</div></div><div class="section members"><h2>Variables</h2><table><tr><td><a href="simple_matrix/SlidingWindow.html#data">data</a></td><td><pre><code>T[]
+</code></pre>
+</td><td></td></tr><tr><td><a href="simple_matrix/SlidingWindow.html#transposedMatrix">transposedMatrix</a></td><td><pre><code><a href="simple_matrix/TransposedMatrix.html">TransposedMatrix</a>!T
+</code></pre>
+</td><td></td></tr></table><h2>Functions</h2><table><tr><td><a href="simple_matrix/SlidingWindow.html#this">this</a></td><td></td><td></td></tr><tr><td><a href="simple_matrix/SlidingWindow.html#reset">reset</a><span class="extrainfo"></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/SlidingWindow.html#put">put</a><span class="extrainfo"></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/SlidingWindow.html#reserveBackN">reserveBackN</a><span class="extrainfo"></span></td><td></td><td></td></tr><tr><td><a href="simple_matrix/SlidingWindow.html#moveToFront">moveToFront</a><span class="extrainfo"></span></td><td></td><td></td></tr></table>
+</div>
+</div><script>hljs.initHighlightingOnLoad();</script>
 
 </div>
 <footer>

@@ -53,10 +53,9 @@
 <li><a href="simple_matrix.html">simple_matrix</a></li>
 
 </ul>
-</div>
-</div>
+</div></div>
 <div class="content">
-<pre><code>public @safe pure nothrow @nogc struct GIGChiPsi(T)
+<div class="aggregate-symbol"><div class="description"><pre><code>public @safe pure nothrow @nogc struct GIGChiPsi(T)
 if(isFloatingPoint!T)
 </code></pre>
 <div class="section "><p><img style="width: 600px;" src="../view/images/GIGChiPsi.png">
@@ -73,30 +72,62 @@ auto params  = <a href="distribution/params/GIGChiPsi.html">GIGChiPsi</a>!double
 auto params1 = cast(<a href="distribution/params/GIGChiPsi.html">GIGChiPsi</a>    !real) params;
 auto params2 = cast(<a href="distribution/params/GIGEtaOmega.html">GIGEtaOmega</a>  !real) params;
 
-double <a href="distribution/params/GIGChiPsi.chi.html">chi</a>   = params.<a href="distribution/params/GIGChiPsi.chi.html">chi</a>;
-double <a href="distribution/params/GIGChiPsi.psi.html">psi</a>   = params.<a href="distribution/params/GIGChiPsi.psi.html">psi</a>;
+double <a href="distribution/params/GIGChiPsi.html#chi">chi</a>   = params.<a href="distribution/params/GIGChiPsi.html#chi">chi</a>;
+double <a href="distribution/params/GIGChiPsi.html#psi">psi</a>   = params.<a href="distribution/params/GIGChiPsi.html#psi">psi</a>;
 
-double <a href="distribution/params/GIGChiPsi.eta.html">eta</a>   = params.<a href="distribution/params/GIGChiPsi.eta.html">eta</a>;
-double <a href="distribution/params/GIGChiPsi.omega.html">omega</a> = params.<a href="distribution/params/GIGChiPsi.omega.html">omega</a>;
+double <a href="distribution/params/GIGChiPsi.html#eta">eta</a>   = params.<a href="distribution/params/GIGChiPsi.html#eta">eta</a>;
+double <a href="distribution/params/GIGChiPsi.html#omega">omega</a> = params.<a href="distribution/params/GIGChiPsi.html#omega">omega</a>;
 
 </code></pre>
 
 </div>
-<div class="section "><h2>Variables</h2><table><tr><td><a href="distribution/params/GIGChiPsi.chi.html">chi</a></td><td><pre><code>T
+</div><a class="anchor" id="chi"></a><div class="symbol"><div class="description"><pre><code>public T chi
 </code></pre>
-</td><td></td></tr><tr><td><a href="distribution/params/GIGChiPsi.psi.html">psi</a></td><td><pre><code>T
+</div></div><a class="anchor" id="psi"></a><div class="symbol"><div class="description"><pre><code>public T psi
 </code></pre>
-</td><td></td></tr></table><h2>Functions</h2><table><tr><td><a href="distribution/params/GIGChiPsi.eta.html">eta</a><span class="extrainfo"></span></td><td></td><td><p><code class="prettyprint">sqrt(<a href="distribution/params/GIGChiPsi.chi.html">chi</a> / <a href="distribution/params/GIGChiPsi.psi.html">psi</a>)</code>
+</div></div><a class="anchor" id="eta"></a><div class="symbol"><div class="description"><pre><code>public const @property T <a href="distribution/params/GIGChiPsi.html#eta">eta</a>()
+</code></pre>
+<div class="section "><p><code class="prettyprint">sqrt(<a href="distribution/params/GIGChiPsi.html#chi">chi</a> / <a href="distribution/params/GIGChiPsi.html#psi">psi</a>)</code>
 </p>
-</td></tr><tr><td><a href="distribution/params/GIGChiPsi.omega.html">omega</a><span class="extrainfo"></span></td><td></td><td><p><code class="prettyprint">sqrt(<a href="distribution/params/GIGChiPsi.chi.html">chi</a> * <a href="distribution/params/GIGChiPsi.psi.html">psi</a>)</code>
+
+
+</div>
+</div></div><a class="anchor" id="omega"></a><div class="symbol"><div class="description"><pre><code>public const @property T <a href="distribution/params/GIGChiPsi.html#omega">omega</a>()
+</code></pre>
+<div class="section "><p><code class="prettyprint">sqrt(<a href="distribution/params/GIGChiPsi.html#chi">chi</a> * <a href="distribution/params/GIGChiPsi.html#psi">psi</a>)</code>
 </p>
-</td></tr><tr><td><a href="distribution/params/GIGChiPsi.opCast.html">opCast</a><span class="extrainfo"></span></td><td></td><td><p><code class="prettyprint">cast</code> operator overloading 
+
+
+</div>
+</div></div><a class="anchor" id="opCast"></a><div class="symbol"><div class="description"><pre><code>public const @property R <a href="distribution/params/GIGChiPsi.html#opCast">opCast</a>(R : <a href="distribution/params/GIGChiPsi.html">GIGChiPsi</a>!F, F)()
+</code></pre>
+<div class="section "><p><code class="prettyprint">cast</code> operator overloading 
 </p>
-</td></tr><tr><td><a href="distribution/params/GIGChiPsi.opCast.html">opCast</a><span class="extrainfo"></span></td><td></td><td><p><code class="prettyprint">cast</code> operator overloading 
+
+
+</div>
+</div></div><a class="anchor" id="opCast"></a><div class="symbol"><div class="description"><pre><code>public const @property R <a href="distribution/params/GIGChiPsi.html#opCast">opCast</a>(R : <a href="distribution/params/GIGEtaOmega.html">GIGEtaOmega</a>!F, F)()
+</code></pre>
+<div class="section "><p><code class="prettyprint">cast</code> operator overloading 
+</p>
+
+
+</div>
+</div></div><div class="section members"><h2>Variables</h2><table><tr><td><a href="distribution/params/GIGChiPsi.html#chi">chi</a></td><td><pre><code>T
+</code></pre>
+</td><td></td></tr><tr><td><a href="distribution/params/GIGChiPsi.html#psi">psi</a></td><td><pre><code>T
+</code></pre>
+</td><td></td></tr></table><h2>Functions</h2><table><tr><td><a href="distribution/params/GIGChiPsi.html#eta">eta</a><span class="extrainfo"></span></td><td></td><td><p><code class="prettyprint">sqrt(<a href="distribution/params/GIGChiPsi.html#chi">chi</a> / <a href="distribution/params/GIGChiPsi.html#psi">psi</a>)</code>
+</p>
+</td></tr><tr><td><a href="distribution/params/GIGChiPsi.html#omega">omega</a><span class="extrainfo"></span></td><td></td><td><p><code class="prettyprint">sqrt(<a href="distribution/params/GIGChiPsi.html#chi">chi</a> * <a href="distribution/params/GIGChiPsi.html#psi">psi</a>)</code>
+</p>
+</td></tr><tr><td><a href="distribution/params/GIGChiPsi.html#opCast">opCast</a><span class="extrainfo"></span></td><td></td><td><p><code class="prettyprint">cast</code> operator overloading 
+</p>
+</td></tr><tr><td><a href="distribution/params/GIGChiPsi.html#opCast">opCast</a><span class="extrainfo"></span></td><td></td><td><p><code class="prettyprint">cast</code> operator overloading 
 </p>
 </td></tr></table>
 </div>
-<script>hljs.initHighlightingOnLoad();</script>
+</div><script>hljs.initHighlightingOnLoad();</script>
 
 </div>
 <footer>

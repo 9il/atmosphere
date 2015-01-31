@@ -53,82 +53,436 @@
 <li><a href="simple_matrix.html">simple_matrix</a></li>
 
 </ul>
-</div>
-</div>
+</div></div>
 <div class="content">
-<pre><code>public abstract class MixtureOptimizer(T)
+<div class="aggregate-symbol"><div class="description"><pre><code>public abstract class MixtureOptimizer(T)
 if(isFloatingPoint!T)
 </code></pre>
-<div class="section "><h2>Functions</h2><table><tr><td><a href="atmosphere/mixture/MixtureOptimizer.this.html">this</a></td><td></td><td><p>Constructor
+</div><a class="anchor" id="this"></a><div class="symbol"><div class="description"><pre><code>public this(
+    size_t k, 
+    size_t maxLength)
+</code></pre>
+<div class="section "><p>Constructor
 </p>
-</td></tr><tr><td><span class="extrainfo"><span class="attribs"><span class="attr-abstract">abstract</span></span></span><a href="atmosphere/mixture/MixtureOptimizer.eval.html">eval</a><span class="extrainfo"></span></td><td></td><td><p>Perform k (1) iterations of coordinate (gradient or EM) descent optimization algorithm.
+
+
+</div>
+<div class="section "><h2>Contracts</h2><pre><code>in
+{
+    assert (k);
+    assert (<a href="atmosphere/mixture/MixtureOptimizer.html#maxLength">maxLength</a>);
+}
+</code></pre>
+
+</div>
+<div class="section"><h2>Parameters</h2>
+<table class="params">
+<tr class="param"><td class="paramName">k</td><td class="paramDoc"><p>number of components
 </p>
-</td></tr><tr><td><span class="extrainfo"><span class="attribs"><span class="attr-abstract">abstract</span></span></span><a href="atmosphere/mixture/MixtureOptimizer.update.html">update</a><span class="extrainfo"></span></td><td></td><td><p>update method is called when mixture changes occur.
+</td></tr>
+<tr class="param"><td class="paramName">maxLength</td><td class="paramDoc"><p>maximal length of features. In terms of likelihood maximization maxLength is maximal length of a sample.
 </p>
-</td></tr><tr><td><a href="atmosphere/mixture/MixtureOptimizer.optimize.html">optimize</a><span class="extrainfo"></span></td><td></td><td><p>Performs optimization.
+</td></tr>
+</table>
+</div>
+</div></div><a class="anchor" id="eval"></a><div class="symbol"><div class="description"><pre><code>public abstract <a href="http://dlang.org/type.html#basic-data-types">void</a> <a href="atmosphere/mixture/MixtureOptimizer.html#eval">eval</a>(scope <a href="http://dlang.org/type.html#basic-data-types">bool</a> delegate(
+    T a, 
+    T b) @nogc nothrow findRootTolerance = null)
+</code></pre>
+<div class="section "><p>Perform k (1) iterations of coordinate (gradient or EM) descent optimization algorithm.
 </p>
-</td></tr><tr><td><a href="atmosphere/mixture/MixtureOptimizer.optimize.html">optimize</a><span class="extrainfo"></span></td><td></td><td><p>Performs optimization.
+
+
+</div>
+<div class="section"><h2>Parameters</h2>
+<table class="params">
+<tr class="param"><td class="paramName">findRootTolerance</td><td class="paramDoc"><p>Defines an early termination condition.  Receives the current upper and lower bounds on the root.  The delegate must return true when these bounds are acceptable.
 </p>
-</td></tr><tr><td><a href="atmosphere/mixture/MixtureOptimizer.optimize.html">optimize</a><span class="extrainfo"></span></td><td></td><td><p>Performs optimization.
+</td></tr>
+</table>
+</div>
+<div class="section seealso">
+<h2>See Also:</h2>
+<div class="seealso-content">
+<p> <a href="http://dlang.org/library/std/numeric/findRoot.html">std.numeric.findRoot</a>
 </p>
-</td></tr><tr><td><a href="atmosphere/mixture/MixtureOptimizer.put.html">put</a><span class="extrainfo"></span></td><td></td><td><p>Puts back new feature for each components.
+
+</div>
+</div>
+</div></div><a class="anchor" id="update"></a><div class="symbol"><div class="description"><pre><code>public abstract <a href="http://dlang.org/type.html#basic-data-types">void</a> <a href="atmosphere/mixture/MixtureOptimizer.html#update">update</a>()
+</code></pre>
+<div class="section "><p>update method is called when mixture changes occur.
 </p>
-</td></tr><tr><td><a href="atmosphere/mixture/MixtureOptimizer.put.html">put</a><span class="extrainfo"></span></td><td></td><td><p>Puts back new features for each components.
+
+
+</div>
+</div></div><a class="anchor" id="optimize"></a><div class="symbol"><div class="description"><pre><code>public final <a href="http://dlang.org/type.html#basic-data-types">void</a> <a href="atmosphere/mixture/MixtureOptimizer.html#optimize">optimize</a>(
+    scope T delegate(in T[] mixture) objectiveFunction, 
+    scope <a href="http://dlang.org/type.html#basic-data-types">bool</a> delegate(
+        T objectiveFunctionValuePrev, 
+        T objectiveFunctionValue, 
+        in T[] weightsPrev, 
+        in T[] weights
+        ) tolerance, 
+    scope <a href="http://dlang.org/type.html#basic-data-types">bool</a> delegate(
+        T a, 
+        T b
+        ) @nogc nothrow findRootTolerance = null)
+</code></pre>
+<div class="section "><p>Performs optimization.
 </p>
-</td></tr><tr><td><a href="atmosphere/mixture/MixtureOptimizer.length.html">length</a><span class="extrainfo"><span class="method-attribs"><span class="attr-property">@property</span>, <span class="attr-const">const</span></span></span></td><td></td><td>Returns: <p> current length of features for each component
+
+
+</div>
+<div class="section"><h2>Parameters</h2>
+<table class="params">
+<tr class="param"><td class="paramName">objectiveFunction</td><td class="paramDoc"><p>accepts mixture.
 </p>
-</td></tr><tr><td><a href="atmosphere/mixture/MixtureOptimizer.maxLength.html">maxLength</a><span class="extrainfo"><span class="method-attribs"><span class="attr-property">@property</span>, <span class="attr-const">const</span></span></span></td><td></td><td>Returns: <p> maximal allowed length of features
+</td></tr>
+<tr class="param"><td class="paramName">tolerance</td><td class="paramDoc"><p>Defines an early termination condition.  Receives the current and previous versions of <code class="prettyprint">objectiveFunction(<a href="atmosphere/mixture/MixtureOptimizer.html#mixture">mixture</a>))</code> and weights.  The delegate must return true when mixture and weights are acceptable. 
 </p>
-</td></tr><tr><td><a href="atmosphere/mixture/MixtureOptimizer.reset.html">reset</a><span class="extrainfo"></span></td><td></td><td><p>Reset length of features to zero.
+</td></tr>
+<tr class="param"><td class="paramName">findRootTolerance</td><td class="paramDoc"><p>Tolerance for inner optimization.
 </p>
-</td></tr><tr><td><a href="atmosphere/mixture/MixtureOptimizer.popFront.html">popFront</a><span class="extrainfo"></span></td><td></td><td><p>Remove one front feature for each component.
+</td></tr>
+</table>
+</div>
+<div class="section seealso">
+<h2>See Also:</h2>
+<div class="seealso-content">
+<p> <a href="http://dlang.org/library/std/numeric/findRoot.html">std.numeric.findRoot</a>
 </p>
-</td></tr><tr><td><a href="atmosphere/mixture/MixtureOptimizer.popFrontN.html">popFrontN</a><span class="extrainfo"></span></td><td></td><td><p>Remove n front features for each component.
+
+</div>
+</div>
+</div></div><a class="anchor" id="optimize"></a><div class="symbol"><div class="description"><pre><code>public final <a href="http://dlang.org/type.html#basic-data-types">void</a> <a href="atmosphere/mixture/MixtureOptimizer.html#optimize">optimize</a>(
+    scope T delegate(in T[] mixture) objectiveFunction, 
+    scope <a href="http://dlang.org/type.html#basic-data-types">bool</a> delegate(
+        T objectiveFunctionValuePrev, 
+        T objectiveFunctionValue
+        ) tolerance, 
+    scope <a href="http://dlang.org/type.html#basic-data-types">bool</a> delegate(
+        T a, 
+        T b
+        ) @nogc nothrow findRootTolerance = null)
+</code></pre>
+<div class="section "><p>Performs optimization.
 </p>
-</td></tr><tr><td><a href="atmosphere/mixture/MixtureOptimizer.features.html">features</a><span class="extrainfo"><span class="method-attribs"><span class="attr-const">const</span></span></span></td><td></td><td>Returns: <p> Range of range of features for each component. A matrix with k rows and n columns.
+
+
+</div>
+<div class="section"><h2>Parameters</h2>
+<table class="params">
+<tr class="param"><td class="paramName">objectiveFunction</td><td class="paramDoc"><p>accepts mixture.
+</p>
+</td></tr>
+<tr class="param"><td class="paramName">tolerance</td><td class="paramDoc"><p>Defines an early termination condition.  Receives the current and previous versions of <code class="prettyprint">objectiveFunction(<a href="atmosphere/mixture/MixtureOptimizer.html#mixture">mixture</a>))</code>.  The delegate must return true when mixture are acceptable. 
+</p>
+</td></tr>
+<tr class="param"><td class="paramName">findRootTolerance</td><td class="paramDoc"><p>Tolerance for inner optimization.
+</p>
+</td></tr>
+</table>
+</div>
+<div class="section seealso">
+<h2>See Also:</h2>
+<div class="seealso-content">
+<p> <a href="http://dlang.org/library/std/numeric/findRoot.html">std.numeric.findRoot</a>
+</p>
+
+</div>
+</div>
+</div></div><a class="anchor" id="optimize"></a><div class="symbol"><div class="description"><pre><code>public final <a href="http://dlang.org/type.html#basic-data-types">void</a> <a href="atmosphere/mixture/MixtureOptimizer.html#optimize">optimize</a>(
+    scope <a href="http://dlang.org/type.html#basic-data-types">bool</a> delegate(
+        in T[] weightsPrev, 
+        in T[] weights
+        ) tolerance, 
+    scope <a href="http://dlang.org/type.html#basic-data-types">bool</a> delegate(
+        T a, 
+        T b
+        ) @nogc nothrow findRootTolerance = null)
+</code></pre>
+<div class="section "><p>Performs optimization.
+</p>
+
+
+</div>
+<div class="section"><h2>Parameters</h2>
+<table class="params">
+<tr class="param"><td class="paramName">tolerance</td><td class="paramDoc"><p>Defines an early termination condition.  Receives the current and previous versions of weights.  The delegate must return true when mixture and weights are acceptable. 
+</p>
+</td></tr>
+<tr class="param"><td class="paramName">findRootTolerance</td><td class="paramDoc"><p>Tolerance for inner optimization.
+</p>
+</td></tr>
+</table>
+</div>
+<div class="section seealso">
+<h2>See Also:</h2>
+<div class="seealso-content">
+<p> <a href="http://dlang.org/library/std/numeric/findRoot.html">std.numeric.findRoot</a>
+</p>
+
+</div>
+</div>
+</div></div><a class="anchor" id="put"></a><div class="symbol"><div class="description"><pre><code>public final <a href="http://dlang.org/type.html#basic-data-types">void</a> <a href="atmosphere/mixture/MixtureOptimizer.html#put">put</a>(Range)(Range features) 
+if(isInputRange!Range && hasLength!Range && isNumeric!(ElementType!Range))
+</code></pre>
+<div class="section "><p>Puts back new feature for each components.
+</p>
+
+
+</div>
+<div class="section "><h2>Contracts</h2><pre><code>in
+{
+    assert (_featuresT.matrix.<a href="atmosphere/mixture/MixtureOptimizer.html#length">length</a> == featuresROR.<a href="atmosphere/mixture/MixtureOptimizer.html#length">length</a>);
+    assert (_featuresT.matrix.width < _featuresT.matrix.shift);
+}
+</code></pre>
+
+</div>
+<div class="section"><h2>Parameters</h2>
+<table class="params">
+<tr class="param"><td class="paramName">features</td><td class="paramDoc"><p>One feature per component.
+</p>
+</td></tr>
+</table>
+</div>
+</div></div><a class="anchor" id="put"></a><div class="symbol"><div class="description"><pre><code>public final <a href="http://dlang.org/type.html#basic-data-types">void</a> <a href="atmosphere/mixture/MixtureOptimizer.html#put">put</a>(RangeOfRanges)(RangeOfRanges featuresROR) 
+if(isInputRange!RangeOfRanges && hasLength!RangeOfRanges && isInputRange!(ElementType!RangeOfRanges) && hasLength!(ElementType!RangeOfRanges) && isNumeric!(ElementType!(ElementType!RangeOfRanges)))
+</code></pre>
+<div class="section "><p>Puts back new features for each components.
+</p>
+
+
+</div>
+<div class="section "><h2>Contracts</h2><pre><code>in
+{
+    assert (_featuresT.matrix.<a href="atmosphere/mixture/MixtureOptimizer.html#length">length</a> == featuresROR.front.<a href="atmosphere/mixture/MixtureOptimizer.html#length">length</a>);
+    assert (_featuresT.matrix.width + featuresROR.<a href="atmosphere/mixture/MixtureOptimizer.html#length">length</a> <= _featuresT.matrix.shift);
+}
+</code></pre>
+
+</div>
+<div class="section"><h2>Parameters</h2>
+<table class="params">
+<tr class="param"><td class="paramName">featuresROR</td><td class="paramDoc"><p>Range of ranges of features per component.
+</p>
+</td></tr>
+</table>
+</div>
+</div></div><a class="anchor" id="length"></a><div class="symbol"><div class="description"><pre><code>public final size_t <a href="atmosphere/mixture/MixtureOptimizer.html#length">length</a>() @property const
+</code></pre>
+<div class="section"><h2>Returns</h2>
+<p> current length of features for each component
+</p>
+
+
+</div>
+</div></div><a class="anchor" id="maxLength"></a><div class="symbol"><div class="description"><pre><code>public final size_t <a href="atmosphere/mixture/MixtureOptimizer.html#maxLength">maxLength</a>() @property const
+</code></pre>
+<div class="section"><h2>Returns</h2>
+<p> maximal allowed length of features
+</p>
+
+
+</div>
+</div></div><a class="anchor" id="reset"></a><div class="symbol"><div class="description"><pre><code>public final <a href="http://dlang.org/type.html#basic-data-types">void</a> <a href="atmosphere/mixture/MixtureOptimizer.html#reset">reset</a>()
+</code></pre>
+<div class="section "><p>Reset length of features to zero.
+</p>
+
+
+</div>
+</div></div><a class="anchor" id="popFront"></a><div class="symbol"><div class="description"><pre><code>public final <a href="http://dlang.org/type.html#basic-data-types">void</a> <a href="atmosphere/mixture/MixtureOptimizer.html#popFront">popFront</a>()
+</code></pre>
+<div class="section "><p>Remove one front feature for each component.
+</p>
+
+
+</div>
+<div class="section "><h2>Contracts</h2><pre><code>in
+{
+    assert (<a href="atmosphere/mixture/MixtureOptimizer.html#length">length</a>);
+}
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="popFrontN"></a><div class="symbol"><div class="description"><pre><code>public final <a href="http://dlang.org/type.html#basic-data-types">void</a> <a href="atmosphere/mixture/MixtureOptimizer.html#popFrontN">popFrontN</a>(size_t n)
+</code></pre>
+<div class="section "><p>Remove n front features for each component.
+</p>
+
+
+</div>
+<div class="section "><h2>Contracts</h2><pre><code>in
+{
+    assert (<a href="atmosphere/mixture/MixtureOptimizer.html#length">length</a> >= n);
+}
+</code></pre>
+
+</div>
+<div class="section"><h2>Parameters</h2>
+<table class="params">
+<tr class="param"><td class="paramName">n</td><td class="paramDoc"><p>features will be removed
+</p>
+</td></tr>
+</table>
+</div>
+</div></div><a class="anchor" id="features"></a><div class="symbol"><div class="description"><pre><code>public final <a href="simple_matrix/Matrix.html">Matrix</a>!(const(T)) <a href="atmosphere/mixture/MixtureOptimizer.html#features">features</a>() const
+</code></pre>
+<div class="section"><h2>Returns</h2>
+<p> Range of range of features for each component. A matrix with k rows and n columns.
 		This is internal representation, and can be discarded after any methods calls.
 </p>
-</td></tr><tr><td><a href="atmosphere/mixture/MixtureOptimizer.mixture.html">mixture</a><span class="extrainfo"><span class="method-attribs"><span class="attr-property">@property</span>, <span class="attr-const">const</span></span></span></td><td></td><td>Returns: 
+
+
+</div>
+</div></div><a class="anchor" id="mixture"></a><div class="symbol"><div class="description"><pre><code>public final const(T)[] <a href="atmosphere/mixture/MixtureOptimizer.html#mixture">mixture</a>() @property const
+</code></pre>
+<div class="section"><h2>Returns</h2>
+<p> Const slice of the internal mixture representation.
+</p>
+
+
+</div>
+<div class="section"><h2>Example</h2>
+
 	<pre><code>	double objectiveFunction(in double[])
 	{
 		...
 	}
 
 	//save slice
-	auto <a href="atmosphere/mixture/MixtureOptimizer.mixture.html">mixture</a> = optimizer.<a href="atmosphere/mixture/MixtureOptimizer.mixture.html">mixture</a>;
+	auto <a href="atmosphere/mixture/MixtureOptimizer.html#mixture">mixture</a> = optimizer.<a href="atmosphere/mixture/MixtureOptimizer.html#mixture">mixture</a>;
 
-	auto value0 = objectiveFunction(<a href="atmosphere/mixture/MixtureOptimizer.mixture.html">mixture</a>);
-	optimizer.<a href="atmosphere/mixture/MixtureOptimizer.eval.html">eval</a>;
-	auto value1 = objectiveFunction(<a href="atmosphere/mixture/MixtureOptimizer.mixture.html">mixture</a>);
+	auto value0 = objectiveFunction(<a href="atmosphere/mixture/MixtureOptimizer.html#mixture">mixture</a>);
+	optimizer.<a href="atmosphere/mixture/MixtureOptimizer.html#eval">eval</a>;
+	auto value1 = objectiveFunction(<a href="atmosphere/mixture/MixtureOptimizer.html#mixture">mixture</a>);
 
 
-	//use `.dup` or copy to save current <a href="atmosphere/mixture/MixtureOptimizer.mixture.html">mixture</a>
+	//use `.dup` or copy to save current <a href="atmosphere/mixture/MixtureOptimizer.html#mixture">mixture</a>
 
 	//1: .dup
-	auto mixtureSave1 = <a href="atmosphere/mixture/MixtureOptimizer.mixture.html">mixture</a>.dup;
+	auto mixtureSave1 = <a href="atmosphere/mixture/MixtureOptimizer.html#mixture">mixture</a>.dup;
 
 	//2: create array
-	auto mixtureSave2 = new double[<a href="atmosphere/mixture/MixtureOptimizer.mixture.html">mixture</a>.<a href="atmosphere/mixture/MixtureOptimizer.length.html">length</a>];
+	auto mixtureSave2 = new double[<a href="atmosphere/mixture/MixtureOptimizer.html#mixture">mixture</a>.<a href="atmosphere/mixture/MixtureOptimizer.html#length">length</a>];
 	//2: copy
-	mixtureSave2[] = <a href="atmosphere/mixture/MixtureOptimizer.mixture.html">mixture</a>[];
-</code></pre></td></tr><tr><td><a href="atmosphere/mixture/MixtureOptimizer.weights.html">weights</a><span class="extrainfo"><span class="method-attribs"><span class="attr-property">@property</span>, <span class="attr-const">const</span></span></span></td><td></td><td>Returns: 
+	mixtureSave2[] = <a href="atmosphere/mixture/MixtureOptimizer.html#mixture">mixture</a>[];
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="weights"></a><div class="symbol"><div class="description"><pre><code>public final const(T)[] <a href="atmosphere/mixture/MixtureOptimizer.html#weights">weights</a>() @property const
+</code></pre>
+<div class="section"><h2>Returns</h2>
+<p> Const slice of the internal weights representation.
+</p>
+
+
+</div>
+<div class="section"><h2>Example</h2>
+
 	<pre><code>	//save slice
-	auto <a href="atmosphere/mixture/MixtureOptimizer.weights.html">weights</a> = optimizer.<a href="atmosphere/mixture/MixtureOptimizer.weights.html">weights</a>;
+	auto <a href="atmosphere/mixture/MixtureOptimizer.html#weights">weights</a> = optimizer.<a href="atmosphere/mixture/MixtureOptimizer.html#weights">weights</a>;
 
-	//use `.dup` or copy to save current <a href="atmosphere/mixture/MixtureOptimizer.weights.html">weights</a>
+	//use `.dup` or copy to save current <a href="atmosphere/mixture/MixtureOptimizer.html#weights">weights</a>
 
 	//1: .dup
-	auto weightsSave1 = <a href="atmosphere/mixture/MixtureOptimizer.weights.html">weights</a>.dup;
+	auto weightsSave1 = <a href="atmosphere/mixture/MixtureOptimizer.html#weights">weights</a>.dup;
 
 	//2: create array
-	auto weightsSave2 = new double[<a href="atmosphere/mixture/MixtureOptimizer.weights.html">weights</a>.<a href="atmosphere/mixture/MixtureOptimizer.length.html">length</a>];
+	auto weightsSave2 = new double[<a href="atmosphere/mixture/MixtureOptimizer.html#weights">weights</a>.<a href="atmosphere/mixture/MixtureOptimizer.html#length">length</a>];
 	//2: copy
-	weightsSave2[] = <a href="atmosphere/mixture/MixtureOptimizer.weights.html">weights</a>[];
-</code></pre></td></tr><tr><td><a href="atmosphere/mixture/MixtureOptimizer.weights.html">weights</a><span class="extrainfo"><span class="method-attribs"><span class="attr-property">@property</span></span></span></td><td></td><td><p>Set the mixture weights and calls <a href="update">update</a>.
+	weightsSave2[] = <a href="atmosphere/mixture/MixtureOptimizer.html#weights">weights</a>[];
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="weights"></a><div class="symbol"><div class="description"><pre><code>public final <a href="http://dlang.org/type.html#basic-data-types">void</a> <a href="atmosphere/mixture/MixtureOptimizer.html#weights">weights</a>(Range)(Range _weights) @property 
+if(isInputRange!Range)
+</code></pre>
+<div class="section "><p>Set the mixture weights and calls <a href="update">update</a>.
+</p>
+
+
+</div>
+<div class="section"><h2>Parameters</h2>
+<table class="params">
+<tr class="param"><td class="paramName">_weights</td><td class="paramDoc"><p>new mixture weights
+</p>
+</td></tr>
+</table>
+</div>
+</div></div><div class="section members"><h2>Functions</h2><table><tr><td><a href="atmosphere/mixture/MixtureOptimizer.html#this">this</a></td><td></td><td><p>Constructor
+</p>
+</td></tr><tr><td><span class="extrainfo"><span class="attribs"><span class="attr-abstract">abstract</span></span></span><a href="atmosphere/mixture/MixtureOptimizer.html#eval">eval</a><span class="extrainfo"></span></td><td></td><td><p>Perform k (1) iterations of coordinate (gradient or EM) descent optimization algorithm.
+</p>
+</td></tr><tr><td><span class="extrainfo"><span class="attribs"><span class="attr-abstract">abstract</span></span></span><a href="atmosphere/mixture/MixtureOptimizer.html#update">update</a><span class="extrainfo"></span></td><td></td><td><p>update method is called when mixture changes occur.
+</p>
+</td></tr><tr><td><a href="atmosphere/mixture/MixtureOptimizer.html#optimize">optimize</a><span class="extrainfo"></span></td><td></td><td><p>Performs optimization.
+</p>
+</td></tr><tr><td><a href="atmosphere/mixture/MixtureOptimizer.html#optimize">optimize</a><span class="extrainfo"></span></td><td></td><td><p>Performs optimization.
+</p>
+</td></tr><tr><td><a href="atmosphere/mixture/MixtureOptimizer.html#optimize">optimize</a><span class="extrainfo"></span></td><td></td><td><p>Performs optimization.
+</p>
+</td></tr><tr><td><a href="atmosphere/mixture/MixtureOptimizer.html#put">put</a><span class="extrainfo"></span></td><td></td><td><p>Puts back new feature for each components.
+</p>
+</td></tr><tr><td><a href="atmosphere/mixture/MixtureOptimizer.html#put">put</a><span class="extrainfo"></span></td><td></td><td><p>Puts back new features for each components.
+</p>
+</td></tr><tr><td><a href="atmosphere/mixture/MixtureOptimizer.html#length">length</a><span class="extrainfo"><span class="method-attribs"><span class="attr-property">@property</span>, <span class="attr-const">const</span></span></span></td><td></td><td>Returns: <p> current length of features for each component
+</p>
+</td></tr><tr><td><a href="atmosphere/mixture/MixtureOptimizer.html#maxLength">maxLength</a><span class="extrainfo"><span class="method-attribs"><span class="attr-property">@property</span>, <span class="attr-const">const</span></span></span></td><td></td><td>Returns: <p> maximal allowed length of features
+</p>
+</td></tr><tr><td><a href="atmosphere/mixture/MixtureOptimizer.html#reset">reset</a><span class="extrainfo"></span></td><td></td><td><p>Reset length of features to zero.
+</p>
+</td></tr><tr><td><a href="atmosphere/mixture/MixtureOptimizer.html#popFront">popFront</a><span class="extrainfo"></span></td><td></td><td><p>Remove one front feature for each component.
+</p>
+</td></tr><tr><td><a href="atmosphere/mixture/MixtureOptimizer.html#popFrontN">popFrontN</a><span class="extrainfo"></span></td><td></td><td><p>Remove n front features for each component.
+</p>
+</td></tr><tr><td><a href="atmosphere/mixture/MixtureOptimizer.html#features">features</a><span class="extrainfo"><span class="method-attribs"><span class="attr-const">const</span></span></span></td><td></td><td>Returns: <p> Range of range of features for each component. A matrix with k rows and n columns.
+		This is internal representation, and can be discarded after any methods calls.
+</p>
+</td></tr><tr><td><a href="atmosphere/mixture/MixtureOptimizer.html#mixture">mixture</a><span class="extrainfo"><span class="method-attribs"><span class="attr-property">@property</span>, <span class="attr-const">const</span></span></span></td><td></td><td>Returns: 
+	<pre><code>	double objectiveFunction(in double[])
+	{
+		...
+	}
+
+	//save slice
+	auto <a href="atmosphere/mixture/MixtureOptimizer.html#mixture">mixture</a> = optimizer.<a href="atmosphere/mixture/MixtureOptimizer.html#mixture">mixture</a>;
+
+	auto value0 = objectiveFunction(<a href="atmosphere/mixture/MixtureOptimizer.html#mixture">mixture</a>);
+	optimizer.<a href="atmosphere/mixture/MixtureOptimizer.html#eval">eval</a>;
+	auto value1 = objectiveFunction(<a href="atmosphere/mixture/MixtureOptimizer.html#mixture">mixture</a>);
+
+
+	//use `.dup` or copy to save current <a href="atmosphere/mixture/MixtureOptimizer.html#mixture">mixture</a>
+
+	//1: .dup
+	auto mixtureSave1 = <a href="atmosphere/mixture/MixtureOptimizer.html#mixture">mixture</a>.dup;
+
+	//2: create array
+	auto mixtureSave2 = new double[<a href="atmosphere/mixture/MixtureOptimizer.html#mixture">mixture</a>.<a href="atmosphere/mixture/MixtureOptimizer.html#length">length</a>];
+	//2: copy
+	mixtureSave2[] = <a href="atmosphere/mixture/MixtureOptimizer.html#mixture">mixture</a>[];
+</code></pre></td></tr><tr><td><a href="atmosphere/mixture/MixtureOptimizer.html#weights">weights</a><span class="extrainfo"><span class="method-attribs"><span class="attr-property">@property</span>, <span class="attr-const">const</span></span></span></td><td></td><td>Returns: 
+	<pre><code>	//save slice
+	auto <a href="atmosphere/mixture/MixtureOptimizer.html#weights">weights</a> = optimizer.<a href="atmosphere/mixture/MixtureOptimizer.html#weights">weights</a>;
+
+	//use `.dup` or copy to save current <a href="atmosphere/mixture/MixtureOptimizer.html#weights">weights</a>
+
+	//1: .dup
+	auto weightsSave1 = <a href="atmosphere/mixture/MixtureOptimizer.html#weights">weights</a>.dup;
+
+	//2: create array
+	auto weightsSave2 = new double[<a href="atmosphere/mixture/MixtureOptimizer.html#weights">weights</a>.<a href="atmosphere/mixture/MixtureOptimizer.html#length">length</a>];
+	//2: copy
+	weightsSave2[] = <a href="atmosphere/mixture/MixtureOptimizer.html#weights">weights</a>[];
+</code></pre></td></tr><tr><td><a href="atmosphere/mixture/MixtureOptimizer.html#weights">weights</a><span class="extrainfo"><span class="method-attribs"><span class="attr-property">@property</span></span></span></td><td></td><td><p>Set the mixture weights and calls <a href="update">update</a>.
 </p>
 </td></tr></table>
 </div>
-<script>hljs.initHighlightingOnLoad();</script>
+</div><script>hljs.initHighlightingOnLoad();</script>
 
 </div>
 <footer>

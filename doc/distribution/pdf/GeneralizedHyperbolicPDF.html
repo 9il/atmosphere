@@ -53,10 +53,9 @@
 <li><a href="simple_matrix.html">simple_matrix</a></li>
 
 </ul>
-</div>
-</div>
+</div></div>
 <div class="content">
-<pre><code>public final class GeneralizedHyperbolicPDF(T) : <a href="distribution/pdf/PDF.html">PDF</a>!T
+<div class="aggregate-symbol"><div class="description"><pre><code>public final class GeneralizedHyperbolicPDF(T) : <a href="distribution/pdf/PDF.html">PDF</a>!T
 if(isFloatingPoint!T)
 </code></pre>
 <div class="section "><p>Generalized hyperbolic (generalized inverse Gaussian mixture of normals) PDF
@@ -84,11 +83,38 @@ assert(abs(result.value - 1) < result.error);
 </code></pre>
 
 </div>
-<div class="section "><h2>Functions</h2><table><tr><td><a href="distribution/pdf/GeneralizedHyperbolicPDF.this.html">this</a></td><td></td><td><p>Constructor
+</div><a class="anchor" id="this"></a><div class="symbol"><div class="description"><pre><code>public this(
+    T lambda, 
+    T alpha, 
+    T beta, 
+    T delta, 
+    T mu)
+</code></pre>
+<div class="section "><p>Constructor
+</p>
+
+
+</div>
+<div class="section "><h2>Contracts</h2><pre><code>in
+{
+    assert (lambda.isFinite);
+    assert (alpha.isNormal || alpha == 0);
+    assert (alpha >= 0);
+    assert (beta.isFinite);
+    assert (beta >= -alpha);
+    assert (beta <= +alpha);
+    assert (delta.isNormal || delta == 0);
+    assert (delta >= 0);
+    assert (mu.isFinite);
+}
+</code></pre>
+
+</div>
+</div></div><div class="section members"><h2>Functions</h2><table><tr><td><a href="distribution/pdf/GeneralizedHyperbolicPDF.html#this">this</a></td><td></td><td><p>Constructor
 </p>
 </td></tr></table>
 </div>
-<script>hljs.initHighlightingOnLoad();</script>
+</div><script>hljs.initHighlightingOnLoad();</script>
 
 </div>
 <footer>

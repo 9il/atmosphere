@@ -53,10 +53,9 @@
 <li><a href="simple_matrix.html">simple_matrix</a></li>
 
 </ul>
-</div>
-</div>
+</div></div>
 <div class="content">
-<pre><code>public interface Quantile(T)
+<div class="aggregate-symbol"><div class="description"><pre><code>public interface Quantile(T)
 </code></pre>
 <div class="section "><p>Quantile function interface
 </p>
@@ -68,7 +67,7 @@
 
 class NormalQuantile : <a href="distribution/quantile/Quantile.html">Quantile</a>!real
 {
-	real <a href="distribution/quantile/Quantile.opCall.html">opCall</a>(real x)
+	real <a href="distribution/quantile/Quantile.html#opCall">opCall</a>(real x)
 	in {
 		assert(x >= 0);
 		assert(x <= 1);
@@ -85,11 +84,18 @@ assert(isNormal(x));
 </code></pre>
 
 </div>
-<div class="section "><h2>Functions</h2><table><tr><td><span class="extrainfo"><span class="attribs"><span class="attr-abstract">abstract</span></span></span><a href="distribution/quantile/Quantile.opCall.html">opCall</a><span class="extrainfo"></span></td><td></td><td><p>Call operator
+</div><a class="anchor" id="opCall"></a><div class="symbol"><div class="description"><pre><code>public abstract T <a href="distribution/quantile/Quantile.html#opCall">opCall</a>(T x)
+</code></pre>
+<div class="section "><p>Call operator
+</p>
+
+
+</div>
+</div></div><div class="section members"><h2>Functions</h2><table><tr><td><span class="extrainfo"><span class="attribs"><span class="attr-abstract">abstract</span></span></span><a href="distribution/quantile/Quantile.html#opCall">opCall</a><span class="extrainfo"></span></td><td></td><td><p>Call operator
 </p>
 </td></tr></table>
 </div>
-<script>hljs.initHighlightingOnLoad();</script>
+</div><script>hljs.initHighlightingOnLoad();</script>
 
 </div>
 <footer>

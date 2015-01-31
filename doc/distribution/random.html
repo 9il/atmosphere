@@ -53,85 +53,442 @@
 <li><a href="simple_matrix.html">simple_matrix</a></li>
 
 </ul>
-</div>
-</div>
+</div></div>
 <div class="content">
-<div class="section "><p>Random number generators
+<div class="aggregate-symbol"><a class="anchor" id="uniformM11E0"></a><div class="symbol"><div class="description"><pre><code>public T <a href="distribution/random.html#uniformM11E0">uniformM11E0</a>(T = <a href="http://dlang.org/type.html#basic-data-types">double</a>)() 
+if(isFloatingPoint!T)
+</code></pre>
+<div class="section"><h2>Returns</h2>
+<p> random number from <code class="prettyprint">[-1, +1] \ {0}</code>.
 </p>
 
 
 </div>
-<div class="section "><h2>Functions</h2><table><tr><td><a href="distribution/random/uniformM11E0.html">uniformM11E0</a><span class="extrainfo"></span></td><td></td><td>Returns: <p> random number from <code class="prettyprint">[-1, +1] \ {0}</code>.
+</div></div><a class="anchor" id="uniformM11E0"></a><div class="symbol"><div class="description"><pre><code>public T <a href="distribution/random.html#uniformM11E0">uniformM11E0</a>(T = <a href="http://dlang.org/type.html#basic-data-types">double</a>, UniformRNG)(ref UniformRNG rng) 
+if(isFloatingPoint!T && isUniformRNG!UniformRNG)
+</code></pre>
+<div class="section"><h2>Returns</h2>
+<p> random number from <code class="prettyprint">[-1, +1] \ {0}</code>.
 </p>
-</td></tr><tr><td><a href="distribution/random/uniformM11E0.html">uniformM11E0</a><span class="extrainfo"></span></td><td></td><td>Returns: <p> random number from <code class="prettyprint">[-1, +1] \ {0}</code>.
-</p>
-</td></tr><tr><td><a href="distribution/random/rNormal.html">rNormal</a><span class="extrainfo"></span></td><td></td><td><p>Function to generate random observationb from
+
+
+</div>
+<div class="section "><h2>Example</h2>
+<pre><code>auto x = <a href="distribution/random.html#uniformM11E0">uniformM11E0</a>();
+
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="rNormal"></a><div class="symbol"><div class="description"><pre><code>public T <a href="distribution/random.html#rNormal">rNormal</a>(T = <a href="http://dlang.org/type.html#basic-data-types">double</a>)() 
+if(isFloatingPoint!T)
+</code></pre>
+<div class="section "><p>Function to generate random observationb from
 standard normal 
 distribution.
 </p>
-</td></tr><tr><td><a href="distribution/random/rNormal.html">rNormal</a><span class="extrainfo"></span></td><td></td><td><p>Function to generate random observationb from
+
+
+</div>
+</div></div><a class="anchor" id="rNormal"></a><div class="symbol"><div class="description"><pre><code>public T <a href="distribution/random.html#rNormal">rNormal</a>(T = <a href="http://dlang.org/type.html#basic-data-types">double</a>, UniformRNG)(ref UniformRNG rng) 
+if(isFloatingPoint!T && isUniformRNG!UniformRNG)
+</code></pre>
+<div class="section "><p>Function to generate random observationb from
 standard normal 
 distribution.
 </p>
-</td></tr><tr><td><a href="distribution/random/rExponential.html">rExponential</a><span class="extrainfo"></span></td><td></td><td><p>Function to generate random observation from
+
+
+</div>
+<div class="section "><h2>Example</h2>
+<pre><code>auto x = <a href="distribution/random.html#rNormal">rNormal</a>() * 5 + 1;
+
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="rExponential"></a><div class="symbol"><div class="description"><pre><code>public T <a href="distribution/random.html#rExponential">rExponential</a>(T = <a href="http://dlang.org/type.html#basic-data-types">double</a>)() 
+if(isFloatingPoint!T)
+</code></pre>
+<div class="section "><p>Function to generate random observation from
 standard exponential 
 distribution.
 </p>
-</td></tr><tr><td><a href="distribution/random/rExponential.html">rExponential</a><span class="extrainfo"></span></td><td></td><td><p>Function to generate random observation from
+
+
+</div>
+</div></div><a class="anchor" id="rExponential"></a><div class="symbol"><div class="description"><pre><code>public T <a href="distribution/random.html#rExponential">rExponential</a>(T = <a href="http://dlang.org/type.html#basic-data-types">double</a>, UniformRNG)(ref UniformRNG rng) 
+if(isFloatingPoint!T && isUniformRNG!UniformRNG)
+</code></pre>
+<div class="section "><p>Function to generate random observation from
 standard exponential 
 distribution.
 </p>
-</td></tr><tr><td><a href="distribution/random/rGamma.html">rGamma</a><span class="extrainfo"></span></td><td></td><td><p>Function to generate random observation from a
+
+
+</div>
+<div class="section "><h2>Example</h2>
+<pre><code>auto x = <a href="distribution/random.html#rExponential">rExponential</a>() * 5;
+
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="rGamma"></a><div class="symbol"><div class="description"><pre><code>public T <a href="distribution/random.html#rGamma">rGamma</a>(T = <a href="http://dlang.org/type.html#basic-data-types">double</a>)(T shape) 
+if(isFloatingPoint!T)
+</code></pre>
+<div class="section "><p>Function to generate random observation from a
 gamma 
 distribution.
 </p>
-</td></tr><tr><td><a href="distribution/random/rGamma.html">rGamma</a><span class="extrainfo"></span></td><td></td><td><p>Function to generate random observation from a
+
+
+</div>
+<div class="section"><p>References
+	"Computer Generation of Statistical Distributions" by Richard Saucier
+</p>
+
+
+</div>
+</div></div><a class="anchor" id="rGamma"></a><div class="symbol"><div class="description"><pre><code>public T <a href="distribution/random.html#rGamma">rGamma</a>(T = <a href="http://dlang.org/type.html#basic-data-types">double</a>, UniformRNG)(
+    ref UniformRNG rng, 
+    T shape) 
+if(isFloatingPoint!T && isUniformRNG!UniformRNG)
+</code></pre>
+<div class="section "><p>Function to generate random observation from a
 gamma 
 distribution.
 </p>
-</td></tr><tr><td><a href="distribution/random/rGeneralizedGamma.html">rGeneralizedGamma</a><span class="extrainfo"></span></td><td></td><td><p>Function to generate random observation from a
+
+
+</div>
+<div class="section "><h2>Contracts</h2><pre><code>in
+{
+    assert (shape.isNormal);
+    assert (shape > 0);
+}
+</code></pre>
+
+</div>
+<div class="section"><p>References
+	"Computer Generation of Statistical Distributions" by Richard Saucier
+</p>
+
+
+</div>
+<div class="section "><h2>Example</h2>
+<pre><code>auto x = <a href="distribution/random.html#rGamma">rGamma</a>(2.0) * 5;
+
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="rGeneralizedGamma"></a><div class="symbol"><div class="description"><pre><code>public T <a href="distribution/random.html#rGeneralizedGamma">rGeneralizedGamma</a>(T = <a href="http://dlang.org/type.html#basic-data-types">double</a>)(
+    T shape, 
+    T power) 
+if(isFloatingPoint!T)
+</code></pre>
+<div class="section "><p>Function to generate random observation from a
 generalized gamma 
 distribution.
 </p>
-</td></tr><tr><td><a href="distribution/random/rGeneralizedGamma.html">rGeneralizedGamma</a><span class="extrainfo"></span></td><td></td><td><p>Function to generate random observation from a
+
+
+</div>
+</div></div><a class="anchor" id="rGeneralizedGamma"></a><div class="symbol"><div class="description"><pre><code>public T <a href="distribution/random.html#rGeneralizedGamma">rGeneralizedGamma</a>(T = <a href="http://dlang.org/type.html#basic-data-types">double</a>, UniformRNG)(
+    ref UniformRNG rng, 
+    T shape, 
+    T power) 
+if(isFloatingPoint!T && isUniformRNG!UniformRNG)
+</code></pre>
+<div class="section "><p>Function to generate random observation from a
 generalized gamma 
 distribution.
 </p>
-</td></tr><tr><td><a href="distribution/random/rInverseGamma.html">rInverseGamma</a><span class="extrainfo"></span></td><td></td><td><p>Function to generate random observation from a
+
+
+</div>
+<div class="section "><h2>Contracts</h2><pre><code>in
+{
+    assert (power.isNormal);
+    assert (shape.isNormal);
+    assert (power > 0);
+    assert (shape > 0);
+}
+</code></pre>
+
+</div>
+<div class="section "><h2>Example</h2>
+<pre><code>auto x = <a href="distribution/random.html#rGeneralizedGamma">rGeneralizedGamma</a>(2.0, 3.0) * 5;
+
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="rInverseGamma"></a><div class="symbol"><div class="description"><pre><code>public T <a href="distribution/random.html#rInverseGamma">rInverseGamma</a>(T = <a href="http://dlang.org/type.html#basic-data-types">double</a>)(T shape) 
+if(isFloatingPoint!T)
+</code></pre>
+<div class="section "><p>Function to generate random observation from a
 inverse-gamma 
 distribution.
 </p>
-</td></tr><tr><td><a href="distribution/random/rInverseGamma.html">rInverseGamma</a><span class="extrainfo"></span></td><td></td><td><p>Function to generate random observation from a
+
+
+</div>
+</div></div><a class="anchor" id="rInverseGamma"></a><div class="symbol"><div class="description"><pre><code>public T <a href="distribution/random.html#rInverseGamma">rInverseGamma</a>(T = <a href="http://dlang.org/type.html#basic-data-types">double</a>, UniformRNG)(
+    ref UniformRNG rng, 
+    T shape) 
+if(isFloatingPoint!T && isUniformRNG!UniformRNG)
+</code></pre>
+<div class="section "><p>Function to generate random observation from a
 inverse-gamma 
 distribution.
 </p>
-</td></tr><tr><td><a href="distribution/random/rInverseGaussian.html">rInverseGaussian</a><span class="extrainfo"></span></td><td></td><td><p>Function to generate random observation from a
+
+
+</div>
+<div class="section "><h2>Contracts</h2><pre><code>in
+{
+    assert (shape.isNormal);
+    assert (shape > 0);
+}
+</code></pre>
+
+</div>
+<div class="section "><h2>Example</h2>
+<pre><code>auto x = <a href="distribution/random.html#rInverseGamma">rInverseGamma</a>(2.0) * 5;
+
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="rInverseGaussian"></a><div class="symbol"><div class="description"><pre><code>public T <a href="distribution/random.html#rInverseGaussian">rInverseGaussian</a>(T = <a href="http://dlang.org/type.html#basic-data-types">double</a>)(
+    T lambda, 
+    T mu) 
+if(isFloatingPoint!T)
+</code></pre>
+<div class="section "><p>Function to generate random observation from a
 inverse Gaussian
 distribution.
 </p>
-</td></tr><tr><td><a href="distribution/random/rInverseGaussian.html">rInverseGaussian</a><span class="extrainfo"></span></td><td></td><td><p>Function to generate random observation from a
+
+
+</div>
+<div class="section"><h2>References</h2>
+<pre class="prettyprint"><code>Michael, John R.; Schucany, William R.; Haas, Roy W. (May 1976). "Generating Random Variates Using Transformations with Multiple Roots".
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="rInverseGaussian"></a><div class="symbol"><div class="description"><pre><code>public T <a href="distribution/random.html#rInverseGaussian">rInverseGaussian</a>(T = <a href="http://dlang.org/type.html#basic-data-types">double</a>, UniformRNG)(
+    ref UniformRNG rng, 
+    T lambda, 
+    T mu) 
+if(isFloatingPoint!T && isUniformRNG!UniformRNG)
+</code></pre>
+<div class="section "><p>Function to generate random observation from a
 inverse Gaussian
 distribution.
 </p>
-</td></tr><tr><td><a href="distribution/random/rChiSquare.html">rChiSquare</a><span class="extrainfo"></span></td><td></td><td><p>Function to generate random observation from a
+
+
+</div>
+<div class="section "><h2>Contracts</h2><pre><code>in
+{
+    assert (lambda.isNormal);
+    assert (lambda > 0);
+    assert (mu.isNormal);
+    assert (mu > 0);
+}
+</code></pre>
+
+</div>
+<div class="section"><h2>References</h2>
+<pre class="prettyprint"><code>Michael, John R.; Schucany, William R.; Haas, Roy W. (May 1976). "Generating Random Variates Using Transformations with Multiple Roots".
+</code></pre>
+
+</div>
+<div class="section "><h2>Example</h2>
+<pre><code>auto x = <a href="distribution/random.html#rInverseGaussian">rInverseGaussian</a>(2.0, 3.0) * 5;
+
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="rChiSquare"></a><div class="symbol"><div class="description"><pre><code>public T <a href="distribution/random.html#rChiSquare">rChiSquare</a>(T = <a href="http://dlang.org/type.html#basic-data-types">double</a>)(T shape) 
+if(isFloatingPoint!T)
+</code></pre>
+<div class="section "><p>Function to generate random observation from a
 Chi-squared
 distribution.
 </p>
-</td></tr><tr><td><a href="distribution/random/rChiSquare.html">rChiSquare</a><span class="extrainfo"></span></td><td></td><td><p>Function to generate random observation from a
+
+
+</div>
+</div></div><a class="anchor" id="rChiSquare"></a><div class="symbol"><div class="description"><pre><code>public T <a href="distribution/random.html#rChiSquare">rChiSquare</a>(T = <a href="http://dlang.org/type.html#basic-data-types">double</a>, UniformRNG)(
+    ref UniformRNG rng, 
+    T shape) 
+if(isFloatingPoint!T && isUniformRNG!UniformRNG)
+</code></pre>
+<div class="section "><p>Function to generate random observation from a
 Chi-squared
 distribution.
 </p>
-</td></tr><tr><td><a href="distribution/random/rStudentT.html">rStudentT</a><span class="extrainfo"></span></td><td></td><td><p>Function to generate random observation from a
+
+
+</div>
+<div class="section "><h2>Contracts</h2><pre><code>in
+{
+    assert (shape.isNormal);
+    assert (shape > 0);
+}
+</code></pre>
+
+</div>
+<div class="section "><h2>Example</h2>
+<pre><code>auto x = <a href="distribution/random.html#rChiSquare">rChiSquare</a>(2.0) * 5;
+
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="rStudentT"></a><div class="symbol"><div class="description"><pre><code>public T <a href="distribution/random.html#rStudentT">rStudentT</a>(T = <a href="http://dlang.org/type.html#basic-data-types">double</a>)(T shape) 
+if(isFloatingPoint!T)
+</code></pre>
+<div class="section "><p>Function to generate random observation from a
 Student's t-distribution.
 </p>
-</td></tr><tr><td><a href="distribution/random/rStudentT.html">rStudentT</a><span class="extrainfo"></span></td><td></td><td><p>Function to generate random observation from a
+
+
+</div>
+</div></div><a class="anchor" id="rStudentT"></a><div class="symbol"><div class="description"><pre><code>public T <a href="distribution/random.html#rStudentT">rStudentT</a>(T = <a href="http://dlang.org/type.html#basic-data-types">double</a>, UniformRNG)(
+    ref UniformRNG rng, 
+    T shape) 
+if(isFloatingPoint!T && isUniformRNG!UniformRNG)
+</code></pre>
+<div class="section "><p>Function to generate random observation from a
 Student's t-distribution.
 </p>
-</td></tr><tr><td><a href="distribution/random/rWeibull.html">rWeibull</a><span class="extrainfo"></span></td><td></td><td><p>Function to generate random observation from a
+
+
+</div>
+<div class="section "><h2>Contracts</h2><pre><code>in
+{
+    assert (shape.isNormal);
+    assert (shape > 0);
+}
+</code></pre>
+
+</div>
+<div class="section "><h2>Example</h2>
+<pre><code>auto x = <a href="distribution/random.html#rStudentT">rStudentT</a>(2.0) * 5;
+
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="rWeibull"></a><div class="symbol"><div class="description"><pre><code>public T <a href="distribution/random.html#rWeibull">rWeibull</a>(T = <a href="http://dlang.org/type.html#basic-data-types">double</a>)(T shape) 
+if(isFloatingPoint!T)
+</code></pre>
+<div class="section "><p>Function to generate random observation from a
 Weibull
 distribution.
 </p>
-</td></tr><tr><td><a href="distribution/random/rWeibull.html">rWeibull</a><span class="extrainfo"></span></td><td></td><td><p>Function to generate random observation from a
+
+
+</div>
+</div></div><a class="anchor" id="rWeibull"></a><div class="symbol"><div class="description"><pre><code>public T <a href="distribution/random.html#rWeibull">rWeibull</a>(T = <a href="http://dlang.org/type.html#basic-data-types">double</a>, UniformRNG)(
+    ref UniformRNG rng, 
+    T power) 
+if(isFloatingPoint!T && isUniformRNG!UniformRNG)
+</code></pre>
+<div class="section "><p>Function to generate random observation from a
+Weibull
+distribution.
+</p>
+
+
+</div>
+<div class="section "><h2>Contracts</h2><pre><code>in
+{
+    assert (power.isNormal);
+    assert (power > 0);
+}
+</code></pre>
+
+</div>
+<div class="section "><h2>Example</h2>
+<pre><code>auto x = <a href="distribution/random.html#rWeibull">rWeibull</a>(2.0) * 5 + 1;
+
+</code></pre>
+
+</div>
+</div></div><div class="description"><div class="section "><p>Random number generators
+</p>
+
+
+</div>
+</div><div class="section members"><h2>Functions</h2><table><tr><td><a href="distribution/random.html#uniformM11E0">uniformM11E0</a><span class="extrainfo"></span></td><td></td><td>Returns: <p> random number from <code class="prettyprint">[-1, +1] \ {0}</code>.
+</p>
+</td></tr><tr><td><a href="distribution/random.html#uniformM11E0">uniformM11E0</a><span class="extrainfo"></span></td><td></td><td>Returns: <p> random number from <code class="prettyprint">[-1, +1] \ {0}</code>.
+</p>
+</td></tr><tr><td><a href="distribution/random.html#rNormal">rNormal</a><span class="extrainfo"></span></td><td></td><td><p>Function to generate random observationb from
+standard normal 
+distribution.
+</p>
+</td></tr><tr><td><a href="distribution/random.html#rNormal">rNormal</a><span class="extrainfo"></span></td><td></td><td><p>Function to generate random observationb from
+standard normal 
+distribution.
+</p>
+</td></tr><tr><td><a href="distribution/random.html#rExponential">rExponential</a><span class="extrainfo"></span></td><td></td><td><p>Function to generate random observation from
+standard exponential 
+distribution.
+</p>
+</td></tr><tr><td><a href="distribution/random.html#rExponential">rExponential</a><span class="extrainfo"></span></td><td></td><td><p>Function to generate random observation from
+standard exponential 
+distribution.
+</p>
+</td></tr><tr><td><a href="distribution/random.html#rGamma">rGamma</a><span class="extrainfo"></span></td><td></td><td><p>Function to generate random observation from a
+gamma 
+distribution.
+</p>
+</td></tr><tr><td><a href="distribution/random.html#rGamma">rGamma</a><span class="extrainfo"></span></td><td></td><td><p>Function to generate random observation from a
+gamma 
+distribution.
+</p>
+</td></tr><tr><td><a href="distribution/random.html#rGeneralizedGamma">rGeneralizedGamma</a><span class="extrainfo"></span></td><td></td><td><p>Function to generate random observation from a
+generalized gamma 
+distribution.
+</p>
+</td></tr><tr><td><a href="distribution/random.html#rGeneralizedGamma">rGeneralizedGamma</a><span class="extrainfo"></span></td><td></td><td><p>Function to generate random observation from a
+generalized gamma 
+distribution.
+</p>
+</td></tr><tr><td><a href="distribution/random.html#rInverseGamma">rInverseGamma</a><span class="extrainfo"></span></td><td></td><td><p>Function to generate random observation from a
+inverse-gamma 
+distribution.
+</p>
+</td></tr><tr><td><a href="distribution/random.html#rInverseGamma">rInverseGamma</a><span class="extrainfo"></span></td><td></td><td><p>Function to generate random observation from a
+inverse-gamma 
+distribution.
+</p>
+</td></tr><tr><td><a href="distribution/random.html#rInverseGaussian">rInverseGaussian</a><span class="extrainfo"></span></td><td></td><td><p>Function to generate random observation from a
+inverse Gaussian
+distribution.
+</p>
+</td></tr><tr><td><a href="distribution/random.html#rInverseGaussian">rInverseGaussian</a><span class="extrainfo"></span></td><td></td><td><p>Function to generate random observation from a
+inverse Gaussian
+distribution.
+</p>
+</td></tr><tr><td><a href="distribution/random.html#rChiSquare">rChiSquare</a><span class="extrainfo"></span></td><td></td><td><p>Function to generate random observation from a
+Chi-squared
+distribution.
+</p>
+</td></tr><tr><td><a href="distribution/random.html#rChiSquare">rChiSquare</a><span class="extrainfo"></span></td><td></td><td><p>Function to generate random observation from a
+Chi-squared
+distribution.
+</p>
+</td></tr><tr><td><a href="distribution/random.html#rStudentT">rStudentT</a><span class="extrainfo"></span></td><td></td><td><p>Function to generate random observation from a
+Student's t-distribution.
+</p>
+</td></tr><tr><td><a href="distribution/random.html#rStudentT">rStudentT</a><span class="extrainfo"></span></td><td></td><td><p>Function to generate random observation from a
+Student's t-distribution.
+</p>
+</td></tr><tr><td><a href="distribution/random.html#rWeibull">rWeibull</a><span class="extrainfo"></span></td><td></td><td><p>Function to generate random observation from a
+Weibull
+distribution.
+</p>
+</td></tr><tr><td><a href="distribution/random.html#rWeibull">rWeibull</a><span class="extrainfo"></span></td><td></td><td><p>Function to generate random observation from a
 Weibull
 distribution.
 </p>
@@ -203,7 +560,7 @@ distribution.
 </p>
 </td></tr></table>
 </div>
-<script>hljs.initHighlightingOnLoad();</script>
+</div><script>hljs.initHighlightingOnLoad();</script>
 
 </div>
 <footer>
