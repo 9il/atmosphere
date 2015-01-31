@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<link rel="stylesheet" type="text/css" href="../../style.css"/>
+<script src="../../highlight.pack.js"></script>
+<title>GHypAlphaDelta</title>
+<base href="../../"/>
+<script src="search.js"></script>
+<script src="show_hide.js"></script>
+</head>
+<body>
+<div class="main">
+<div class="breadcrumbs">
+<table id="results"></table>
+<a href="index.html" class="home">⌂</a><input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
+<small>distribution.<a href=distribution/params.html>params</a>.</small><span class="highlight">GHypAlphaDelta</span>
+</div>
+<div class="sidebar">
+<a href="distribution/params.html#hide-toc" class="hide" id="hide-toc">&#171;</a>
+<a href="distribution/params.html#show-toc" class="show" id="show-toc">&#187;</a>
+<div id="toc-id" class="toc">
+<div class="toc-additional">
+<div class="section "><p>missing file
+</p>
+
+
+</div>
+
+</div>
+<ul><li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
+<ul id="atmosphere">
+<li>atmosphere.<a href="atmosphere/mixture.html">mixture</a></li>
+<li><span class="package" onclick="show_hide('atmosphere.parametrized');">atmosphere.parametrized</span>
+<ul id="atmosphere.parametrized">
+<li>atmosphere.parametrized.<a href="atmosphere/parametrized/nvmm.html">nvmm</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><span class="package" onclick="show_hide('distribution');"><a href="distribution.html">distribution</a></span>
+<ul id="distribution" style='display:block'>
+<li>distribution.<a href="distribution/cdf.html">cdf</a></li>
+<li>distribution.<a href="distribution/derivative.html">derivative</a></li>
+<li>distribution.<a href="distribution/moment.html">moment</a></li>
+<li><span class=" selected">distribution.<a href="distribution/params.html">params</a></span>
+</li>
+<li>distribution.<a href="distribution/pdf.html">pdf</a></li>
+<li>distribution.<a href="distribution/quantile.html">quantile</a></li>
+<li>distribution.<a href="distribution/random.html">random</a></li>
+</ul>
+</li>
+<li><a href="simple_matrix.html">simple_matrix</a></li>
+
+</ul>
+</div></div>
+<div class="content">
+<div class="aggregate-symbol"><div class="description"><pre><code>public @safe pure nothrow @nogc struct GHypAlphaDelta(T)
+if(isFloatingPoint!T)
+</code></pre>
+<div class="section "><p><img style="width: 600px;" src="../view/images/GHypAlphaDelta.png">
+<img style="width: 150px;" src="../view/images/GHypYx.png">
+</p>
+
+
+</div>
+<div class="section "><h2>Example</h2>
+<pre><code>double <a href="distribution/params/GHypAlphaDelta.html#beta">beta</a>  = 2;
+double _alpha= 3;
+double _delta= 4;
+
+auto params  = <a href="distribution/params/GHypAlphaDelta.html">GHypAlphaDelta</a>!double(_alpha, <a href="distribution/params/GHypAlphaDelta.html#beta">beta</a>, _delta);
+
+auto params0 = cast(<a href="distribution/params/GHypAlphaDelta.html">GHypAlphaDelta</a>!real) params;
+auto params1 = cast(<a href="distribution/params/GHypChiPsi.html">GHypChiPsi</a>    !real) params;
+auto params2 = cast(<a href="distribution/params/GHypEtaOmega.html">GHypEtaOmega</a>  !real) params;
+auto params3 = cast(<a href="distribution/params/GIGChiPsi.html">GIGChiPsi</a>     !real) params;
+auto params4 = cast(<a href="distribution/params/GIGEtaOmega.html">GIGEtaOmega</a>   !real) params;
+
+double <a href="distribution/params/GHypAlphaDelta.html#alpha">alpha</a> = params.<a href="distribution/params/GHypAlphaDelta.html#alpha">alpha</a>;
+double <a href="distribution/params/GHypAlphaDelta.html#delta">delta</a> = params.<a href="distribution/params/GHypAlphaDelta.html#delta">delta</a>;
+
+double <a href="distribution/params/GHypAlphaDelta.html#chi">chi</a>   = params.<a href="distribution/params/GHypAlphaDelta.html#chi">chi</a>;
+double <a href="distribution/params/GHypAlphaDelta.html#psi">psi</a>   = params.<a href="distribution/params/GHypAlphaDelta.html#psi">psi</a>;
+
+double <a href="distribution/params/GHypAlphaDelta.html#eta">eta</a>   = params.<a href="distribution/params/GHypAlphaDelta.html#eta">eta</a>;
+double <a href="distribution/params/GHypAlphaDelta.html#omega">omega</a> = params.<a href="distribution/params/GHypAlphaDelta.html#omega">omega</a>;
+
+</code></pre>
+
+</div>
+</div><a class="anchor" id="alpha"></a><div class="symbol"><div class="description"><pre><code>public T alpha
+</code></pre>
+</div></div><a class="anchor" id="beta"></a><div class="symbol"><div class="description"><pre><code>public T beta
+</code></pre>
+</div></div><a class="anchor" id="delta"></a><div class="symbol"><div class="description"><pre><code>public T delta
+</code></pre>
+</div></div><a class="anchor" id="chi"></a><div class="symbol"><div class="description"><pre><code>public const @property T <a href="distribution/params/GHypAlphaDelta.html#chi">chi</a>()
+</code></pre>
+<div class="section "><p><code class="prettyprint"><a href="distribution/params/GHypAlphaDelta.html#delta">delta</a>^^2</code>
+</p>
+
+
+</div>
+</div></div><a class="anchor" id="psi"></a><div class="symbol"><div class="description"><pre><code>public const @property T <a href="distribution/params/GHypAlphaDelta.html#psi">psi</a>()
+</code></pre>
+<div class="section "><p><code class="prettyprint"><a href="distribution/params/GHypAlphaDelta.html#alpha">alpha</a>^^2 - <a href="distribution/params/GHypAlphaDelta.html#beta">beta</a>^^2</code>
+</p>
+
+
+</div>
+</div></div><a class="anchor" id="eta"></a><div class="symbol"><div class="description"><pre><code>public const @property T <a href="distribution/params/GHypAlphaDelta.html#eta">eta</a>()
+</code></pre>
+<div class="section "><p><code class="prettyprint">sqrt(<a href="distribution/params/GHypAlphaDelta.html#chi">chi</a> / <a href="distribution/params/GHypAlphaDelta.html#psi">psi</a>)</code>
+</p>
+
+
+</div>
+</div></div><a class="anchor" id="omega"></a><div class="symbol"><div class="description"><pre><code>public const @property T <a href="distribution/params/GHypAlphaDelta.html#omega">omega</a>()
+</code></pre>
+<div class="section "><p><code class="prettyprint">sqrt(<a href="distribution/params/GHypAlphaDelta.html#chi">chi</a> * <a href="distribution/params/GHypAlphaDelta.html#psi">psi</a>)</code>
+</p>
+
+
+</div>
+</div></div><a class="anchor" id="opCast"></a><div class="symbol"><div class="description"><pre><code>public const @property R <a href="distribution/params/GHypAlphaDelta.html#opCast">opCast</a>(R : <a href="distribution/params/GHypAlphaDelta.html">GHypAlphaDelta</a>!F, F)()
+</code></pre>
+<div class="section "><p><code class="prettyprint">cast</code> operator overloading 
+</p>
+
+
+</div>
+</div></div><a class="anchor" id="opCast"></a><div class="symbol"><div class="description"><pre><code>public const @property R <a href="distribution/params/GHypAlphaDelta.html#opCast">opCast</a>(R : <a href="distribution/params/GHypChiPsi.html">GHypChiPsi</a>!F, F)()
+</code></pre>
+<div class="section "><p><code class="prettyprint">cast</code> operator overloading 
+</p>
+
+
+</div>
+</div></div><a class="anchor" id="opCast"></a><div class="symbol"><div class="description"><pre><code>public const @property R <a href="distribution/params/GHypAlphaDelta.html#opCast">opCast</a>(R : <a href="distribution/params/GHypEtaOmega.html">GHypEtaOmega</a>!F, F)()
+</code></pre>
+<div class="section "><p><code class="prettyprint">cast</code> operator overloading 
+</p>
+
+
+</div>
+</div></div><a class="anchor" id="opCast"></a><div class="symbol"><div class="description"><pre><code>public const @property R <a href="distribution/params/GHypAlphaDelta.html#opCast">opCast</a>(R : <a href="distribution/params/GIGChiPsi.html">GIGChiPsi</a>!F, F)()
+</code></pre>
+<div class="section "><p><code class="prettyprint">cast</code> operator overloading 
+</p>
+
+
+</div>
+</div></div><a class="anchor" id="opCast"></a><div class="symbol"><div class="description"><pre><code>public const @property R <a href="distribution/params/GHypAlphaDelta.html#opCast">opCast</a>(R : <a href="distribution/params/GIGEtaOmega.html">GIGEtaOmega</a>!F, F)()
+</code></pre>
+<div class="section "><p><code class="prettyprint">cast</code> operator overloading 
+</p>
+
+
+</div>
+</div></div><div class="section members"><h2>Variables</h2><table><tr><td><a href="distribution/params/GHypAlphaDelta.html#alpha">alpha</a></td><td><pre><code>T
+</code></pre>
+</td><td></td></tr><tr><td><a href="distribution/params/GHypAlphaDelta.html#beta">beta</a></td><td><pre><code>T
+</code></pre>
+</td><td></td></tr><tr><td><a href="distribution/params/GHypAlphaDelta.html#delta">delta</a></td><td><pre><code>T
+</code></pre>
+</td><td></td></tr></table><h2>Functions</h2><table><tr><td><a href="distribution/params/GHypAlphaDelta.html#chi">chi</a><span class="extrainfo"></span></td><td></td><td><p><code class="prettyprint"><a href="distribution/params/GHypAlphaDelta.html#delta">delta</a>^^2</code>
+</p>
+</td></tr><tr><td><a href="distribution/params/GHypAlphaDelta.html#psi">psi</a><span class="extrainfo"></span></td><td></td><td><p><code class="prettyprint"><a href="distribution/params/GHypAlphaDelta.html#alpha">alpha</a>^^2 - <a href="distribution/params/GHypAlphaDelta.html#beta">beta</a>^^2</code>
+</p>
+</td></tr><tr><td><a href="distribution/params/GHypAlphaDelta.html#eta">eta</a><span class="extrainfo"></span></td><td></td><td><p><code class="prettyprint">sqrt(<a href="distribution/params/GHypAlphaDelta.html#chi">chi</a> / <a href="distribution/params/GHypAlphaDelta.html#psi">psi</a>)</code>
+</p>
+</td></tr><tr><td><a href="distribution/params/GHypAlphaDelta.html#omega">omega</a><span class="extrainfo"></span></td><td></td><td><p><code class="prettyprint">sqrt(<a href="distribution/params/GHypAlphaDelta.html#chi">chi</a> * <a href="distribution/params/GHypAlphaDelta.html#psi">psi</a>)</code>
+</p>
+</td></tr><tr><td><a href="distribution/params/GHypAlphaDelta.html#opCast">opCast</a><span class="extrainfo"></span></td><td></td><td><p><code class="prettyprint">cast</code> operator overloading 
+</p>
+</td></tr><tr><td><a href="distribution/params/GHypAlphaDelta.html#opCast">opCast</a><span class="extrainfo"></span></td><td></td><td><p><code class="prettyprint">cast</code> operator overloading 
+</p>
+</td></tr><tr><td><a href="distribution/params/GHypAlphaDelta.html#opCast">opCast</a><span class="extrainfo"></span></td><td></td><td><p><code class="prettyprint">cast</code> operator overloading 
+</p>
+</td></tr><tr><td><a href="distribution/params/GHypAlphaDelta.html#opCast">opCast</a><span class="extrainfo"></span></td><td></td><td><p><code class="prettyprint">cast</code> operator overloading 
+</p>
+</td></tr><tr><td><a href="distribution/params/GHypAlphaDelta.html#opCast">opCast</a><span class="extrainfo"></span></td><td></td><td><p><code class="prettyprint">cast</code> operator overloading 
+</p>
+</td></tr></table>
+</div>
+</div><script>hljs.initHighlightingOnLoad();</script>
+
+</div>
+<footer>
+Generated with <a href="https://github.com/kiith-sa/harbored-mod">harbored-mod</a>
+</footer>
+</div>
+</body>
+</html>
