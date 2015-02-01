@@ -280,8 +280,8 @@ final:
 			import std.parallelism;
 			//TODO: choice workUnitSize
 			debug pragma(msg, "NormalVarianceMeanMixture.updateComponents: parallel");
-			auto pdfs = _grid.map!(u => PDF(beta, u)).parallel;
-			foreach(i, pdf; _grid.map!(u => PDF(beta, u)).parallel)
+			auto pdfs = _grid.map!(u => CorePDF(beta, u)).parallel;
+			foreach(i, pdf; _grid.map!(u => CorePDF(beta, u)).parallel)
 			{
 				auto r = m[i];
 				foreach(x; sample)
@@ -293,7 +293,7 @@ final:
 		}
 		else
 		{
-			foreach(pdf; _grid.map!(u => PDF(beta, u)))
+			foreach(pdf; _grid.map!(u => CorePDF(beta, u)))
 			{
 				auto r = m.front;
 				m.popFront;
@@ -307,7 +307,7 @@ final:
 		updateMixture;
 	}
 
-	static struct PDF
+	static struct CorePDF
 	{
 		T betau;
 		T sqrtu;
@@ -323,7 +323,7 @@ final:
 		T opCall(T x) inout
 		{
 			immutable y = (x - betau) / sqrtu;
-			enum T c = 0.398942280401432677939946059934381868475858631164934657665925;
+			enum T c = 0.3989422804014326779399460599343818684L;
 			import core.stdc.tgmath : exp; //FIXME 
 			return c * exp(y * y / -2) / sqrtu;
 		}
