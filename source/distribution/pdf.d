@@ -213,7 +213,7 @@ unittest
 /++
 Gamma PDF
 +/
-final class GammaPDF(T) : PDF!T
+struct GammaSPDF(T)
 	if(isFloatingPoint!T)
 {
 	private T shapem1, scale, c;
@@ -238,6 +238,7 @@ final class GammaPDF(T) : PDF!T
 		this.scale = scale;
 	}
 
+	///
 	T opCall(T x)
 	{
 		if(x < 0)
@@ -252,7 +253,7 @@ final class GammaPDF(T) : PDF!T
 ///
 unittest 
 {
-	auto pdf = new GammaPDF!double(3, 2);
+	auto pdf = GammaSPDF!double(3, 2);
 	auto x = pdf(0.1);
 	assert(x.isNormal);
 
@@ -480,9 +481,10 @@ final class GeneralizedInverseGaussianPDF(T) : PDF!T
 		assert(psi >= 0);
 	}
 	body {
+		import distribution.utilities;
 		immutable params = GIGChiPsi!T(chi, psi);
 		if (chi <= T.min_normal)
-			this.pdf = new GammaPDF!T(lambda, 2 / psi);
+			this.pdf = GammaSPDF!T(lambda, 2 / psi).convertTo!PDF;
 		else if (psi <= T.min_normal)
 			this.pdf = new InverseGammaPDF!T(-lambda, chi / 2);
 		else if (lambda == -0.5f)

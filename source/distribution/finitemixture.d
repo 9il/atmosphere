@@ -49,7 +49,7 @@ unittest
 {
 	import distribution.pdf;
 	import distribution.utilities;
-	auto pdfs = sequence!"n+1"().map!(shape => new GammaPDF!real(shape, 1));
+	auto pdfs = sequence!"n+1"().map!(shape => GammaSPDF!real(shape, 1));
 	double[] weights = [0.25, 0.5, 0.125, 0.125];
 	auto pdf = finiteMixture(pdfs, weights);
 	PDF!double pdf2 = convertTo!PDF(pdf);
