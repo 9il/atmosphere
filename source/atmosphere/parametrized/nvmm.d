@@ -275,33 +275,14 @@ final:
 	{
 		auto m = _featuresT.matrix;
 		assert(m.width == sample.length);
-		version(atmosphere_gm_parallel)
+		foreach(pdf; _grid.map!(u => CorePDF(beta, u)))
 		{
-			import std.parallelism;
-			//TODO: choice workUnitSize
-			debug pragma(msg, "NormalVarianceMeanMixture.updateComponents: parallel");
-			auto pdfs = _grid.map!(u => CorePDF(beta, u)).parallel;
-			foreach(i, pdf; _grid.map!(u => CorePDF(beta, u)).parallel)
+			auto r = m.front;
+			m.popFront;
+			foreach(x; sample)
 			{
-				auto r = m[i];
-				foreach(x; sample)
-				{
-					r.front = pdf(x);
-					r.popFront;
-				}
-			}
-		}
-		else
-		{
-			foreach(pdf; _grid.map!(u => CorePDF(beta, u)))
-			{
-				auto r = m.front;
-				m.popFront;
-				foreach(x; sample)
-				{
-					r.front = pdf(x);
-					r.popFront;
-				}
+				r.front = pdf(x);
+				r.popFront;
 			}
 		}
 		updateMixture;
