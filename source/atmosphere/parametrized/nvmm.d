@@ -309,23 +309,22 @@ final:
 
 	static struct CorePDF
 	{
+		T c;
 		T betau;
-		T sqrtu;
+		T u;
 
 		this(T beta, T u) inout
 		{
 			assert(u > 0);
-			this.betau = beta*u;
-			this.sqrtu = sqrt(u);
-			assert(sqrtu > 0);
+			assert(beta.isFinite);
+			this.betau = beta * u;
+			this.c = 1 / sqrt(2 * PI * u);
 		}
 
 		T opCall(T x) inout
 		{
-			immutable y = (x - betau) / sqrtu;
-			enum T c = 0.3989422804014326779399460599343818684L;
 			import core.stdc.tgmath : exp; //FIXME 
-			return c * exp(y * y / -2) / sqrtu;
+			return c * exp((x - betau)^^2 / (-2 * u));
 		}
 	}
 }

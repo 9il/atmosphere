@@ -14,6 +14,32 @@ import std.array;
 
 import distribution.params;
 
+
+/++
++/
+struct NormalSPDF(T)
+{
+	T c, mu, sigma2;
+
+	///
+	this(T mu, T sigma2)
+	in {
+		assert(sigma2 > 0);
+		assert(mu.isFinite);
+	}
+	body {
+		c = 1 / sqrt(2*PI*sigma2);
+		this.mu = mu;
+		this.sigma2 = sigma2;
+	}
+
+	///
+	T opCall(T x)
+	{
+		return c * exp((x-mu)^^2 / (-2*sigma2));
+	}
+}
+
 /++
 Probability density function interface
 +/
