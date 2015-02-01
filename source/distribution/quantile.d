@@ -238,3 +238,46 @@ unittest
 	auto x = qf(0.1);
 	assert(isNormal(x));
 }
+
+
+/++
+Quantile function of the generalized gamma distribution
++/
+final class GeneralizedGammaQuantile(T) : Quantile!T
+	if(isFloatingPoint!T)
+{
+	private T shape, power, scale;
+
+	///Constructor
+	this(T shape, T power, T scale)
+	in {
+		assert(shape.isNormal);
+		assert(shape > 0);
+		assert(power.isNormal);
+		assert(power > 0);
+		assert(scale.isNormal);
+		assert(scale > 0);
+	}
+	body {
+		this.shape = shape;
+		this.power = power;
+		this.scale = scale;
+	}
+
+	T opCall(T x)
+	in {
+		assert(x >= 0);
+		assert(x <= 1);		
+	}
+	body {
+		return scale * gammaIncompleteComplInverse(shape, 1-x).pow(1/power);
+	}
+}
+
+///
+unittest 
+{
+	auto qf = new GeneralizedGammaQuantile!double(3, 2, 1);
+	auto x = qf(0.1);
+	assert(isNormal(x));
+}
