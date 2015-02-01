@@ -290,22 +290,15 @@ final:
 
 	static struct CorePDF
 	{
-		T c;
-		T betau;
-		T u;
+		import distribution.pdf;
+		NormalSPDF!T pdf;
+		alias pdf this;
 
 		this(T beta, T u) inout
 		{
 			assert(u > 0);
 			assert(beta.isFinite);
-			this.betau = beta * u;
-			this.c = 1 / sqrt(2 * PI * u);
-		}
-
-		T opCall(T x) inout
-		{
-			import core.stdc.tgmath : exp; //FIXME 
-			return c * exp((x - betau)^^2 / (-2 * u));
+			pdf = NormalSPDF!T(beta*u, u);
 		}
 	}
 }
