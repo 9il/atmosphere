@@ -4,10 +4,18 @@ import std.range;
 import std.traits;
 
 /++
+Returns: Callable structure
+Params
+	funcs = input range of functions
+	weights = mixture weights
 +/
-template finiteMixture(alias InterfaceTemp)
+auto finiteMixture(FRange, T)(FRange funcs, const(T)[] weights)
+	if(
+		isForwardRange!FRange && 
+		isCallable!(ElementType!FRange) &&
+		isFloatingPoint!T)
 {
-	class Result(T, FRange) : InterfaceTemp!T
+	struct Result(T, FRange)
 		if(
 			isForwardRange!FRange && 
 			isCallable!(ElementType!FRange) &&
@@ -15,15 +23,11 @@ template finiteMixture(alias InterfaceTemp)
 	{
 		private FRange funcs;
 		private const(T)[] weights;
-
-		///
 		this(T)(FRange funcs, const(T)[] weights)
 		{
 			this.funcs = funcs;
 			this.weights = weights;
 		}
-
-		///
 		T opCall(T x)
 		{
 			T s = 0;
@@ -37,25 +41,16 @@ template finiteMixture(alias InterfaceTemp)
 			return s;
 		}
 	}
-
-	///
-	auto finiteMixture(FRange, T)(FRange funcs, const(T)[] weights)
-		if(
-			isForwardRange!FRange && 
-			isCallable!(ElementType!FRange) &&
-			isFloatingPoint!T)
-	{
-		return new Result!(T, FRange)(funcs, weights);
-	}
+	return Result!(T, FRange)(funcs, weights);
 }
-
-
 
 ///
 unittest
 {
 	import distribution.pdf;
+	import distribution.utilities;
 	auto pdfs = sequence!"n+1"().map!(shape => new GammaPDF!real(shape, 1));
 	double[] weights = [0.25, 0.5, 0.125, 0.125];
-	PDF!double pdf = finiteMixture!PDF(pdfs, weights);
+	auto pdf = finiteMixture(pdfs, weights);
+	PDF!double pdf2 = convertTo!PDF(pdf);
 }
