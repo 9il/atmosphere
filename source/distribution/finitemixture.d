@@ -7,7 +7,7 @@ import std.traits;
 +/
 template finiteMixture(alias InterfaceTemp)
 {
-	class FiniteMixture(T, FRange) : InterfaceTemp!T
+	class Result(T, FRange) : InterfaceTemp!T
 		if(
 			isForwardRange!FRange && 
 			isCallable!(ElementType!FRange) &&
@@ -27,18 +27,12 @@ template finiteMixture(alias InterfaceTemp)
 		T opCall(T x)
 		{
 			T s = 0;
-			auto r = funcs.save;
+			auto funcs = this.funcs.save;
 			foreach(w; weights)
 			{
-				assert(!r.empty);
-				static if(isSomeFunction!(ElementType!FRange))
-				{
-					auto e = r.front;
-					s += w * e(x);
-				}
-				else
-					s += r.front.opCall(x);
-				r.popFront;
+				assert(!funcs.empty);
+				s += funcs.front()(x);
+				funcs.popFront;
 			}
 			return s;
 		}
@@ -51,7 +45,7 @@ template finiteMixture(alias InterfaceTemp)
 			isCallable!(ElementType!FRange) &&
 			isFloatingPoint!T)
 	{
-		return new FiniteMixture!(T, FRange)(funcs, weights);
+		return new Result!(T, FRange)(funcs, weights);
 	}
 }
 
