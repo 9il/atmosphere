@@ -21,9 +21,13 @@ Normal PDF
 +/
 struct NormalSPDF(T)
 {
-	T c, mu, sigma2;
+	private T c, mu, sigma2;
 
-	///
+	/++
+	Params:
+		mu = location
+		sigma2 = sigma^2
+	+/
 	this(T mu, T sigma2)
 	in {
 		assert(sigma2 > 0);
@@ -36,7 +40,7 @@ struct NormalSPDF(T)
 	}
 
 	///
-	T opCall(T x)
+	T opCall(T x) const
 	{
 		import core.stdc.tgmath : exp;
 		return c * exp((x-mu)^^2 / (-2*sigma2));
@@ -72,7 +76,7 @@ struct GammaSPDF(T)
 	}
 
 	///
-	T opCall(T x)
+	T opCall(T x) const
 	{
 		if(x < 0)
 			return 0;
@@ -124,7 +128,7 @@ struct InverseGammaSPDF(T)
 	}
 
 	///
-	T opCall(T x)
+	T opCall(T x) const
 	{
 		if(x < 0)
 			return 0;
@@ -178,7 +182,7 @@ struct GeneralizedGammaSPDF(T)
 	}
 
 	///
-	T opCall(T x)
+	T opCall(T x) const
 	{
 		if(x < 0)
 			return 0;
@@ -227,7 +231,7 @@ struct InverseGaussianSPDF(T)
 	}
 
 	///
-	T opCall(T x)
+	T opCall(T x) const
 	{
 		return x < 0 ? 0 : sqrt(chi / (2*PI*x^^3)) * exp(omega - (chi / x + psi * x) / 2);
 	}
@@ -274,7 +278,7 @@ struct ProperGeneralizedInverseGaussianSPDF(T)
 	}
 
 	///
-	T opCall(T x)
+	T opCall(T x) const
 	{
 		if(x <= 0)
 			return 0;
@@ -336,7 +340,7 @@ struct VarianceGammaSPDF(T)
 	}
 
 	///
-	T opCall(T x)
+	T opCall(T x) const
 	{
 		immutable y = x - mu;
 		immutable z = abs(y);
@@ -399,7 +403,7 @@ struct HyperbolicAsymmetricTSPDF(T)
 	}
 
 	///
-	T opCall(T x)
+	T opCall(T x) const
 	{
 		immutable y = x - mu;
 		immutable z = hypot(delta, y);
@@ -463,7 +467,7 @@ struct NormalInverseGaussianSPDF(T)
 	}
 
 	///
-	T opCall(T x)
+	T opCall(T x) const
 	{
 		immutable y = x - mu;
 		immutable z = hypot(delta, y);
@@ -533,7 +537,7 @@ struct ProperGeneralizedHyperbolicSPDF(T)
 	}
 
 	///
-	T opCall(T x)
+	T opCall(T x) const
 	{
 		immutable y = x - mu;
 		immutable z = hypot(delta, y);
@@ -630,7 +634,6 @@ abstract class NormalVarianceMeanMixturePDF(T) : PDF!T
 		this.epsAbs = epsAbs;
 		this.subdivisions = subdivisions;
 	}
-
 
 	T opCall(T x)
 	{
