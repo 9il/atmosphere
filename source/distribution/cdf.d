@@ -15,6 +15,36 @@ import distribution.utilities;
 
 
 /++
+Normal PDF
++/
+struct NormalSCDF(T)
+{
+	T mu, sigma;
+
+	/++
+	Params:
+		mu = location
+		sigma2 = sigma^2
+	+/
+	this(T mu, T sigma)
+	in {
+		assert(sigma > 0);
+		assert(mu.isFinite);
+	}
+	body {
+		this.mu = mu;
+		this.sigma = sigma;
+	}
+
+	///
+	T opCall(T x) const
+	{
+		return normalDistribution((x - mu) / sigma);
+	}
+}
+
+
+/++
 Comulative density function interface
 +/
 interface CDF(T)
