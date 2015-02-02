@@ -163,7 +163,7 @@ unittest
 /++
 Quantile function of the gamma distribution
 +/
-final class GammaQuantile(T) : Quantile!T
+struct GammaSQuantile(T)
 	if(isFloatingPoint!T)
 {
 	private T shape, scale;
@@ -181,7 +181,8 @@ final class GammaQuantile(T) : Quantile!T
 		this.scale = scale;
 	}
 
-	T opCall(T x)
+	///
+	T opCall(T x) const
 	in {
 		assert(x >= 0);
 		assert(x <= 1);		
@@ -194,7 +195,7 @@ final class GammaQuantile(T) : Quantile!T
 ///
 unittest 
 {
-	auto qf = new GammaQuantile!double(3, 2);
+	auto qf = GammaSQuantile!double(3, 2);
 	auto x = qf(0.1);
 	assert(isNormal(x));
 }
@@ -203,7 +204,7 @@ unittest
 /++
 Quantile function of the inverse-gamma distribution
 +/
-final class InverseGammaQuantile(T) : Quantile!T
+struct InverseGammaSQuantile(T)
 	if(isFloatingPoint!T)
 {
 	private T shape, scale;
@@ -221,7 +222,8 @@ final class InverseGammaQuantile(T) : Quantile!T
 		this.scale = scale;
 	}
 
-	T opCall(T x)
+	///
+	T opCall(T x) const
 	in {
 		assert(x >= 0);
 		assert(x <= 1);		
@@ -234,7 +236,7 @@ final class InverseGammaQuantile(T) : Quantile!T
 ///
 unittest 
 {
-	auto qf = new InverseGammaQuantile!double(3, 2);
+	auto qf = InverseGammaSQuantile!double(3, 2);
 	auto x = qf(0.1);
 	assert(isNormal(x));
 }
@@ -243,7 +245,7 @@ unittest
 /++
 Quantile function of the generalized gamma distribution
 +/
-final class GeneralizedGammaQuantile(T) : Quantile!T
+struct GeneralizedGammaSQuantile(T)
 	if(isFloatingPoint!T)
 {
 	private T shape, power, scale;
@@ -264,7 +266,8 @@ final class GeneralizedGammaQuantile(T) : Quantile!T
 		this.scale = scale;
 	}
 
-	T opCall(T x)
+	///
+	T opCall(T x) const
 	in {
 		assert(x >= 0);
 		assert(x <= 1);		
@@ -277,7 +280,7 @@ final class GeneralizedGammaQuantile(T) : Quantile!T
 ///
 unittest 
 {
-	auto qf = new GeneralizedGammaQuantile!double(3, 2, 1);
+	auto qf = GeneralizedGammaSQuantile!double(3, 2, 1);
 	auto x = qf(0.1);
 	assert(isNormal(x));
 }
