@@ -294,7 +294,7 @@ final:
 		NormalSPDF!T pdf;
 		alias pdf this;
 
-		this(T beta, T u) inout
+		this(T beta, T u) const
 		{
 			assert(u > 0);
 			assert(beta.isFinite);
