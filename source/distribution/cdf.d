@@ -11,6 +11,7 @@ import std.mathspecial;
 import distribution.moment;
 import distribution.params;
 import distribution.pdf;
+import distribution.utilities;
 
 
 /++
@@ -261,9 +262,9 @@ final class ProperGeneralizedInverseGaussianCDF(T): NumericCDF!T
 	+/
 	this(T lambda, T eta, T omega)
 	{
-		auto pdf = new ProperGeneralizedInverseGaussianPDF!T(lambda, eta, omega);
+		auto pdf = ProperGeneralizedInverseGaussianSPDF!T(lambda, eta, omega);
 		immutable mean = properGeneralizedInverseGaussianMean(lambda, eta, omega);
-		super(pdf, [mean], 0);	
+		super(pdf.convertTo!PDF, [mean], 0);	
 	}
 }
 
@@ -344,9 +345,9 @@ unittest
 		{
 			with(params)
 			{
-				auto pgig  = new ProperGeneralizedInverseGaussianPDF!T(lambda, eta, omega);
+				auto pdf = ProperGeneralizedInverseGaussianSPDF!T(lambda, eta, omega);
 				auto mean = properGeneralizedInverseGaussianMean(lambda, eta, omega);
-				super(pgig, params.beta, mu, [mean]);				
+				super(pdf.convertTo!PDF, params.beta, mu, [mean]);				
 			}
 		}
 	}
@@ -377,9 +378,9 @@ final class GeneralizedVarianceGammaCDF(T): NormalVarianceMeanMixtureCDF!T
 	+/
 	this(T shape, T power, T scale, T beta, T mu)
 	{
-		auto pdf = new GeneralizedGammaPDF!T(shape, power, scale);
+		auto pdf = GeneralizedGammaSPDF!T(shape, power, scale);
 		immutable mean = generalizedGammaMean(shape, power, scale);
-		super(pdf, beta, mu, [mean]);	
+		super(pdf.convertTo!PDF, beta, mu, [mean]);	
 	}
 }
 

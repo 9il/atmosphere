@@ -13,9 +13,11 @@ import std.algorithm;
 import std.array;
 
 import distribution.params;
+import distribution.utilities;
 
 
 /++
+Normal PDF
 +/
 struct NormalSPDF(T)
 {
@@ -86,10 +88,9 @@ abstract class NormalVarianceMeanMixturePDF(T) : PDF!T
 	private PDF!T pdf;
 	private T beta, mu;
 	private T epsRel, epsAbs;
-	private T[] subdivisions;
+	private const(T)[] subdivisions;
 
 	/++
-	Constructor
     Params:
 		pdf     = The PDF to _integrate.
 		beta = NVMM scale
@@ -99,7 +100,7 @@ abstract class NormalVarianceMeanMixturePDF(T) : PDF!T
 		epsAbs  = (optional) The requested absolute accuracy.
 	See_also: [struct Result](https://github.com/kyllingstad/scid/blob/a9f3916526e4bf9a4da35d14a969e1abfa17a496/source/scid/types.d)
 	+/
-	this(PDF!T pdf, T beta, T mu, T[] subdivisions = null, T epsRel = 1e-6, T epsAbs = 0)
+	this(PDF!T pdf, T beta, T mu, const(T)[] subdivisions = null, T epsRel = 1e-6, T epsAbs = 0)
 	in {
 		assert(subdivisions.all!isFinite);
 		assert(subdivisions.all!(s => s > 0));
@@ -144,9 +145,9 @@ unittest
 		{
 			with(params)
 			{
-				auto pgig  = new ProperGeneralizedInverseGaussianPDF!T(lambda, eta, omega);
+				auto pgig = ProperGeneralizedInverseGaussianSPDF!T(lambda, eta, omega);
 				auto e = mu + properGeneralizedInverseGaussianMean(lambda, eta, omega);
-				super(pgig, params.beta, mu, [e]);				
+				super(pgig.convertTo!PDF, params.beta, mu, [e]);				
 			}
 		}
 	}
@@ -169,7 +170,6 @@ final class GeneralizedVarianceGammaPDF(T) : NormalVarianceMeanMixturePDF!T
 	if(isFloatingPoint!T)
 {
 	/++
-	Constructor
 	Params:
 		shape = shape parameter (generalized gamma)
 		power = power parameter (generalized gamma)
@@ -189,11 +189,11 @@ final class GeneralizedVarianceGammaPDF(T) : NormalVarianceMeanMixturePDF!T
 	}
 	body {
 		import distribution.moment : generalizedGammaMean;
-		auto p  = new GeneralizedGammaPDF!double(shape, power, scale);
+		auto pdf  = GeneralizedGammaSPDF!double(shape, power, scale);
 		auto e = generalizedGammaMean(shape, power, scale);
 		assert(e > 0);
 		assert(e.isFinite);
-		super(p, beta, mu, [e]);
+		super(pdf.convertTo!PDF, beta, mu, [e]);
 	}
 }
 
@@ -219,7 +219,6 @@ struct GammaSPDF(T)
 	private T shapem1, scale, c;
 
 	/++
-	Constructor
 	Params:
 		shape = gamma shape parameter
 		scale = gamma scale parameter
@@ -266,13 +265,12 @@ unittest
 /++
 Inverse-gamma PDF
 +/
-final class InverseGammaPDF(T) : PDF!T
+struct InverseGammaSPDF(T)
 	if(isFloatingPoint!T)
 {
 	private T shapem1, scale, c;
 
 	/++
-	Constructor
 	Params:
 		shape = gamma shape parameter
 		scale = gamma scale parameter
@@ -291,6 +289,7 @@ final class InverseGammaPDF(T) : PDF!T
 		this.scale = scale;
 	}
 
+	///
 	T opCall(T x)
 	{
 		if(x < 0)
@@ -305,7 +304,7 @@ final class InverseGammaPDF(T) : PDF!T
 ///
 unittest 
 {
-	auto pdf = new InverseGammaPDF!double(3, 4);
+	auto pdf = InverseGammaSPDF!double(3, 4);
 	auto x = pdf(0.1);
 	assert(x.isNormal);
 
@@ -318,13 +317,12 @@ unittest
 /++
 Generalized gamma PDF
 +/
-final class GeneralizedGammaPDF(T) : PDF!T
+struct GeneralizedGammaSPDF(T)
 	if(isFloatingPoint!T)
 {
 	private T shapem1, power, scale, c, e;
 
 	/++
-	Constructor
 	Params:
 		shape = shape parameter
 		power = power parameter
@@ -345,6 +343,7 @@ final class GeneralizedGammaPDF(T) : PDF!T
 		this.e = power * shape - 1;
 	}
 
+	///
 	T opCall(T x)
 	{
 		if(x < 0)
@@ -359,7 +358,7 @@ final class GeneralizedGammaPDF(T) : PDF!T
 ///
 unittest 
 {
-	auto pdf = new GeneralizedGammaPDF!double(3, 2, 0.5);
+	auto pdf = GeneralizedGammaSPDF!double(3, 2, 0.5);
 	auto x = pdf(0.1);
 	assert(x.isNormal);
 
@@ -374,12 +373,12 @@ Inverse Gaussian PDF
 
 See_Also: [distribution.params](distribution/params.html)
 +/
-final class InverseGaussianPDF(T) : PDF!T
+struct InverseGaussianSPDF(T)
 	if(isFloatingPoint!T)
 {
 	private T omega, chi, psi;
 
-	///Constructor
+	///
 	this(T chi, T psi)
 	in {
 		assert(chi.isNormal);
@@ -393,6 +392,7 @@ final class InverseGaussianPDF(T) : PDF!T
 		this.omega = GIGChiPsi!T(chi, psi).omega;
 	}
 
+	///
 	T opCall(T x)
 	{
 		return x < 0 ? 0 : sqrt(chi / (2*PI*x^^3)) * exp(omega - (chi / x + psi * x) / 2);
@@ -402,7 +402,7 @@ final class InverseGaussianPDF(T) : PDF!T
 ///
 unittest 
 {
-	auto pdf = new InverseGaussianPDF!double(3, 2);
+	auto pdf = InverseGaussianSPDF!double(3, 2);
 	auto x = pdf(0.1);
 	assert(x.isNormal);
 
@@ -417,12 +417,12 @@ Proper generalized inverse Gaussian PDF
 
 See_Also: [distribution.params](distribution/params.html)
 +/
-final class ProperGeneralizedInverseGaussianPDF(T) : PDF!T
+struct ProperGeneralizedInverseGaussianSPDF(T)
 	if(isFloatingPoint!T)
 {
 	private T omega, eta, c, lambdam1;
 
-	///Constructor
+	///
 	this(T lambda, T eta, T omega)
 	in {
 		assert(lambda.isFinite);
@@ -439,6 +439,7 @@ final class ProperGeneralizedInverseGaussianPDF(T) : PDF!T
 		this.lambdam1 = lambda - 1;
 	}
 
+	///
 	T opCall(T x)
 	{
 		if(x <= 0)
@@ -451,7 +452,7 @@ final class ProperGeneralizedInverseGaussianPDF(T) : PDF!T
 ///
 unittest 
 {
-	auto pdf = new ProperGeneralizedInverseGaussianPDF!double(4, 3, 2);
+	auto pdf = ProperGeneralizedInverseGaussianSPDF!double(4, 3, 2);
 	auto x = pdf(0.1);
 	assert(x.isNormal);
 
@@ -471,7 +472,7 @@ final class GeneralizedInverseGaussianPDF(T) : PDF!T
 {
 	private PDF!T pdf;
 
-	///Constructor
+	///
 	this(T lambda, T chi, T psi)
 	in {
 		assert(lambda.isFinite);
@@ -481,16 +482,15 @@ final class GeneralizedInverseGaussianPDF(T) : PDF!T
 		assert(psi >= 0);
 	}
 	body {
-		import distribution.utilities;
 		immutable params = GIGChiPsi!T(chi, psi);
 		if (chi <= T.min_normal)
 			this.pdf = GammaSPDF!T(lambda, 2 / psi).convertTo!PDF;
 		else if (psi <= T.min_normal)
-			this.pdf = new InverseGammaPDF!T(-lambda, chi / 2);
+			this.pdf = InverseGammaSPDF!T(-lambda, chi / 2).convertTo!PDF;
 		else if (lambda == -0.5f)
-			this.pdf = new InverseGaussianPDF!T(params.eta, chi);
+			this.pdf = InverseGaussianSPDF!T(params.eta, chi).convertTo!PDF;
 		else
-			this.pdf = new ProperGeneralizedInverseGaussianPDF!T(lambda, params.eta, params.omega);
+			this.pdf = ProperGeneralizedInverseGaussianSPDF!T(lambda, params.eta, params.omega).convertTo!PDF;
 	}
 
 	T opCall(T x)
@@ -517,13 +517,12 @@ Variance gamma (gamma mixture of normals) PDF
 
 See_Also: [distribution.params](distribution/params.html)
 +/
-final class VarianceGammaPDF(T) : PDF!T
+struct VarianceGammaSPDF(T)
 	if(isFloatingPoint!T)
 {
 	private T lambdamh, alpha, beta, mu, c;
 
 	/++
-	Constructor
 	Params:
 		lambda = 
 		alpha = 
@@ -567,7 +566,7 @@ final class VarianceGammaPDF(T) : PDF!T
 ///
 unittest 
 {
-	auto pdf = new VarianceGammaPDF!double(1.1, 1.1, 1.0, 1.1);
+	auto pdf = VarianceGammaSPDF!double(1.1, 1.1, 1.0, 1.1);
 	auto x = pdf(0.1);
 	assert(x.isNormal);
 
@@ -582,13 +581,12 @@ Hyperbolic asymmetric T (inverse gamma mixture of normals) PDF
 
 See_Also: [distribution.params](distribution/params.html)
 +/
-final class HyperbolicAsymmetricTPDF(T) : PDF!T
+struct HyperbolicAsymmetricTSPDF(T)
 	if(isFloatingPoint!T)
 {
 	private T lambdamh, beta, delta, mu, c;
 
 	/++
-	Constructor
 	Params:
 		lambda = 
 		alpha = `|beta|`
@@ -632,7 +630,7 @@ final class HyperbolicAsymmetricTPDF(T) : PDF!T
 ///
 unittest 
 {
-	auto pdf = new HyperbolicAsymmetricTPDF!double(-1.1, 1.1, 1.1, 1.1);
+	auto pdf = HyperbolicAsymmetricTSPDF!double(-1.1, 1.1, 1.1, 1.1);
 	auto x = pdf(0.1);
 	import std.conv;
 	assert(x.isNormal, text(x));
@@ -644,13 +642,12 @@ Normal-inverse Gaussian (inverse Gaussian mixture of normals) PDF
 
 See_Also: [distribution.params](distribution/params.html)
 +/
-final class NormalInverseGaussianPDF(T) : PDF!T
+struct NormalInverseGaussianSPDF(T)
 	if(isFloatingPoint!T)
 {
 	private T alpha, beta, delta, mu, c;
 
 	/++
-	Constructor
 	Params:
 		lambda = -1/2
 		alpha = 
@@ -694,7 +691,7 @@ final class NormalInverseGaussianPDF(T) : PDF!T
 ///
 unittest 
 {
-	auto pdf = new NormalInverseGaussianPDF!double(1.1, 0.8, 1.1, 1.1);
+	auto pdf = NormalInverseGaussianSPDF!double(1.1, 0.8, 1.1, 1.1);
 	auto x = pdf(0.1);
 	assert(x.isNormal);
 
@@ -709,13 +706,12 @@ Proper generalized hyperbolic (generalized inverse Gaussian mixture of normals) 
 
 See_Also: [distribution.params](distribution/params.html)
 +/
-final class ProperGeneralizedHyperbolicPDF(T) : PDF!T
+struct ProperGeneralizedHyperbolicSPDF(T)
 	if(isFloatingPoint!T)
 {
 	private T lambdamh, alpha, beta, delta, mu, omega, c;
 
 	/++
-	Constructor
 	Params:
 		lambda =
 		alpha = 
@@ -764,7 +760,7 @@ final class ProperGeneralizedHyperbolicPDF(T) : PDF!T
 ///
 unittest 
 {
-	auto pdf = new ProperGeneralizedHyperbolicPDF!double(1.1, 1.1, 0.8, 1.1, 1.1);
+	auto pdf = ProperGeneralizedHyperbolicSPDF!double(1.1, 1.1, 0.8, 1.1, 1.1);
 	auto x = pdf(0.1);
 	assert(x.isNormal);
 
@@ -785,7 +781,6 @@ final class GeneralizedHyperbolicPDF(T) : PDF!T
 	private PDF!T pdf;
 
 	/++
-	Constructor
 	+/
 	this(T lambda, T alpha, T beta, T delta, T mu)
 	in {
@@ -801,13 +796,13 @@ final class GeneralizedHyperbolicPDF(T) : PDF!T
 	}
 	body {
 		if (delta == 0)
-			this.pdf = new VarianceGammaPDF!T(lambda, alpha, beta, mu);
+			this.pdf = VarianceGammaSPDF!T(lambda, alpha, beta, mu).convertTo!PDF;
 		else if (alpha == abs(beta))
-			this.pdf = new HyperbolicAsymmetricTPDF!T(lambda, beta, delta, mu);
+			this.pdf = HyperbolicAsymmetricTSPDF!T(lambda, beta, delta, mu).convertTo!PDF;
 		else if (lambda == -0.5f)
-			this.pdf = new NormalInverseGaussianPDF!T(alpha, beta, delta, mu);
+			this.pdf = NormalInverseGaussianSPDF!T(alpha, beta, delta, mu).convertTo!PDF;
 		else
-			this.pdf = new ProperGeneralizedHyperbolicPDF!T(lambda, alpha, beta, delta, mu);
+			this.pdf = ProperGeneralizedHyperbolicSPDF!T(lambda, alpha, beta, delta, mu).convertTo!PDF;
 	}
 
 	T opCall(T x)
