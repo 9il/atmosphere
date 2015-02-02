@@ -42,6 +42,27 @@ unittest
 }
 
 
+///
+DistributionRNG!F toDistributionRNG
+	(Rng, F = ReturnType!(Rng.front))
+	(Rng rng)
+{
+	static assert(isFloatingPoint!F);
+	return new class (rng) DistributionRNG!F {
+		Rng rng;
+		this(Rng rng) { this.rng = rng; }
+		F front() @property { return rng.front; };
+	};
+
+}
+
+///
+unittest
+{
+	DistributionRNG!double rng = GammaSRNG!double(rndGen, 1, 3).toDistributionRNG;
+}
+
+
 /++
 Class to create normal variance-mean mixture random number generators.
 Assume `U` has mixing probability density, `Y ~ N(0, 1)`.
@@ -88,8 +109,8 @@ unittest
 	{
 		this(double shape, double scale, double beta)
 		{
-			auto components = new GammaRNG!double(rndGen, shape, scale);
-			super(rndGen, components, beta);
+			auto components = GammaSRNG!double(rndGen, shape, scale);
+			super(rndGen, components.toDistributionRNG, beta);
 		}
 	}
 }
@@ -100,7 +121,7 @@ Class to generate random observations from a
 gamma
 distribution.
  +/
-final class GammaRNG(T, UniformRNG = Random) : DistributionRNG!T
+struct GammaSRNG(T, UniformRNG = Random)
 	if (isFloatingPoint!T)
 {
 	private UniformRNG* rng;
@@ -121,17 +142,23 @@ final class GammaRNG(T, UniformRNG = Random) : DistributionRNG!T
 		this.scale = scale;
 	}
 
+	///
 	T front() @property
 	{
 		return rng.rGamma(shape) * scale;
 	}
+	///
+	static void popFront() @safe pure nothrow @nogc {}
+	///
+	enum empty = false;
+
 }
 
 ///
 unittest
 {
 	import std.range;
-	auto rng = new GammaRNG!double(rndGen, 1.1, 1.1);
+	auto rng = GammaSRNG!double(rndGen, 1.1, 1.1);
 	auto sample = rng.map!(x => x + 4).take(9).array;
 }
 
@@ -141,7 +168,7 @@ Class to generate random observations from a
 inverse-gamma
 distribution.
  +/
-final class InverseGammaRNG(T, UniformRNG = Random) : DistributionRNG!T
+struct InverseGammaSRNG(T, UniformRNG = Random)
 	if (isFloatingPoint!T)
 {
 	private UniformRNG* rng;
@@ -162,17 +189,23 @@ final class InverseGammaRNG(T, UniformRNG = Random) : DistributionRNG!T
 		this.scale = scale;
 	}
 
+	///
 	T front() @property
 	{
 		return rng.rInverseGamma(shape) * scale;
 	}
+	///
+	static void popFront() @safe pure nothrow @nogc {}
+	///
+	enum empty = false;
+
 }
 
 ///
 unittest
 {
 	import std.range;
-	auto rng = new InverseGammaRNG!double(rndGen, 1.1, 1.1);
+	auto rng = InverseGammaSRNG!double(rndGen, 1.1, 1.1);
 	auto sample = rng.map!(x => x + 4).take(9).array;
 }
 
@@ -182,7 +215,7 @@ Class to generate random observations from a
 generalized gamma
 distribution.
  +/
-final class GeneralizedGammaRNG(T, UniformRNG = Random) : DistributionRNG!T
+struct GeneralizedGammaSRNG(T, UniformRNG = Random)
 	if (isFloatingPoint!T)
 {
 	private UniformRNG* rng;
@@ -205,17 +238,23 @@ final class GeneralizedGammaRNG(T, UniformRNG = Random) : DistributionRNG!T
 		this.scale = scale;
 	}
 
+	///
 	T front() @property
 	{
 		return rng.rGeneralizedGamma(shape, power) * scale;
 	}
+	///
+	static void popFront() @safe pure nothrow @nogc {}
+	///
+	enum empty = false;
+
 }
 
 ///
 unittest
 {
 	import std.range;
-	auto rng = new GeneralizedGammaRNG!double(rndGen, 1.1, 1.1, 1.1);
+	auto rng = GeneralizedGammaSRNG!double(rndGen, 1.1, 1.1, 1.1);
 	auto sample = rng.map!(x => x + 4).take(9).array;
 }
 
@@ -225,7 +264,7 @@ Class to generate random observations from a
 inverse Gaussian
 distribution.
  +/
-final class InverseGaussianRNG(T, UniformRNG = Random) : DistributionRNG!T
+struct InverseGaussianSRNG(T, UniformRNG = Random)
 	if (isFloatingPoint!T)
 {
 	private UniformRNG* rng;
@@ -246,17 +285,23 @@ final class InverseGaussianRNG(T, UniformRNG = Random) : DistributionRNG!T
 		this.mu = mu;
 	}
 
+	///
 	T front() @property
 	{
 		return rng.rInverseGaussian(lambda, mu);
 	}
+	///
+	static void popFront() @safe pure nothrow @nogc {}
+	///
+	enum empty = false;
+
 }
 
 ///
 unittest
 {
 	import std.range;
-	auto rng = new InverseGaussianRNG!double(rndGen, 1.1, 1.1);
+	auto rng = InverseGaussianSRNG!double(rndGen, 1.1, 1.1);
 	auto sample = rng.map!(x => x + 4).take(9).array;
 }
 
@@ -268,7 +313,7 @@ The algorithm is based on that given by Dagpunar (1989).
 
 References: $(LINK2 https://www.stat.auckland.ac.nz/~dscott/, Original R source code).
 +/
-final class ProperGeneralizedInverseGaussianRNG(T, UniformRNG = Random) : DistributionRNG!T
+struct ProperGeneralizedInverseGaussianSRNG(T, UniformRNG = Random)
 	if (isFloatingPoint!T)
 {
 	private UniformRNG* rng;
@@ -321,7 +366,7 @@ final class ProperGeneralizedInverseGaussianRNG(T, UniformRNG = Random) : Distri
 		this.c = e * d + 0.5f * lambdam1 * log(m);
 	}
 
-
+	///
 	T front() @property
 	{
 		immutable c0 = -0.5f*lambdam1;
@@ -335,13 +380,18 @@ final class ProperGeneralizedInverseGaussianRNG(T, UniformRNG = Random) : Distri
 				return x * eta;
 		}
 	}
+	///
+	static void popFront() @safe pure nothrow @nogc {}
+	///
+	enum empty = false;
+
 }
 
 ///
 unittest
 {
 	import std.range;
-	auto rng = new ProperGeneralizedInverseGaussianRNG!double(rndGen, -2, 5.0, 2);
+	auto rng = ProperGeneralizedInverseGaussianSRNG!double(rndGen, -2, 5.0, 2);
 	auto sample = rng.map!(x => x + 4).take(9).array;
 }
 
@@ -377,13 +427,13 @@ final class GeneralizedInverseGaussianRNG(T, UniformRNG = Random) : Distribution
 	body {
 		immutable params = GIGChiPsi!T(chi, psi);
 		if (chi <= T.min_normal)
-			this.rng = new GammaRNG!(T, UniformRNG)(rng, lambda, 2 / psi);
+			this.rng = GammaSRNG!(T, UniformRNG)(rng, lambda, 2 / psi).toDistributionRNG;
 		else if (psi <= T.min_normal)
-			this.rng = new InverseGammaRNG!(T, UniformRNG)(rng, -lambda, chi / 2);
+			this.rng = InverseGammaSRNG!(T, UniformRNG)(rng, -lambda, chi / 2).toDistributionRNG;
 		else if (lambda == -0.5f)
-			this.rng = new InverseGaussianRNG!(T, UniformRNG)(rng, params.eta, chi);
+			this.rng = InverseGaussianSRNG!(T, UniformRNG)(rng, params.eta, chi).toDistributionRNG;
 		else
-			this.rng = new ProperGeneralizedInverseGaussianRNG!(T, UniformRNG)(rng, lambda, params.eta, params.omega);
+			this.rng = ProperGeneralizedInverseGaussianSRNG!(T, UniformRNG)(rng, lambda, params.eta, params.omega).toDistributionRNG;
 	}
 
 	T front() @property
@@ -421,7 +471,7 @@ final class VarianceGammaRNG(T, UniformRNG = Random) : NormalVarianceMeanMixture
 	+/
 	this(ref UniformRNG rng, T shape, T scale, T beta)
 	{
-		super(rng, new GammaRNG!(T, UniformRNG)(rng, shape, scale), beta);
+		super(rng, GammaSRNG!(T, UniformRNG)(rng, shape, scale).toDistributionRNG, beta);
 	}
 }
 
@@ -454,7 +504,7 @@ final class HyperbolicAsymmetricTRNG(T, UniformRNG = Random) : NormalVarianceMea
 	+/
 	this(ref UniformRNG rng, T shape, T scale, T beta)
 	{
-		super(rng, new InverseGammaRNG!(T, UniformRNG)(rng, shape, scale), beta);
+		super(rng, InverseGammaSRNG!(T, UniformRNG)(rng, shape, scale).toDistributionRNG, beta);
 	}
 }
 
@@ -488,7 +538,7 @@ final class GeneralizedVarianceGammaRNG(T, UniformRNG = Random) : NormalVariance
 	+/
 	this(ref UniformRNG rng, T shape, T power, T scale, T beta)
 	{
-		super(rng, new GeneralizedGammaRNG!(T, UniformRNG)(rng, shape, power, scale), beta);
+		super(rng, GeneralizedGammaSRNG!(T, UniformRNG)(rng, shape, power, scale).toDistributionRNG, beta);
 	}
 }
 
@@ -521,7 +571,7 @@ final class NormalInverseGaussianRNG(T, UniformRNG = Random) : NormalVarianceMea
 	+/
 	this(ref UniformRNG rng, T lambda, T mu, T beta)
 	{
-		super(rng, new InverseGaussianRNG!(T, UniformRNG)(rng, mu, lambda), beta);
+		super(rng, InverseGaussianSRNG!(T, UniformRNG)(rng, mu, lambda).toDistributionRNG, beta);
 	}
 }
 
@@ -557,7 +607,7 @@ final class ProperGeneralizedHyperbolicRNG(T, UniformRNG = Random) : NormalVaria
 	+/
 	this(ref UniformRNG rng, T lambda, T eta, T omega, T beta)
 	{
-		super(rng, new ProperGeneralizedInverseGaussianRNG!(T, UniformRNG)(rng, lambda, eta, omega), beta);
+		super(rng, ProperGeneralizedInverseGaussianSRNG!(T, UniformRNG)(rng, lambda, eta, omega).toDistributionRNG, beta);
 	}
 }
 
