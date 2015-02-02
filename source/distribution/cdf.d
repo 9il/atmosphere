@@ -441,7 +441,7 @@ unittest
 /++
 Gamma CDF
 +/
-final class GammaCDF(T) : CDF!T
+struct GammaSCDF(T)
 	if(isFloatingPoint!T)
 {
 	private T shape, scale;
@@ -474,7 +474,7 @@ final class GammaCDF(T) : CDF!T
 ///
 unittest 
 {
-	auto cdf = new GammaCDF!double(3, 2);
+	auto cdf = GammaSCDF!double(3, 2);
 	auto x = cdf(0.1);
 	assert(isNormal(x));
 }
@@ -483,7 +483,7 @@ unittest
 /++
 Inverse-gamma CDF
 +/
-final class InverseGammaCDF(T) : CDF!T
+struct InverseGammaSCDF(T)
 	if(isFloatingPoint!T)
 {
 	private T shape, scale;
@@ -515,7 +515,7 @@ final class InverseGammaCDF(T) : CDF!T
 ///
 unittest 
 {
-	auto cdf = new InverseGammaCDF!double(3, 2);
+	auto cdf = InverseGammaSCDF!double(3, 2);
 	auto x = cdf(0.1);
 	assert(isNormal(x));
 }
@@ -524,7 +524,7 @@ unittest
 /++
 Generalized gamma CDF
 +/
-final class GeneralizedGammaCDF(T) : CDF!T
+struct GeneralizedGammaSCDF(T)
 	if(isFloatingPoint!T)
 {
 	private T shape, power, scale, gammaShape;
@@ -561,7 +561,7 @@ final class GeneralizedGammaCDF(T) : CDF!T
 ///
 unittest 
 {
-	auto cdf = new GeneralizedGammaCDF!double(3, 2, 0.5);
+	auto cdf = GeneralizedGammaSCDF!double(3, 2, 0.5);
 	auto x = cdf(0.1);
 	assert(isNormal(x));
 }
@@ -570,7 +570,7 @@ unittest
 /++
 Inverse Gaussian CDF
 +/
-final class InverseGaussianCDF(T) : CDF!T
+struct InverseGaussianSCDF(T)
 	if(isFloatingPoint!T)
 {
 	private T omega, chi, psi;
@@ -602,7 +602,7 @@ final class InverseGaussianCDF(T) : CDF!T
 ///
 unittest 
 {
-	auto cdf = new InverseGaussianCDF!double(3, 2);
+	auto cdf = InverseGaussianSCDF!double(3, 2);
 	auto x = cdf(0.1);
 	assert(isNormal(x));
 }
