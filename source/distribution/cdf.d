@@ -45,6 +45,176 @@ struct NormalSCDF(T)
 
 
 /++
+Gamma CDF
++/
+struct GammaSCDF(T)
+	if(isFloatingPoint!T)
+{
+	private T shape, scale;
+
+	/++
+	Constructor
+	Params:
+		shape = gamma shape parameter
+		scale = gamma scale parameter
+	+/
+	this(T shape, T scale)
+	in {
+		assert(shape.isNormal);
+		assert(shape > 0);
+		assert(scale.isNormal);
+		assert(scale > 0);
+	}
+	body {
+		this.shape = shape;
+		this.scale = scale;
+	}
+
+	T opCall(T x)
+	{
+		return x <= 0 ? 0 : gammaIncomplete(shape, x / scale);
+	}
+}
+
+
+///
+unittest 
+{
+	auto cdf = GammaSCDF!double(3, 2);
+	auto x = cdf(0.1);
+	assert(isNormal(x));
+}
+
+
+/++
+Inverse-gamma CDF
++/
+struct InverseGammaSCDF(T)
+	if(isFloatingPoint!T)
+{
+	private T shape, scale;
+
+	/++
+	Constructor
+	Params:
+		shape = gamma shape parameter
+		scale = gamma scale parameter
+	+/
+	this(T shape, T scale)
+	in {
+		assert(shape.isNormal);
+		assert(shape > 0);
+		assert(scale.isNormal);
+		assert(scale > 0);
+	}
+	body {
+		this.shape = shape;
+		this.scale = scale;
+	}
+
+	T opCall(T x)
+	{
+		return x <= 0 ? 0 : gammaIncomplete(shape, scale / x);
+	}
+}
+
+///
+unittest 
+{
+	auto cdf = InverseGammaSCDF!double(3, 2);
+	auto x = cdf(0.1);
+	assert(isNormal(x));
+}
+
+
+/++
+Generalized gamma CDF
++/
+struct GeneralizedGammaSCDF(T)
+	if(isFloatingPoint!T)
+{
+	private T shape, power, scale, gammaShape;
+
+	/++
+	Constructor
+	Params:
+		shape = shape parameter
+		power = power parameter
+		scale = scale parameter
+	+/
+	this(T shape, T power, T scale)
+	in {
+		assert(shape.isNormal);
+		assert(shape > 0);
+		assert(power.isFinite);
+		assert(scale.isNormal);
+		assert(scale > 0);
+	}
+	body {
+		this.shape = shape;
+		this.power = power;
+		this.scale = scale;
+		this.gammaShape = gamma(shape);
+		assert(gammaShape.isNormal);
+	}
+
+	T opCall(T x)
+	{
+		return x <= 0 ? 0 : gammaIncomplete(shape, pow(x / scale, power)) / gammaShape;
+	}
+}
+
+///
+unittest 
+{
+	auto cdf = GeneralizedGammaSCDF!double(3, 2, 0.5);
+	auto x = cdf(0.1);
+	assert(isNormal(x));
+}
+
+
+/++
+Inverse Gaussian CDF
++/
+struct InverseGaussianSCDF(T)
+	if(isFloatingPoint!T)
+{
+	private T omega, chi, psi;
+
+	///Constructor
+	this(T chi, T psi)
+	in {
+		assert(chi.isNormal);
+		assert(chi > 0);
+		assert(psi.isNormal);
+		assert(psi > 0);
+	}
+	body {
+		this.chi = chi;
+		this.psi = psi;
+		this.omega = sqrt(chi * psi);
+	}
+
+	T opCall(T x)
+	{
+		if(x <= 0)
+			return 0;
+		immutable a = sqrt(chi / x);
+		immutable b = sqrt(psi * x);
+		return normalDistribution(b - a) - exp(2*omega) * normalDistribution(-(a+b));
+	}
+}
+
+///
+unittest 
+{
+	auto cdf = InverseGaussianSCDF!double(3, 2);
+	auto x = cdf(0.1);
+	assert(isNormal(x));
+}
+
+
+/++
 Comulative density function interface
 +/
 interface CDF(T)
@@ -436,173 +606,4 @@ unittest
 	auto p1 = new MyGeneralizedVarianceGammaCDF!double(shape, power, scale, beta, mu);
 	foreach(i; 0..10)
 		assert(approxEqual(p0(i), p1(i)));
-}
-
-/++
-Gamma CDF
-+/
-struct GammaSCDF(T)
-	if(isFloatingPoint!T)
-{
-	private T shape, scale;
-
-	/++
-	Constructor
-	Params:
-		shape = gamma shape parameter
-		scale = gamma scale parameter
-	+/
-	this(T shape, T scale)
-	in {
-		assert(shape.isNormal);
-		assert(shape > 0);
-		assert(scale.isNormal);
-		assert(scale > 0);
-	}
-	body {
-		this.shape = shape;
-		this.scale = scale;
-	}
-
-	T opCall(T x)
-	{
-		return x <= 0 ? 0 : gammaIncomplete(shape, x / scale);
-	}
-}
-
-
-///
-unittest 
-{
-	auto cdf = GammaSCDF!double(3, 2);
-	auto x = cdf(0.1);
-	assert(isNormal(x));
-}
-
-
-/++
-Inverse-gamma CDF
-+/
-struct InverseGammaSCDF(T)
-	if(isFloatingPoint!T)
-{
-	private T shape, scale;
-
-	/++
-	Constructor
-	Params:
-		shape = gamma shape parameter
-		scale = gamma scale parameter
-	+/
-	this(T shape, T scale)
-	in {
-		assert(shape.isNormal);
-		assert(shape > 0);
-		assert(scale.isNormal);
-		assert(scale > 0);
-	}
-	body {
-		this.shape = shape;
-		this.scale = scale;
-	}
-
-	T opCall(T x)
-	{
-		return x <= 0 ? 0 : gammaIncomplete(shape, scale / x);
-	}
-}
-
-///
-unittest 
-{
-	auto cdf = InverseGammaSCDF!double(3, 2);
-	auto x = cdf(0.1);
-	assert(isNormal(x));
-}
-
-
-/++
-Generalized gamma CDF
-+/
-struct GeneralizedGammaSCDF(T)
-	if(isFloatingPoint!T)
-{
-	private T shape, power, scale, gammaShape;
-
-	/++
-	Constructor
-	Params:
-		shape = shape parameter
-		power = power parameter
-		scale = scale parameter
-	+/
-	this(T shape, T power, T scale)
-	in {
-		assert(shape.isNormal);
-		assert(shape > 0);
-		assert(power.isFinite);
-		assert(scale.isNormal);
-		assert(scale > 0);
-	}
-	body {
-		this.shape = shape;
-		this.power = power;
-		this.scale = scale;
-		this.gammaShape = gamma(shape);
-		assert(gammaShape.isNormal);
-	}
-
-	T opCall(T x)
-	{
-		return x <= 0 ? 0 : gammaIncomplete(shape, pow(x / scale, power)) / gammaShape;
-	}
-}
-
-///
-unittest 
-{
-	auto cdf = GeneralizedGammaSCDF!double(3, 2, 0.5);
-	auto x = cdf(0.1);
-	assert(isNormal(x));
-}
-
-
-/++
-Inverse Gaussian CDF
-+/
-struct InverseGaussianSCDF(T)
-	if(isFloatingPoint!T)
-{
-	private T omega, chi, psi;
-
-	///Constructor
-	this(T chi, T psi)
-	in {
-		assert(chi.isNormal);
-		assert(chi > 0);
-		assert(psi.isNormal);
-		assert(psi > 0);
-	}
-	body {
-		this.chi = chi;
-		this.psi = psi;
-		this.omega = sqrt(chi * psi);
-	}
-
-	T opCall(T x)
-	{
-		if(x <= 0)
-			return 0;
-		immutable a = sqrt(chi / x);
-		immutable b = sqrt(psi * x);
-		return normalDistribution(b - a) - exp(2*omega) * normalDistribution(-(a+b));
-	}
-}
-
-///
-unittest 
-{
-	auto cdf = InverseGaussianSCDF!double(3, 2);
-	auto x = cdf(0.1);
-	assert(isNormal(x));
 }
