@@ -70,7 +70,8 @@ struct GammaSCDF(T)
 		this.scale = scale;
 	}
 
-	T opCall(T x)
+	///
+	T opCall(T x) const
 	{
 		return x <= 0 ? 0 : gammaIncomplete(shape, x / scale);
 	}
@@ -112,7 +113,8 @@ struct InverseGammaSCDF(T)
 		this.scale = scale;
 	}
 
-	T opCall(T x)
+	///
+	T opCall(T x) const
 	{
 		return x <= 0 ? 0 : gammaIncomplete(shape, scale / x);
 	}
@@ -158,7 +160,8 @@ struct GeneralizedGammaSCDF(T)
 		assert(gammaShape.isNormal);
 	}
 
-	T opCall(T x)
+	///
+	T opCall(T x) const
 	{
 		return x <= 0 ? 0 : gammaIncomplete(shape, pow(x / scale, power)) / gammaShape;
 	}
@@ -195,7 +198,8 @@ struct InverseGaussianSCDF(T)
 		this.omega = sqrt(chi * psi);
 	}
 
-	T opCall(T x)
+	///
+	T opCall(T x) const
 	{
 		if(x <= 0)
 			return 0;
