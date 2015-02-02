@@ -6,6 +6,133 @@ module distribution.quantile;
 import std.traits;
 import std.mathspecial;
 
+
+/++
+Quantile function of the gamma distribution
++/
+struct GammaSQuantile(T)
+	if(isFloatingPoint!T)
+{
+	private T shape, scale;
+
+	///Constructor
+	this(T shape, T scale)
+	in {
+		assert(shape.isNormal);
+		assert(shape > 0);
+		assert(scale.isNormal);
+		assert(scale > 0);
+	}
+	body {
+		this.shape = shape;
+		this.scale = scale;
+	}
+
+	///
+	T opCall(T x) const
+	in {
+		assert(x >= 0);
+		assert(x <= 1);		
+	}
+	body {
+		return scale * gammaIncompleteComplInverse(shape, 1-x);
+	}
+}
+
+///
+unittest 
+{
+	auto qf = GammaSQuantile!double(3, 2);
+	auto x = qf(0.1);
+	assert(isNormal(x));
+}
+
+
+/++
+Quantile function of the inverse-gamma distribution
++/
+struct InverseGammaSQuantile(T)
+	if(isFloatingPoint!T)
+{
+	private T shape, scale;
+
+	///Constructor
+	this(T shape, T scale)
+	in {
+		assert(shape.isNormal);
+		assert(shape > 0);
+		assert(scale.isNormal);
+		assert(scale > 0);
+	}
+	body {
+		this.shape = shape;
+		this.scale = scale;
+	}
+
+	///
+	T opCall(T x) const
+	in {
+		assert(x >= 0);
+		assert(x <= 1);		
+	}
+	body {
+		return scale / gammaIncompleteComplInverse(shape, 1-x);
+	}
+}
+
+///
+unittest 
+{
+	auto qf = InverseGammaSQuantile!double(3, 2);
+	auto x = qf(0.1);
+	assert(isNormal(x));
+}
+
+
+/++
+Quantile function of the generalized gamma distribution
++/
+struct GeneralizedGammaSQuantile(T)
+	if(isFloatingPoint!T)
+{
+	private T shape, power, scale;
+
+	///Constructor
+	this(T shape, T power, T scale)
+	in {
+		assert(shape.isNormal);
+		assert(shape > 0);
+		assert(power.isNormal);
+		assert(power > 0);
+		assert(scale.isNormal);
+		assert(scale > 0);
+	}
+	body {
+		this.shape = shape;
+		this.power = power;
+		this.scale = scale;
+	}
+
+	///
+	T opCall(T x) const
+	in {
+		assert(x >= 0);
+		assert(x <= 1);		
+	}
+	body {
+		return scale * gammaIncompleteComplInverse(shape, 1-x).pow(1/power);
+	}
+}
+
+///
+unittest 
+{
+	auto qf = GeneralizedGammaSQuantile!double(3, 2, 1);
+	auto x = qf(0.1);
+	assert(isNormal(x));
+}
+
+
 /++
 Quantile function interface
 +/
@@ -157,130 +284,4 @@ unittest
 	import std.stdio, std.conv;
 	assert(approxEqual(qf(0.95), 40.9263));
 	assert(approxEqual(qf(0.99), 64.977));
-}
-
-
-/++
-Quantile function of the gamma distribution
-+/
-struct GammaSQuantile(T)
-	if(isFloatingPoint!T)
-{
-	private T shape, scale;
-
-	///Constructor
-	this(T shape, T scale)
-	in {
-		assert(shape.isNormal);
-		assert(shape > 0);
-		assert(scale.isNormal);
-		assert(scale > 0);
-	}
-	body {
-		this.shape = shape;
-		this.scale = scale;
-	}
-
-	///
-	T opCall(T x) const
-	in {
-		assert(x >= 0);
-		assert(x <= 1);		
-	}
-	body {
-		return scale * gammaIncompleteComplInverse(shape, 1-x);
-	}
-}
-
-///
-unittest 
-{
-	auto qf = GammaSQuantile!double(3, 2);
-	auto x = qf(0.1);
-	assert(isNormal(x));
-}
-
-
-/++
-Quantile function of the inverse-gamma distribution
-+/
-struct InverseGammaSQuantile(T)
-	if(isFloatingPoint!T)
-{
-	private T shape, scale;
-
-	///Constructor
-	this(T shape, T scale)
-	in {
-		assert(shape.isNormal);
-		assert(shape > 0);
-		assert(scale.isNormal);
-		assert(scale > 0);
-	}
-	body {
-		this.shape = shape;
-		this.scale = scale;
-	}
-
-	///
-	T opCall(T x) const
-	in {
-		assert(x >= 0);
-		assert(x <= 1);		
-	}
-	body {
-		return scale / gammaIncompleteComplInverse(shape, 1-x);
-	}
-}
-
-///
-unittest 
-{
-	auto qf = InverseGammaSQuantile!double(3, 2);
-	auto x = qf(0.1);
-	assert(isNormal(x));
-}
-
-
-/++
-Quantile function of the generalized gamma distribution
-+/
-struct GeneralizedGammaSQuantile(T)
-	if(isFloatingPoint!T)
-{
-	private T shape, power, scale;
-
-	///Constructor
-	this(T shape, T power, T scale)
-	in {
-		assert(shape.isNormal);
-		assert(shape > 0);
-		assert(power.isNormal);
-		assert(power > 0);
-		assert(scale.isNormal);
-		assert(scale > 0);
-	}
-	body {
-		this.shape = shape;
-		this.power = power;
-		this.scale = scale;
-	}
-
-	///
-	T opCall(T x) const
-	in {
-		assert(x >= 0);
-		assert(x <= 1);		
-	}
-	body {
-		return scale * gammaIncompleteComplInverse(shape, 1-x).pow(1/power);
-	}
-}
-
-///
-unittest 
-{
-	auto qf = GeneralizedGammaSQuantile!double(3, 2, 1);
-	auto x = qf(0.1);
-	assert(isNormal(x));
 }
