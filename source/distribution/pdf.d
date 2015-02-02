@@ -335,6 +335,7 @@ struct VarianceGammaSPDF(T)
 		this.mu = mu;
 	}
 
+	///
 	T opCall(T x)
 	{
 		immutable y = x - mu;
@@ -397,6 +398,7 @@ struct HyperbolicAsymmetricTSPDF(T)
 		this.mu = mu;
 	}
 
+	///
 	T opCall(T x)
 	{
 		immutable y = x - mu;
@@ -460,6 +462,7 @@ struct NormalInverseGaussianSPDF(T)
 		this.mu = mu;
 	}
 
+	///
 	T opCall(T x)
 	{
 		immutable y = x - mu;
@@ -529,6 +532,7 @@ struct ProperGeneralizedHyperbolicSPDF(T)
 		this.mu = mu;
 	}
 
+	///
 	T opCall(T x)
 	{
 		immutable y = x - mu;
