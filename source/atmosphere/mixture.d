@@ -60,7 +60,7 @@ double[] mySample, myNewSample;
 PDF[] pdfs;
 //... initialize pdfs and mySample.
 
-auto optimizer = new CoordinateLikelihoodMaximization!double(pdfs.length, mySample.length+1000);
+auto optimizer = new LikelihoodAscentCoordinate!double(pdfs.length, mySample.length+1000);
 
 bool delegate(double, double) tolerance = 
 	(likelihoodPrev, likelihood) 
@@ -498,7 +498,7 @@ final:
 Params:
 	Gradient = Gradient of the objective function. `Gradient(a, b)` should perform `b = grad_f(a)`.
 +/
-class EM(alias Gradient, T) : MixtureOptimizer!T
+class ExpectationMaximization(alias Gradient, T) : MixtureOptimizer!T
 	if(isFloatingPoint!T)
 {
 	private T[] pi;
@@ -667,7 +667,7 @@ class CoordinateDescentPartial(alias PartialDerivative, T) : MixtureOptimizer!T
 
 /++
 +/
-interface LikelihoodMaximization(T)
+interface LikelihoodAscent(T)
 	if(isFloatingPoint!T)
 {
 	/++
@@ -701,7 +701,7 @@ interface LikelihoodMaximization(T)
 			Receives the current and previous versions of log2Likelihood. 
 			The delegate must return true when likelihood are acceptable. 
 		findRootTolerance = Tolerance for inner optimization.
-	Throws: [FeaturesException](atmosphere/mixture/FeaturesException.html) if [isFeaturesCorrect](atmosphere/mixture/LikelihoodMaximization.isFeaturesCorrect.html) is false.
+	Throws: [FeaturesException](atmosphere/mixture/FeaturesException.html) if [isFeaturesCorrect](atmosphere/mixture/LikelihoodAscent.isFeaturesCorrect.html) is false.
 	See_Also: $(STDREF numeric, findRoot)
 	+/
 	void optimize
@@ -726,7 +726,7 @@ interface LikelihoodMaximization(T)
 
 /++
 +/
-class CoordinateLikelihoodMaximization(T) : CoordinateDescentPartial!("-1/a", T), LikelihoodMaximization!T
+class LikelihoodAscentCoordinate(T) : CoordinateDescentPartial!("-1/a", T), LikelihoodAscent!T
 	if(isFloatingPoint!T)
 {
 	/++
@@ -740,13 +740,13 @@ class CoordinateLikelihoodMaximization(T) : CoordinateDescentPartial!("-1/a", T)
 		super(k, maxLength);
 	}
 
-	mixin LikelihoodMaximizationTemplate!T;
+	mixin LikelihoodAscentTemplate!T;
 }
 
 
 /++
 +/
-class GradientLikelihoodMaximization(T) : GradientDescentPartial!("-1/a", T), LikelihoodMaximization!T
+class LikelihoodAscentGradient(T) : GradientDescentPartial!("-1/a", T), LikelihoodAscent!T
 	if(isFloatingPoint!T)
 {
 	/++
@@ -760,13 +760,13 @@ class GradientLikelihoodMaximization(T) : GradientDescentPartial!("-1/a", T), Li
 		super(k, maxLength);
 	}
 
-	mixin LikelihoodMaximizationTemplate!T;
+	mixin LikelihoodAscentTemplate!T;
 }
 
 
 /++
 +/
-class EMLikelihoodMaximization(T) : EM!((a, b){foreach(i, e; a) b[i] = 1/e;}, T), LikelihoodMaximization!T
+class LikelihoodAscentEM(T) : ExpectationMaximization!((a, b){foreach(i, e; a) b[i] = 1/e;}, T), LikelihoodAscent!T
 	if(isFloatingPoint!T)
 {
 	/++
@@ -780,11 +780,11 @@ class EMLikelihoodMaximization(T) : EM!((a, b){foreach(i, e; a) b[i] = 1/e;}, T)
 		super(k, maxLength);
 	}
 
-	mixin LikelihoodMaximizationTemplate!T;
+	mixin LikelihoodAscentTemplate!T;
 }
 
 
-package mixin template LikelihoodMaximizationTemplate(T)
+package mixin template LikelihoodAscentTemplate(T)
 {
 	void put(PDFRange, SampleRange)(PDFRange pdfs, SampleRange sample)
 		if (isInputRange!PDFRange && hasLength!PDFRange && isCallable!(ElementType!PDFRange))
@@ -836,32 +836,32 @@ package mixin template LikelihoodMaximizationTemplate(T)
 
 unittest {
 	alias C0 = CoordinateDescent!((a, b){}, float);
-	alias C3 = EM!((a, b){}, float);
-	alias C1 = LikelihoodMaximization!float;
-	alias C10 = GradientLikelihoodMaximization!float;
-	alias C11 = CoordinateLikelihoodMaximization!float;
-	alias C12 = EMLikelihoodMaximization!float;
+	alias C3 = ExpectationMaximization!((a, b){}, float);
+	alias C1 = LikelihoodAscent!float;
+	alias C10 = LikelihoodAscentGradient!float;
+	alias C11 = LikelihoodAscentCoordinate!float;
+	alias C12 = LikelihoodAscentEM!float;
 	alias C2 = GradientDescent!((a, b){}, float);
 }
 
 
 unittest {
 	alias C0 = CoordinateDescent!((a, b){}, double);
-	alias C3 = EM!((a, b){}, double);
-	alias C1 = LikelihoodMaximization!double;
-	alias C10 = GradientLikelihoodMaximization!double;
-	alias C11 = CoordinateLikelihoodMaximization!double;
-	alias C12 = EMLikelihoodMaximization!double;
+	alias C3 = ExpectationMaximization!((a, b){}, double);
+	alias C1 = LikelihoodAscent!double;
+	alias C10 = LikelihoodAscentGradient!double;
+	alias C11 = LikelihoodAscentCoordinate!double;
+	alias C12 = LikelihoodAscentEM!double;
 	alias C2 = GradientDescent!((a, b){}, double);
 }
 
 
 unittest {
 	alias C0 = CoordinateDescent!((a, b){}, real);
-	alias C3 = EM!((a, b){}, real);
-	alias C1 = LikelihoodMaximization!real;
-	alias C10 = GradientLikelihoodMaximization!real;
-	alias C11 = CoordinateLikelihoodMaximization!real;
-	alias C12 = EMLikelihoodMaximization!real;
+	alias C3 = ExpectationMaximization!((a, b){}, real);
+	alias C1 = LikelihoodAscent!real;
+	alias C10 = LikelihoodAscentGradient!real;
+	alias C11 = LikelihoodAscentCoordinate!real;
+	alias C12 = LikelihoodAscentEM!real;
 	alias C2 = GradientDescent!((a, b){}, real);
 }

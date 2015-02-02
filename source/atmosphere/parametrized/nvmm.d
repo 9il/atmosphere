@@ -15,7 +15,7 @@ import atmosphere;
 double[] myGrid, mySample, myNewSample;
 //... initialize myGrid and mySample.
 
-auto optimizer = new NormalVarianceMeanMixtureEMAndCoordinate!double(myGrid, mySample.length+1000);
+auto optimizer = new NvmmLikelihoodAscentEMCoordinate!double(myGrid, mySample.length+1000);
 
 optimizer.sample = mySample;
 optimizer.optimize(
@@ -58,8 +58,9 @@ import std.algorithm;
 static import std.math;
 
 /++
+Normal variance-mean mixture optimizer
 +/
-abstract class NormalVarianceMeanMixture(T) : MixtureOptimizer!T, LikelihoodMaximization!T
+abstract class NvmmLikelihoodAscentEM(T) : MixtureOptimizer!T, LikelihoodAscent!T
 	if(isFloatingPoint!T)
 {
 
@@ -76,7 +77,7 @@ abstract class NormalVarianceMeanMixture(T) : MixtureOptimizer!T, LikelihoodMaxi
 	package T _beta;
 	package T _log2Likelihood;
 
-	mixin LikelihoodMaximizationTemplate!T;
+	mixin LikelihoodAscentTemplate!T;
 	
 
 	/++
@@ -109,7 +110,7 @@ final:
 			Receives the current and previous versions of various parameters. 
 			The delegate must return true when parameters are acceptable. 
 		findRootTolerance = Tolerance for inner optimization.
-	Throws: [FeaturesException](atmosphere/mixture/FeaturesException.html) if [isFeaturesCorrect](atmosphere/mixture/LikelihoodMaximization.isFeaturesCorrect.html) is false.
+	Throws: [FeaturesException](atmosphere/mixture/FeaturesException.html) if [isFeaturesCorrect](atmosphere/mixture/LikelihoodAscent.isFeaturesCorrect.html) is false.
 	See_Also: $(STDREF numeric, findRoot)
 	+/
 	void optimize(
@@ -196,7 +197,7 @@ final:
 	Sets sample and recalculates beta and mixture.
 	Params:
 		_sample = new sample with length less or equal `maxLength`
-	Throws: [FeaturesException](atmosphere/mixture/FeaturesException.html) if [isFeaturesCorrect](atmosphere/mixture/LikelihoodMaximization.isFeaturesCorrect.html) is false.
+	Throws: [FeaturesException](atmosphere/mixture/FeaturesException.html) if [isFeaturesCorrect](atmosphere/mixture/LikelihoodAscent.isFeaturesCorrect.html) is false.
 	+/
 	void sample(in T[] _sample) @property
 	in
@@ -275,7 +276,7 @@ final:
 	{
 		auto m = _featuresT.matrix;
 		assert(m.width == sample.length);
-		foreach(pdf; _grid.map!(u => CorePDF(beta, u)))
+		foreach(pdf; _grid.map!(z => CorePDF(beta, z)))
 		{
 			auto r = m.front;
 			m.popFront;
@@ -288,17 +289,23 @@ final:
 		updateMixture;
 	}
 
+	///
 	static struct CorePDF
 	{
 		import distribution.pdf;
 		NormalSPDF!T pdf;
 		alias pdf this;
 
-		this(T beta, T u) const
+		/++
+		Params:
+			beta = beta
+			z = z
+		+/
+		this(T beta, T z) const
 		{
-			assert(u > 0);
+			assert(z > 0);
 			assert(beta.isFinite);
-			pdf = NormalSPDF!T(beta*u, u);
+			pdf = NormalSPDF!T(beta*z, z);
 		}
 	}
 }
@@ -307,7 +314,7 @@ final:
 /++
 Expectation–maximization algorithm
 +/
-final class NormalVarianceMeanMixtureEM(T) : NormalVarianceMeanMixture!T
+final class NvmmLikelihoodAscentEMEM(T) : NvmmLikelihoodAscentEM!T
 	if(isFloatingPoint!T)
 {
 	private T[] pi;
@@ -344,7 +351,7 @@ final class NormalVarianceMeanMixtureEM(T) : NormalVarianceMeanMixture!T
 /++
 Expectation–maximization algorithm with inner gradient descend optimization.
 +/
-final class NormalVarianceMeanMixtureEMAndGradient(T) : NormalVarianceMeanMixture!T
+final class NvmmLikelihoodAscentEMGradient(T) : NvmmLikelihoodAscentEM!T
 	if(isFloatingPoint!T)
 {
 	private T[] pi;
@@ -381,7 +388,7 @@ final class NormalVarianceMeanMixtureEMAndGradient(T) : NormalVarianceMeanMixtur
 Expectation–maximization algorithm with inner coordinate descend optimization.
 Speed depends on permutation of elements of `grid`.
 +/
-final class NormalVarianceMeanMixtureEMAndCoordinate(T) : NormalVarianceMeanMixture!T
+final class NvmmLikelihoodAscentEMCoordinate(T) : NvmmLikelihoodAscentEM!T
 	if(isFloatingPoint!T)
 {
 	private T[] pi;
@@ -408,7 +415,7 @@ final class NormalVarianceMeanMixtureEMAndCoordinate(T) : NormalVarianceMeanMixt
 
 
 unittest {
-	alias C0 = NormalVarianceMeanMixtureEM!double;
-	alias C1 = NormalVarianceMeanMixtureEMAndCoordinate!double;
-	alias C2 = NormalVarianceMeanMixtureEMAndGradient!double;
+	alias C0 = NvmmLikelihoodAscentEMEM!double;
+	alias C1 = NvmmLikelihoodAscentEMCoordinate!double;
+	alias C2 = NvmmLikelihoodAscentEMGradient!double;
 }
