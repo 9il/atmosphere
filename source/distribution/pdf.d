@@ -43,172 +43,6 @@ struct NormalSPDF(T)
 	}
 }
 
-/++
-Probability density function interface
-+/
-interface PDF(T)
-{
-	/**
-	Call operator
-	*/
-	T opCall(T x);
-}
-
-///
-unittest
-{
-	import std.traits, std.mathspecial;
-
-	class NormalPDF : PDF!real
-	{
-		real opCall(real x)
-		{
-			// 1/sqrt(2 PI)
-			enum c = 0.398942280401432677939946L;
-			return c * exp(-0.5f * x * x);
-		}
-	}
-
-	auto pdf = new NormalPDF;
-	auto x = pdf(0.1);
-	assert(x.isNormal);
-
-	import scid.calculus : integrate;
-	auto result = pdf.integrate(-double.infinity, double.infinity);
-	assert(abs(result.value - 1) < result.error);
-}
-
-
-/++
-Variance-mean mixture of normals
-+/
-abstract class NormalVarianceMeanMixturePDF(T) : PDF!T
-	if(isFloatingPoint!T)
-{
-	private PDF!T pdf;
-	private T beta, mu;
-	private T epsRel, epsAbs;
-	private const(T)[] subdivisions;
-
-	/++
-    Params:
-		pdf     = The PDF to _integrate.
-		beta = NVMM scale
-		mu = NVMM location
-		subdivisions     = TODO.
-		epsRel  = (optional) The requested relative accuracy.
-		epsAbs  = (optional) The requested absolute accuracy.
-	See_also: [struct Result](https://github.com/kyllingstad/scid/blob/a9f3916526e4bf9a4da35d14a969e1abfa17a496/source/scid/types.d)
-	+/
-	this(PDF!T pdf, T beta, T mu, const(T)[] subdivisions = null, T epsRel = 1e-6, T epsAbs = 0)
-	in {
-		assert(subdivisions.all!isFinite);
-		assert(subdivisions.all!(s => s > 0));
-		assert(subdivisions.isSorted);
-		assert(subdivisions.findAdjacent.empty);
-	}
-	body {
-		this.pdf = pdf;
-		this.beta = beta;
-		this.mu = mu;
-		this.epsRel = epsRel;
-		this.epsAbs = epsAbs;
-		this.subdivisions = subdivisions;
-	}
-
-
-	T opCall(T x)
-	{
-		import scid.calculus : integrate;
-		T f(T z) {
-			return exp(-0.5f * (x - (mu + beta * z)) ^^ 2 / z) / sqrt(2*PI*z) * pdf(z);
-		}
-		T sum = 0;
-		T a = 0;
-		foreach(s; subdivisions)
-		{
-			sum += integrate(&f, a, s, epsRel, epsAbs);
-			a = s;
-		}
-		sum += integrate(&f, a, T.infinity);
-		return sum;
-	}
-}
-
-///
-unittest
-{
-	class MyGHypPDF(T) : NormalVarianceMeanMixturePDF!T
-	{
-		import distribution.moment;
-		this(T lambda, GHypEtaOmega!T params, T mu)
-		{
-			with(params)
-			{
-				auto pgig = ProperGeneralizedInverseGaussianSPDF!T(lambda, eta, omega);
-				auto e = mu + properGeneralizedInverseGaussianMean(lambda, eta, omega);
-				super(pgig.convertTo!PDF, params.beta, mu, [e]);				
-			}
-		}
-	}
-
-	import distribution.params;
-	immutable double lambda = 2;
-	immutable double mu = 0.3;
-	immutable params = GHypEtaOmega!double(2, 3, 4);
-	auto pghyp = new GeneralizedHyperbolicPDF!double(lambda, params.alpha, params.beta, params.delta, mu);
-	auto pnvmm = new MyGHypPDF!double(lambda, params, mu);
-	foreach(i; 0..5)
-		assert(approxEqual(pghyp(i), pnvmm(i)));
-}
-
-
-/++
-Generalized variance-gamma (generalized gamma mixture of normals) PDF
-+/
-final class GeneralizedVarianceGammaPDF(T) : NormalVarianceMeanMixturePDF!T
-	if(isFloatingPoint!T)
-{
-	/++
-	Params:
-		shape = shape parameter (generalized gamma)
-		power = power parameter (generalized gamma)
-		scale = scale parameter (generalized gamma)
-		beta = NVMM scale
-		mu = NVMM location
-	+/
-	this(T shape, T power, T scale, T beta, T mu)
-	in {
-		assert(shape.isNormal);
-		assert(shape > 0);
-		assert(power.isFinite);
-		assert(scale.isNormal);
-		assert(scale > 0);
-		assert(beta.isFinite);
-		assert(mu.isFinite);
-	}
-	body {
-		import distribution.moment : generalizedGammaMean;
-		auto pdf  = GeneralizedGammaSPDF!double(shape, power, scale);
-		auto e = generalizedGammaMean(shape, power, scale);
-		assert(e > 0);
-		assert(e.isFinite);
-		super(pdf.convertTo!PDF, beta, mu, [e]);
-	}
-}
-
-///
-unittest 
-{
-	auto pdf = new GeneralizedVarianceGammaPDF!double(1.1, 1.1, 0.9, 1.1, 1.1);
-	auto x = pdf(0.1);
-	assert(x.isNormal);
-
-	import scid.calculus : integrate;
-	auto result = pdf.integrate(-double.infinity, double.infinity);
-	assert(abs(result.value - 1) < result.error);
-}
-
 
 /++
 Gamma PDF
@@ -453,56 +287,6 @@ struct ProperGeneralizedInverseGaussianSPDF(T)
 unittest 
 {
 	auto pdf = ProperGeneralizedInverseGaussianSPDF!double(4, 3, 2);
-	auto x = pdf(0.1);
-	assert(x.isNormal);
-
-	import scid.calculus : integrate;
-	auto result = pdf.integrate(-double.infinity, double.infinity);
-	assert(abs(result.value - 1) < result.error);
-}
-
-
-/++
-Generalized inverse Gaussian PDF
-
-See_Also: [distribution.params](distribution/params.html)
-+/
-final class GeneralizedInverseGaussianPDF(T) : PDF!T
-	if(isFloatingPoint!T)
-{
-	private PDF!T pdf;
-
-	///
-	this(T lambda, T chi, T psi)
-	in {
-		assert(lambda.isFinite);
-		assert(chi.isNormal);
-		assert(chi >= 0);
-		assert(psi.isNormal);
-		assert(psi >= 0);
-	}
-	body {
-		immutable params = GIGChiPsi!T(chi, psi);
-		if (chi <= T.min_normal)
-			this.pdf = GammaSPDF!T(lambda, 2 / psi).convertTo!PDF;
-		else if (psi <= T.min_normal)
-			this.pdf = InverseGammaSPDF!T(-lambda, chi / 2).convertTo!PDF;
-		else if (lambda == -0.5f)
-			this.pdf = InverseGaussianSPDF!T(params.eta, chi).convertTo!PDF;
-		else
-			this.pdf = ProperGeneralizedInverseGaussianSPDF!T(lambda, params.eta, params.omega).convertTo!PDF;
-	}
-
-	T opCall(T x)
-	{
-		return pdf(x);
-	}
-}
-
-///
-unittest 
-{
-	auto pdf = new GeneralizedInverseGaussianPDF!double(3, 2, 1);
 	auto x = pdf(0.1);
 	assert(x.isNormal);
 
@@ -761,6 +545,223 @@ struct ProperGeneralizedHyperbolicSPDF(T)
 unittest 
 {
 	auto pdf = ProperGeneralizedHyperbolicSPDF!double(1.1, 1.1, 0.8, 1.1, 1.1);
+	auto x = pdf(0.1);
+	assert(x.isNormal);
+
+	import scid.calculus : integrate;
+	auto result = pdf.integrate(-double.infinity, double.infinity);
+	assert(abs(result.value - 1) < result.error);
+}
+
+
+/++
+Probability density function interface
++/
+interface PDF(T)
+{
+	/**
+	Call operator
+	*/
+	T opCall(T x);
+}
+
+///
+unittest
+{
+	import std.traits, std.mathspecial;
+
+	class NormalPDF : PDF!real
+	{
+		real opCall(real x)
+		{
+			// 1/sqrt(2 PI)
+			enum c = 0.398942280401432677939946L;
+			return c * exp(-0.5f * x * x);
+		}
+	}
+
+	auto pdf = new NormalPDF;
+	auto x = pdf(0.1);
+	assert(x.isNormal);
+
+	import scid.calculus : integrate;
+	auto result = pdf.integrate(-double.infinity, double.infinity);
+	assert(abs(result.value - 1) < result.error);
+}
+
+
+/++
+Variance-mean mixture of normals
++/
+abstract class NormalVarianceMeanMixturePDF(T) : PDF!T
+	if(isFloatingPoint!T)
+{
+	private PDF!T pdf;
+	private T beta, mu;
+	private T epsRel, epsAbs;
+	private const(T)[] subdivisions;
+
+	/++
+    Params:
+		pdf     = The PDF to _integrate.
+		beta = NVMM scale
+		mu = NVMM location
+		subdivisions     = TODO.
+		epsRel  = (optional) The requested relative accuracy.
+		epsAbs  = (optional) The requested absolute accuracy.
+	See_also: [struct Result](https://github.com/kyllingstad/scid/blob/a9f3916526e4bf9a4da35d14a969e1abfa17a496/source/scid/types.d)
+	+/
+	this(PDF!T pdf, T beta, T mu, const(T)[] subdivisions = null, T epsRel = 1e-6, T epsAbs = 0)
+	in {
+		assert(subdivisions.all!isFinite);
+		assert(subdivisions.all!(s => s > 0));
+		assert(subdivisions.isSorted);
+		assert(subdivisions.findAdjacent.empty);
+	}
+	body {
+		this.pdf = pdf;
+		this.beta = beta;
+		this.mu = mu;
+		this.epsRel = epsRel;
+		this.epsAbs = epsAbs;
+		this.subdivisions = subdivisions;
+	}
+
+
+	T opCall(T x)
+	{
+		import scid.calculus : integrate;
+		T f(T z) {
+			return exp(-0.5f * (x - (mu + beta * z)) ^^ 2 / z) / sqrt(2*PI*z) * pdf(z);
+		}
+		T sum = 0;
+		T a = 0;
+		foreach(s; subdivisions)
+		{
+			sum += integrate(&f, a, s, epsRel, epsAbs);
+			a = s;
+		}
+		sum += integrate(&f, a, T.infinity);
+		return sum;
+	}
+}
+
+///
+unittest
+{
+	class MyGHypPDF(T) : NormalVarianceMeanMixturePDF!T
+	{
+		import distribution.moment;
+		this(T lambda, GHypEtaOmega!T params, T mu)
+		{
+			with(params)
+			{
+				auto pgig = ProperGeneralizedInverseGaussianSPDF!T(lambda, eta, omega);
+				auto e = mu + properGeneralizedInverseGaussianMean(lambda, eta, omega);
+				super(pgig.convertTo!PDF, params.beta, mu, [e]);				
+			}
+		}
+	}
+
+	import distribution.params;
+	immutable double lambda = 2;
+	immutable double mu = 0.3;
+	immutable params = GHypEtaOmega!double(2, 3, 4);
+	auto pghyp = new GeneralizedHyperbolicPDF!double(lambda, params.alpha, params.beta, params.delta, mu);
+	auto pnvmm = new MyGHypPDF!double(lambda, params, mu);
+	foreach(i; 0..5)
+		assert(approxEqual(pghyp(i), pnvmm(i)));
+}
+
+
+/++
+Generalized variance-gamma (generalized gamma mixture of normals) PDF
++/
+final class GeneralizedVarianceGammaPDF(T) : NormalVarianceMeanMixturePDF!T
+	if(isFloatingPoint!T)
+{
+	/++
+	Params:
+		shape = shape parameter (generalized gamma)
+		power = power parameter (generalized gamma)
+		scale = scale parameter (generalized gamma)
+		beta = NVMM scale
+		mu = NVMM location
+	+/
+	this(T shape, T power, T scale, T beta, T mu)
+	in {
+		assert(shape.isNormal);
+		assert(shape > 0);
+		assert(power.isFinite);
+		assert(scale.isNormal);
+		assert(scale > 0);
+		assert(beta.isFinite);
+		assert(mu.isFinite);
+	}
+	body {
+		import distribution.moment : generalizedGammaMean;
+		auto pdf  = GeneralizedGammaSPDF!double(shape, power, scale);
+		auto e = generalizedGammaMean(shape, power, scale);
+		assert(e > 0);
+		assert(e.isFinite);
+		super(pdf.convertTo!PDF, beta, mu, [e]);
+	}
+}
+
+///
+unittest 
+{
+	auto pdf = new GeneralizedVarianceGammaPDF!double(1.1, 1.1, 0.9, 1.1, 1.1);
+	auto x = pdf(0.1);
+	assert(x.isNormal);
+
+	import scid.calculus : integrate;
+	auto result = pdf.integrate(-double.infinity, double.infinity);
+	assert(abs(result.value - 1) < result.error);
+}
+
+
+/++
+Generalized inverse Gaussian PDF
+
+See_Also: [distribution.params](distribution/params.html)
++/
+final class GeneralizedInverseGaussianPDF(T) : PDF!T
+	if(isFloatingPoint!T)
+{
+	private PDF!T pdf;
+
+	///
+	this(T lambda, T chi, T psi)
+	in {
+		assert(lambda.isFinite);
+		assert(chi.isNormal);
+		assert(chi >= 0);
+		assert(psi.isNormal);
+		assert(psi >= 0);
+	}
+	body {
+		immutable params = GIGChiPsi!T(chi, psi);
+		if (chi <= T.min_normal)
+			this.pdf = GammaSPDF!T(lambda, 2 / psi).convertTo!PDF;
+		else if (psi <= T.min_normal)
+			this.pdf = InverseGammaSPDF!T(-lambda, chi / 2).convertTo!PDF;
+		else if (lambda == -0.5f)
+			this.pdf = InverseGaussianSPDF!T(params.eta, chi).convertTo!PDF;
+		else
+			this.pdf = ProperGeneralizedInverseGaussianSPDF!T(lambda, params.eta, params.omega).convertTo!PDF;
+	}
+
+	T opCall(T x)
+	{
+		return pdf(x);
+	}
+}
+
+///
+unittest 
+{
+	auto pdf = new GeneralizedInverseGaussianPDF!double(3, 2, 1);
 	auto x = pdf(0.1);
 	assert(x.isNormal);
 
