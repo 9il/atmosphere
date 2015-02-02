@@ -6,6 +6,7 @@ module distribution.quantile;
 import std.traits;
 import std.mathspecial;
 
+import distribution.utilities;
 
 /++
 Quantile function of the gamma distribution
@@ -164,6 +165,16 @@ unittest
 	auto qf = new NormalQuantile;
 	auto x = qf(0.1);
 	assert(isNormal(x));
+}
+
+
+///
+alias toQuantile = convertTo!Quantile;
+
+///
+unittest
+{
+	Quantile!double qf = GammaSQuantile!double(1, 3).toQuantile;
 }
 
 

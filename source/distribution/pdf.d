@@ -573,6 +573,7 @@ interface PDF(T)
 	T opCall(T x);
 }
 
+
 ///
 unittest
 {
@@ -597,6 +598,14 @@ unittest
 	assert(abs(result.value - 1) < result.error);
 }
 
+///
+alias toPDF = convertTo!PDF;
+
+///
+unittest
+{
+	PDF!double pdf = GammaSPDF!double(1, 3).toPDF;
+}
 
 /++
 Variance-mean mixture of normals

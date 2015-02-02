@@ -248,6 +248,15 @@ unittest
 }
 
 
+///
+alias toCDF = convertTo!CDF;
+
+///
+unittest
+{
+	CDF!double cdf = GammaSCDF!double(1, 3).toCDF;
+}
+
 /++
 Class to compute cumulative density function as integral of it's probability density function
 +/

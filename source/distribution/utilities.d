@@ -5,16 +5,14 @@ import std.traits;
 ///
 template convertTo(alias InterfaceTemp)
 {
-	auto convertTo(Fun)(Fun fun)
+	InterfaceTemp!F convertTo(Fun, F = ReturnType!Fun)(Fun fun)
 	{
-		alias F = ReturnType!Fun;
 		static assert(isFloatingPoint!F);
 		return new class (fun) InterfaceTemp!F {
 			Fun fun;
 			this(Fun fun) { this.fun = fun; }
 			F opCall(F x) { return fun(x); }
 		};
-
 	}
 }
 
