@@ -116,9 +116,7 @@ abstract class NumericCDF(T) : CDF!T
 			partial = pdf.integrate(subdivisions[i], subdivisions[i+1], epsRel, epsAbs);
 	}
 
-	/++
-	Call operator
-	+/
+	///
 	final T opCall(T x)
 	{
 		if(x == -T.infinity)
@@ -205,9 +203,7 @@ abstract class NumericCCDF(T) : CDF!T
 			partial = pdf.integrate(subdivisions[i], subdivisions[i+1], epsRel, epsAbs);
 	}
 
-	/++
-	Call operator
-	+/
+	///
 	final T opCall(T x)
 	{
 		if(x == -T.infinity)
