@@ -9,6 +9,7 @@ import std.numeric;
 import std.mathspecial;
 import std.typecons;
 
+import distribution.utilities;
 
 /++
 Derivative of probability density function interface
@@ -20,3 +21,6 @@ interface Derivative(T)
 	*/
 	T opCall(T x);
 }
+
+///
+alias toDerivative = convertTo!Derivative;
