@@ -135,7 +135,7 @@ struct GammaSRNG(T, UniformRNG = Random)
 		shape = shape parameter
 		scale = scale parameter
 	+/
-	this(ref UniformRNG rng, T shape, T scale = 1)
+	this(ref UniformRNG rng, T shape, T scale)
 	{
 		this.rng = &rng;
 		this.shape = shape;
@@ -182,7 +182,7 @@ struct InverseGammaSRNG(T, UniformRNG = Random)
 		shape = shape parameter
 		scale = scale parameter
 	+/
-	this(ref UniformRNG rng, T shape, T scale = 1)
+	this(ref UniformRNG rng, T shape, T scale)
 	{
 		this.rng = &rng;
 		this.shape = shape;
@@ -230,7 +230,7 @@ struct GeneralizedGammaSRNG(T, UniformRNG = Random)
 		power = power parameter
 		scale = scale parameter
 	+/
-	this(ref UniformRNG rng, T shape, T power, T scale = 1)
+	this(ref UniformRNG rng, T shape, T power, T scale)
 	{
 		this.rng = &rng;
 		this.shape = shape;
