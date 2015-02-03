@@ -31,3 +31,24 @@ unittest
 
 	PDF!real pdf = convertTo!PDF(&fun);
 }
+
+/++
+Generates random permutation
++/
+size_t[] randomPermutation(size_t length)
+{
+	import core.memory;
+	import std.random : uniform;
+	import std.algorithm : makeIndex;
+	auto indexesR = new size_t[length];
+	scope(exit) 
+		GC.free(indexesR.ptr);
+	auto indexesS = new size_t[length];
+	foreach(j, ref index; indexesR)
+	{
+		index = uniform!"[]"(0, size_t.max);
+		indexesS[j] = j;
+	}
+	makeIndex(indexesR, indexesS);
+	return indexesS;
+}
