@@ -825,9 +825,8 @@ T rGeneralizedGamma(T = double)(T shape, T power)
 T rGeneralizedGamma(T = double, UniformRNG)(ref UniformRNG rng, T shape, T power) 
 	if (isFloatingPoint!T && isUniformRNG!UniformRNG)
 in {
-	assert(power.isNormal);
+	assert(power.isFinite);
 	assert(shape.isNormal);
-	assert(power > 0);
 	assert(shape > 0);
 }
 body {
@@ -981,8 +980,7 @@ T rWeibull(T = double)(T shape)
 T rWeibull(T = double, UniformRNG)(ref UniformRNG rng, T power) 
 	if (isFloatingPoint!T && isUniformRNG!UniformRNG)
 in {
-	assert(power.isNormal);
-	assert(power > 0);
+	assert(power.isFinite);
 }
 body {
 	return  rng.rExponential!T.pow(1/power);
