@@ -412,6 +412,26 @@ body {
 	return ret;
 }
 
+T dotProductLog2Power(T)(in T[] a, in T[] b, in T power)
+in {
+	assert(a.length == b.length);
+}
+body {
+	T ret = 0;
+	foreach(i; 0..a.length)
+		ret += a[i] * log(b[i]) * pow(b[i], power);
+	return ret;
+}
+
+
+T dotProductLogPower(T)(in T[] a, in T[] b, in T power)
+in {
+	assert(a.length == b.length);
+}
+body {
+	return cast(T) LN2 * dotProductLog2Power(a, b, power);
+}
+
 /**
 Struct that represent flat matrix.
 Useful for sliding windows.
