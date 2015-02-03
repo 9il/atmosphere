@@ -381,6 +381,36 @@ else
 	}
 }
 
+T dotProductLog2(T)(in T[] a, in T[] b)
+in {
+	assert(a.length == b.length);
+}
+body {
+	T ret = 0;
+	foreach(i; 0..a.length)
+		ret += a[i] * log(b[i]);
+	return ret;
+}
+
+
+T dotProductLog(T)(in T[] a, in T[] b)
+in {
+	assert(a.length == b.length);
+}
+body {
+	return cast(T) LN2 * dotProductLog2(a, b);
+}
+
+T dotProductPower(T)(in T[] a, in T[] b, in T power)
+in {
+	assert(a.length == b.length);
+}
+body {
+	T ret = 0;
+	foreach(i; 0..a.length)
+		ret += a[i] * pow(b[i], power);
+	return ret;
+}
 
 /**
 Struct that represent flat matrix.
