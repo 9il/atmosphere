@@ -28,62 +28,6 @@ k - length of mixture weights (count of ),
 n - length of sample, n may vary (sliding window).
 ------
 
-Example:
--------
-import atmosphere;
-
-import std.math;
-
-//probability density function
-static struct PDF
-{
-	double alphau;
-	double sqrtu;
-
-	///Constructor
-	this(double alpha, double u)
-	{
-		alphau = alpha * u;
-		sqrtu = sqrt(u);
-	}
-
-	///call operator overloading
-	double opCall(double x) const
-	{
-		immutable y = (x - alphau) / sqrtu;
-		enum T c = 0.3989422804014326779399460599L;
-		return c * exp(y * y / -2) / sqrtu;
-	}
-}
-
-double[] mySample, myNewSample;
-PDF[] pdfs;
-//... initialize pdfs and mySample.
-
-auto optimizer = new LikelihoodAscentCoordinate!double(pdfs.length, mySample.length+1000);
-
-bool delegate(double, double) tolerance = 
-	(likelihoodPrev, likelihood) 
-	=> likelihood - likelihoodPrev <= 1e-3;
-
-optimizer.put(pdfs, mySample);
-optimizer.optimize(tolerance);
-
-double[] mixtureWeights = optimizer.weights.dup;
-
-//remove first 50 elements in sample.
-optimizer.popFrontN(50);
-
-//... initialize myNewSample.
-//check length <= 1050
-assert(myNewSample.length <= 1050);
-
-// add new sample
-optimizer.put(pdfs, myNewSample);
-optimizer.optimize(tolerance);
-
-double[] mixtureWeights2 = optimizer.weights.dup;
--------
 +/
 module atmosphere.mixture;
 
@@ -144,6 +88,8 @@ class FeaturesException : MixtureOptimizerException
 abstract class MixtureOptimizer(T)
 	if(isFloatingPoint!T)
 {
+	import std.datetime;
+
 	package SlidingWindow!T _featuresT;
 	package T[] _weights;
 	package T[] _mixture;
@@ -171,10 +117,12 @@ abstract class MixtureOptimizer(T)
 	/++
 	Perform k (1) iterations of coordinate (gradient or EM) descent optimization algorithm.
 	Params:
-	findRootTolerance = Defines an early termination condition. 
+		findRootTolerance = Defines an early termination condition. 
 			Receives the current upper and lower bounds on the root. 
 			The delegate must return true when these bounds are acceptable.
 	See_Also: $(STDREF numeric, findRoot)
+		evaluate
+		optimize
 	+/
 	abstract void eval(scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null);
 
@@ -186,6 +134,50 @@ abstract class MixtureOptimizer(T)
 final:
 
 	/++
+	Perform `itersCount` iterations of `eval`.
+	Params:
+		itersCount = count of iterations
+		findRootTolerance = Defines an early termination condition. 
+			Receives the current upper and lower bounds on the root. 
+			The delegate must return true when these bounds are acceptable.
+	See_Also: $(STDREF numeric, findRoot)
+		eval
+		optimize
+	+/
+	void evaluate(size_t itersCount, scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null)
+	{
+		foreach(_; 0..itersCount)
+			eval(findRootTolerance);
+	}
+
+	/++
+	Perform `eval` during `time`.
+	Params:
+		time = time duration
+		findRootTolerance = Defines an early termination condition. 
+			Receives the current upper and lower bounds on the root. 
+			The delegate must return true when these bounds are acceptable.
+	See_Also: $(STDREF numeric, findRoot)
+		eval
+		optimize
+	+/
+	Tuple!(TickDuration, "duration", size_t, "itersCount") 
+	evaluate(TickDuration time, scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null)
+	{
+		TickDuration dur;
+		size_t iterCount;
+		auto sw = StopWatch(AutoStart.yes);
+		do
+		{
+			eval(findRootTolerance);	
+			iterCount++;
+			dur = sw.peek;	
+		}
+		while(dur < time);
+		return typeof(return)(dur, iterCount);
+	}
+
+	/++
 	Performs optimization.
 	Params:
 		objectiveFunction = accepts mixture.
@@ -194,6 +186,8 @@ final:
 			The delegate must return true when mixture and weights are acceptable. 
 		findRootTolerance = Tolerance for inner optimization.
 	See_Also: $(STDREF numeric, findRoot)
+		eval
+		evaluate
 	+/
 	void optimize(
 			scope T delegate(in T[] mixture) objectiveFunction, 
@@ -224,6 +218,8 @@ final:
 			The delegate must return true when mixture are acceptable. 
 		findRootTolerance = Tolerance for inner optimization.
 	See_Also: $(STDREF numeric, findRoot)
+		eval
+		evaluate
 	+/
 	void optimize
 	(
@@ -252,6 +248,8 @@ final:
 			The delegate must return true when mixture and weights are acceptable. 
 		findRootTolerance = Tolerance for inner optimization.
 	See_Also: $(STDREF numeric, findRoot)
+		eval
+		evaluate
 	+/
 	void optimize
 	(
