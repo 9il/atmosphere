@@ -40,5 +40,59 @@ Table of separating mixtures algorithms:
 +/
 module atmosphere;
 
+///
+unittest
+{
+	import core.time;
+	import std.random;
+	import std.range;
+	import std.stdio;
+	import atmosphere;
+	import distribution;
+
+	alias F = double;
+
+	final class ProperGeneralizedInverseGaussianQuantile(T) : NumericQuantile!T {
+		this(T lambda, T eta, T omega) {
+			auto cdf = new ProperGeneralizedInverseGaussianCDF!T(lambda, eta, omega);
+			super(cdf, -1000, 1000);	
+		}
+	}
+
+	nothrow @nogc bool findRootTolerance(F a, F b) { return b/a < 1.001;}
+	
+	immutable quantileL  = 0.01;
+	immutable quantileR  = 0.99;
+	immutable gridSize   = 100;
+	immutable dur        = TickDuration.from!"msecs"(100);
+	immutable lambda     = 2;
+	immutable eta        = 1; 
+	immutable omega      = 2.3;
+	immutable beta       = 0.5;
+	immutable sampleSize = 1000;
+	// GIG quantile function
+	auto qf              = new ProperGeneralizedInverseGaussianQuantile!F(lambda, eta, omega);
+	// GHyp random number generator
+	auto rng             = new ProperGeneralizedHyperbolicRNG!F(rndGen, lambda, eta, omega, beta);
+	// left GIG bound
+	immutable begin      = qf(quantileL);
+	// right GIG bound
+	immutable end        = qf(quantileR);
+	// grid's step
+	immutable step       = (end-begin)/gridSize;
+	// GIG grid
+	immutable grid       = iota(begin, end+step/2, step).array;
+	// Normal PDFs for common algorithms
+	auto pdfs            = grid.map!(u => NvmmLikelihoodAscentEM!F.CorePDF(beta, u)).array;
+	// GHyp sample
+	immutable sample     = cast(immutable) rng.take(sampleSize).array;
+	// Mixture optimizer
+	auto optimizer       = new LikelihoodAscentEM!F(pdfs.length, sample.length);
+	// Puts sample
+	optimizer.put(pdfs, sample);
+	// Tuple of time and iterations count
+	immutable result     = optimizer.evaluate(dur, &findRootTolerance);
+}
+
 public import atmosphere.mixture;
 public import atmosphere.parametrized.nvmm;
