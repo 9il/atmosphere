@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<link rel="stylesheet" type="text/css" href="../style.css"/>
+<script src="../highlight.pack.js"></script>
+<title>distribution.finitemixture</title>
+<base href="../"/>
+<script src="search.js"></script>
+<script src="show_hide.js"></script>
+</head>
+<body>
+<div class="main">
+<div class="breadcrumbs">
+<table id="results"></table>
+<a href="index.html" class="home">⌂</a><input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
+<small>distribution.finitemixture</small>
+</div>
+<div class="sidebar">
+<a href="distribution/finitemixture.html#hide-toc" class="hide" id="hide-toc">&#171;</a>
+<a href="distribution/finitemixture.html#show-toc" class="show" id="show-toc">&#187;</a>
+<div id="toc-id" class="toc">
+<div class="toc-additional">
+<div class="section "><ul>
+<li><a href="http://9il.github.io/atmosphere_gm">Atmosphere GM Home</a>
+</li>
+<li><a href="https://github.com/9il/atmosphere_gm">Atmosphere GM GitHub</a>
+</li>
+</ul>
+
+
+</div>
+
+</div>
+<ul><li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
+<ul id="atmosphere">
+<li>atmosphere.<a href="atmosphere/mixture.html">mixture</a></li>
+<li><span class="package" onclick="show_hide('atmosphere.parametrized');">atmosphere.parametrized</span>
+<ul id="atmosphere.parametrized">
+<li>atmosphere.parametrized.<a href="atmosphere/parametrized/nvmm.html">nvmm</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><span class="package" onclick="show_hide('distribution');"><a href="distribution.html">distribution</a></span>
+<ul id="distribution" style='display:block'>
+<li>distribution.<a href="distribution/cdf.html">cdf</a></li>
+<li>distribution.<a href="distribution/derivative.html">derivative</a></li>
+<li><span class=" selected">distribution.<a href="distribution/finitemixture.html">finitemixture</a></span>
+</li>
+<li>distribution.<a href="distribution/moment.html">moment</a></li>
+<li>distribution.<a href="distribution/params.html">params</a></li>
+<li>distribution.<a href="distribution/pdf.html">pdf</a></li>
+<li>distribution.<a href="distribution/quantile.html">quantile</a></li>
+<li>distribution.<a href="distribution/random.html">random</a></li>
+<li>distribution.<a href="distribution/utilities.html">utilities</a></li>
+</ul>
+</li>
+<li><a href="simple_matrix.html">simple_matrix</a></li>
+
+</ul>
+</div></div>
+<div class="content">
+<div class="aggregate-symbol"><a class="anchor" id="finiteMixture"></a><div class="symbol"><div class="description"><pre><code>public auto <a href="distribution/finitemixture.html#finiteMixture">finiteMixture</a>(FRange, T)(
+    FRange funcs, 
+    const(T)[] weights) 
+if(isForwardRange!FRange && isCallable!(ElementType!FRange) && isFloatingPoint!T)
+</code></pre>
+<div class="section"><h2>Returns</h2>
+<p> Callable structure
+Params
+	funcs = input range of functions
+	weights = mixture weights
+</p>
+
+
+</div>
+<div class="section "><h2>Example</h2>
+<pre><code>import <a href="distribution/pdf.html">distribution.pdf</a>;
+import <a href="distribution/utilities.html">distribution.utilities</a>;
+auto pdfs = sequence!"n+1"().map!(shape => <a href="distribution/pdf/GammaSPDF.html">GammaSPDF</a>!real(shape, 1));
+double[] weights = [0.25, 0.5, 0.125, 0.125];
+auto pdf = <a href="distribution/finitemixture.html#finiteMixture">finiteMixture</a>(pdfs, weights);
+<a href="distribution/pdf/PDF.html">PDF</a>!double pdf2 = <a href="distribution/utilities/convertTo.html">convertTo</a>!<a href="distribution/pdf/PDF.html">PDF</a>(pdf);
+
+</code></pre>
+
+</div>
+</div></div><div class="description"></div><div class="section members"><h2>Functions</h2><table><tr><td><span class="extrainfo"><span class="attribs"><span class="attr-auto">auto</span></span></span><a href="distribution/finitemixture.html#finiteMixture">finiteMixture</a><span class="extrainfo"></span></td><td></td><td>Returns: <p> Callable structure
+Params
+	funcs = input range of functions
+	weights = mixture weights
+</p>
+</td></tr></table>
+</div>
+</div><script>hljs.initHighlightingOnLoad();</script>
+
+</div>
+<footer>
+Generated with <a href="https://github.com/kiith-sa/harbored-mod">harbored-mod</a>
+</footer>
+</div>
+</body>
+</html>

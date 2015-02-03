@@ -47,11 +47,13 @@
 <li><span class=" selected">distribution.<a href="distribution/cdf.html">cdf</a></span>
 </li>
 <li>distribution.<a href="distribution/derivative.html">derivative</a></li>
+<li>distribution.<a href="distribution/finitemixture.html">finitemixture</a></li>
 <li>distribution.<a href="distribution/moment.html">moment</a></li>
 <li>distribution.<a href="distribution/params.html">params</a></li>
 <li>distribution.<a href="distribution/pdf.html">pdf</a></li>
 <li>distribution.<a href="distribution/quantile.html">quantile</a></li>
 <li>distribution.<a href="distribution/random.html">random</a></li>
+<li>distribution.<a href="distribution/utilities.html">utilities</a></li>
 </ul>
 </li>
 <li><a href="simple_matrix.html">simple_matrix</a></li>
@@ -59,12 +61,26 @@
 </ul>
 </div></div>
 <div class="content">
-<div class="aggregate-symbol"><div class="description"><div class="section "><p>Comulative density functions
+<div class="aggregate-symbol"><a class="anchor" id="toCDF"></a><div class="symbol"><div class="description"><pre><code>alias toCDF = <a href="distribution/utilities/convertTo.html">convertTo</a>!<a href="distribution/cdf/CDF.html">CDF</a>
+</code></pre>
+</div></div><div class="description"><div class="section "><p>Comulative density functions
 </p>
 
 
 </div>
-</div><div class="section members"><h2>Interfaces</h2><table><tr><td><a href="distribution/cdf/CDF.html">CDF</a></td><td></td><td><p>Comulative density function interface
+</div><div class="section members"><h2>Aliases</h2><table><tr><td><a href="distribution/cdf.html#toCDF">toCDF</a></td><td><pre><code><a href="distribution/utilities/convertTo.html">convertTo</a>!<a href="distribution/cdf/CDF.html">CDF</a>
+</code></pre>
+</td><td></td></tr></table><h2>Structs</h2><table><tr><td><a href="distribution/cdf/NormalSCDF.html">NormalSCDF</a></td><td></td><td><p>Normal PDF
+</p>
+</td></tr><tr><td><a href="distribution/cdf/GammaSCDF.html">GammaSCDF</a></td><td></td><td><p>Gamma CDF
+</p>
+</td></tr><tr><td><a href="distribution/cdf/InverseGammaSCDF.html">InverseGammaSCDF</a></td><td></td><td><p>Inverse-gamma CDF
+</p>
+</td></tr><tr><td><a href="distribution/cdf/GeneralizedGammaSCDF.html">GeneralizedGammaSCDF</a></td><td></td><td><p>Generalized gamma CDF
+</p>
+</td></tr><tr><td><a href="distribution/cdf/InverseGaussianSCDF.html">InverseGaussianSCDF</a></td><td></td><td><p>Inverse Gaussian CDF
+</p>
+</td></tr></table><h2>Interfaces</h2><table><tr><td><a href="distribution/cdf/CDF.html">CDF</a></td><td></td><td><p>Comulative density function interface
 </p>
 </td></tr></table><h2>Classes</h2><table><tr><td><a href="distribution/cdf/NumericCDF.html">NumericCDF</a></td><td></td><td><p>Class to compute cumulative density function as integral of it's probability density function
 </p>
@@ -77,14 +93,6 @@
 </td></tr><tr><td><a href="distribution/cdf/NormalVarianceMeanMixtureCDF.html">NormalVarianceMeanMixtureCDF</a></td><td></td><td><p>Variance-mean mixture of normals
 </p>
 </td></tr><tr><td><a href="distribution/cdf/GeneralizedVarianceGammaCDF.html">GeneralizedVarianceGammaCDF</a></td><td></td><td><p>Generalized variance-gamma (generalized gamma mixture of normals) CDF
-</p>
-</td></tr><tr><td><a href="distribution/cdf/GammaCDF.html">GammaCDF</a></td><td></td><td><p>Gamma CDF
-</p>
-</td></tr><tr><td><a href="distribution/cdf/InverseGammaCDF.html">InverseGammaCDF</a></td><td></td><td><p>Inverse-gamma CDF
-</p>
-</td></tr><tr><td><a href="distribution/cdf/GeneralizedGammaCDF.html">GeneralizedGammaCDF</a></td><td></td><td><p>Generalized gamma CDF
-</p>
-</td></tr><tr><td><a href="distribution/cdf/InverseGaussianCDF.html">InverseGaussianCDF</a></td><td></td><td><p>Inverse Gaussian CDF
 </p>
 </td></tr></table>
 </div>

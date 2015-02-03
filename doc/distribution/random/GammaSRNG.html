@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<link rel="stylesheet" type="text/css" href="../../style.css"/>
+<script src="../../highlight.pack.js"></script>
+<title>GammaSRNG</title>
+<base href="../../"/>
+<script src="search.js"></script>
+<script src="show_hide.js"></script>
+</head>
+<body>
+<div class="main">
+<div class="breadcrumbs">
+<table id="results"></table>
+<a href="index.html" class="home">⌂</a><input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
+<small>distribution.<a href=distribution/random.html>random</a>.</small><span class="highlight">GammaSRNG</span>
+</div>
+<div class="sidebar">
+<a href="distribution/random.html#hide-toc" class="hide" id="hide-toc">&#171;</a>
+<a href="distribution/random.html#show-toc" class="show" id="show-toc">&#187;</a>
+<div id="toc-id" class="toc">
+<div class="toc-additional">
+<div class="section "><ul>
+<li><a href="http://9il.github.io/atmosphere_gm">Atmosphere GM Home</a>
+</li>
+<li><a href="https://github.com/9il/atmosphere_gm">Atmosphere GM GitHub</a>
+</li>
+</ul>
+
+
+</div>
+
+</div>
+<ul><li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
+<ul id="atmosphere">
+<li>atmosphere.<a href="atmosphere/mixture.html">mixture</a></li>
+<li><span class="package" onclick="show_hide('atmosphere.parametrized');">atmosphere.parametrized</span>
+<ul id="atmosphere.parametrized">
+<li>atmosphere.parametrized.<a href="atmosphere/parametrized/nvmm.html">nvmm</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><span class="package" onclick="show_hide('distribution');"><a href="distribution.html">distribution</a></span>
+<ul id="distribution" style='display:block'>
+<li>distribution.<a href="distribution/cdf.html">cdf</a></li>
+<li>distribution.<a href="distribution/derivative.html">derivative</a></li>
+<li>distribution.<a href="distribution/finitemixture.html">finitemixture</a></li>
+<li>distribution.<a href="distribution/moment.html">moment</a></li>
+<li>distribution.<a href="distribution/params.html">params</a></li>
+<li>distribution.<a href="distribution/pdf.html">pdf</a></li>
+<li>distribution.<a href="distribution/quantile.html">quantile</a></li>
+<li><span class=" selected">distribution.<a href="distribution/random.html">random</a></span>
+</li>
+<li>distribution.<a href="distribution/utilities.html">utilities</a></li>
+</ul>
+</li>
+<li><a href="simple_matrix.html">simple_matrix</a></li>
+
+</ul>
+</div></div>
+<div class="content">
+<div class="aggregate-symbol"><div class="description"><pre><code>public struct GammaSRNG(T, UniformRNG = Random)
+if(isFloatingPoint!T)
+</code></pre>
+<div class="section "><p>Class to generate random observations from a
+gamma
+distribution.
+</p>
+
+
+</div>
+<div class="section "><h2>Example</h2>
+<pre><code>import std.range;
+auto rng = <a href="distribution/random/GammaSRNG.html">GammaSRNG</a>!double(rndGen, 1.1, 1.1);
+auto sample = rng.map!(x => x + 4).take(9).array;
+
+</code></pre>
+
+</div>
+</div><a class="anchor" id="this"></a><div class="symbol"><div class="description"><pre><code>public this(
+    ref UniformRNG rng, 
+    T shape, 
+    T scale)
+</code></pre>
+<div class="section "><p>Constructor
+</p>
+
+
+</div>
+<div class="section"><h2>Parameters</h2>
+<table class="params">
+<tr class="param"><td class="paramName">rng</td><td class="paramDoc"><p>uniform random number generator
+</p>
+</td></tr>
+<tr class="param"><td class="paramName">shape</td><td class="paramDoc"><p>shape parameter
+</p>
+</td></tr>
+<tr class="param"><td class="paramName">scale</td><td class="paramDoc"><p>scale parameter
+</p>
+</td></tr>
+</table>
+</div>
+</div></div><a class="anchor" id="front"></a><div class="symbol"><div class="description"><pre><code>public T <a href="distribution/random/GammaSRNG.html#front">front</a>() @property
+</code></pre>
+</div></div><a class="anchor" id="popFront"></a><div class="symbol"><div class="description"><pre><code>public static <a href="http://dlang.org/type.html#basic-data-types">void</a> <a href="distribution/random/GammaSRNG.html#popFront">popFront</a>() @safe pure nothrow @nogc
+</code></pre>
+</div></div><a class="anchor" id="empty"></a><div class="symbol"><div class="description"><pre><code>public auto empty
+</code></pre>
+</div></div><div class="section members"><h2>Variables</h2><table><tr><td><a href="distribution/random/GammaSRNG.html#empty">empty</a></td><td><pre><code>auto
+</code></pre>
+</td><td></td></tr></table><h2>Functions</h2><table><tr><td><a href="distribution/random/GammaSRNG.html#this">this</a></td><td></td><td><p>Constructor
+</p>
+</td></tr><tr><td><a href="distribution/random/GammaSRNG.html#front">front</a><span class="extrainfo"><span class="method-attribs"><span class="attr-property">@property</span></span></span></td><td></td><td></td></tr><tr><td><span class="extrainfo"><span class="attribs"><span class="attr-static">static</span></span></span><a href="distribution/random/GammaSRNG.html#popFront">popFront</a><span class="extrainfo"><span class="method-attribs"><span class="attr-safe">@safe</span>, <span class="attr-pure">pure</span>, <span class="attr-nothrow">nothrow</span>, <span class="attr-nogc">@nogc</span></span></span></td><td></td><td></td></tr></table>
+</div>
+</div><script>hljs.initHighlightingOnLoad();</script>
+
+</div>
+<footer>
+Generated with <a href="https://github.com/kiith-sa/harbored-mod">harbored-mod</a>
+</footer>
+</div>
+</body>
+</html>

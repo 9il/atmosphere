@@ -47,11 +47,13 @@
 <li><span class=" selected">distribution.<a href="distribution/cdf.html">cdf</a></span>
 </li>
 <li>distribution.<a href="distribution/derivative.html">derivative</a></li>
+<li>distribution.<a href="distribution/finitemixture.html">finitemixture</a></li>
 <li>distribution.<a href="distribution/moment.html">moment</a></li>
 <li>distribution.<a href="distribution/params.html">params</a></li>
 <li>distribution.<a href="distribution/pdf.html">pdf</a></li>
 <li>distribution.<a href="distribution/quantile.html">quantile</a></li>
 <li>distribution.<a href="distribution/random.html">random</a></li>
+<li>distribution.<a href="distribution/utilities.html">utilities</a></li>
 </ul>
 </li>
 <li><a href="simple_matrix.html">simple_matrix</a></li>
@@ -76,9 +78,9 @@ class MyGeneralizedHyperbolicCDF(T) : <a href="distribution/cdf/NormalVarianceMe
 	{
 		with(params)
 		{
-			auto pgig  = new <a href="distribution/pdf/ProperGeneralizedInverseGaussianPDF.html">ProperGeneralizedInverseGaussianPDF</a>!T(lambda, eta, omega);
+			auto pdf = <a href="distribution/pdf/ProperGeneralizedInverseGaussianSPDF.html">ProperGeneralizedInverseGaussianSPDF</a>!T(lambda, eta, omega);
 			auto mean = <a href="distribution/moment.html#properGeneralizedInverseGaussianMean">properGeneralizedInverseGaussianMean</a>(lambda, eta, omega);
-			super(pgig, params.beta, mu, [mean]);				
+			super(pdf.<a href="distribution/utilities/convertTo.html">convertTo</a>!<a href="distribution/pdf/PDF.html">PDF</a>, params.beta, mu, [mean]);				
 		}
 	}
 }

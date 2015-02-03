@@ -47,11 +47,13 @@
 <ul id="distribution">
 <li>distribution.<a href="distribution/cdf.html">cdf</a></li>
 <li>distribution.<a href="distribution/derivative.html">derivative</a></li>
+<li>distribution.<a href="distribution/finitemixture.html">finitemixture</a></li>
 <li>distribution.<a href="distribution/moment.html">moment</a></li>
 <li>distribution.<a href="distribution/params.html">params</a></li>
 <li>distribution.<a href="distribution/pdf.html">pdf</a></li>
 <li>distribution.<a href="distribution/quantile.html">quantile</a></li>
 <li>distribution.<a href="distribution/random.html">random</a></li>
+<li>distribution.<a href="distribution/utilities.html">utilities</a></li>
 </ul>
 </li>
 <li><a href="simple_matrix.html">simple_matrix</a></li>
@@ -109,6 +111,8 @@ if(isFloatingPoint!T)
 <h2>See Also:</h2>
 <div class="seealso-content">
 <p> <a href="http://dlang.org/library/std/numeric/findRoot.html">std.numeric.findRoot</a>
+		evaluate
+		optimize
 </p>
 
 </div>
@@ -119,6 +123,70 @@ if(isFloatingPoint!T)
 </p>
 
 
+</div>
+</div></div><a class="anchor" id="evaluate"></a><div class="symbol"><div class="description"><pre><code>public final <a href="http://dlang.org/type.html#basic-data-types">void</a> <a href="atmosphere/mixture/MixtureOptimizer.html#evaluate">evaluate</a>(
+    size_t itersCount, 
+    scope <a href="http://dlang.org/type.html#basic-data-types">bool</a> delegate(
+        T a, 
+        T b
+        ) @nogc nothrow findRootTolerance = null)
+</code></pre>
+<div class="section "><p>Perform <code class="prettyprint">itersCount</code> iterations of <code class="prettyprint"><a href="atmosphere/mixture/MixtureOptimizer.html#eval">eval</a></code>.
+</p>
+
+
+</div>
+<div class="section"><h2>Parameters</h2>
+<table class="params">
+<tr class="param"><td class="paramName">itersCount</td><td class="paramDoc"><p>count of iterations
+</p>
+</td></tr>
+<tr class="param"><td class="paramName">findRootTolerance</td><td class="paramDoc"><p>Defines an early termination condition.  Receives the current upper and lower bounds on the root.  The delegate must return true when these bounds are acceptable.
+</p>
+</td></tr>
+</table>
+</div>
+<div class="section seealso">
+<h2>See Also:</h2>
+<div class="seealso-content">
+<p> <a href="http://dlang.org/library/std/numeric/findRoot.html">std.numeric.findRoot</a>
+		eval
+		optimize
+</p>
+
+</div>
+</div>
+</div></div><a class="anchor" id="evaluate"></a><div class="symbol"><div class="description"><pre><code>public final Tuple!(TickDuration, "duration", size_t, "itersCount") <a href="atmosphere/mixture/MixtureOptimizer.html#evaluate">evaluate</a>(
+    TickDuration time, 
+    scope <a href="http://dlang.org/type.html#basic-data-types">bool</a> delegate(
+        T a, 
+        T b
+        ) @nogc nothrow findRootTolerance = null)
+</code></pre>
+<div class="section "><p>Perform <code class="prettyprint"><a href="atmosphere/mixture/MixtureOptimizer.html#eval">eval</a></code> during <code class="prettyprint">time</code>.
+</p>
+
+
+</div>
+<div class="section"><h2>Parameters</h2>
+<table class="params">
+<tr class="param"><td class="paramName">time</td><td class="paramDoc"><p>time duration
+</p>
+</td></tr>
+<tr class="param"><td class="paramName">findRootTolerance</td><td class="paramDoc"><p>Defines an early termination condition.  Receives the current upper and lower bounds on the root.  The delegate must return true when these bounds are acceptable.
+</p>
+</td></tr>
+</table>
+</div>
+<div class="section seealso">
+<h2>See Also:</h2>
+<div class="seealso-content">
+<p> <a href="http://dlang.org/library/std/numeric/findRoot.html">std.numeric.findRoot</a>
+		eval
+		optimize
+</p>
+
+</div>
 </div>
 </div></div><a class="anchor" id="optimize"></a><div class="symbol"><div class="description"><pre><code>public final <a href="http://dlang.org/type.html#basic-data-types">void</a> <a href="atmosphere/mixture/MixtureOptimizer.html#optimize">optimize</a>(
     scope T delegate(in T[] mixture) objectiveFunction, 
@@ -155,6 +223,8 @@ if(isFloatingPoint!T)
 <h2>See Also:</h2>
 <div class="seealso-content">
 <p> <a href="http://dlang.org/library/std/numeric/findRoot.html">std.numeric.findRoot</a>
+		eval
+		evaluate
 </p>
 
 </div>
@@ -192,6 +262,8 @@ if(isFloatingPoint!T)
 <h2>See Also:</h2>
 <div class="seealso-content">
 <p> <a href="http://dlang.org/library/std/numeric/findRoot.html">std.numeric.findRoot</a>
+		eval
+		evaluate
 </p>
 
 </div>
@@ -225,6 +297,8 @@ if(isFloatingPoint!T)
 <h2>See Also:</h2>
 <div class="seealso-content">
 <p> <a href="http://dlang.org/library/std/numeric/findRoot.html">std.numeric.findRoot</a>
+		eval
+		evaluate
 </p>
 
 </div>
@@ -422,6 +496,10 @@ if(isInputRange!Range)
 </td></tr><tr><td><span class="extrainfo"><span class="attribs"><span class="attr-abstract">abstract</span></span></span><a href="atmosphere/mixture/MixtureOptimizer.html#eval">eval</a><span class="extrainfo"></span></td><td></td><td><p>Perform k (1) iterations of coordinate (gradient or EM) descent optimization algorithm.
 </p>
 </td></tr><tr><td><span class="extrainfo"><span class="attribs"><span class="attr-abstract">abstract</span></span></span><a href="atmosphere/mixture/MixtureOptimizer.html#update">update</a><span class="extrainfo"></span></td><td></td><td><p>update method is called when mixture changes occur.
+</p>
+</td></tr><tr><td><a href="atmosphere/mixture/MixtureOptimizer.html#evaluate">evaluate</a><span class="extrainfo"></span></td><td></td><td><p>Perform <code class="prettyprint">itersCount</code> iterations of <code class="prettyprint"><a href="atmosphere/mixture/MixtureOptimizer.html#eval">eval</a></code>.
+</p>
+</td></tr><tr><td><a href="atmosphere/mixture/MixtureOptimizer.html#evaluate">evaluate</a><span class="extrainfo"></span></td><td></td><td><p>Perform <code class="prettyprint"><a href="atmosphere/mixture/MixtureOptimizer.html#eval">eval</a></code> during <code class="prettyprint">time</code>.
 </p>
 </td></tr><tr><td><a href="atmosphere/mixture/MixtureOptimizer.html#optimize">optimize</a><span class="extrainfo"></span></td><td></td><td><p>Performs optimization.
 </p>

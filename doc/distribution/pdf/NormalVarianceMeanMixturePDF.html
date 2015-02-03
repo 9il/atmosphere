@@ -46,12 +46,14 @@
 <ul id="distribution" style='display:block'>
 <li>distribution.<a href="distribution/cdf.html">cdf</a></li>
 <li>distribution.<a href="distribution/derivative.html">derivative</a></li>
+<li>distribution.<a href="distribution/finitemixture.html">finitemixture</a></li>
 <li>distribution.<a href="distribution/moment.html">moment</a></li>
 <li>distribution.<a href="distribution/params.html">params</a></li>
 <li><span class=" selected">distribution.<a href="distribution/pdf.html">pdf</a></span>
 </li>
 <li>distribution.<a href="distribution/quantile.html">quantile</a></li>
 <li>distribution.<a href="distribution/random.html">random</a></li>
+<li>distribution.<a href="distribution/utilities.html">utilities</a></li>
 </ul>
 </li>
 <li><a href="simple_matrix.html">simple_matrix</a></li>
@@ -75,9 +77,9 @@ if(isFloatingPoint!T)
 	{
 		with(params)
 		{
-			auto pgig  = new <a href="distribution/pdf/ProperGeneralizedInverseGaussianPDF.html">ProperGeneralizedInverseGaussianPDF</a>!T(lambda, eta, omega);
+			auto pgig = <a href="distribution/pdf/ProperGeneralizedInverseGaussianSPDF.html">ProperGeneralizedInverseGaussianSPDF</a>!T(lambda, eta, omega);
 			auto e = mu + <a href="distribution/moment.html#properGeneralizedInverseGaussianMean">properGeneralizedInverseGaussianMean</a>(lambda, eta, omega);
-			super(pgig, params.beta, mu, [e]);				
+			super(pgig.<a href="distribution/utilities/convertTo.html">convertTo</a>!<a href="distribution/pdf/PDF.html">PDF</a>, params.beta, mu, [e]);				
 		}
 	}
 }
@@ -98,15 +100,10 @@ foreach(i; 0..5)
     <a href="distribution/pdf/PDF.html">PDF</a>!T pdf, 
     T beta, 
     T mu, 
-    T[] subdivisions = null, 
+    const(T)[] subdivisions = null, 
     T epsRel = 1e-6, 
     T epsAbs = 0)
 </code></pre>
-<div class="section "><p>Constructor
-</p>
-
-
-</div>
 <div class="section "><h2>Contracts</h2><pre><code>in
 {
     assert (subdivisions.all!isFinite);
@@ -147,9 +144,7 @@ foreach(i; 0..5)
 
 </div>
 </div>
-</div></div><div class="section members"><h2>Functions</h2><table><tr><td><a href="distribution/pdf/NormalVarianceMeanMixturePDF.html#this">this</a></td><td></td><td><p>Constructor
-</p>
-</td></tr></table>
+</div></div><div class="section members"><h2>Functions</h2><table><tr><td><a href="distribution/pdf/NormalVarianceMeanMixturePDF.html#this">this</a></td><td></td><td></td></tr></table>
 </div>
 </div><script>hljs.initHighlightingOnLoad();</script>
 

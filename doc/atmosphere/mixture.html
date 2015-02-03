@@ -47,11 +47,13 @@
 <ul id="distribution">
 <li>distribution.<a href="distribution/cdf.html">cdf</a></li>
 <li>distribution.<a href="distribution/derivative.html">derivative</a></li>
+<li>distribution.<a href="distribution/finitemixture.html">finitemixture</a></li>
 <li>distribution.<a href="distribution/moment.html">moment</a></li>
 <li>distribution.<a href="distribution/params.html">params</a></li>
 <li>distribution.<a href="distribution/pdf.html">pdf</a></li>
 <li>distribution.<a href="distribution/quantile.html">quantile</a></li>
 <li>distribution.<a href="distribution/random.html">random</a></li>
+<li>distribution.<a href="distribution/utilities.html">utilities</a></li>
 </ul>
 </li>
 <li><a href="simple_matrix.html">simple_matrix</a></li>
@@ -86,68 +88,10 @@ k - length of mixture weights (count of ),
 n - length of sample, n may vary (sliding window).</code></pre>
 
 
-
 </div>
-<div class="section"><h2>Example</h2>
-
-<pre><code>import atmosphere;
-
-import std.math;
-
-//probability density function
-static struct <a href="distribution/pdf/PDF.html">PDF</a>
-{
-	double alphau;
-	double sqrtu;
-
-	///Constructor
-	this(double alpha, double u)
-	{
-		alphau = alpha * u;
-		sqrtu = sqrt(u);
-	}
-
-	///call operator overloading
-	double opCall(double x) const
-	{
-		immutable y = (x - alphau) / sqrtu;
-		enum T c = 0.3989422804014326779399460599L;
-		return c * exp(y * y / -2) / sqrtu;
-	}
-}
-
-double[] mySample, myNewSample;
-<a href="distribution/pdf/PDF.html">PDF</a>[] pdfs;
-//... initialize pdfs and mySample.
-
-auto optimizer = new <a href="atmosphere/mixture/CoordinateLikelihoodMaximization.html">CoordinateLikelihoodMaximization</a>!double(pdfs.length, mySample.length+1000);
-
-bool delegate(double, double) tolerance = 
-	(likelihoodPrev, likelihood) 
-	=> likelihood - likelihoodPrev <= 1e-3;
-
-optimizer.put(pdfs, mySample);
-optimizer.optimize(tolerance);
-
-double[] mixtureWeights = optimizer.weights.dup;
-
-//remove first 50 elements in sample.
-optimizer.popFrontN(50);
-
-//... initialize myNewSample.
-//check length <= 1050
-assert(myNewSample.length <= 1050);
-
-// add new sample
-optimizer.put(pdfs, myNewSample);
-optimizer.optimize(tolerance);
-
-double[] mixtureWeights2 = optimizer.weights.dup;</code></pre>
-
-</div>
-</div><div class="section members"><h2>Interfaces</h2><table><tr><td><a href="atmosphere/mixture/LikelihoodMaximization.html">LikelihoodMaximization</a></td><td></td><td></td></tr></table><h2>Classes</h2><table><tr><td><a href="atmosphere/mixture/MixtureOptimizerException.html">MixtureOptimizerException</a></td><td></td><td><p>Exception thrown for MixtureOptimizer.
+</div><div class="section members"><h2>Interfaces</h2><table><tr><td><a href="atmosphere/mixture/LikelihoodAscent.html">LikelihoodAscent</a></td><td></td><td></td></tr></table><h2>Classes</h2><table><tr><td><a href="atmosphere/mixture/MixtureOptimizerException.html">MixtureOptimizerException</a></td><td></td><td><p>Exception thrown for MixtureOptimizer.
 </p>
-</td></tr><tr><td><a href="atmosphere/mixture/FeaturesException.html">FeaturesException</a></td><td></td><td></td></tr><tr><td><a href="atmosphere/mixture/MixtureOptimizer.html">MixtureOptimizer</a></td><td></td><td></td></tr><tr><td><a href="atmosphere/mixture/EM.html">EM</a></td><td></td><td></td></tr><tr><td><a href="atmosphere/mixture/GradientDescent.html">GradientDescent</a></td><td></td><td></td></tr><tr><td><a href="atmosphere/mixture/GradientDescentPartial.html">GradientDescentPartial</a></td><td></td><td></td></tr><tr><td><a href="atmosphere/mixture/CoordinateDescent.html">CoordinateDescent</a></td><td></td><td></td></tr><tr><td><a href="atmosphere/mixture/CoordinateDescentPartial.html">CoordinateDescentPartial</a></td><td></td><td></td></tr><tr><td><a href="atmosphere/mixture/CoordinateLikelihoodMaximization.html">CoordinateLikelihoodMaximization</a></td><td></td><td></td></tr><tr><td><a href="atmosphere/mixture/GradientLikelihoodMaximization.html">GradientLikelihoodMaximization</a></td><td></td><td></td></tr><tr><td><a href="atmosphere/mixture/EMLikelihoodMaximization.html">EMLikelihoodMaximization</a></td><td></td><td></td></tr></table>
+</td></tr><tr><td><a href="atmosphere/mixture/FeaturesException.html">FeaturesException</a></td><td></td><td></td></tr><tr><td><a href="atmosphere/mixture/MixtureOptimizer.html">MixtureOptimizer</a></td><td></td><td></td></tr><tr><td><a href="atmosphere/mixture/ExpectationMaximization.html">ExpectationMaximization</a></td><td></td><td></td></tr><tr><td><a href="atmosphere/mixture/GradientDescent.html">GradientDescent</a></td><td></td><td></td></tr><tr><td><a href="atmosphere/mixture/GradientDescentPartial.html">GradientDescentPartial</a></td><td></td><td></td></tr><tr><td><a href="atmosphere/mixture/CoordinateDescent.html">CoordinateDescent</a></td><td></td><td></td></tr><tr><td><a href="atmosphere/mixture/CoordinateDescentPartial.html">CoordinateDescentPartial</a></td><td></td><td></td></tr><tr><td><a href="atmosphere/mixture/LikelihoodAscentCoordinate.html">LikelihoodAscentCoordinate</a></td><td></td><td></td></tr><tr><td><a href="atmosphere/mixture/LikelihoodAscentGradient.html">LikelihoodAscentGradient</a></td><td></td><td></td></tr><tr><td><a href="atmosphere/mixture/LikelihoodAscentEM.html">LikelihoodAscentEM</a></td><td></td><td></td></tr></table>
 </div>
 </div><script>hljs.initHighlightingOnLoad();</script>
 

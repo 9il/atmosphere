@@ -47,11 +47,13 @@
 <ul id="distribution">
 <li>distribution.<a href="distribution/cdf.html">cdf</a></li>
 <li>distribution.<a href="distribution/derivative.html">derivative</a></li>
+<li>distribution.<a href="distribution/finitemixture.html">finitemixture</a></li>
 <li>distribution.<a href="distribution/moment.html">moment</a></li>
 <li>distribution.<a href="distribution/params.html">params</a></li>
 <li>distribution.<a href="distribution/pdf.html">pdf</a></li>
 <li>distribution.<a href="distribution/quantile.html">quantile</a></li>
 <li>distribution.<a href="distribution/random.html">random</a></li>
+<li>distribution.<a href="distribution/utilities.html">utilities</a></li>
 </ul>
 </li>
 <li><a href="simple_matrix.html">simple_matrix</a></li>
@@ -74,7 +76,7 @@ p - approximation of G, mixture weights (unknown)</code></pre>
 double[] myGrid, mySample, myNewSample;
 //... initialize myGrid and mySample.
 
-auto optimizer = new <a href="atmosphere/parametrized/nvmm/NormalVarianceMeanMixtureEMAndCoordinate.html">NormalVarianceMeanMixtureEMAndCoordinate</a>!double(myGrid, mySample.length+1000);
+auto optimizer = new <a href="atmosphere/parametrized/nvmm/NvmmLikelihoodAscentEMCoordinate.html">NvmmLikelihoodAscentEMCoordinate</a>!double(myGrid, mySample.length+1000);
 
 optimizer.sample = mySample;
 optimizer.optimize(
@@ -102,11 +104,13 @@ double beta2 = optimizer.beta;
 double[] mixtureWeights2 = optimizer.weights.dup;</code></pre>
 
 </div>
-</div><div class="section members"><h2>Classes</h2><table><tr><td><a href="atmosphere/parametrized/nvmm/NormalVarianceMeanMixture.html">NormalVarianceMeanMixture</a></td><td></td><td></td></tr><tr><td><a href="atmosphere/parametrized/nvmm/NormalVarianceMeanMixtureEM.html">NormalVarianceMeanMixtureEM</a></td><td></td><td><p>Expectation–maximization algorithm
+</div><div class="section members"><h2>Classes</h2><table><tr><td><a href="atmosphere/parametrized/nvmm/NvmmLikelihoodAscentEM.html">NvmmLikelihoodAscentEM</a></td><td></td><td><p>Normal variance-mean mixture optimizer
 </p>
-</td></tr><tr><td><a href="atmosphere/parametrized/nvmm/NormalVarianceMeanMixtureEMAndGradient.html">NormalVarianceMeanMixtureEMAndGradient</a></td><td></td><td><p>Expectation–maximization algorithm with inner gradient descend optimization.
+</td></tr><tr><td><a href="atmosphere/parametrized/nvmm/NvmmLikelihoodAscentEMEM.html">NvmmLikelihoodAscentEMEM</a></td><td></td><td><p>Expectation–maximization algorithm
 </p>
-</td></tr><tr><td><a href="atmosphere/parametrized/nvmm/NormalVarianceMeanMixtureEMAndCoordinate.html">NormalVarianceMeanMixtureEMAndCoordinate</a></td><td></td><td><p>Expectation–maximization algorithm with inner coordinate descend optimization.
+</td></tr><tr><td><a href="atmosphere/parametrized/nvmm/NvmmLikelihoodAscentEMGradient.html">NvmmLikelihoodAscentEMGradient</a></td><td></td><td><p>Expectation–maximization algorithm with inner gradient descend optimization.
+</p>
+</td></tr><tr><td><a href="atmosphere/parametrized/nvmm/NvmmLikelihoodAscentEMCoordinate.html">NvmmLikelihoodAscentEMCoordinate</a></td><td></td><td><p>Expectation–maximization algorithm with inner coordinate descend optimization.
 Speed depends on permutation of elements of <code class="prettyprint">grid</code>.
 </p>
 </td></tr></table>
