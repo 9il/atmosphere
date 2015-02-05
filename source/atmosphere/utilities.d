@@ -2,7 +2,7 @@ module atmosphere.utilities;
 
 import core.stdc.string;
 import std.traits;
-import std.math;
+import std.mathspecial;
 import std.range;
 
 package:
@@ -12,6 +12,13 @@ import simple_matrix;
 
 version(LDC)
 {
+	import ldc.intrinsics;
+	alias log = llvm_log;
+	alias log2 = llvm_log2;
+	alias exp = llvm_exp;
+	alias exp2 = llvm_exp2;
+	alias pow = llvm_pow;
+
 	pragma(LDC_inline_ir)
 	    R inlineIR(string s, R, P...)(P);
 }
@@ -423,13 +430,61 @@ body {
 	return ret;
 }
 
-
 T dotProductLogPower(T)(in T[] a, in T[] b, in T power)
 in {
 	assert(a.length == b.length);
 }
 body {
 	return cast(T) LN2 * dotProductLog2Power(a, b, power);
+}
+
+
+// DAC: These values are Bn / n for n=2,4,6,8,10,12,14.
+immutable real [7] Bn_n  = [
+    1.0L/(6*2), -1.0L/(30*4), 1.0L/(42*6), -1.0L/(30*8),
+    5.0L/(66*10), -691.0L/(2730*12), 7.0L/(6*14) ];
+
+/** Log Minus Digamma function
+*
+*  logmdigamma(x) = log(x) - digamma(x)
+*  Will be avalible in std.math with with DMD 2.068.
+*/
+real logmdigamma(real x)
+{
+    if (x <= 0.0)
+    {
+        if (x == 0.0)
+        {
+            return real.infinity;
+        }
+        return real.nan;
+    }
+
+    real s = x;
+    real w = 0.0;
+    real y, z;
+    while ( s < 10.0 ) {
+        w += 1.0/s;
+        s += 1.0;
+    }
+
+    if ( s < 1.0e17 ) {
+        z = 1.0/(s * s);
+        y = z * poly(z, Bn_n);
+    } else
+        y = 0.0;
+
+    return x == s ? y + 0.5L/s : (log(x/s) + 0.5L/s + y + w);
+}
+
+unittest {
+    assert(logmdigamma(-5.0).isNaN());
+    assert(isIdentical(logmdigamma(NaN(0xABC)), NaN(0xABC)));
+    assert(logmdigamma(0.0) == real.infinity);
+    for(auto x = 0.01; x < 1.0; x += 0.1)
+        assert(approxEqual(digamma(x), log(x) - logmdigamma(x)));
+    for(auto x = 1.0; x < 15.0; x += 1.0)
+        assert(approxEqual(digamma(x), log(x) - logmdigamma(x)));
 }
 
 /**
