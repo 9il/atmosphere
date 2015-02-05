@@ -15,10 +15,18 @@ Params:
 T gammaLikelihood(T)(T shape, T scale, T a, T b)
 	if(isFloatingPoint!T)
 {
-	return log(1 / (scale * gamma(shape))) 
+	return -log(scale * gamma(shape)) 
 		+ (shape - 1) * (b - log(scale)) 
 		- a / scale;
 }
+
+///
+unittest {
+	immutable l0 = gammaLikelihood(4.0, 3.0, 2.0, 1.0);
+	immutable l1 = generalizedGammaLikelihood(4.0, 1.0, 3.0, 2.0, 1.0);
+	assert(l0 == l1);
+}
+
 
 /++
 Log-likelihood function of the gamma distribution.
@@ -42,6 +50,7 @@ T gammaLikelihood(T)(T shape, T scale, in T[] sample)
 unittest {
 	assert(gammaLikelihood!double(1,3,[1,2]).isFinite);
 }
+
 
 /++
 Log-likelihood function of the gamma distribution.
@@ -83,10 +92,18 @@ Params:
 T inverseGammaLikelihood(T)(T shape, T scale, T a, T b)
 	if(isFloatingPoint!T)
 {
-	return log(scale / gamma(shape))
-		+ (shape - 1) * (b + log(scale)) 
+	return -log(scale * gamma(shape))
+		- (shape + 1) * (b - log(scale)) 
 		- a * scale;
 }
+
+///
+unittest {
+	immutable l0 = inverseGammaLikelihood(4.0, 3.0, 2.0, 1.0);
+	immutable l1 = generalizedGammaLikelihood(4.0, -1.0, 3.0, 2.0, 1.0);
+	assert(l0 == l1);
+}
+
 
 /++
 Log-likelihood function of the inverse-gamma distribution.
@@ -151,7 +168,7 @@ Params:
 T generalizedGammaLikelihood(T)(T shape, T power, T scale, T a, T b)
 	if(isFloatingPoint!T)
 {
-	return log(fabs(power) / (scale * gamma(shape))) 
+	return -log((scale * gamma(shape)) / fabs(power)) 
 		+ (shape * power - 1) * (b - log(scale)) 
 		- a / pow(scale, power);
 }
