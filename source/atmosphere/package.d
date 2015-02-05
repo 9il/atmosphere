@@ -48,7 +48,6 @@ unittest
 	import std.range;
 	import std.stdio;
 	import atmosphere;
-	import atmosphere.distribution;
 
 	alias F = double;
 
