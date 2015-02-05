@@ -15,16 +15,17 @@ Params:
 T gammaLikelihood(T)(T shape, T scale, T a, T b)
 	if(isFloatingPoint!T)
 {
-	return -log(scale * gamma(shape)) 
-		+ (shape - 1) * (b - log(scale)) 
+	return 
+		- log(scale * gamma(shape)) 
+		- (1 - shape) * (b - log(scale)) 
 		- a / scale;
 }
 
 ///
 unittest {
-	immutable l0 = gammaLikelihood(4.0, 3.0, 2.0, 1.0);
-	immutable l1 = generalizedGammaLikelihood(4.0, 1.0, 3.0, 2.0, 1.0);
-	assert(l0 == l1);
+	immutable l = gammaLikelihood(4.0, 3.0, 2.0, 1.0);
+	immutable m = generalizedGammaLikelihood(4.0, 1.0, 3.0, 2.0, 1.0);
+	assert(l == m);
 }
 
 
@@ -44,11 +45,14 @@ T gammaLikelihood(T)(T shape, T scale, in T[] sample)
 		a += sample[j];
 		b += log2(sample[j]);
 	}
-	return gammaLikelihood!T(shape, scale, a, b);
+	return gammaLikelihood!T(shape, scale, a, T(LN2) * b);
 }
 
+///
 unittest {
-	assert(gammaLikelihood!double(1,3,[1,2]).isFinite);
+	immutable l = gammaLikelihood!double(1,3,[1,2]);
+	immutable m = gammaLikelihood!double(1,3,[1,2],[1,1]);
+	assert(l == m);
 }
 
 
@@ -76,8 +80,11 @@ body {
 	return gammaLikelihood!T(shape, scale, a, T(LN2) * b);
 }
 
+///
 unittest {
-	assert(gammaLikelihood!double(1,3,[1,2],[2,3]).isFinite);
+	immutable l = gammaLikelihood!double(2,3,[1,2],[3,4]);
+	immutable m = generalizedGammaLikelihood!double(2,1,3,[1,2],[3,4]);
+	assert(l == m);
 }
 
 
@@ -92,16 +99,17 @@ Params:
 T inverseGammaLikelihood(T)(T shape, T scale, T a, T b)
 	if(isFloatingPoint!T)
 {
-	return -log(scale * gamma(shape))
-		- (shape + 1) * (b - log(scale)) 
+	return 
+		- log(scale * gamma(shape))
+		- (1 + shape) * (b - log(scale)) 
 		- a * scale;
 }
 
 ///
 unittest {
-	immutable l0 = inverseGammaLikelihood(4.0, 3.0, 2.0, 1.0);
-	immutable l1 = generalizedGammaLikelihood(4.0, -1.0, 3.0, 2.0, 1.0);
-	assert(l0 == l1);
+	immutable l = inverseGammaLikelihood(4.0, 3.0, 2.0, 1.0);
+	immutable m = generalizedGammaLikelihood(4.0, -1.0, 3.0, 2.0, 1.0);
+	assert(l == m);
 }
 
 
@@ -121,12 +129,16 @@ T inverseGammaLikelihood(T)(T shape, T scale, in T[] sample)
 		a += 1 / sample[j];
 		b += log2(sample[j]);
 	}
-	return inverseGammaLikelihood!T(shape, scale, a, b);
+	return inverseGammaLikelihood!T(shape, scale, a, T(LN2) * b);
 }
 
+///
 unittest {
-	assert(inverseGammaLikelihood!double(1,3,[1,2]).isFinite);
+	immutable l = inverseGammaLikelihood!double(1,3,[1,2]);
+	immutable m = inverseGammaLikelihood!double(1,3,[1,2],[1,1]);
+	assert(l == m);
 }
+
 
 /++
 Log-likelihood function of the inverse-gamma distribution.
@@ -152,9 +164,13 @@ body {
 	return inverseGammaLikelihood!T(shape, scale, a, T(LN2) * b);
 }
 
+///
 unittest {
-	assert(inverseGammaLikelihood!double(1,3,[1,2],[2,3]).isFinite);
+	immutable l = inverseGammaLikelihood!double(2,3,[1,2],[3,4]);
+	immutable m = generalizedGammaLikelihood!double(2,-1,3,[1,2],[3,4]);
+	assert(l == m);
 }
+
 
 /++
 Log-likelihood function of the generalized gamma distribution.
@@ -168,10 +184,12 @@ Params:
 T generalizedGammaLikelihood(T)(T shape, T power, T scale, T a, T b)
 	if(isFloatingPoint!T)
 {
-	return -log((scale * gamma(shape)) / fabs(power)) 
-		+ (shape * power - 1) * (b - log(scale)) 
-		- a / pow(scale, power);
+	return 
+		- log((scale * gamma(shape)) / fabs(power)) 
+		- (1 - shape * power) * (b - log(scale)) 
+		- (power > 0 ? a / pow(scale, power) : a * pow(scale, -power)); //precise unification with inverse-gamma and gamma
 }
+
 
 /++
 Log-likelihood function of the generalized gamma distribution.
@@ -190,11 +208,14 @@ T generalizedGammaLikelihood(T)(T shape, T power, T scale, in T[] sample)
 		a += pow(sample[j], power);
 		b += log2(sample[j]);
 	}
-	return generalizedGammaLikelihood!T(shape, power, scale, a, b);
+	return generalizedGammaLikelihood!T(shape, power, scale, a, T(LN2) * b);
 }
 
+///
 unittest {
-	assert(generalizedGammaLikelihood!double(1,2,3,[1,2]).isFinite);
+	immutable l = generalizedGammaLikelihood!double(1,2,3,[1,2]);
+	immutable m = generalizedGammaLikelihood!double(1,2,3,[1,2],[1,1]);
+	assert(l == m);
 }
 
 
@@ -223,10 +244,6 @@ body {
 	return generalizedGammaLikelihood!T(shape, power, scale, a, T(LN2) * b);
 }
 
-unittest {
-	assert(generalizedGammaLikelihood!double(1,2,3,[1,2],[2,3]).isFinite);
-}
-
 
 /++
 Log-likelihood function of the generalized inverse Gaussian distribution.
@@ -245,7 +262,7 @@ T generalizedInverseGaussianLikelihood(T)(T lambda, T eta, T omega, T a, T b, T 
 	import bessel;
 	import std.typecons : Flag;
 	return 
-		- log(2*eta*besselK(omega, lambda, Flag!"ExponentiallyScaled".yes)) / omega
+		- log(2 * eta * besselK(omega, lambda, Flag!"ExponentiallyScaled".yes)) / omega
 		+ (lambda - 1) * (c - log(eta))
 		- 0.5f * omega * (b * eta + a / eta);
 }
@@ -274,9 +291,13 @@ T generalizedInverseGaussianLikelihood(T)(T lambda, T eta, T omega, in T[] sampl
 	return generalizedInverseGaussianLikelihood!T(lambda, eta, omega, a, b, T(LN2) * c);
 }
 
+///
 unittest {
-	assert(generalizedInverseGaussianLikelihood!double(1,2,3,[1,2]).isFinite);
+	immutable l = generalizedInverseGaussianLikelihood!double(1,2,3,[1,2]);
+	immutable m = generalizedInverseGaussianLikelihood!double(1,2,3,[1,2],[1,1]);
+	assert(l == m);
 }
+
 
 /++
 Log-likelihood function of the generalized inverse Gaussian distribution.
@@ -304,8 +325,4 @@ body {
 		c += w * log2(s);
 	}
 	return generalizedInverseGaussianLikelihood!T(lambda, eta, omega, a, b, T(LN2) * c);
-}
-
-unittest {
-	assert(generalizedInverseGaussianLikelihood!double(1,2,3,[1,2],[2,3]).isFinite);
 }
