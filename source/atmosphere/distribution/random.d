@@ -1,12 +1,12 @@
 /++
 Random number generators
 +/
-module distribution.random;
+module atmosphere.distribution.random;
 
 import std.mathspecial;
 import std.random;
 import std.traits;
-import distribution.params;
+import atmosphere.distribution.params;
 
 /++
 Interface for infinity input range of random numbers.

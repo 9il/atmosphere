@@ -48,7 +48,7 @@ unittest
 	import std.range;
 	import std.stdio;
 	import atmosphere;
-	import distribution;
+	import atmosphere.distribution;
 
 	alias F = double;
 
@@ -94,5 +94,6 @@ unittest
 	immutable result     = optimizer.evaluate(dur, &findRootTolerance);
 }
 
+public import atmosphere.distribution;
 public import atmosphere.mixture;
 public import atmosphere.parametrized.nvmm;

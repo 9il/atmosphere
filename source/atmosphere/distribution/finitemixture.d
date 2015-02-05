@@ -1,4 +1,4 @@
-module distribution.finitemixture;
+module atmosphere.distribution.finitemixture;
 
 import std.range;
 import std.traits;
@@ -47,8 +47,8 @@ auto finiteMixture(FRange, T)(FRange funcs, const(T)[] weights)
 ///
 unittest
 {
-	import distribution.pdf;
-	import distribution.utilities;
+	import atmosphere.distribution.pdf;
+	import atmosphere.distribution.utilities;
 	auto pdfs = sequence!"n+1"().map!(shape => GammaSPDF!real(shape, 1));
 	double[] weights = [0.25, 0.5, 0.125, 0.125];
 	auto pdf = finiteMixture(pdfs, weights);

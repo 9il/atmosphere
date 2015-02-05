@@ -1,7 +1,7 @@
 /++
 Derivatives of probability density functions
 +/
-module distribution.likelihood;
+module atmosphere.distribution.likelihood;
 
 import std.traits;
 import std.mathspecial;

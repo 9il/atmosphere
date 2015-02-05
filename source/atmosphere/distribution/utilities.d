@@ -1,4 +1,4 @@
-module distribution.utilities;
+module atmosphere.distribution.utilities;
 
 import std.traits;
 
@@ -20,7 +20,7 @@ template convertTo(alias InterfaceTemp)
 unittest
 {
 	import std.math;
-	import distribution.pdf;
+	import atmosphere.distribution.pdf;
 
 	real fun(real x)
 	{

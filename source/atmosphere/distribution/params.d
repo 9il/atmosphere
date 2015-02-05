@@ -1,7 +1,7 @@
 /++
 Parameters conversions
 +/
-module distribution.params;
+module atmosphere.distribution.params;
 
 import std.traits;
 import std.math;

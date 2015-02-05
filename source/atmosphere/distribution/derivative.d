@@ -1,7 +1,7 @@
 /++
 Derivatives of probability density functions
 +/
-module distribution.derivative;
+module atmosphere.distribution.derivative;
 
 import bessel;
 import std.traits;
@@ -9,7 +9,7 @@ import std.numeric;
 import std.mathspecial;
 import std.typecons;
 
-import distribution.utilities;
+import atmosphere.distribution.utilities;
 
 /++
 Derivative of probability density function interface

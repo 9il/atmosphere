@@ -54,7 +54,7 @@ To use this package put [the dependency]((http://code.dlang.org/packages/atmosph
 and the following imports into your program
 ```D
 import atmosphere;
-import distribution;
+import atmosphere.distribution;
 ```
 
 # Compilers and optimization

@@ -1,17 +1,17 @@
 /++
 Comulative density functions
 +/
-module distribution.cdf;
+module atmosphere.distribution.cdf;
 
 import std.algorithm;
 import std.traits;
 import std.range;
 import std.mathspecial;
 
-import distribution.moment;
-import distribution.params;
-import distribution.pdf;
-import distribution.utilities;
+import atmosphere.distribution.moment;
+import atmosphere.distribution.params;
+import atmosphere.distribution.pdf;
+import atmosphere.distribution.utilities;
 
 
 /++
@@ -318,7 +318,7 @@ abstract class NumericCDF(T) : CDF!T
 unittest
 {
 	import std.traits, std.mathspecial;
-	import distribution.pdf;
+	import atmosphere.distribution.pdf;
 
 	class NormalPDF : PDF!real
 	{
@@ -350,7 +350,7 @@ Class to compute complementary cumulative density function as integral of it's p
 abstract class NumericCCDF(T) : CDF!T
 {
 	import scid.calculus : Result, integrate;
-	import distribution.pdf;
+	import atmosphere.distribution.pdf;
 
 	private PDF!T pdf;
 	private T b, epsRel, epsAbs;
@@ -405,7 +405,7 @@ abstract class NumericCCDF(T) : CDF!T
 unittest
 {
 	import std.traits, std.mathspecial;
-	import distribution.pdf;
+	import atmosphere.distribution.pdf;
 
 	class NormalPDF : PDF!real
 	{
@@ -546,7 +546,7 @@ abstract class NormalVarianceMeanMixtureCDF(T) : CDF!T
 ///
 unittest
 {
-	import distribution;
+	import atmosphere.distribution;
 
 	class MyGeneralizedHyperbolicCDF(T) : NormalVarianceMeanMixtureCDF!T
 	{

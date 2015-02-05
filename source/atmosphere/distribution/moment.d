@@ -1,7 +1,7 @@
 /++
 Moment of probability distributions.
 +/
-module distribution.moment;
+module atmosphere.distribution.moment;
 
 import bessel;
 import std.typecons;

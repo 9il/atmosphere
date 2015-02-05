@@ -1,12 +1,12 @@
 /++
 Quantile functions
 +/
-module distribution.quantile;
+module atmosphere.distribution.quantile;
 
 import std.traits;
 import std.mathspecial;
 
-import distribution.utilities;
+import atmosphere.distribution.utilities;
 
 /++
 Quantile function of the gamma distribution
@@ -182,7 +182,7 @@ Class to compute quantile function as root of it's cumulative density function
 +/
 abstract class NumericQuantile(T) : Quantile!T
 {
-	import distribution.cdf;
+	import atmosphere.distribution.cdf;
 
 	private CDF!T cdf;
 	private T a, b;
@@ -229,8 +229,8 @@ abstract class NumericQuantile(T) : Quantile!T
 unittest
 {
 	import std.traits, std.mathspecial;
-	import distribution.pdf;
-	import distribution.cdf;
+	import atmosphere.distribution.pdf;
+	import atmosphere.distribution.cdf;
 
 	class NormalPDF : PDF!real
 	{
@@ -266,10 +266,10 @@ unittest
 /// Numeric quantile function of Generalized Hyperbolic distribution
 unittest
 {
-	import distribution.pdf;
-	import distribution.cdf;
-	import distribution.params;
-	import distribution.moment;
+	import atmosphere.distribution.pdf;
+	import atmosphere.distribution.cdf;
+	import atmosphere.distribution.params;
+	import atmosphere.distribution.moment;
 
 	class GHypCDF: NumericCDF!real
 	{

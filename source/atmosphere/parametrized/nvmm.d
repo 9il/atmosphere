@@ -292,7 +292,7 @@ final:
 	///
 	static struct CorePDF
 	{
-		import distribution.pdf;
+		import atmosphere.distribution.pdf;
 		NormalSPDF!T pdf;
 		alias pdf this;
 

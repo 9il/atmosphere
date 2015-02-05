@@ -1,7 +1,7 @@
 /++
 Probability density functions
 +/
-module distribution.pdf;
+module atmosphere.distribution.pdf;
 
 import bessel;
 import std.traits;
@@ -12,8 +12,8 @@ import std.typecons;
 import std.algorithm;
 import std.array;
 
-import distribution.params;
-import distribution.utilities;
+import atmosphere.distribution.params;
+import atmosphere.distribution.utilities;
 
 
 /++
@@ -667,7 +667,7 @@ unittest
 {
 	class MyGHypPDF(T) : NormalVarianceMeanMixturePDF!T
 	{
-		import distribution.moment;
+		import atmosphere.distribution.moment;
 		this(T lambda, GHypEtaOmega!T params, T mu)
 		{
 			with(params)
@@ -679,7 +679,7 @@ unittest
 		}
 	}
 
-	import distribution.params;
+	import atmosphere.distribution.params;
 	immutable double lambda = 2;
 	immutable double mu = 0.3;
 	immutable params = GHypEtaOmega!double(2, 3, 4);
@@ -715,7 +715,7 @@ final class GeneralizedVarianceGammaPDF(T) : NormalVarianceMeanMixturePDF!T
 		assert(mu.isFinite);
 	}
 	body {
-		import distribution.moment : generalizedGammaMean;
+		import atmosphere.distribution.moment : generalizedGammaMean;
 		auto pdf  = GeneralizedGammaSPDF!double(shape, power, scale);
 		auto e = generalizedGammaMean(shape, power, scale);
 		assert(e > 0);
