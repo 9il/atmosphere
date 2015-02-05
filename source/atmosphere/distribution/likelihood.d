@@ -15,7 +15,7 @@ Params:
 	a = `Σ weights[j] * sample[j]`
 	b = `Σ weights[j] * log(sample[j])`
 +/
-T GammaLikelihood(T)(T shape, T scale, T a, T b)
+T gammaLikelihood(T)(T shape, T scale, T a, T b)
 	if(isFloatingPoint!T)
 {
 	return log(1 / (scale * gamma(shape))) 
@@ -30,7 +30,7 @@ Params:
 	scale = scale
 	sample = sample
 +/
-T GammaLikelihood(T)(T shape, T scale, in T[] sample)
+T gammaLikelihood(T)(T shape, T scale, in T[] sample)
 	if(isFloatingPoint!T)
 {
 	T a = 0, b = 0;
@@ -39,11 +39,11 @@ T GammaLikelihood(T)(T shape, T scale, in T[] sample)
 		a += sample[j];
 		b += log2(sample[j]);
 	}
-	return GammaLikelihood!T(shape, scale, a, b);
+	return gammaLikelihood!T(shape, scale, a, b);
 }
 
 unittest {
-	assert(GammaLikelihood!double(1,3,[1,2]).isFinite);
+	assert(gammaLikelihood!double(1,3,[1,2]).isFinite);
 }
 
 /++
@@ -54,7 +54,7 @@ Params:
 	sample = sample
 	weights = weights for sample
 +/
-T GammaLikelihood(T)(T shape, T scale, in T[] sample, in T[] weights)
+T gammaLikelihood(T)(T shape, T scale, in T[] sample, in T[] weights)
 	if(isFloatingPoint!T)
 in {
 	assert(weights.length == sample.length);
@@ -67,11 +67,11 @@ body {
 		a += w * sample[j];
 		b += w * log2(sample[j]);
 	}
-	return GammaLikelihood!T(shape, scale, a, T(LN2) * b);
+	return gammaLikelihood!T(shape, scale, a, T(LN2) * b);
 }
 
 unittest {
-	assert(GammaLikelihood!double(1,3,[1,2],[2,3]).isFinite);
+	assert(gammaLikelihood!double(1,3,[1,2],[2,3]).isFinite);
 }
 
 
@@ -83,7 +83,7 @@ Params:
 	a = `Σ weights[j] / sample[j]`
 	b = `Σ weights[j] * log(sample[j])`
 +/
-T InverseGammaLikelihood(T)(T shape, T scale, T a, T b)
+T inverseGammaLikelihood(T)(T shape, T scale, T a, T b)
 	if(isFloatingPoint!T)
 {
 	return log(scale / gamma(shape))
@@ -98,7 +98,7 @@ Params:
 	scale = scale
 	sample = sample
 +/
-T InverseGammaLikelihood(T)(T shape, T scale, in T[] sample)
+T inverseGammaLikelihood(T)(T shape, T scale, in T[] sample)
 	if(isFloatingPoint!T)
 {
 	T a = 0, b = 0;
@@ -107,11 +107,11 @@ T InverseGammaLikelihood(T)(T shape, T scale, in T[] sample)
 		a += 1 / sample[j];
 		b += log2(sample[j]);
 	}
-	return InverseGammaLikelihood!T(shape, scale, a, b);
+	return inverseGammaLikelihood!T(shape, scale, a, b);
 }
 
 unittest {
-	assert(InverseGammaLikelihood!double(1,3,[1,2]).isFinite);
+	assert(inverseGammaLikelihood!double(1,3,[1,2]).isFinite);
 }
 
 /++
@@ -122,7 +122,7 @@ Params:
 	sample = sample
 	weights = weights for sample
 +/
-T InverseGammaLikelihood(T)(T shape, T scale, in T[] sample, in T[] weights)
+T inverseGammaLikelihood(T)(T shape, T scale, in T[] sample, in T[] weights)
 	if(isFloatingPoint!T)
 in {
 	assert(weights.length == sample.length);
@@ -135,11 +135,11 @@ body {
 		a += w / sample[j];
 		b += w * log2(sample[j]);
 	}
-	return InverseGammaLikelihood!T(shape, scale, a, T(LN2) * b);
+	return inverseGammaLikelihood!T(shape, scale, a, T(LN2) * b);
 }
 
 unittest {
-	assert(InverseGammaLikelihood!double(1,3,[1,2],[2,3]).isFinite);
+	assert(inverseGammaLikelihood!double(1,3,[1,2],[2,3]).isFinite);
 }
 
 /++
@@ -151,7 +151,7 @@ Params:
 	a = `Σ weights[j] * sample[j] ^^ power`
 	b = `Σ weights[j] * log(sample[j])`
 +/
-T GeneralizedGammaLikelihood(T)(T shape, T power, T scale, T a, T b)
+T generalizedGammaLikelihood(T)(T shape, T power, T scale, T a, T b)
 	if(isFloatingPoint!T)
 {
 	return log(fabs(power) / (scale * gamma(shape))) 
@@ -167,7 +167,7 @@ Params:
 	scale = scale
 	sample = sample
 +/
-T GeneralizedGammaLikelihood(T)(T shape, T power, T scale, in T[] sample)
+T generalizedGammaLikelihood(T)(T shape, T power, T scale, in T[] sample)
 	if(isFloatingPoint!T)
 {
 	T a = 0, b = 0;
@@ -176,11 +176,11 @@ T GeneralizedGammaLikelihood(T)(T shape, T power, T scale, in T[] sample)
 		a += pow(sample[j], power);
 		b += log2(sample[j]);
 	}
-	return GeneralizedGammaLikelihood!T(shape, power, scale, a, b);
+	return generalizedGammaLikelihood!T(shape, power, scale, a, b);
 }
 
 unittest {
-	assert(GeneralizedGammaLikelihood!double(1,2,3,[1,2]).isFinite);
+	assert(generalizedGammaLikelihood!double(1,2,3,[1,2]).isFinite);
 }
 
 
@@ -193,7 +193,7 @@ Params:
 	sample = sample
 	weights = weights for sample
 +/
-T GeneralizedGammaLikelihood(T)(T shape, T power, T scale, in T[] sample, in T[] weights)
+T generalizedGammaLikelihood(T)(T shape, T power, T scale, in T[] sample, in T[] weights)
 	if(isFloatingPoint!T)
 in {
 	assert(weights.length == sample.length);
@@ -206,11 +206,11 @@ body {
 		a += w * pow(sample[j], power);
 		b += w * log2(sample[j]);
 	}
-	return GeneralizedGammaLikelihood!T(shape, power, scale, a, T(LN2) * b);
+	return generalizedGammaLikelihood!T(shape, power, scale, a, T(LN2) * b);
 }
 
 unittest {
-	assert(GeneralizedGammaLikelihood!double(1,2,3,[1,2],[2,3]).isFinite);
+	assert(generalizedGammaLikelihood!double(1,2,3,[1,2],[2,3]).isFinite);
 }
 
 
@@ -225,7 +225,7 @@ Params:
 	c = `Σ weights[j] * log(sample[j])`
 See_Also: distribution.params.GIGEtaOmega
 +/
-T GeneralizedInverseGaussianLikelihood(T)(T lambda, T eta, T omega, T a, T b, T c)
+T generalizedInverseGaussianLikelihood(T)(T lambda, T eta, T omega, T a, T b, T c)
 	if(isFloatingPoint!T)
 {
 	import bessel;
@@ -246,7 +246,7 @@ Params:
 	sample = sample
 See_Also: `distribution.params.GIGEtaOmega`
 +/
-T GeneralizedInverseGaussianLikelihood(T)(T lambda, T eta, T omega, in T[] sample)
+T generalizedInverseGaussianLikelihood(T)(T lambda, T eta, T omega, in T[] sample)
 	if(isFloatingPoint!T)
 {
 	T a = 0, b = 0, c = 0;
@@ -257,11 +257,11 @@ T GeneralizedInverseGaussianLikelihood(T)(T lambda, T eta, T omega, in T[] sampl
 		b += 1 / s;
 		c += log2(s);
 	}
-	return GeneralizedInverseGaussianLikelihood!T(lambda, eta, omega, a, b, T(LN2) * c);
+	return generalizedInverseGaussianLikelihood!T(lambda, eta, omega, a, b, T(LN2) * c);
 }
 
 unittest {
-	assert(GeneralizedInverseGaussianLikelihood!double(1,2,3,[1,2]).isFinite);
+	assert(generalizedInverseGaussianLikelihood!double(1,2,3,[1,2]).isFinite);
 }
 
 /++
@@ -274,7 +274,7 @@ Params:
 	weights = weights for sample
 See_Also: `distribution.params.GIGEtaOmega`
 +/
-T GeneralizedInverseGaussianLikelihood(T)(T lambda, T eta, T omega, in T[] sample, in T[] weights)
+T generalizedInverseGaussianLikelihood(T)(T lambda, T eta, T omega, in T[] sample, in T[] weights)
 	if(isFloatingPoint!T)
 in {
 	assert(weights.length == sample.length);
@@ -289,9 +289,9 @@ body {
 		b += w / s;
 		c += w * log2(s);
 	}
-	return GeneralizedInverseGaussianLikelihood!T(lambda, eta, omega, a, b, T(LN2) * c);
+	return generalizedInverseGaussianLikelihood!T(lambda, eta, omega, a, b, T(LN2) * c);
 }
 
 unittest {
-	assert(GeneralizedInverseGaussianLikelihood!double(1,2,3,[1,2],[2,3]).isFinite);
+	assert(generalizedInverseGaussianLikelihood!double(1,2,3,[1,2],[2,3]).isFinite);
 }
