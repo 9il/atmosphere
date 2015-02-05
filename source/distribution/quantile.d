@@ -103,8 +103,7 @@ struct GeneralizedGammaSQuantile(T)
 	in {
 		assert(shape.isNormal);
 		assert(shape > 0);
-		assert(power.isNormal);
-		assert(power > 0);
+		assert(power.isFinite);
 		assert(scale.isNormal);
 		assert(scale > 0);
 	}
