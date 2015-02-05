@@ -1,11 +1,13 @@
 module atmosphere.distribution.estimate;
 
+import atmosphere.distribution.likelihood;
+
 import std.traits;
 import std.typecons;
 import std.mathspecial;
 
 /++
-Log-likelihood function of the gamma distribution.
+Estimates parameters of the gamma distribution.
 Params:
 	a = `Σ weights[j] * sample[j]`
 	b = `Σ weights[j] * log(sample[j]) * sample[j]`
@@ -28,7 +30,7 @@ unittest {
 }
 
 /++
-Log-likelihood function of the inverse-gamma distribution.
+Estimates parameters of the inverse-gamma distribution.
 Params:
 	a = `Σ weights[j] * sample[j]`
 	b = `Σ weights[j] * log(sample[j]) / sample[j]`
