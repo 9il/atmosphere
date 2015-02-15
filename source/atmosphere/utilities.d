@@ -29,7 +29,7 @@ Computes accurate sum of binary logarithms of input range `r`.
 Will be avalible in std.numeric with with DMD 2.068.
  */
 public // @@BUG@@
-T sumOfLog2s(T)(T[] r) 
+ForeachType!Range sumOfLog2s(Range)(Range r) 
 {
 	import std.compiler;
 	static if(version_minor < 68)
@@ -258,10 +258,10 @@ else
 		if(isInputRange!Range1
 		&& isInputRange!Range2 
 		&& (!isArray!Range1 || !isArray!Range2)
-		&& is(Unqual!(ElementType!Range1) == Unqual!(ElementType!Range2))
+		&& is(Unqual!(ElementType!Range1) : Unqual!(ElementType!Range2))
 		)
 	{
-		alias T = Unqual!(ElementType!Range1);
+		alias T = Unqual!(CommonType!(ElementType!Range1, ElementType!Range2));
 		T ret = 0;
 		while(!a.empty)
 		{
