@@ -330,6 +330,7 @@ struct ProperGeneralizedInverseGaussianSRNG(T, UniformRNG = Random)
 	+/
 	this(ref UniformRNG rng, T lambda, T eta, T omega)
 	in {
+		assert(lambda.isFinite);
 		assert(eta.isNormal);
 		assert(eta > 0);
 		assert(omega.isNormal);
