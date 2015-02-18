@@ -15,7 +15,7 @@
 				{
 					"cmd":
 					[
-						"dub --build=unittest --force"
+						"dub test"
 					],
 					"name": "Run",
 					"shell": true
