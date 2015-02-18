@@ -388,57 +388,6 @@ else
 	}
 }
 
-T dotProductLog2(T)(in T[] a, in T[] b)
-in {
-	assert(a.length == b.length);
-}
-body {
-	T ret = 0;
-	foreach(i; 0..a.length)
-		ret += a[i] * log(b[i]);
-	return ret;
-}
-
-
-T dotProductLog(T)(in T[] a, in T[] b)
-in {
-	assert(a.length == b.length);
-}
-body {
-	return cast(T) LN2 * dotProductLog2(a, b);
-}
-
-T dotProductPower(T)(in T[] a, in T[] b, in T power)
-in {
-	assert(a.length == b.length);
-}
-body {
-	T ret = 0;
-	foreach(i; 0..a.length)
-		ret += a[i] * pow(b[i], power);
-	return ret;
-}
-
-T dotProductLog2Power(T)(in T[] a, in T[] b, in T power)
-in {
-	assert(a.length == b.length);
-}
-body {
-	T ret = 0;
-	foreach(i; 0..a.length)
-		ret += a[i] * log(b[i]) * pow(b[i], power);
-	return ret;
-}
-
-T dotProductLogPower(T)(in T[] a, in T[] b, in T power)
-in {
-	assert(a.length == b.length);
-}
-body {
-	return cast(T) LN2 * dotProductLog2Power(a, b, power);
-}
-
-
 // DAC: These values are Bn / n for n=2,4,6,8,10,12,14.
 immutable real [7] Bn_n  = [
     1.0L/(6*2), -1.0L/(30*4), 1.0L/(42*6), -1.0L/(30*8),
