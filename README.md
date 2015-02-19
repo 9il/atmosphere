@@ -27,8 +27,6 @@ Atmosphere GM can be used for risk management in economics, finance and thermonu
 
 #Documentation
 [Documentation](http://ddocs.org/atmosphere_gm/latest/atmosphere.html) (API) can be found at [DDocs.org](http://ddocs.org).
-## Changelog
-See [release notes](https://github.com/9il/atmosphere_gm/releases).
 
 #Installation
 ## BLAS & LAPACK
