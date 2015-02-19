@@ -659,31 +659,6 @@ unittest
 }
 
 
-
-/++
-Returns: random number from `[-1, +1] \ {0}`.
-+/
-T uniformM11E0(T = double)() 
-	if (isFloatingPoint!T)
-{
-	return uniformM11E0!T(rndGen);
-}
-
-///ditto
-T uniformM11E0(T = double, UniformRNG)(ref UniformRNG rng) 
-	if (isFloatingPoint!T && isUniformRNG!UniformRNG)
-{
-	immutable x = rng.uniform01!T - 1;
-	return uniform(0, 2, rng) ? -x : +x;
-}
-
-///
-unittest
-{
-	auto x = uniformM11E0();
-}
-
-
 /++
 Function to generate random observationb from
 standard normal 
@@ -702,8 +677,8 @@ T rNormal(T = double, UniformRNG)(ref UniformRNG rng)
 	T p, p0, p1;
 	do 
 	{
-		p0 = rng.uniformM11E0!T;
-		p1 = rng.uniformM11E0!T;
+		p0 = uniform!"[]"(-1.0, 1.0, rng);
+		p1 = uniform!"[]"(-1.0, 1.0, rng);
 		p = p0 * p0 + p1 * p1;
 	} 
 	while (p >= 1);
