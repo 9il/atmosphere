@@ -14,7 +14,11 @@ import std.range;
 import std.compiler;
 
 version(LDC)
+{
 	import ldc.intrinsics;
+	pragma(LDC_inline_ir)
+    	R inlineIR(string s, R, P...)(P);
+}
 
 package:
 
