@@ -13,6 +13,9 @@ import std.mathspecial;
 import std.range;
 import std.compiler;
 
+version(LDC)
+	import ldc.intrinsics;
+
 package:
 
 import cblas;
