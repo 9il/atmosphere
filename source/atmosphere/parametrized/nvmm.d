@@ -66,7 +66,7 @@ abstract class NvmmLikelihoodAscentEM(T) : MixtureOptimizer!T, LikelihoodAscent!
 
 	override void update()
 	{
-		_likelihood = T(LN2) * mixture.sumOfLog2s / mixture.length;
+		_likelihood = _likelihood_(mixture);
 		updateBeta;
 	}
 

@@ -792,6 +792,7 @@ package mixin template LikelihoodAscentTemplate(T)
 	}
 	body
 	{
+		import std.algorithm : map;
 		super.put(sample.map!(x => pdfs.map!(pdf => pdf(x))));
 		if (!isFeaturesCorrect)
 			throw new FeaturesException;
@@ -803,9 +804,10 @@ package mixin template LikelihoodAscentTemplate(T)
 		scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null,
 	)
 	{
+		import std.functional : toDelegate;
 		if (!isFeaturesCorrect)
 			throw new FeaturesException;
-		super.optimize((m => m.sumOfLog2s), tolerance, findRootTolerance);
+		super.optimize(toDelegate(&_likelihood_!T), tolerance, findRootTolerance);
 	}
 
 	void optimize
@@ -814,9 +816,10 @@ package mixin template LikelihoodAscentTemplate(T)
 		scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null,
 	)
 	{
+		import std.functional : toDelegate;
 		if (!isFeaturesCorrect)
 			throw new FeaturesException;
-		super.optimize((m => m.sumOfLog2s), tolerance, findRootTolerance);
+		super.optimize(toDelegate(&_likelihood_!T), tolerance, findRootTolerance);
 	}
 
 	bool isFeaturesCorrect() const
@@ -827,7 +830,7 @@ package mixin template LikelihoodAscentTemplate(T)
 
 	T likelihood() @property const
 	{
-		return T(LN2) * mixture.sumOfLog2s / mixture.length;
+		return _likelihood_!T(mixture);
 	}
 }
 
@@ -862,4 +865,10 @@ unittest {
 	alias C11 = LikelihoodAscentCoordinate!real;
 	alias C12 = LikelihoodAscentEM!real;
 	alias C2 = GradientDescent!((a, b){}, real);
+}
+
+package T _likelihood_(T)(in T[] mixture)
+{
+	import atmosphere.utilities : sumOfLog2s;
+	return T(LN2) * mixture.sumOfLog2s / mixture.length;
 }
