@@ -17,7 +17,7 @@ version(LDC)
 {
 	import ldc.intrinsics;
 	pragma(LDC_inline_ir)
-    	R inlineIR(string s, R, P...)(P);
+		R inlineIR(string s, R, P...)(P);
 }
 
 package:
