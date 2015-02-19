@@ -38,6 +38,13 @@ Table of separating mixtures algorithms:
 		$(TR $(TD [NvmmLikelihoodAscentEMGradient](atmosphere/parametrized/nvmm/NvmmLikelihoodAscentEMGradient.html)) $(TD ~10%) $(TD Yes) $(TD  slow ) $(TD No) $(TD Yes) )
 		$(TR $(TD [NvmmLikelihoodAscentEMCoordinate](atmosphere/parametrized/nvmm/NvmmLikelihoodAscentEMCoordinate.html)) $(TD ~5%) $(TD Partial) $(TD  slow ) $(TD No) $(TD Yes) ) )
 +/
+/**
+Authors: [Ilya Yaroshenko](http://9il.github.io)
+
+Copyright: [Ilya Yaroshenko](http://9il.github.io)
+
+License: MIT
+*/
 module atmosphere;
 
 ///

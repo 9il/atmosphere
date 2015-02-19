@@ -1,6 +1,13 @@
 /++
 Parameters conversions
 +/
+/**
+Authors: [Ilya Yaroshenko](http://9il.github.io)
+
+Copyright: [Ilya Yaroshenko](http://9il.github.io)
+
+License: MIT
+*/
 module atmosphere.distribution.params;
 
 import std.traits;
@@ -10,7 +17,7 @@ import std.typecons;
 @safe pure nothrow @nogc:
 
 /++
-<img style="width: 600px;" src="../view/images/GIGChiPsi.png">
+<img style="width: 600px;" src="images/GIGChiPsi.png">
 +/
 struct GIGChiPsi(T)
 	if(isFloatingPoint!T)
@@ -52,7 +59,7 @@ unittest
 
 
 /++
-<img style="width: 600px;" src="../view/images/GIGEtaOmega.png">
+<img style="width: 600px;" src="images/GIGEtaOmega.png">
 +/
 struct GIGEtaOmega(T)
 	if(isFloatingPoint!T)
@@ -94,8 +101,8 @@ unittest
 
 
 /++
-<img style="width: 600px;" src="../view/images/GHypAlphaDelta.png">
-<img style="width: 150px;" src="../view/images/GHypYx.png">
+<img style="width: 600px;" src="images/GHypAlphaDelta.png">
+<img style="width: 150px;" src="images/GHypYx.png">
 +/
 struct GHypAlphaDelta(T)
 	if(isFloatingPoint!T)
@@ -156,7 +163,7 @@ unittest
 
 
 /++
-<img style="width: 400px;" src="../view/images/GHypNVMM.png">
+<img style="width: 400px;" src="images/GHypNVMM.png">
 +/
 struct GHypChiPsi(T)
 	if(isFloatingPoint!T)

@@ -43,6 +43,13 @@ double beta2 = optimizer.beta;
 double[] mixtureWeights2 = optimizer.weights.dup;
 --------
 +/
+/**
+Authors: [Ilya Yaroshenko](http://9il.github.io)
+
+Copyright: [Ilya Yaroshenko](http://9il.github.io)
+
+License: MIT
+*/
 module atmosphere.parametrized.nvmm;
 
 import atmosphere.mixture;

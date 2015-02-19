@@ -1,6 +1,13 @@
 /++
 Moment of probability distributions.
 +/
+/**
+Authors: [Ilya Yaroshenko](http://9il.github.io)
+
+Copyright: [Ilya Yaroshenko](http://9il.github.io)
+
+License: MIT
+*/
 module atmosphere.distribution.moment;
 
 import bessel;
