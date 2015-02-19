@@ -17,6 +17,7 @@ Atmosphere GM contains an experimental algorithms for new generation of likeliho
   + Cumulative functions
   + Quantiles
   + Random observations generators
+  + Maximum Likelihood Estimations (MLE)
 
 <img src="http://9il.github.io/atmosphere_gm/view/images/GHyp_0148.svg" alt="Generalized hyperbolic distribution" width="280" />
 <img src="http://9il.github.io/atmosphere_gm/view/images/GV-gamma_0120.svg" alt="Generalized variance-gamma distribution" width="280" />
