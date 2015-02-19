@@ -20,7 +20,7 @@ Moments of the generalized gamma distribution
 +/
 T generalizedGammaMean(T)(T shape, T scale, T power, uint order = 1)
 {
-	return scale^^order * (gamma(shape+order/power) / gamma(shape));
+	return scale.pow(order) * (gamma(shape+order/power) / gamma(shape));
 }
 
 ///
