@@ -3,10 +3,12 @@ Probability density functions
 +/
 module atmosphere.distribution.pdf;
 
+//import core.stdc.tgmath;
+
 import bessel;
 import std.traits;
 import std.numeric;
-import std.math;
+//import std.math : isNormal, isFinite, M_2_SQRTPI, SQRT2, PI, approxEqual;
 import std.mathspecial;
 import std.typecons;
 import std.algorithm;
@@ -28,7 +30,7 @@ struct NormalSPDF(T)
 		mu = location
 		sigma2 = sigma^2
 	+/
-	this(T mu, T sigma2)
+	this(T mu, T sigma2) pure
 	in {
 		assert(sigma2 > 0);
 		assert(mu.isFinite);
@@ -47,6 +49,11 @@ struct NormalSPDF(T)
 	}
 }
 
+///
+unittest
+{
+	auto pdf = NormalSPDF!double(1.9, 2.3);
+}
 
 /++
 Gamma PDF
@@ -54,6 +61,7 @@ Gamma PDF
 struct GammaSPDF(T)
 	if(isFloatingPoint!T)
 {
+	import std.mathspecial : gamma;
 	private T shapem1, scale, c;
 
 	/++
@@ -96,7 +104,7 @@ unittest
 
 	import scid.calculus : integrate;
 	auto result = pdf.integrate(-double.infinity, double.infinity);
-	assert(abs(result.value - 1) < result.error);
+	assert(fabs(result.value - 1) < result.error);
 }
 
 
@@ -106,6 +114,7 @@ Inverse-gamma PDF
 struct InverseGammaSPDF(T)
 	if(isFloatingPoint!T)
 {
+	import std.mathspecial : gamma;
 	private T shapem1, scale, c;
 
 	/++
@@ -148,7 +157,7 @@ unittest
 
 	import scid.calculus : integrate;
 	auto result = pdf.integrate(-double.infinity, double.infinity);
-	assert(abs(result.value - 1) < result.error);
+	assert(fabs(result.value - 1) < result.error);
 }
 
 
@@ -158,6 +167,7 @@ Generalized gamma PDF
 struct GeneralizedGammaSPDF(T)
 	if(isFloatingPoint!T)
 {
+	import std.mathspecial : gamma;
 	private T shapem1, power, scale, c, e;
 
 	/++
@@ -177,7 +187,7 @@ struct GeneralizedGammaSPDF(T)
 	body {
 		this.power = power;
 		this.scale = scale;
-		this.c = abs(power) / gamma(shape) / scale;
+		this.c = fabs(power) / gamma(shape) / scale;
 		this.e = power * shape - 1;
 	}
 
@@ -202,7 +212,7 @@ unittest
 
 	import scid.calculus : integrate;
 	auto result = pdf.integrate(-double.infinity, double.infinity);
-	assert(abs(result.value - 1) < result.error);
+	assert(fabs(result.value - 1) < result.error);
 }
 
 
@@ -246,7 +256,7 @@ unittest
 
 	import scid.calculus : integrate;
 	auto result = pdf.integrate(-double.infinity, double.infinity);
-	assert(abs(result.value - 1) < result.error);
+	assert(fabs(result.value - 1) < result.error);
 }
 
 
@@ -296,7 +306,7 @@ unittest
 
 	import scid.calculus : integrate;
 	auto result = pdf.integrate(-double.infinity, double.infinity);
-	assert(abs(result.value - 1) < result.error);
+	assert(fabs(result.value - 1) < result.error);
 }
 
 
@@ -308,6 +318,7 @@ See_Also: [distribution.params](distribution/params.html)
 struct VarianceGammaSPDF(T)
 	if(isFloatingPoint!T)
 {
+	import std.mathspecial : gamma;
 	private T lambdamh, alpha, beta, mu, c;
 
 	/++
@@ -343,7 +354,7 @@ struct VarianceGammaSPDF(T)
 	T opCall(T x) const
 	{
 		immutable y = x - mu;
-		immutable z = abs(y);
+		immutable z = fabs(y);
 		immutable a = alpha * z;
 		return c 
 			* pow(z / alpha, lambdamh)
@@ -361,7 +372,7 @@ unittest
 
 	import scid.calculus : integrate;
 	auto result = pdf.integrate(-double.infinity, double.infinity);
-	assert(abs(result.value - 1) < result.error);
+	assert(fabs(result.value - 1) < result.error);
 }
 
 
@@ -373,6 +384,7 @@ See_Also: [distribution.params](distribution/params.html)
 struct HyperbolicAsymmetricTSPDF(T)
 	if(isFloatingPoint!T)
 {
+	import std.mathspecial : gamma;
 	private T lambdamh, beta, delta, mu, c;
 
 	/++
@@ -393,7 +405,7 @@ struct HyperbolicAsymmetricTSPDF(T)
 		assert(mu.isFinite);
 	}
 	body {
-		immutable params = GHypAlphaDelta!T(abs(beta), beta, delta);
+		immutable params = GHypAlphaDelta!T(fabs(beta), beta, delta);
 		this.c = M_2_SQRTPI / SQRT2 * pow(params.chi / 2, -lambda) / gamma(-lambda);
 		assert(c.isNormal);
 		this.lambdamh = lambda - 0.5f;
@@ -407,9 +419,8 @@ struct HyperbolicAsymmetricTSPDF(T)
 	{
 		immutable y = x - mu;
 		immutable z = hypot(delta, y);
-		immutable alpha = abs(beta);
+		immutable alpha = fabs(beta);
 		immutable a = z * alpha;
-		import std.stdio;
 		return c
 			* pow(z / alpha, lambdamh)
 			* besselK(a, lambdamh, Flag!"ExponentiallyScaled".yes)
@@ -488,7 +499,7 @@ unittest
 
 	import scid.calculus : integrate;
 	auto result = pdf.integrate(-double.infinity, double.infinity);
-	assert(abs(result.value - 1) < result.error);
+	assert(fabs(result.value - 1) < result.error);
 }
 
 
@@ -558,7 +569,7 @@ unittest
 
 	import scid.calculus : integrate;
 	auto result = pdf.integrate(-double.infinity, double.infinity);
-	assert(abs(result.value - 1) < result.error);
+	assert(fabs(result.value - 1) < result.error);
 }
 
 
@@ -595,7 +606,7 @@ unittest
 
 	import scid.calculus : integrate;
 	auto result = pdf.integrate(-double.infinity, double.infinity);
-	assert(abs(result.value - 1) < result.error);
+	assert(fabs(result.value - 1) < result.error);
 }
 
 ///
@@ -625,7 +636,7 @@ abstract class NormalVarianceMeanMixturePDF(T) : PDF!T
 		mu = NVMM location
 		subdivisions     = TODO.
 		epsRel  = (optional) The requested relative accuracy.
-		epsAbs  = (optional) The requested absolute accuracy.
+		epsAbs  = (optional) The requested fabsolute accuracy.
 	See_also: [struct Result](https://github.com/kyllingstad/scid/blob/a9f3916526e4bf9a4da35d14a969e1abfa17a496/source/scid/types.d)
 	+/
 	this(PDF!T pdf, T beta, T mu, const(T)[] subdivisions = null, T epsRel = 1e-6, T epsAbs = 0)
@@ -733,7 +744,7 @@ unittest
 
 	import scid.calculus : integrate;
 	auto result = pdf.integrate(-double.infinity, double.infinity);
-	assert(abs(result.value - 1) < result.error);
+	assert(fabs(result.value - 1) < result.error);
 }
 
 
@@ -783,7 +794,7 @@ unittest
 
 	import scid.calculus : integrate;
 	auto result = pdf.integrate(-double.infinity, double.infinity);
-	assert(abs(result.value - 1) < result.error);
+	assert(fabs(result.value - 1) < result.error);
 }
 
 
@@ -814,7 +825,7 @@ final class GeneralizedHyperbolicPDF(T) : PDF!T
 	body {
 		if (delta == 0)
 			this.pdf = VarianceGammaSPDF!T(lambda, alpha, beta, mu).convertTo!PDF;
-		else if (alpha == abs(beta))
+		else if (alpha == fabs(beta))
 			this.pdf = HyperbolicAsymmetricTSPDF!T(lambda, beta, delta, mu).convertTo!PDF;
 		else if (lambda == -0.5f)
 			this.pdf = NormalInverseGaussianSPDF!T(alpha, beta, delta, mu).convertTo!PDF;
@@ -837,5 +848,5 @@ unittest
 
 	import scid.calculus : integrate;
 	auto result = pdf.integrate(-double.infinity, double.infinity);
-	assert(abs(result.value - 1) < result.error);
+	assert(fabs(result.value - 1) < result.error);
 }

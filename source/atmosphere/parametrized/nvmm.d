@@ -301,7 +301,7 @@ final:
 			beta = beta
 			z = z
 		+/
-		this(T beta, T z) const
+		this(T beta, T z) pure
 		{
 			assert(z > 0);
 			assert(beta.isFinite);

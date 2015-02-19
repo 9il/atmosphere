@@ -3,7 +3,10 @@ Quantile functions
 +/
 module atmosphere.distribution.quantile;
 
+//import core.stdc.tgmath;
+
 import std.traits;
+//import std.math : isNormal, isNaN, isFinite, approxEqual;
 import std.mathspecial;
 
 import atmosphere.distribution.utilities;

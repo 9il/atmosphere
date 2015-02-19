@@ -3,7 +3,9 @@ Random number generators
 +/
 module atmosphere.distribution.random;
 
-import std.mathspecial;
+import core.stdc.tgmath;
+
+import std.math : isNormal, isFinite;
 import std.random;
 import std.traits;
 import atmosphere.distribution.params;
