@@ -56,9 +56,9 @@ import atmosphere;
 ```
 If you want to write library use detailed imports
 ```D
-import atmosphere.distribution.pdf;
-import atmosphere.distribution.estimate.generalized_inverse_gaussian;
-import atmosphere.distribution.finitemixture;
+import atmosphere.pdf;
+import atmosphere.estimate.generalized_inverse_gaussian;
+import atmosphere.finitemixture;
 import atmosphere.mixture : MixtureOptimizer, MixtureOptimizerException;
 ```
 
