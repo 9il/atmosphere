@@ -26,7 +26,7 @@ Atmosphere GM contains an experimental algorithms for new generation of likeliho
 Atmosphere GM can be used for risk management in economics, finance and thermonuclear reactors ;-)
 
 #Documentation
-Documentation (API) can be found [here](http://9il.github.io/atmosphere_gm/doc/atmosphere.html).
+[Documentation](http://ddocs.org/atmosphere_gm/latest/atmosphere.html) (API) can be found at [DDocs.org](http://ddocs.org).
 ## Changelog
 See [release notes](https://github.com/9il/atmosphere_gm/releases).
 
