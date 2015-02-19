@@ -8,7 +8,7 @@ Copyright: © 2014-2015 [Ilya Yaroshenko](http://9il.github.io)
 
 License: MIT
 */
-module atmosphere.distribution.derivative;
+module atmosphere.derivative;
 
 import bessel;
 import std.traits;
@@ -16,7 +16,7 @@ import std.numeric;
 import std.mathspecial;
 import std.typecons;
 
-import atmosphere.distribution.utilities;
+import atmosphere.utilities;
 
 /++
 Derivative of probability density function interface

@@ -100,6 +100,15 @@ unittest
 	immutable result     = optimizer.evaluate(dur, &findRootTolerance);
 }
 
-public import atmosphere.distribution;
+public import atmosphere.cdf;
+public import atmosphere.derivative;
+public import atmosphere.finitemixture;
 public import atmosphere.mixture;
-public import atmosphere.parametrized.nvmm;
+public import atmosphere.moment;
+public import atmosphere.params;
+public import atmosphere.pdf;
+public import atmosphere.quantile;
+public import atmosphere.random;
+
+public import atmosphere.estimate;
+public import atmosphere.likelihood;

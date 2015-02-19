@@ -5,7 +5,7 @@ Copyright: © 2014-2015 [Ilya Yaroshenko](http://9il.github.io)
 
 License: MIT
 */
-module atmosphere.distribution.likelihood.inverse_gamma;
+module atmosphere.likelihood.inverse_gamma;
 
 import core.stdc.tgmath;
 
@@ -41,7 +41,7 @@ body {
 
 ///
 unittest {
-	import atmosphere.distribution.likelihood.generalized_gamma;
+	import atmosphere.likelihood.generalized_gamma;
 	immutable l = inverseGammaLikelihood!double(2,3,[1,2]);
 	immutable m = generalizedGammaLikelihood!double(2,-1,3,[1,2]);
 	assert(l == m);
@@ -81,7 +81,7 @@ body {
 
 ///
 unittest {
-	import atmosphere.distribution.likelihood.generalized_gamma;
+	import atmosphere.likelihood.generalized_gamma;
 	immutable l = inverseGammaLikelihood!double(2,3,[1,2],[3,4]);
 	immutable m = generalizedGammaLikelihood!double(2,-1,3,[1,2],[3,4]);
 	assert(l == m);
@@ -114,7 +114,7 @@ T inverseGammaLikelihood(T)(T shape, T scale, T a, T b)
 
 ///
 unittest {
-	import atmosphere.distribution.likelihood.generalized_gamma;
+	import atmosphere.likelihood.generalized_gamma;
 	immutable l = inverseGammaLikelihood(4.0, 3.0, 2.0, 1.0);
 	immutable m = generalizedGammaLikelihood(4.0, -1.0, 3.0, 2.0, 1.0);
 	assert(l == m);

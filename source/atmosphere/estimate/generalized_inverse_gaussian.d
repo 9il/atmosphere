@@ -5,7 +5,7 @@ Copyright: © 2014-2015 [Ilya Yaroshenko](http://9il.github.io)
 
 License: MIT
 */
-module atmosphere.distribution.estimate.generalized_inverse_gaussian;
+module atmosphere.estimate.generalized_inverse_gaussian;
 
 import core.stdc.tgmath;
 
@@ -36,7 +36,7 @@ body {
 }
 
 unittest {
- 	import atmosphere.distribution.likelihood;
+ 	import atmosphere.likelihood;
 	immutable lambda = -14.0;
 	immutable eta = 1.0;
 	immutable omega = 30.0;

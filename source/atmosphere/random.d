@@ -8,14 +8,14 @@ Copyright: © 2014-2015 [Ilya Yaroshenko](http://9il.github.io)
 
 License: MIT
 */
-module atmosphere.distribution.random;
+module atmosphere.random;
 
 import core.stdc.tgmath;
 
 import std.math : isNormal, isFinite;
 import std.random;
 import std.traits;
-import atmosphere.distribution.params;
+import atmosphere.params;
 
 /++
 Interface for infinity input range of random numbers.

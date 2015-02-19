@@ -8,7 +8,7 @@ Copyright: © 2014-2015 [Ilya Yaroshenko](http://9il.github.io)
 
 License: MIT
 */
-module atmosphere.distribution.params;
+module atmosphere.params;
 
 import std.traits;
 import std.math;

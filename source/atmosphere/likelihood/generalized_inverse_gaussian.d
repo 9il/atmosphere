@@ -5,7 +5,7 @@ Copyright: © 2014-2015 [Ilya Yaroshenko](http://9il.github.io)
 
 License: MIT
 */
-module atmosphere.distribution.likelihood.generalized_inverse_gaussian;
+module atmosphere.likelihood.generalized_inverse_gaussian;
 
 import core.stdc.tgmath;
 

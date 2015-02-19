@@ -8,17 +8,17 @@ Copyright: © 2014-2015 [Ilya Yaroshenko](http://9il.github.io)
 
 License: MIT
 */
-module atmosphere.distribution.cdf;
+module atmosphere.cdf;
 
 import std.algorithm;
 import std.traits;
 import std.range;
 import std.mathspecial;
 
-import atmosphere.distribution.moment;
-import atmosphere.distribution.params;
-import atmosphere.distribution.pdf;
-import atmosphere.distribution.utilities;
+import atmosphere.moment;
+import atmosphere.params;
+import atmosphere.pdf;
+import atmosphere.utilities;
 
 
 /++
@@ -309,6 +309,7 @@ abstract class NumericCDF(T) : CDF!T
 	///
 	final T opCall(T x)
 	{
+		import std.algorithm : sum;
 		if(x == -T.infinity)
 			return 0;
 		if(x == T.infinity)
@@ -325,7 +326,7 @@ abstract class NumericCDF(T) : CDF!T
 unittest
 {
 	import std.traits, std.mathspecial;
-	import atmosphere.distribution.pdf;
+	import atmosphere.pdf;
 
 	class NormalPDF : PDF!real
 	{
@@ -357,7 +358,7 @@ Class to compute complementary cumulative density function as integral of it's p
 abstract class NumericCCDF(T) : CDF!T
 {
 	import scid.calculus : Result, integrate;
-	import atmosphere.distribution.pdf;
+	import atmosphere.pdf;
 
 	private PDF!T pdf;
 	private T b, epsRel, epsAbs;
@@ -396,6 +397,7 @@ abstract class NumericCCDF(T) : CDF!T
 	///
 	final T opCall(T x)
 	{
+		import std.algorithm : sum;
 		if(x == -T.infinity)
 			return 0;
 		if(x == T.infinity)
@@ -412,7 +414,7 @@ abstract class NumericCCDF(T) : CDF!T
 unittest
 {
 	import std.traits, std.mathspecial;
-	import atmosphere.distribution.pdf;
+	import atmosphere.pdf;
 
 	class NormalPDF : PDF!real
 	{
@@ -553,7 +555,7 @@ abstract class NormalVarianceMeanMixtureCDF(T) : CDF!T
 ///
 unittest
 {
-	import atmosphere.distribution;
+	import atmosphere;
 
 	class MyGeneralizedHyperbolicCDF(T) : NormalVarianceMeanMixtureCDF!T
 	{

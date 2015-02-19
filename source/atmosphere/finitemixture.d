@@ -5,7 +5,7 @@ Copyright: © 2014-2015 [Ilya Yaroshenko](http://9il.github.io)
 
 License: MIT
 */
-module atmosphere.distribution.finitemixture;
+module atmosphere.finitemixture;
 
 import std.range;
 import std.traits;
@@ -54,8 +54,8 @@ auto finiteMixture(FRange, T)(FRange funcs, const(T)[] weights)
 ///
 unittest
 {
-	import atmosphere.distribution.pdf;
-	import atmosphere.distribution.utilities;
+	import atmosphere.pdf;
+	import atmosphere.utilities;
 	auto pdfs = sequence!"n+1"().map!(shape => GammaSPDF!real(shape, 1));
 	double[] weights = [0.25, 0.5, 0.125, 0.125];
 	auto pdf = finiteMixture(pdfs, weights);

@@ -8,7 +8,7 @@ Copyright: © 2014-2015 [Ilya Yaroshenko](http://9il.github.io)
 
 License: MIT
 */
-module atmosphere.distribution.pdf;
+module atmosphere.pdf;
 
 //import core.stdc.tgmath;
 
@@ -21,8 +21,8 @@ import std.typecons;
 import std.algorithm;
 import std.array;
 
-import atmosphere.distribution.params;
-import atmosphere.distribution.utilities;
+import atmosphere.params;
+import atmosphere.utilities;
 
 
 /++
@@ -685,7 +685,7 @@ unittest
 {
 	class MyGHypPDF(T) : NormalVarianceMeanMixturePDF!T
 	{
-		import atmosphere.distribution.moment;
+		import atmosphere.moment;
 		this(T lambda, GHypEtaOmega!T params, T mu)
 		{
 			with(params)
@@ -697,7 +697,7 @@ unittest
 		}
 	}
 
-	import atmosphere.distribution.params;
+	import atmosphere.params;
 	immutable double lambda = 2;
 	immutable double mu = 0.3;
 	immutable params = GHypEtaOmega!double(2, 3, 4);
@@ -733,7 +733,7 @@ final class GeneralizedVarianceGammaPDF(T) : NormalVarianceMeanMixturePDF!T
 		assert(mu.isFinite);
 	}
 	body {
-		import atmosphere.distribution.moment : generalizedGammaMean;
+		import atmosphere.moment : generalizedGammaMean;
 		auto pdf  = GeneralizedGammaSPDF!double(shape, power, scale);
 		auto e = generalizedGammaMean(shape, power, scale);
 		assert(e > 0);

@@ -5,7 +5,7 @@ Copyright: © 2014-2015 [Ilya Yaroshenko](http://9il.github.io)
 
 License: MIT
 */
-module atmosphere.distribution.estimate.generalized_gamma;
+module atmosphere.estimate.generalized_gamma;
 
 import core.stdc.tgmath;
 

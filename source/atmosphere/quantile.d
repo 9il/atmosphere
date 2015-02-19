@@ -8,7 +8,7 @@ Copyright: © 2014-2015 [Ilya Yaroshenko](http://9il.github.io)
 
 License: MIT
 */
-module atmosphere.distribution.quantile;
+module atmosphere.quantile;
 
 //import core.stdc.tgmath;
 
@@ -16,7 +16,7 @@ import std.traits;
 //import std.math : isNormal, isNaN, isFinite, approxEqual;
 import std.mathspecial;
 
-import atmosphere.distribution.utilities;
+import atmosphere.utilities;
 
 /++
 Quantile function of the gamma distribution
@@ -192,7 +192,7 @@ Class to compute quantile function as root of it's cumulative density function
 +/
 abstract class NumericQuantile(T) : Quantile!T
 {
-	import atmosphere.distribution.cdf;
+	import atmosphere.cdf;
 
 	private CDF!T cdf;
 	private T a, b;
@@ -239,8 +239,8 @@ abstract class NumericQuantile(T) : Quantile!T
 unittest
 {
 	import std.traits, std.mathspecial;
-	import atmosphere.distribution.pdf;
-	import atmosphere.distribution.cdf;
+	import atmosphere.pdf;
+	import atmosphere.cdf;
 
 	class NormalPDF : PDF!real
 	{
@@ -276,10 +276,10 @@ unittest
 /// Numeric quantile function of Generalized Hyperbolic distribution
 unittest
 {
-	import atmosphere.distribution.pdf;
-	import atmosphere.distribution.cdf;
-	import atmosphere.distribution.params;
-	import atmosphere.distribution.moment;
+	import atmosphere.pdf;
+	import atmosphere.cdf;
+	import atmosphere.params;
+	import atmosphere.moment;
 
 	class GHypCDF: NumericCDF!real
 	{

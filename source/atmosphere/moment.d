@@ -8,7 +8,7 @@ Copyright: © 2014-2015 [Ilya Yaroshenko](http://9il.github.io)
 
 License: MIT
 */
-module atmosphere.distribution.moment;
+module atmosphere.moment;
 
 import bessel;
 import std.typecons;

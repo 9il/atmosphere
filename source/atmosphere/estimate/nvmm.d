@@ -50,7 +50,7 @@ Copyright: © 2014-2015 [Ilya Yaroshenko](http://9il.github.io)
 
 License: MIT
 */
-module atmosphere.parametrized.nvmm;
+module atmosphere.estimate.nvmm;
 
 import atmosphere.mixture;
 import atmosphere.internal;
@@ -299,7 +299,7 @@ final:
 	///
 	static struct CorePDF
 	{
-		import atmosphere.distribution.pdf;
+		import atmosphere.pdf;
 		NormalSPDF!T pdf;
 		alias pdf this;
 
