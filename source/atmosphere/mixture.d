@@ -681,14 +681,14 @@ interface LikelihoodAscent(T)
 	Performs optimization.
 	Params:
 		tolerance = Defines an early termination condition. 
-			Receives the current and previous versions of log2Likelihood and weights. 
+			Receives the current and previous versions of normalized log-likelihood and weights. 
 			The delegate must return true when likelihood and weights are acceptable. 
 		findRootTolerance = Tolerance for inner optimization.
 	See_Also: $(STDREF numeric, findRoot)
 	+/
 	void optimize
 	(
-		scope bool delegate (T log2LikelihoodValuePrev, T log2LikelihoodValue, in T[] weightsPrev, in T[] weights) tolerance,
+		scope bool delegate (T likelihoodValuePrev, T likelihoodValue, in T[] weightsPrev, in T[] weights) tolerance,
 		scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null,
 	);
 
@@ -696,7 +696,7 @@ interface LikelihoodAscent(T)
 	Performs optimization.
 	Params:
 		tolerance = Defines an early termination condition. 
-			Receives the current and previous versions of log2Likelihood. 
+			Receives the current and previous versions of normalized log-likelihood. 
 			The delegate must return true when likelihood are acceptable. 
 		findRootTolerance = Tolerance for inner optimization.
 	Throws: [FeaturesException](atmosphere/mixture/FeaturesException.html) if [isFeaturesCorrect](atmosphere/mixture/LikelihoodAscent.isFeaturesCorrect.html) is false.
@@ -704,7 +704,7 @@ interface LikelihoodAscent(T)
 	+/
 	void optimize
 	(
-		scope bool delegate (T log2LikelihoodValuePrev, T log2LikelihoodValue) tolerance,
+		scope bool delegate (T likelihoodValuePrev, T likelihoodValue) tolerance,
 		scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null,
 	);
 
@@ -716,9 +716,9 @@ interface LikelihoodAscent(T)
 
 
 	/++
-	Returns: LogLikelihood base 2.
+	Returns: normalized log-likelihood.
 	+/
-	T log2Likelihood() @property const;
+	T likelihood() @property const;
 }
 
 
@@ -799,7 +799,7 @@ package mixin template LikelihoodAscentTemplate(T)
 
 	void optimize
 	(
-		scope bool delegate (T log2LikelihoodValuePrev, T log2LikelihoodValue, in T[] weightsPrev, in T[] weights) tolerance,
+		scope bool delegate (T likelihoodValuePrev, T likelihoodValue, in T[] weightsPrev, in T[] weights) tolerance,
 		scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null,
 	)
 	{
@@ -810,7 +810,7 @@ package mixin template LikelihoodAscentTemplate(T)
 
 	void optimize
 	(
-		scope bool delegate (T log2LikelihoodValuePrev, T log2LikelihoodValue) tolerance,
+		scope bool delegate (T likelihoodValuePrev, T likelihoodValue) tolerance,
 		scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null,
 	)
 	{
@@ -825,9 +825,9 @@ package mixin template LikelihoodAscentTemplate(T)
 		return features.transposed.all!(any!(x => isNormal(c * x)));
 	}
 
-	T log2Likelihood() @property const
+	T likelihood() @property const
 	{
-		return mixture.sumOfLog2s;
+		return T(LN2) * mixture.sumOfLog2s / mixture.length;
 	}
 }
 

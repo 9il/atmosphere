@@ -66,7 +66,7 @@ abstract class NvmmLikelihoodAscentEM(T) : MixtureOptimizer!T, LikelihoodAscent!
 
 	override void update()
 	{
-		_log2Likelihood = mixture.sumOfLog2s;
+		_likelihood = T(LN2) * mixture.sumOfLog2s / mixture.length;
 		updateBeta;
 	}
 
@@ -75,7 +75,7 @@ abstract class NvmmLikelihoodAscentEM(T) : MixtureOptimizer!T, LikelihoodAscent!
 
 	package T _mean;
 	package T _beta;
-	package T _log2Likelihood;
+	package T _likelihood;
 
 	mixin LikelihoodAscentTemplate!T;
 	
@@ -117,8 +117,8 @@ final:
 			scope bool delegate (
 				T betaPrev, 
 				T beta, 
-				T log2LikelihoodValuePrev, 
-				T log2LikelihoodValue, 
+				T likelihoodValuePrev, 
+				T likelihoodValue, 
 				in T[] weightsPrev, 
 				in T[] weights,
 			) 
@@ -128,17 +128,17 @@ final:
 	{
 		if (!isFeaturesCorrect)
 			throw new FeaturesException;
-		T log2LikelihoodPrev, betaPrev;
+		T likelihoodPrev, betaPrev;
 		scope T[] weightsPrev = new T[weights.length];
 		do
 		{
-			log2LikelihoodPrev = _log2Likelihood;
+			likelihoodPrev = _likelihood;
 			betaPrev = _beta;
 			assert(weights.length == weightsPrev.length);
 			weightsPrev[] = weights[];
 			eval(findRootTolerance);
 		}
-		while(!tolerance(betaPrev, _beta, log2LikelihoodPrev, _log2Likelihood, weightsPrev, weights));
+		while(!tolerance(betaPrev, _beta, likelihoodPrev, _likelihood, weightsPrev, weights));
 	}
 
 
@@ -147,8 +147,8 @@ final:
 			scope bool delegate (
 				T betaPrev, 
 				T beta, 
-				T log2LikelihoodValuePrev, 
-				T log2LikelihoodValue, 
+				T likelihoodValuePrev, 
+				T likelihoodValue, 
 			) 
 			tolerance,
 			scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null,
@@ -156,14 +156,14 @@ final:
 	{
 		if (!isFeaturesCorrect)
 			throw new FeaturesException;
-		T log2LikelihoodPrev, betaPrev;
+		T likelihoodPrev, betaPrev;
 		do
 		{
-			log2LikelihoodPrev = _log2Likelihood;
+			likelihoodPrev = _likelihood;
 			betaPrev = _beta;
 			eval(findRootTolerance);
 		}
-		while(!tolerance(betaPrev, _beta, log2LikelihoodPrev, _log2Likelihood));
+		while(!tolerance(betaPrev, _beta, likelihoodPrev, _likelihood));
 	}
 
 	///ditto
@@ -239,9 +239,9 @@ final:
 	}
 
 
-	T log2Likelihood() @property const
+	T likelihood() @property const
 	{
-		return _log2Likelihood;
+		return _likelihood;
 	}
 
 	/++
