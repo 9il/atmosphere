@@ -85,9 +85,6 @@ For more options run `ldc2 -help`.
 
 See also [Atmosphere GM Test](https://github.com/9il/atmosphere_gm_test). 
 
-# Bugs
-See [bug list](https://github.com/9il/atmosphere_gm/labels/bug).
-
 # TODO & Contribution
 Contribution is welcome.
 #### TODO list
