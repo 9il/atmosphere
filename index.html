@@ -67,6 +67,7 @@
 <li>Cumulative functions</li>
 <li>Quantiles</li>
 <li>Random observations generators</li>
+<li>Maximum Likelihood Estimations (MLE)</li>
 </ul>
 </li>
 </ol>
@@ -82,12 +83,7 @@
 <h1>
 <a id="documentation" class="anchor" href="#documentation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Documentation</h1>
 
-<p>Documentation (API) can be found <a href="http://9il.github.io/atmosphere_gm/doc/atmosphere.html">here</a>.</p>
-
-<h2>
-<a id="changelog" class="anchor" href="#changelog" aria-hidden="true"><span class="octicon octicon-link"></span></a>Changelog</h2>
-
-<p>See <a href="https://github.com/9il/atmosphere_gm/releases">release notes</a>.</p>
+<p><a href="http://ddocs.org/atmosphere_gm/latest/atmosphere.html">Documentation</a> (API) can be found at <a href="http://ddocs.org">DDocs.org</a>.</p>
 
 <h1>
 <a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h1>
@@ -127,8 +123,14 @@
 <a href="http://code.dlang.org/about">dub</a>.json into the dependencies section
 and the following imports into your program</p>
 
-<div class="highlight highlight-D"><pre><span class="pl-k">import</span> atmosphere;
-<span class="pl-k">import</span> distribution;</pre></div>
+<div class="highlight highlight-D"><pre><span class="pl-k">import</span> atmosphere;</pre></div>
+
+<p>If you want to write library use detailed imports</p>
+
+<div class="highlight highlight-D"><pre><span class="pl-k">import</span> atmosphere.pdf;
+<span class="pl-k">import</span> atmosphere.estimate.generalized_inverse_gaussian;
+<span class="pl-k">import</span> atmosphere.finitemixture;
+<span class="pl-k">import</span> atmosphere.mixture : <span class="pl-st">MixtureOptimizer</span>, <span class="pl-st">MixtureOptimizerException</span>;</pre></div>
 
 <h1>
 <a id="compilers-and-optimization" class="anchor" href="#compilers-and-optimization" aria-hidden="true"><span class="octicon octicon-link"></span></a>Compilers and optimization</h1>
@@ -158,11 +160,6 @@ To compile your program in release mode with LDC use the following build options
 <p>For more options run <code>ldc2 -help</code>.</p>
 
 <p>See also <a href="https://github.com/9il/atmosphere_gm_test">Atmosphere GM Test</a>. </p>
-
-<h1>
-<a id="bugs" class="anchor" href="#bugs" aria-hidden="true"><span class="octicon octicon-link"></span></a>Bugs</h1>
-
-<p>See <a href="https://github.com/9il/atmosphere_gm/labels/bug">bug list</a>.</p>
 
 <h1>
 <a id="todo--contribution" class="anchor" href="#todo--contribution" aria-hidden="true"><span class="octicon octicon-link"></span></a>TODO &amp; Contribution</h1>
