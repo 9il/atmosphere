@@ -11,24 +11,12 @@ import core.stdc.string;
 import std.traits;
 import std.mathspecial;
 import std.range;
+import std.compiler;
 
 package:
 
 import cblas;
 import simple_matrix;
-
-version(LDC)
-{
-	import ldc.intrinsics;
-	alias log = llvm_log;
-	alias log2 = llvm_log2;
-	alias exp = llvm_exp;
-	alias exp2 = llvm_exp2;
-	alias pow = llvm_pow;
-
-	pragma(LDC_inline_ir)
-	    R inlineIR(string s, R, P...)(P);
-}
 
 
 /**
@@ -38,8 +26,9 @@ Will be avalible in std.numeric with with DMD 2.068.
 public // @@BUG@@
 ForeachType!Range sumOfLog2s(Range)(Range r) 
 {
-	import std.compiler;
-	static if(version_minor < 68)
+	version(LDC)
+		alias log2 = llvm_log2;
+	static if(version_minor < 67)
 		import core.stdc.tgmath : frexp;
 	else
 		import std.math : frexp; 
@@ -407,6 +396,8 @@ immutable real [7] Bn_n  = [
 */
 real logmdigamma(real x)
 {
+	version(LDC)
+		alias log2 = llvm_log2;
     if (x <= 0.0)
     {
         if (x == 0.0)
