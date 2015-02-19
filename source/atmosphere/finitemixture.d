@@ -12,7 +12,7 @@ import std.traits;
 
 /++
 Returns: Callable structure
-Params
+Params:
 	funcs = input range of functions
 	weights = mixture weights
 +/
@@ -21,7 +21,12 @@ auto finiteMixture(FRange, T)(FRange funcs, const(T)[] weights)
 		isForwardRange!FRange && 
 		isCallable!(ElementType!FRange) &&
 		isFloatingPoint!T)
-{
+in {
+	assert(weights.length);
+	static if(hasLength!FRange)
+		assert(funcs.length == weights.length);
+}
+body {
 	struct Result(T, FRange)
 		if(
 			isForwardRange!FRange && 
@@ -58,6 +63,6 @@ unittest
 	import atmosphere.utilities;
 	auto pdfs = sequence!"n+1"().map!(shape => GammaSPDF!real(shape, 1));
 	double[] weights = [0.25, 0.5, 0.125, 0.125];
-	auto pdf = finiteMixture(pdfs, weights);
-	PDF!double pdf2 = convertTo!PDF(pdf);
+	auto pdf = finiteMixture(pdfs, weights); //struct
+	PDF!double pdf2 = toPDF(pdf);            //object
 }

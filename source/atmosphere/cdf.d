@@ -265,7 +265,7 @@ unittest
 }
 
 /++
-Class to compute cumulative density function as integral of it's probability density function
+Class to compute cumulative density function as integral of it's probability density function. $(RED Unstable) algorithm.
 +/
 abstract class NumericCDF(T) : CDF!T
 {
@@ -353,7 +353,7 @@ unittest
 
 
 /++
-Class to compute complementary cumulative density function as integral of it's probability density function
+Class to compute complementary cumulative density function as integral of it's probability density function. $(RED Unstable) algorithm.
 +/
 abstract class NumericCCDF(T) : CDF!T
 {
@@ -441,7 +441,7 @@ unittest
 
 
 /++
-Generalized hyperbolic (generalized inverse Gaussian mixture of normals) CDF
+Generalized hyperbolic (generalized inverse Gaussian mixture of normals) CDF. $(RED Unstable) algorithm.
 
 See_Also: [distribution.params](distribution/params.html)
 +/
@@ -469,7 +469,7 @@ unittest
 
 
 /++
-Proper generalized inverse Gaussian CDF
+Proper generalized inverse Gaussian CDF. $(RED Unstable) algorithm.
 
 See_Also: [distribution.params](distribution/params.html)
 +/
@@ -482,7 +482,7 @@ final class ProperGeneralizedInverseGaussianCDF(T): NumericCDF!T
 	{
 		auto pdf = ProperGeneralizedInverseGaussianSPDF!T(lambda, eta, omega);
 		immutable mean = properGeneralizedInverseGaussianMean(lambda, eta, omega);
-		super(pdf.convertTo!PDF, [mean], 0);	
+		super(pdf.toPDF, [mean], 0);	
 	}
 }
 
@@ -496,7 +496,7 @@ unittest
 
 
 /++
-Variance-mean mixture of normals
+Variance-mean mixture of normals. $(RED Unstable) algorithm.
 +/
 abstract class NormalVarianceMeanMixtureCDF(T) : CDF!T
 	if(isFloatingPoint!T)
@@ -565,7 +565,7 @@ unittest
 			{
 				auto pdf = ProperGeneralizedInverseGaussianSPDF!T(lambda, eta, omega);
 				auto mean = properGeneralizedInverseGaussianMean(lambda, eta, omega);
-				super(pdf.convertTo!PDF, params.beta, mu, [mean]);				
+				super(pdf.toPDF, params.beta, mu, [mean]);				
 			}
 		}
 	}
@@ -581,7 +581,7 @@ unittest
 
 
 /++
-Generalized variance-gamma (generalized gamma mixture of normals) CDF
+Generalized variance-gamma (generalized gamma mixture of normals) CDF. $(RED Unstable) algorithm.
 +/
 final class GeneralizedVarianceGammaCDF(T): NormalVarianceMeanMixtureCDF!T
 {
@@ -598,7 +598,7 @@ final class GeneralizedVarianceGammaCDF(T): NormalVarianceMeanMixtureCDF!T
 	{
 		auto pdf = GeneralizedGammaSPDF!T(shape, power, scale);
 		immutable mean = generalizedGammaMean(shape, power, scale);
-		super(pdf.convertTo!PDF, beta, mu, [mean]);	
+		super(pdf.toPDF, beta, mu, [mean]);	
 	}
 }
 

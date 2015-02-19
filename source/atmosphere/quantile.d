@@ -188,7 +188,7 @@ unittest
 
 
 /++
-Class to compute quantile function as root of it's cumulative density function
+Class to compute quantile function as root of it's cumulative density function. $(RED Unstable) algorithm.
 +/
 abstract class NumericQuantile(T) : Quantile!T
 {
@@ -252,7 +252,7 @@ unittest
 		}
 	}
 
-	class NormalCDF : NumericCDF!real
+	class NormalCDF : NumericCDF!real ///$(RED Unstable) algorithm.
 	{
 		this()
 		{
@@ -260,7 +260,7 @@ unittest
 		}
 	}
 
-	class NormalQuantile : NumericQuantile!real
+	class NormalQuantile : NumericQuantile!real ///$(RED Unstable) algorithm.
 	{
 		this()
 		{
@@ -281,7 +281,7 @@ unittest
 	import atmosphere.params;
 	import atmosphere.moment;
 
-	class GHypCDF: NumericCDF!real
+	class GHypCDF: NumericCDF!real ///$(RED Unstable) algorithm.
 	{
 		this(real lambda, GHypChiPsi!real params)
 		{
@@ -292,7 +292,7 @@ unittest
 		}
 	}
 
-	class GHypQuantile : NumericQuantile!real
+	class GHypQuantile : NumericQuantile!real ///$(RED Unstable) algorithm.
 	{
 		this(real lambda, GHypChiPsi!real params)
 		{

@@ -626,7 +626,7 @@ unittest
 }
 
 /++
-Variance-mean mixture of normals
+Variance-mean mixture of normals. $(RED Unstable) algorithm.
 +/
 abstract class NormalVarianceMeanMixturePDF(T) : PDF!T
 	if(isFloatingPoint!T)
@@ -683,7 +683,7 @@ abstract class NormalVarianceMeanMixturePDF(T) : PDF!T
 ///
 unittest
 {
-	class MyGHypPDF(T) : NormalVarianceMeanMixturePDF!T
+	class MyGHypPDF(T) : NormalVarianceMeanMixturePDF!T ///$(RED Unstable) algorithm.
 	{
 		import atmosphere.moment;
 		this(T lambda, GHypEtaOmega!T params, T mu)
@@ -692,7 +692,7 @@ unittest
 			{
 				auto pgig = ProperGeneralizedInverseGaussianSPDF!T(lambda, eta, omega);
 				auto e = mu + properGeneralizedInverseGaussianMean(lambda, eta, omega);
-				super(pgig.convertTo!PDF, params.beta, mu, [e]);				
+				super(pgig.toPDF, params.beta, mu, [e]);				
 			}
 		}
 	}
@@ -709,7 +709,7 @@ unittest
 
 
 /++
-Generalized variance-gamma (generalized gamma mixture of normals) PDF
+Generalized variance-gamma (generalized gamma mixture of normals) PDF. $(RED Unstable) algorithm.
 +/
 final class GeneralizedVarianceGammaPDF(T) : NormalVarianceMeanMixturePDF!T
 	if(isFloatingPoint!T)
@@ -738,7 +738,7 @@ final class GeneralizedVarianceGammaPDF(T) : NormalVarianceMeanMixturePDF!T
 		auto e = generalizedGammaMean(shape, power, scale);
 		assert(e > 0);
 		assert(e.isFinite);
-		super(pdf.convertTo!PDF, beta, mu, [e]);
+		super(pdf.toPDF, beta, mu, [e]);
 	}
 }
 
@@ -777,13 +777,13 @@ final class GeneralizedInverseGaussianPDF(T) : PDF!T
 	body {
 		immutable params = GIGChiPsi!T(chi, psi);
 		if (chi <= T.min_normal)
-			this.pdf = GammaSPDF!T(lambda, 2 / psi).convertTo!PDF;
+			this.pdf = GammaSPDF!T(lambda, 2 / psi).toPDF;
 		else if (psi <= T.min_normal)
-			this.pdf = InverseGammaSPDF!T(-lambda, chi / 2).convertTo!PDF;
+			this.pdf = InverseGammaSPDF!T(-lambda, chi / 2).toPDF;
 		else if (lambda == -0.5f)
-			this.pdf = InverseGaussianSPDF!T(params.eta, chi).convertTo!PDF;
+			this.pdf = InverseGaussianSPDF!T(params.eta, chi).toPDF;
 		else
-			this.pdf = ProperGeneralizedInverseGaussianSPDF!T(lambda, params.eta, params.omega).convertTo!PDF;
+			this.pdf = ProperGeneralizedInverseGaussianSPDF!T(lambda, params.eta, params.omega).toPDF;
 	}
 
 	T opCall(T x)
@@ -831,13 +831,13 @@ final class GeneralizedHyperbolicPDF(T) : PDF!T
 	}
 	body {
 		if (delta == 0)
-			this.pdf = VarianceGammaSPDF!T(lambda, alpha, beta, mu).convertTo!PDF;
+			this.pdf = VarianceGammaSPDF!T(lambda, alpha, beta, mu).toPDF;
 		else if (alpha == fabs(beta))
-			this.pdf = HyperbolicAsymmetricTSPDF!T(lambda, beta, delta, mu).convertTo!PDF;
+			this.pdf = HyperbolicAsymmetricTSPDF!T(lambda, beta, delta, mu).toPDF;
 		else if (lambda == -0.5f)
-			this.pdf = NormalInverseGaussianSPDF!T(alpha, beta, delta, mu).convertTo!PDF;
+			this.pdf = NormalInverseGaussianSPDF!T(alpha, beta, delta, mu).toPDF;
 		else
-			this.pdf = ProperGeneralizedHyperbolicSPDF!T(lambda, alpha, beta, delta, mu).convertTo!PDF;
+			this.pdf = ProperGeneralizedHyperbolicSPDF!T(lambda, alpha, beta, delta, mu).toPDF;
 	}
 
 	T opCall(T x)
