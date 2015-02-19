@@ -54,7 +54,13 @@ To use this package put [the dependency]((http://code.dlang.org/packages/atmosph
 and the following imports into your program
 ```D
 import atmosphere;
-import atmosphere.distribution;
+```
+If you want to write library use detailed imports
+```D
+import atmosphere.distribution.pdf;
+import atmosphere.distribution.estimate.generalized_inverse_gaussian;
+import atmosphere.distribution.finitemixture;
+import atmosphere.mixture : MixtureOptimizer, MixtureOptimizerException;
 ```
 
 # Compilers and optimization
