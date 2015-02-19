@@ -41,7 +41,7 @@ Table of separating mixtures algorithms:
 /**
 Authors: [Ilya Yaroshenko](http://9il.github.io)
 
-Copyright: [Ilya Yaroshenko](http://9il.github.io)
+Copyright: © 2014-2015 [Ilya Yaroshenko](http://9il.github.io)
 
 License: MIT
 */
