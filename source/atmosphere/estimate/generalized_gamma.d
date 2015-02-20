@@ -53,7 +53,8 @@ unittest
 	import atmosphere.likelihood;
 	size_t length = 1000;
 	auto shape = 2.0, power = 1.4, scale = 2.3;
-	auto sample = GeneralizedGammaSRNG!double(rndGen, shape, power, scale).take(length).array;
+	auto rng = Random(1234);
+	auto sample = GeneralizedGammaSRNG!double(rng, shape, power, scale).take(length).array;
 	auto params = generalizedGammaEstimate!double(power, sample);
 	auto lh0 = generalizedGammaLikelihood(shape, power, scale, sample);
 	auto lh1 = generalizedGammaLikelihood(params.shape, power, params.scale, sample);
@@ -105,7 +106,8 @@ unittest
 	import atmosphere.likelihood;
 	size_t length = 1000;
 	auto shape = 2.0, power = 1.4, scale = 2.3;
-	auto sample = GeneralizedGammaSRNG!double(rndGen, shape, power, scale).take(length).array;
+	auto rng = Random(1234);
+	auto sample = GeneralizedGammaSRNG!double(rng, shape, power, scale).take(length).array;
 	auto weights = iota(1.0, length + 1.0).array;
 	auto params = generalizedGammaEstimate!double(power, sample, weights);
 	auto lh0 = generalizedGammaLikelihood(shape, power, scale, sample, weights);
