@@ -12,7 +12,7 @@ import core.stdc.tgmath;
 import std.traits;
 import std.typecons;
 import std.math : LN2, signbit, isNormal;
-import atmosphere.utilities : sumOfLog2s;
+import atmosphere.utilities : sumOfLog2s, dotProduct;
 
 /++
 Estimates parameters of the generalized inverse Gaussian distribution.
@@ -32,7 +32,7 @@ in {
 	assert(sample.all!"a > 0 && isNormal(a)");
 }
 body {
-	return generalizedInverseGaussianEstimate!(T)(lambdaBounds, (T lambda, T one, T mone, T dzero){ return omegaBounds; }, sample);
+	return generalizedInverseGaussianEstimate!T(lambdaBounds, (T lambda, T one, T mone, T dzero){ return omegaBounds; }, sample);
 }
 
 unittest {
@@ -48,6 +48,24 @@ unittest {
 	immutable lhCalc  = generalizedInverseGaussianLikelihood(params.lambda, params.eta, params.omega, one, mone, dzero);
 	assert(lhPrior <= lhCalc);
 }
+
+///
+unittest
+{
+	import std.range;
+	import std.random;
+	import atmosphere.random;
+	import atmosphere.likelihood;
+	auto length = 1000;
+	auto lambda = 2.0, eta = 1.4, omega = 2.3;
+	auto rng = Random(1234);
+	auto sample = ProperGeneralizedInverseGaussianSRNG!double(rng, lambda, eta, omega).take(length).array;
+	auto params = generalizedInverseGaussianEstimate!double(sample);
+	auto lh0 = generalizedInverseGaussianLikelihood(lambda, eta, omega, sample);
+	auto lh1 = generalizedInverseGaussianLikelihood(params.lambda, params.eta, params.omega, sample);
+	assert(lh0 <= lh1);
+}
+
 
 /++
 Estimates parameters of the generalized inverse Gaussian distribution.
@@ -71,8 +89,27 @@ in {
 	assert(weights.any!"a > 0");
 }
 body {
-	return generalizedInverseGaussianEstimate!((T lambda, T one, T mone, T dzero){ return omegaBounds; }, T)(lambdaBounds, sample, weights);
+	return generalizedInverseGaussianEstimate!T(lambdaBounds, (T lambda, T one, T mone, T dzero) => omegaBounds, sample, weights);
 }
+
+///
+unittest
+{
+	import std.range;
+	import std.random;
+	import atmosphere.random;
+	import atmosphere.likelihood;
+	auto length = 1000;
+	auto lambda = 2.0, eta = 1.4, omega = 2.3;
+	auto rng = Random(1234);
+	auto sample = ProperGeneralizedInverseGaussianSRNG!double(rng, lambda, eta, omega).take(length).array;
+	auto weights = iota(1.0, length + 1.0).array;
+	auto params = generalizedInverseGaussianEstimate!double(sample, weights);
+	auto lh0 = generalizedInverseGaussianLikelihood(lambda, eta, omega, sample, weights);
+	auto lh1 = generalizedInverseGaussianLikelihood(params.lambda, params.eta, params.omega, sample, weights);
+	assert(lh0 <= lh1);
+}
+
 
 /++
 Estimates parameters of the generalized inverse Gaussian distribution.
@@ -90,7 +127,7 @@ generalizedInverseGaussianEstimate(T)
 	(T one, T mone, T dzero, T[2] lambdaBounds = [-25, 25], T[2] omegaBounds = [1e-10, 1e10])
 	if(isFloatingPoint!T)
 {
-	return generalizedInverseGaussianEstimate!((T lambda, T one, T mone, T dzero){ return omegaBounds; }, T)(lambdaBounds, one, mone, dzero);
+	return generalizedInverseGaussianEstimate!T(lambdaBounds, (T lambda, T one, T mone, T dzero) => omegaBounds, one, mone, dzero);
 }
 
 /++
@@ -117,7 +154,7 @@ body {
 	immutable one = sample.sum / n;
 	immutable mone = sample.map!"1/a".sum / n;
 	immutable dzero = T(LN2) * sample.sumOfLog2s() / n;
-	return generalizedInverseGaussianEstimate!(T, OmegaBoundsFun)(lambdaBounds, omegaBoundsFun, one, mone, dzero);
+	return generalizedInverseGaussianEstimate!T(lambdaBounds, omegaBoundsFun, one, mone, dzero);
 }
 
 /++
@@ -148,7 +185,7 @@ body {
 	immutable one = sample.dotProduct(weights) / n;
 	immutable mone = sample.map!"1/a".dotProduct(weights) / n;
 	immutable dzero = T(LN2) * sample.map!log2.dotProduct(weights) / n;
-	return generalizedInverseGaussianEstimate!(T, OmegaBounds)(lambdaBounds, omegaBoundsFun, one, mone, dzero);
+	return generalizedInverseGaussianEstimate!T(lambdaBounds, omegaBoundsFun, one, mone, dzero);
 }
 
 /++
