@@ -44,6 +44,22 @@ body {
 	return generalizedGammaEstimate(power, a/n, b/n, c/n);
 }
 
+///
+unittest
+{
+	import std.range;
+	import std.random;
+	import atmosphere.random;
+	import atmosphere.likelihood;
+	size_t length = 1000;
+	auto shape = 2.0, power = 1.4, scale = 2.3;
+	auto sample = GeneralizedGammaSRNG!double(rndGen, shape, power, scale).take(length).array;
+	auto params = generalizedGammaEstimate!double(power, sample);
+	auto lh0 = generalizedGammaLikelihood(shape, power, scale, sample);
+	auto lh1 = generalizedGammaLikelihood(params.shape, power, params.scale, sample);
+	assert(lh0 <= lh1);
+}
+
 
 /++
 Estimates parameters of the generalized gamma distribution.
@@ -78,6 +94,23 @@ body {
 	b *= T(LN2);
 	c *= T(LN2);
 	return generalizedGammaEstimate(power, a/n, b/n, c/n);
+}
+
+///
+unittest
+{
+	import std.range;
+	import std.random;
+	import atmosphere.random;
+	import atmosphere.likelihood;
+	size_t length = 1000;
+	auto shape = 2.0, power = 1.4, scale = 2.3;
+	auto sample = GeneralizedGammaSRNG!double(rndGen, shape, power, scale).take(length).array;
+	auto weights = iota(1.0, length + 1.0).array;
+	auto params = generalizedGammaEstimate!double(power, sample, weights);
+	auto lh0 = generalizedGammaLikelihood(shape, power, scale, sample, weights);
+	auto lh1 = generalizedGammaLikelihood(params.shape, power, params.scale, sample, weights);
+	assert(lh0 <= lh1);
 }
 
 
