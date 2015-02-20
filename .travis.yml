@@ -1,4 +1,13 @@
 language: d
+
 before_install:
   - sudo apt-get update
   - sudo apt-get install liblapack-dev
+
+install:
+  # Install doveralls from the latest github release
+  - wget -q -O - "http://bit.ly/Doveralls" | bash
+
+script:
+  - dub test -b unittest-cov
+  - ./doveralls
