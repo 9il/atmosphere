@@ -439,9 +439,9 @@ final class GeneralizedInverseGaussianRNG(T, UniformRNG = Random) : Distribution
 	}
 	body {
 		immutable params = GIGChiPsi!T(chi, psi);
-		if (chi <= T.min_normal)
+		if (chi < T.min_normal)
 			this.rng = GammaSRNG!(T, UniformRNG)(rng, lambda, 2 / psi).toDistributionRNG;
-		else if (psi <= T.min_normal)
+		else if (psi < T.min_normal)
 			this.rng = InverseGammaSRNG!(T, UniformRNG)(rng, -lambda, chi / 2).toDistributionRNG;
 		else if (lambda == -0.5f)
 			this.rng = InverseGaussianSRNG!(T, UniformRNG)(rng, params.eta, chi).toDistributionRNG;

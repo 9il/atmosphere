@@ -775,9 +775,9 @@ final class GeneralizedInverseGaussianPDF(T) : PDF!T
 	}
 	body {
 		immutable params = GIGChiPsi!T(chi, psi);
-		if (chi <= T.min_normal)
+		if (chi < T.min_normal)
 			this.pdf = GammaSPDF!T(lambda, 2 / psi).toPDF;
-		else if (psi <= T.min_normal)
+		else if (psi < T.min_normal)
 			this.pdf = InverseGammaSPDF!T(-lambda, chi / 2).toPDF;
 		else if (lambda == -0.5f)
 			this.pdf = InverseGaussianSPDF!T(params.eta, chi).toPDF;
