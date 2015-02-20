@@ -824,7 +824,7 @@ body {
 ///
 unittest
 {
-	auto x = rGeneralizedGamma(2.0, 3.0) * 5;
+	auto x = rGeneralizedGamma(0.8, 3.0) * 5;
 }
 
 
