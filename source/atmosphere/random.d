@@ -114,6 +114,7 @@ class NormalVarianceMeanMixtureRNG(T, UniformRNG = Random) : DistributionRNG!T
 unittest
 {
 	import std.random;
+	import std.range;
 	class MyVarianceGammaRNG : NormalVarianceMeanMixtureRNG!double
 	{
 		this(double shape, double scale, double beta)
@@ -122,6 +123,8 @@ unittest
 			super(rndGen, components.toDistributionRNG, beta);
 		}
 	}
+	auto rng = new MyVarianceGammaRNG(1.2, 10, 3);
+	auto sample = rng.take(10).array;
 }
 
 
