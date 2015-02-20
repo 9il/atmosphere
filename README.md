@@ -1,7 +1,7 @@
 Atmosphere GM contains an experimental algorithms for new generation of likelihood maximization methods. The goal of this library is to create a reliable and simple in use technology that can be used by software engineers. Package is growing step by step with mathematical publications.
 
 # Travis-CI Status
-
+[![Coverage Status](https://coveralls.io/repos/9il/atmosphere_gm/badge.svg)](https://coveralls.io/r/9il/atmosphere_gm)
 [![Join the chat at https://gitter.im/9il/atmosphere_gm](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/9il/atmosphere_gm?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 + [![Build Status](https://travis-ci.org/9il/atmosphere_gm.svg)](https://travis-ci.org/9il/atmosphere_gm) - [Atmosphere GM](https://travis-ci.org/9il/atmosphere_gm)
 + [![Build Status](https://travis-ci.org/9il/atmosphere_gm_test.svg)](https://travis-ci.org/9il/atmosphere_gm_test) - [Atmosphere GM Test](https://travis-ci.org/9il/atmosphere_gm_test)

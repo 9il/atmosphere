@@ -5,8 +5,7 @@ before_install:
   - sudo apt-get install liblapack-dev
 
 install:
-  # Install doveralls from the latest github release
-  - wget -q -O - "http://bit.ly/Doveralls" | bash
+  - wget -O doveralls https://github.com/ColdenCullen/doveralls/releases/download/v1.1.4/doveralls_travis
 
 script:
   - dub test -b unittest-cov
