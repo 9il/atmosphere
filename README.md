@@ -1,4 +1,4 @@
-Atmosphere GM contains an experimental algorithms for new generation of likelihood maximization methods. The goal of this library is to create a reliable and simple in use technology that can be used by software engineers. Package is growing step by step with mathematical publications.
+Atmosphere GM contains Maximum likelihood estimation algorithms, density functions, random observations generators, etc. The goal of this library is to create a reliable and simple in use technology that can be used by software engineers.
 
 # Travis-CI Status
 [![Coverage Status](https://coveralls.io/repos/9il/atmosphere_gm/badge.svg?branch=master)](https://coveralls.io/r/9il/atmosphere_gm?branch=master)
