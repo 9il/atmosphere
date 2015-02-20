@@ -11,8 +11,10 @@ License: MIT
 module atmosphere.moment;
 
 import bessel;
+
+import core.stdc.tgmath;
+
 import std.typecons;
-import std.mathspecial;
 
 
 /++
@@ -20,7 +22,8 @@ Moments of the generalized gamma distribution
 +/
 T generalizedGammaMean(T)(T shape, T scale, T power, uint order = 1)
 {
-	return scale.pow(order) * (gamma(shape+order/power) / gamma(shape));
+	import std.math : pow;
+	return scale.pow(order) * (tgamma(shape+order/power) / tgamma(shape));
 }
 
 ///
@@ -50,6 +53,7 @@ Moments of the generalized inverse Gaussian distribution
 +/
 T properGeneralizedInverseGaussianMean(T)(T lambda, T eta, T omega, uint order = 1)
 {
+	import std.math : pow;
 	immutable k0 = besselK(omega, lambda        , Flag!"ExponentiallyScaled".yes);
 	immutable kr = besselK(omega, lambda + order, Flag!"ExponentiallyScaled".yes);
 	return eta.pow(order) * (kr / k0);
@@ -77,6 +81,7 @@ T properGeneralizedInverseGaussianVariance(T)(T lambda, T eta, T omega)
 ///
 unittest
 {
+	import std.math : approxEqual;
 	auto expectation     = properGeneralizedInverseGaussianMean!double(2.0, 3.0, 4.0);
 	auto secondRowMoment = properGeneralizedInverseGaussianMean!double(2.0, 3.0, 4.0, 2);
 	auto variance        = properGeneralizedInverseGaussianVariance!double(2.0, 3.0, 4.0);

@@ -10,16 +10,18 @@ License: MIT
 */
 module atmosphere.cdf;
 
+import core.stdc.tgmath;
+
 import std.algorithm;
 import std.traits;
 import std.range;
-import std.mathspecial;
 
 import atmosphere.moment;
 import atmosphere.params;
 import atmosphere.pdf;
 import atmosphere.utilities;
 
+import std.math : isNormal, isFinite, isNaN, approxEqual;
 
 /++
 Normal PDF
@@ -80,6 +82,7 @@ struct GammaSCDF(T)
 	///
 	T opCall(T x) const
 	{
+		import std.mathspecial : gammaIncomplete;
 		return x <= 0 ? 0 : gammaIncomplete(shape, x / scale);
 	}
 }
@@ -123,6 +126,7 @@ struct InverseGammaSCDF(T)
 	///
 	T opCall(T x) const
 	{
+		import std.mathspecial : gammaIncomplete;
 		return x <= 0 ? 0 : gammaIncomplete(shape, scale / x);
 	}
 }
@@ -163,13 +167,14 @@ struct GeneralizedGammaSCDF(T)
 		this.shape = shape;
 		this.power = power;
 		this.scale = scale;
-		this.gammaShape = gamma(shape);
+		this.gammaShape = tgamma(shape);
 		assert(gammaShape.isNormal);
 	}
 
 	///
 	T opCall(T x) const
 	{
+		import std.mathspecial : gammaIncomplete;
 		return x <= 0 ? 0 : gammaIncomplete(shape, pow(x / scale, power)) / gammaShape;
 	}
 }
@@ -208,6 +213,7 @@ struct InverseGaussianSCDF(T)
 	///
 	T opCall(T x) const
 	{
+		import std.mathspecial : normalDistribution;
 		if(x <= 0)
 			return 0;
 		immutable a = sqrt(chi / x);
@@ -536,6 +542,7 @@ abstract class NormalVarianceMeanMixtureCDF(T) : CDF!T
 
 	T opCall(T x)
 	{
+		import std.mathspecial : normalDistribution;
 		import scid.calculus : integrate;
 		T f(T z) {
 			return normalDistribution((x - (mu + beta * z)) / sqrt(z)) * pdf(z);

@@ -10,12 +10,6 @@ License: MIT
 */
 module atmosphere.derivative;
 
-import bessel;
-import std.traits;
-import std.numeric;
-import std.mathspecial;
-import std.typecons;
-
 import atmosphere.utilities;
 
 /++

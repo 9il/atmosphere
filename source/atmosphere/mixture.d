@@ -38,6 +38,7 @@ License: MIT
 */
 module atmosphere.mixture;
 
+import core.stdc.tgmath;
 
 import atmosphere.internal;
 import atmosphere.utilities : sumOfLog2s;
@@ -45,9 +46,10 @@ import std.range;
 import std.traits;
 import std.numeric : dotProduct;
 import std.algorithm;
-import std.math;
 
 import atmosphere.internal;
+
+import std.math : isNormal, LN2;
 
 /++
 Exception thrown for MixtureOptimizer.

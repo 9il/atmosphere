@@ -10,11 +10,10 @@ License: MIT
 */
 module atmosphere.quantile;
 
-//import core.stdc.tgmath;
+import core.stdc.tgmath;
 
 import std.traits;
-//import std.math : isNormal, isNaN, isFinite, approxEqual;
-import std.mathspecial;
+import std.math : isNormal, isNaN, isFinite, approxEqual;
 
 import atmosphere.utilities;
 
@@ -46,7 +45,8 @@ struct GammaSQuantile(T)
 		assert(x <= 1);		
 	}
 	body {
-		return scale * gammaIncompleteComplInverse(shape, 1-x);
+		import std.mathspecial : gammaIncompleteComplInverse;
+		return scale * T(gammaIncompleteComplInverse(shape, 1-x));
 	}
 }
 
@@ -87,6 +87,7 @@ struct InverseGammaSQuantile(T)
 		assert(x <= 1);		
 	}
 	body {
+		import std.mathspecial : gammaIncompleteComplInverse;
 		return scale / gammaIncompleteComplInverse(shape, 1-x);
 	}
 }
@@ -130,7 +131,8 @@ struct GeneralizedGammaSQuantile(T)
 		assert(x <= 1);		
 	}
 	body {
-		return scale * gammaIncompleteComplInverse(shape, 1-x).pow(1/power);
+		import std.mathspecial : gammaIncompleteComplInverse;
+		return scale * T(gammaIncompleteComplInverse(shape, 1-x)).pow(1/power);
 	}
 }
 

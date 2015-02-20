@@ -52,6 +52,8 @@ License: MIT
 */
 module atmosphere.estimate.nvmm;
 
+import core.stdc.tgmath;
+
 import atmosphere.mixture;
 import atmosphere.internal;
 import atmosphere.utilities : sumOfLog2s;
@@ -59,10 +61,9 @@ import std.algorithm;
 import std.range;
 import std.numeric;
 import std.traits;
-import std.math;
 import std.algorithm;
 
-static import std.math;
+import std.math : isFinite;
 
 /++
 Normal variance-mean mixture optimizer
@@ -308,7 +309,7 @@ final:
 			beta = beta
 			z = z
 		+/
-		this(T beta, T z) pure
+		this(T beta, T z)
 		{
 			assert(z > 0);
 			assert(beta.isFinite);

@@ -10,11 +10,13 @@ License: MIT
 */
 module atmosphere.params;
 
+import core.stdc.tgmath;
+
 import std.traits;
-import std.math;
 import std.typecons;
 
-@safe pure nothrow @nogc:
+//pure
+@safe nothrow @nogc:
 
 /++
 <img style="width: 600px;" src="images/GIGChiPsi.png">

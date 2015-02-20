@@ -7,11 +7,14 @@ License: MIT
 */
 module atmosphere.utilities;
 
+import core.stdc.tgmath;
+
 import core.stdc.string;
 import std.traits;
-import std.mathspecial;
 import std.range;
 import std.compiler;
+
+import std.math : isFinite, isIdentical, approxEqual, isNaN, NaN;
 
 version(LDC)
 {
@@ -403,6 +406,7 @@ immutable real [7] Bn_n  = [
 */
 real logmdigamma(real x)
 {
+	import std.math : poly;
 	version(LDC)
 		alias log2 = llvm_log2;
     if (x <= 0.0)
@@ -432,6 +436,7 @@ real logmdigamma(real x)
 }
 
 unittest {
+	import std.mathspecial : digamma;
     assert(logmdigamma(-5.0).isNaN());
     assert(isIdentical(logmdigamma(NaN(0xABC)), NaN(0xABC)));
     assert(logmdigamma(0.0) == real.infinity);

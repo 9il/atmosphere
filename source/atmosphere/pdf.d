@@ -10,13 +10,12 @@ License: MIT
 */
 module atmosphere.pdf;
 
-//import core.stdc.tgmath;
+import core.stdc.tgmath;
 
 import bessel;
 import std.traits;
 import std.numeric;
-//import std.math : isNormal, isFinite, M_2_SQRTPI, SQRT2, PI, approxEqual;
-import std.mathspecial;
+import std.math : isNormal, isFinite, M_2_SQRTPI, SQRT2, PI, approxEqual;
 import std.typecons;
 import std.algorithm;
 import std.array;
@@ -37,7 +36,7 @@ struct NormalSPDF(T)
 		mu = location
 		sigma2 = sigma^2
 	+/
-	this(T mu, T sigma2) pure
+	this(T mu, T sigma2)
 	in {
 		assert(sigma2 > 0);
 		assert(mu.isFinite);
