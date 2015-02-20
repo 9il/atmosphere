@@ -287,8 +287,8 @@ struct InverseGaussianSRNG(T, UniformRNG = Random)
 	Constructor
 	Params:
 		rng = uniform random number generator
-		lambda = lambda parameter
-		mu = mu parameter
+		lambda = parameter lambda
+		mu = parameter mu
 	+/
 	this(ref UniformRNG rng, T lambda, T mu)
 	{
@@ -336,7 +336,7 @@ struct ProperGeneralizedInverseGaussianSRNG(T, UniformRNG = Random)
 	Constructor
 	Params:
 		rng = uniform random number generator
-		lambda = lambda parameter
+		lambda = parameter lambda
 		eta = sqrt(chi / psi)
 		omega = sqrt(chi * psi)
 	+/
@@ -425,7 +425,7 @@ final class GeneralizedInverseGaussianRNG(T, UniformRNG = Random) : Distribution
 	Constructor
 	Params:
 		rng = uniform random number generator
-		lambda = lambda parameter
+		lambda = parameter lambda
 		chi = chi parameter
 		psi = psi parameter
 	+/
@@ -578,8 +578,8 @@ final class NormalInverseGaussianRNG(T, UniformRNG = Random) : NormalVarianceMea
 	Constructor
 	Params:
 		rng = uniform random number generator
-		mu = inverse Gaussian mu parameter
-		lambda = inverse Gaussian lambda parameter
+		mu = inverse Gaussian parameter mu
+		lambda = inverse Gaussian parameter lambda
 		beta = mixture scale parameter: `Y*U^(1/2) + beta*U`
 	+/
 	this(ref UniformRNG rng, T lambda, T mu, T beta)
@@ -613,9 +613,9 @@ final class ProperGeneralizedHyperbolicRNG(T, UniformRNG = Random) : NormalVaria
 	Constructor
 	Params:
 		rng = uniform random number generator
-		lambda = proper generalized inverse Gaussian lambda parameter
-		eta = proper generalized inverse Gaussian eta parameter
-		omega = proper generalized inverse Gaussian omega parameter
+		lambda = proper generalized inverse Gaussian parameter lambda
+		eta = proper generalized inverse Gaussian scale parameter
+		omega = proper generalized inverse Gaussian concetration parameter
 		beta = mixture scale parameter: `Y*U^(1/2)+beta*U`
 	+/
 	this(ref UniformRNG rng, T lambda, T eta, T omega, T beta)
@@ -649,7 +649,7 @@ final class GeneralizedHyperbolicRNG(T, UniformRNG = Random) : NormalVarianceMea
 	Constructor
 	Params:
 		rng = uniform random number generator
-		lambda = generalized inverse Gaussian lambda parameter
+		lambda = generalized inverse Gaussian parameter lambda
 		chi = generalized inverse Gaussian chi parameter
 		psi = generalized inverse Gaussian psi parameter
 		beta = mixture scale parameter: `Y*U^(1/2)+beta*U`

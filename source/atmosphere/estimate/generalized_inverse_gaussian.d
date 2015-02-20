@@ -19,7 +19,7 @@ Estimates parameters of the generalized inverse Gaussian distribution.
 Params:
 	sample = sample
 	lambdaBounds = bounds of the parameter lambda
-	omegaBounds = bounds of the parameter omega
+	omegaBounds = bounds of the parameter omega, concetration
 
 See_Also: `distribution.params.GIGEtaOmega`
 +/
