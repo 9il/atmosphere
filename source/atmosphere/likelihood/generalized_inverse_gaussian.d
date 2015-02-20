@@ -11,7 +11,7 @@ import core.stdc.tgmath;
 
 import std.traits;
 import std.typecons;
-import std.mathspecial : LN2, gamma;
+import std.math : LN2;
 import atmosphere.utilities : sumOfLog2s, dotProduct;
 
 /++

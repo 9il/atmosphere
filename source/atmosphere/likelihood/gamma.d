@@ -11,7 +11,7 @@ import core.stdc.tgmath;
 
 import std.traits;
 import std.typecons;
-import std.mathspecial : LN2, gamma;
+import std.math : LN2;
 
 
 /++
@@ -108,7 +108,7 @@ T gammaLikelihood(T)(T shape, T scale, T a, T b)
 	if(isFloatingPoint!T)
 {
 	return 
-		- log(scale * gamma(shape)) 
+		- log(scale * tgamma(shape)) 
 		- (1 - shape) * (b - log(scale)) 
 		- a / scale;
 }

@@ -107,7 +107,7 @@ T inverseGammaLikelihood(T)(T shape, T scale, T a, T b)
 	if(isFloatingPoint!T)
 {
 	return 
-		- log(scale * gamma(shape))
+		- log(scale * tgamma(shape))
 		- (1 + shape) * (b - log(scale)) 
 		- a * scale;
 }

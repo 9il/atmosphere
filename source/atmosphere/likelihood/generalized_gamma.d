@@ -11,7 +11,7 @@ import core.stdc.tgmath;
 
 import std.traits;
 import std.typecons;
-import std.mathspecial : LN2, gamma;
+import std.math : LN2;
 
 
 /++
@@ -94,7 +94,7 @@ T generalizedGammaLikelihood(T)(T shape, T power, T scale, T a, T b)
 	if(isFloatingPoint!T)
 {
 	return 
-		- log((scale * gamma(shape)) / fabs(power)) 
+		- log((scale * tgamma(shape)) / fabs(power)) 
 		- (1 - shape * power) * (b - log(scale)) 
 		- (power > 0 ? a / pow(scale, power) : a * pow(scale, -power)); //precise unification with inverse-gamma and gamma
 }
