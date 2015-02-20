@@ -63,6 +63,9 @@ unittest
 	import atmosphere.utilities;
 	auto pdfs = sequence!"n+1"().map!(shape => GammaSPDF!real(shape, 1));
 	double[] weights = [0.25, 0.5, 0.125, 0.125];
-	auto pdf = finiteMixture(pdfs, weights); //struct
-	PDF!double pdf2 = toPDF(pdf);            //object
+	auto pdf0 = finiteMixture(pdfs, weights);           //struct
+	auto pdf1 = finiteMixture(pdfs[3..4].chain(pdfs[0..3]), [0.125, 0.25, 0.5, 0.125]); //struct
+	PDF!double pdf2 = toPDF(pdf0);                      //object
+	foreach(x; iota(1, 4))
+		assert(approxEqual(pdf1(x), pdf2(x)));
 }
