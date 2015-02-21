@@ -9,7 +9,7 @@
 	"dependencies": {
 		"simple_matrix": "~>0.3.1",
 		"cblas": "~>0.0.4",
-		"bessel": "~>3.1.3",
-		"scid": "==0.1.0+commit.11.gb955e59",
+		"bessel": "~>3.1.4",
+		"scid": "~>0.1.0+commit.12.ge6a70a6",
 	}
 }
