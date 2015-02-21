@@ -10,6 +10,6 @@
 		"simple_matrix": "~>0.3.1",
 		"cblas": "~>0.0.4",
 		"bessel": "~>3.1.4",
-		"scid": "~>0.1.0+commit.12.ge6a70a6",
+		"scid": "==0.1.0+commit.12.ge6a70a621332cd498e6ba54d7eb5560b47d5efe2",
 	}
 }
