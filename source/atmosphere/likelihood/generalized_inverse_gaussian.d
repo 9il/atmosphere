@@ -11,54 +11,24 @@ import core.stdc.tgmath;
 
 import std.traits;
 import std.typecons;
-import std.math : LN2;
-version(none):
+
+import atmosphere.statistic: GeneralizedInverseGaussinStatistic;
+
 /++
 Normalized log-likelihood function of the generalized inverse Gaussian distribution.
-Params:
-	lambda = parameter lambda
-	eta = scale parameter, eta
-	omega = parameter omega
-	sample = sample
-
 See_Also: `distribution.params.GIGEtaOmega`
 +/
 T generalizedInverseGaussianLikelihood(T)(T lambda, T eta, T omega, in T[] sample)
 	if(isFloatingPoint!T)
 {
-	import std.algorithm : sum, map;
-	import atmosphere.summation : sumOfLog2s;
-	immutable n = sample.length;
-	immutable one = sample.sum() / n;
-	immutable mone = sample.map!"1/a".sum() / n;
-	immutable dzero = T(LN2) * sample.sumOfLog2s() / n;
-	return generalizedInverseGaussianLikelihood(lambda, eta, omega, one, mone, dzero);
+	return generalizedInverseGaussianLikelihood(lambda, eta, omega, GeneralizedInverseGaussinStatistic!T(sample));
 }
 
-
-/++
-Normalized log-likelihood function of the generalized inverse Gaussian distribution.
-Params:
-	lambda = parameter lambda
-	eta = scale parameter, eta
-	omega = parameter omega
-	sample = sample
-	weights = weights for the sample
-
-See_Also: `distribution.params.GIGEtaOmega`
-+/
+///ditto
 T generalizedInverseGaussianLikelihood(T)(T lambda, T eta, T omega, in T[] sample, in T[] weights)
 	if(isFloatingPoint!T)
-in {
-	assert(weights.length == sample.length);
-}
-body {
-	import std.algorithm : sum, map;
-	immutable n = weights.sum;
-	immutable one = sample.dotProduct(weights) / n;
-	immutable mone = sample.map!"1/a".dotProduct(weights) / n;
-	immutable dzero = T(LN2) * sample.map!log2.dotProduct(weights) / n;
-	return generalizedInverseGaussianLikelihood(lambda, eta, omega, one, mone, dzero);
+{
+	return generalizedInverseGaussianLikelihood(lambda, eta, omega, GeneralizedInverseGaussinStatistic!T(sample, weights));
 }
 
 ///
@@ -68,26 +38,14 @@ unittest {
 	assert(l == m);
 }
 
-
-/++
-Normalized log-likelihood function of the generalized inverse Gaussian distribution.
-Params:
-	lambda = parameter lambda
-	eta = scale parameter, eta
-	omega = parameter omega
-	one = `Σ weights[j] * sample[j] / Σ weights[j]`
-	mone = `Σ weights[j] / sample[j] / Σ weights[j]`
-	dzero = `Σ weights[j] * log(sample[j]) / Σ weights[j]`
-
-See_Also: `distribution.params.GIGEtaOmega`
-+/
-T generalizedInverseGaussianLikelihood(T)(T lambda, T eta, T omega, T one, T mone, T dzero)
+///ditto
+T generalizedInverseGaussianLikelihood(T)(T lambda, T eta, T omega, GeneralizedInverseGaussinStatistic!T stat)
 	if(isFloatingPoint!T)
 {
 	import bessel;
 	import std.typecons : Flag;
-	return 
+	with(stat) return
 		- log(2 * eta * besselK(omega, lambda, Flag!"ExponentiallyScaled".yes))
-		+ (lambda - 1) * (dzero - log(eta))
-		+ omega * (1 - (one / eta + mone * eta) / 2);
+		+ (lambda - 1) * (stat.meanl - log(eta))
+		+ omega * (1 - (mean / eta + meani * eta) / 2);
 }

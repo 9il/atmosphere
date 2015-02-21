@@ -802,7 +802,7 @@ package mixin template LikelihoodAscentTemplate(T)
 	}
 	body
 	{
-		import std.algorithm : map;
+		import std.algorithm.iteration : map;
 		super.put(sample.map!(x => pdfs.map!(pdf => pdf(x))));
 		if (!isFeaturesCorrect)
 			throw new FeaturesException;

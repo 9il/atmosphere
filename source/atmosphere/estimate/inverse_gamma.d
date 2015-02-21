@@ -11,8 +11,8 @@ import core.stdc.tgmath;
 
 import std.traits;
 import std.typecons;
-import std.math : LN2;
 
+import atmosphere.statistic: InverseGammaStatistic;
 
 /++
 Estimates parameters of the inverse-gamma distribution.
@@ -20,23 +20,8 @@ Estimates parameters of the inverse-gamma distribution.
 Tuple!(T, "shape", T, "scale")
 inverseGammaEstimate(T)(in T[] sample)
 	if(isFloatingPoint!T)
-in {
-	import std.algorithm : all;
-	assert(sample.all!"a > 0 && isNormal(a)");
-}
-body {
-	Unqual!T a = 0, b = 0, c = 0;
-	foreach(x; sample)
-	{
-		immutable l = log2(x);
-		a += 1 / x;
-		b += l / x;
-		c += l;
-	}
-	b *= T(LN2);
-	c *= T(LN2);
-	immutable n = sample.length;
-	return inverseGammaEstimate(a/n, b/n, c/n);
+{
+	return inverseGammaEstimate(InverseGammaStatistic!T(sample));
 }
 
 ///
@@ -44,37 +29,36 @@ unittest {
 	import atmosphere.estimate.generalized_gamma;
 	immutable sample = [1.0, 0.5, 0.75];
 	immutable p0 = inverseGammaEstimate(sample);
-	immutable p1 = generalizedGammaEstimate(-1.0, sample);
+	immutable p1 = generalizedGammaFixedPowerEstimate(-1.0, sample);
 	assert(p0.shape == p1.shape);
 	assert(p0.scale == p1.scale);
 }
 
 
+///
+unittest
+{
+	import std.range;
+	import std.random;
+	import atmosphere.random;
+	import atmosphere.likelihood.inverse_gamma;
+	auto length = 1000;
+	auto shape = 2.0, scale = 3.0;
+	auto rng = Random(1234);
+	auto sample = InverseGammaSRNG!double(rng, shape, scale).take(length).array;
+	auto weights = iota(1.0, length + 1.0).array;
+	auto params = inverseGammaEstimate!double(sample, weights);
+	auto lh0 = inverseGammaLikelihood(shape, scale, sample, weights);
+	auto lh1 = inverseGammaLikelihood(params.shape, params.scale, sample, weights);
+	assert(lh0 <= lh1);
+}
+
 ///ditto
 Tuple!(T, "shape", T, "scale")
 inverseGammaEstimate(T)(in T[] sample, in T[] weights)
 	if(isFloatingPoint!T)
-in {
-	import std.algorithm : all, any;
-	assert(weights.length == sample.length);
-	assert(sample.all!"a > 0 && isNormal(a)");
-	assert(weights.all!"a >= 0 && isFinite(a)");
-	assert(weights.any!"a > 0");
-}
-body {
-	Unqual!T a = 0, b = 0, c = 0, n = 0;
-	foreach(i, x; sample)
-	{
-		immutable w = weights[i];
-		immutable l = log2(x);
-		n += w;
-		a += w / x;
-		b += w * (l / x);
-		c += w * l;
-	}
-	b *= T(LN2);
-	c *= T(LN2);
-	return inverseGammaEstimate(a/n, b/n, c/n);
+{
+	return inverseGammaEstimate(InverseGammaStatistic!T(sample, weights));
 }
 
 ///
@@ -83,32 +67,24 @@ unittest {
 	immutable sample = [1.0, 0.5, 0.75];
 	immutable weights = [1.0, 4, 3];
 	immutable p0 = inverseGammaEstimate(sample, weights);
-	immutable p1 = generalizedGammaEstimate(-1.0, sample, weights);
+	immutable p1 = generalizedGammaFixedPowerEstimate(-1.0, sample, weights);
 	assert(p0.shape == p1.shape);
 	assert(p0.scale == p1.scale);
 }
 
-
-/++
-Estimates parameters of the inverse-gamma distribution.
-Params:
-	a = `Σ weights[j] / sample[j] / Σ weights[j]`
-	b = `Σ weights[j] * log(sample[j]) / sample[j] / Σ weights[j]`
-	c = `Σ weights[j] * log(sample[j]) / Σ weights[j]`
-+/
+///ditto
 Tuple!(T, "shape", T, "scale")
-inverseGammaEstimate(T)(T a, T b, T c)
+inverseGammaEstimate(T)(InverseGammaStatistic!T stat)
 	if(isFloatingPoint!T)
 {
-	immutable d = c - b / a;
-	return typeof(return)(1 / d, 1 / (a * d));
-}
-
-///
-unittest {
-	import atmosphere.estimate.generalized_gamma;
-	immutable p0 = inverseGammaEstimate(3.0, 2.0, 1.0);
-	immutable p1 = generalizedGammaEstimate(-1.0, 3.0, 2.0, 1.0);
-	assert(p0.shape == p1.shape);
-	assert(p0.scale == p1.scale);
+	import std.mathspecial: logmdigamma;
+	import std.numeric: findRoot;
+	with(stat)
+	{
+		immutable y = log(meani) + meanl;
+		//TODO optmize interval
+		immutable shape = findRoot((T x) => logmdigamma(x)-y, T.min_normal, T.max);
+		immutable scale = shape / meani;
+		return typeof(return)(shape, scale);		
+	}
 }

@@ -11,32 +11,17 @@ import core.stdc.tgmath;
 
 import std.traits;
 import std.typecons;
-import std.math : LN2;
+
+import atmosphere.statistic: GammaStatistic;
 
 
 /++
 Normalized log-likelihood function of the gamma distribution.
-Params:
-	shape = shape parameter
-	scale = scale parameter
-	sample = sample
 +/
 T gammaLikelihood(T)(T shape, T scale, in T[] sample)
 	if(isFloatingPoint!T)
-in {
-	import std.algorithm : all;
-	assert(sample.all!"a > 0 && isNormal(a)");
-}
-body {
-	T a = 0, b = 0;
-	foreach(j; 0..sample.length)
-	{
-		a += sample[j];
-		b += log2(sample[j]);
-	}
-	b *= T(LN2);
-	immutable n = sample.length;
-	return gammaLikelihood!T(shape, scale, a/n, b/n);
+{
+	return gammaLikelihood!T(shape, scale, GammaStatistic!T(sample));
 }
 
 ///
@@ -47,37 +32,11 @@ unittest {
 	assert(l == m);
 }
 
-
-
-/++
-Normalized log-likelihood function of the gamma distribution.
-Params:
-	shape = shape parameter
-	scale = scale parameter
-	sample = sample
-	weights = weights for the sample
-+/
+///ditto
 T gammaLikelihood(T)(T shape, T scale, in T[] sample, in T[] weights)
 	if(isFloatingPoint!T)
-in {
-	assert(weights.length == sample.length);
-	import std.algorithm : all, any;
-	assert(weights.length == sample.length);
-	assert(sample.all!"a > 0 && isNormal(a)");
-	assert(weights.all!"a >= 0 && isFinite(a)");
-	assert(weights.any!"a > 0");
-}
-body {
-	T a = 0, b = 0, n = 0;
-	foreach(j; 0..sample.length)
-	{
-		immutable w = weights[j];
-		n += w;
-		a += w * sample[j];
-		b += w * log2(sample[j]);
-	}
-	b *= T(LN2);
-	return gammaLikelihood!T(shape, scale, a/n, b/n);
+{
+	return gammaLikelihood!T(shape, scale, GammaStatistic!T(sample, weights));
 }
 
 ///
@@ -95,28 +54,12 @@ unittest {
 	assert(l == m);
 }
 
-
-/++
-Normalized log-likelihood function of the gamma distribution.
-Params:
-	shape = shape parameter
-	scale = scale parameter
-	a = `Σ weights[j] * sample[j] / Σ weights[j]`
-	b = `Σ weights[j] * log(sample[j]) / Σ weights[j]`
-+/
-T gammaLikelihood(T)(T shape, T scale, T a, T b)
+///ditto
+T gammaLikelihood(T)(T shape, T scale, GammaStatistic!T stat)
 	if(isFloatingPoint!T)
 {
-	return 
+	with(stat) return 
 		- log(scale * tgamma(shape)) 
-		- (1 - shape) * (b - log(scale)) 
-		- a / scale;
-}
-
-///
-unittest {
-	import atmosphere.likelihood.generalized_gamma;
-	immutable l = gammaLikelihood(4.0, 3.0, 2.0, 1.0);
-	immutable m = generalizedGammaLikelihood(4.0, 1.0, 3.0, 2.0, 1.0);
-	assert(l == m);
+		- (1 - shape) * (meanl - log(scale)) 
+		- mean / scale;
 }

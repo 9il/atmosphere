@@ -14,8 +14,6 @@ import std.typecons;
 import std.range.primitives;
 import std.math;
 
-package:
-
 private template SummationType(F)
     if (isFloatingPoint!F || isComplex!F)
 {
@@ -41,14 +39,14 @@ Computes accurate sum of binary logarithms of input range $(D r).
 ElementType!Range sumOfLog2s(Range)(Range r)
     if (isInputRange!Range && isFloatingPoint!(ElementType!Range))
 {
-    long exp = 0;
+    long exp;
     Unqual!(typeof(return)) x = 1;
     foreach (e; r)
     {
         if (e < 0)
             return typeof(return).nan;
         int lexp = void;
-        x *= frexp(cast(Unqual!(typeof(return)))e, lexp);
+        x *= frexp(e, lexp);
         exp += lexp;
         if (x < 0.5)
         {
@@ -128,12 +126,12 @@ enum Summation
     Kahan,
 
     /++
-    $(LUCKY Kahan-Babuška-Neumaier summation algorithm). $(D КBN) gives more accurate results then $(D Kahan).
+    $(LUCKY Kahan-Babuška-Neumaier summation algorithm). $(D KBN) gives more accurate results then $(D Kahan).
     +/
     KBN,
 
     /++
-    $(LUCKY Generalized Kahan-Babuška summation algorithm), order 2. $(D КB2) gives more accurate results then $(D Kahan) and $(D КBN).
+    $(LUCKY Generalized Kahan-Babuška summation algorithm), order 2. $(D KB2) gives more accurate results then $(D Kahan) and $(D KBN).
     +/
     KB2,
 
@@ -142,8 +140,28 @@ enum Summation
     The value of the sum is rounded to the nearest representable
     floating-point number using the $(LUCKY round-half-to-even rule).
     Result can be differ from the exact value on $(D X86), $(D nextDown(proir) <= result &&  result <= nextUp(proir)).
+    The current implementation re-establish special value semantics across iterations (i.e. handling -inf + inf).
+
+    References: $(LINK2 http://www.cs.cmu.edu/afs/cs/project/quake/public/papers/robust-arithmetic.ps,
+        "Adaptive Precision Floating-Point Arithmetic and Fast Robust Geometric Predicates", Jonathan Richard Shewchuk),
+        $(LINK2 http://bugs.python.org/file10357/msum4.py, Mark Dickinson's post at bugs.python.org).
+    +/
+    /+
+    Precise summation function as msum() by Raymond Hettinger in
+    <http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/393090>,
+    enhanced with the exact partials sum and roundoff from Mark
+    Dickinson's post at <http://bugs.python.org/file10357/msum4.py>.
+    See those links for more details, proofs and other references.
+    IEEE 754R floating point semantics are assumed.
     +/
     Precise,
+
+    /++
+    Performs $(D Pairwise) summation for random access ranges. 
+    Otherwise performs $(D KBN) summation of floating point and complex numbers and 
+    $(D Kahan) summation of user defined types.
+    +/
+    Appropriate,
 }
 
 
@@ -156,14 +174,14 @@ template fsum(F, Summation summation = Summation.Precise)
     F fsum(Range)(Range r)
         if (isSummable!(Range, F))
     {
-        alias sum = Algo!summation;
+        alias sum = Algo!(Range, summation);
         return sum!(Range, Unqual!F)(r);
     }
 
     F fsum(Range)(F seed, Range r)
         if (isSummable!(Range, Unqual!F))
     {
-        alias sum = Algo!summation;
+        alias sum = Algo!(Range, summation);
         return sum!(Range, Unqual!F)(r, seed);
     }
 }
@@ -174,14 +192,14 @@ template fsum(Summation summation = Summation.Precise)
     ForeachType!Range fsum(Range)(Range r)
         if (isSummable!(Range, Unqual!(ForeachType!Range)))
     {
-        alias sum = Algo!summation;
+        alias sum = Algo!(Range, summation);
         return sum!(Range, Unqual!(typeof(return)))(r);
     }
 
     F fsum(F, Range)(F seed, Range r)
         if (isSummable!(Range, Unqual!F))
     {
-        alias sum = Algo!summation;
+        alias sum = Algo!(Range, summation);
         return sum!(Range, F)(r, seed);
     }
 }
@@ -255,7 +273,6 @@ unittest {
         Quaternion opOpAssign(string op)(auto ref Quaternion rhs)
             if (op == "+" || op == "-")
         {
-            Quaternion ret = void;
             foreach (i, ref e; array)
                 mixin("e "~op~"= rhs.array[i];");
             return this;
@@ -263,6 +280,12 @@ unittest {
 
         ///constructor with single FP argument
         this(F f)
+        {
+            array[] = f;
+        }
+
+        ///assigment with single FP argument
+        void opAssign(F f)
         {
             array[] = f;
         }
@@ -297,155 +320,203 @@ unittest
 
 
 /++
-Handler for full precise summation with $(D put) primitive.
-The current implementation re-establish special
-value semantics across iterations (i.e. handling -inf + inf).
-
-References: $(LINK2 http://www.cs.cmu.edu/afs/cs/project/quake/public/papers/robust-arithmetic.ps,
-    "Adaptive Precision Floating-Point Arithmetic and Fast Robust Geometric Predicates", Jonathan Richard Shewchuk),
-    $(LINK2 http://bugs.python.org/file10357/msum4.py, Mark Dickinson's post at bugs.python.org).
+Output range for summation.
+$(D Precise), $(D KB2), $(D KBN) and $(D Kahan) algorithms are supported.
 +/
-/+
-Precise summation function as msum() by Raymond Hettinger in
-<http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/393090>,
-enhanced with the exact partials sum and roundoff from Mark
-Dickinson's post at <http://bugs.python.org/file10357/msum4.py>.
-See those links for more details, proofs and other references.
-IEEE 754R floating point semantics are assumed.
-+/
-struct Summator(T)
-    if (isFloatingPoint!T && isMutable!T)
+struct Summator(T, Summation summation = Summation.Precise)
+    if (
+        isMutable!T && (
+            summation == Summation.Precise && isFloatingPoint!T
+             || summation == Summation.Kahan && isSummable!T
+             || (summation == Summation.KBN || summation == Summation.KB2) 
+                   && (isFloatingPoint!T || isComplex!T)
+            )
+        )
 {
-    import std.internal.scopebuffer;
+    static if (summation == Summation.Kahan)
+        alias F = T;
+    else
+        alias F = SummationType!T;
 
-private:
-    alias F = SummationType!T;
-    enum F M = (cast(F)(2)) ^^ (T.max_exp - 1);
-    F[32] scopeBufferArray = void;
-    ScopeBuffer!F partials;
-    //sum for NaN and infinity.
-    F s;
-    //Overflow Degree. Count of 2^^F.max_exp minus count of -(2^^F.max_exp)
-    sizediff_t o;
-
-
-    /++
-    Compute the sum of a list of nonoverlapping floats.
-    On input, partials is a list of nonzero, nonspecial,
-    nonoverlapping floats, strictly increasing in magnitude, but
-    possibly not all having the same sign.
-    On output, the sum of partials gives the error in the returned
-    result, which is correctly rounded (using the round-half-to-even
-    rule).
-    Two floating point values x and y are non-overlapping if the least significant nonzero
-    bit of x is more significant than the most significant nonzero bit of y, or vice-versa.
-    +/
-    static F partialsReduce(F s, in F[] partials)
-    in
+    static if (summation == Summation.Precise)
     {
-        debug(numeric) assert(!partials.length || s.isFinite);
-    }
-    body
-    {
-        bool _break = void;
-        foreach_reverse(i, y; partials)
+        import std.internal.scopebuffer;
+
+    private:
+        enum F M = (cast(F)(2)) ^^ (T.max_exp - 1);
+        F[32] scopeBufferArray = void;
+        ScopeBuffer!F partials;
+        //sum for NaN and infinity.
+        F s;
+        //Overflow Degree. Count of 2^^F.max_exp minus count of -(2^^F.max_exp)
+        sizediff_t o;
+
+
+        /++
+        Compute the sum of a list of nonoverlapping floats.
+        On input, partials is a list of nonzero, nonspecial,
+        nonoverlapping floats, strictly increasing in magnitude, but
+        possibly not all having the same sign.
+        On output, the sum of partials gives the error in the returned
+        result, which is correctly rounded (using the round-half-to-even
+        rule).
+        Two floating point values x and y are non-overlapping if the least significant nonzero
+        bit of x is more significant than the most significant nonzero bit of y, or vice-versa.
+        +/
+        static F partialsReduce(F s, in F[] partials)
+        in
         {
-            s = partialsReducePred(s, y, i ? partials[i-1] : 0, _break);
-            if (_break)
-                break;
-            debug(numeric) assert(s.isFinite);
+            debug(numeric) assert(!partials.length || s.isFinite);
         }
-        return s;
-    }
-
-    static F partialsReducePred(F s, F y, F z, out bool _break)
-    out(result)
-    {
-        debug(numeric) assert(result.isFinite);
-    }
-    body
-    {
-        F x = s;
-        s = x + y;
-        F d = s - x;
-        F l = y - d;
-        debug(numeric)
+        body
         {
-            assert(x.isFinite);
-            assert(y.isFinite);
-            assert(s.isFinite);
-            assert(fabs(y) < fabs(x));
-        }
-        if (l)
-        {
-        //Make half-even rounding work across multiple partials.
-        //Needed so that sum([1e-16, 1, 1e16]) will round-up the last
-        //digit to two instead of down to zero (the 1e-16 makes the 1
-        //slightly closer to two). Can guarantee commutativity.
-            if (z && !signbit(l * z))
+            bool _break = void;
+            foreach_reverse(i, y; partials)
             {
-                l *= 2;
-                x = s + l;
-                F t = x - s;
-                if (l == t)
-                    s = x;
+                s = partialsReducePred(s, y, i ? partials[i-1] : 0, _break);
+                if (_break)
+                    break;
+                debug(numeric) assert(s.isFinite);
             }
-            _break = true;
+            return s;
         }
-        return s;
+
+        static F partialsReducePred(F s, F y, F z, out bool _break)
+        out(result)
+        {
+            debug(numeric) assert(result.isFinite);
+        }
+        body
+        {
+            F x = s;
+            s = x + y;
+            F d = s - x;
+            F l = y - d;
+            debug(numeric)
+            {
+                assert(x.isFinite);
+                assert(y.isFinite);
+                assert(s.isFinite);
+                assert(fabs(y) < fabs(x));
+            }
+            if (l)
+            {
+            //Make half-even rounding work across multiple partials.
+            //Needed so that sum([1e-16, 1, 1e16]) will round-up the last
+            //digit to two instead of down to zero (the 1e-16 makes the 1
+            //slightly closer to two). Can guarantee commutativity.
+                if (z && !signbit(l * z))
+                {
+                    l *= 2;
+                    x = s + l;
+                    F t = x - s;
+                    if (l == t)
+                        s = x;
+                }
+                _break = true;
+            }
+            return s;
+        }
+
+        //Returns corresponding infinity if is overflow and 0 otherwise.
+        F overflow() const
+        {
+            if (o == 0)
+                return 0;
+            if (partials.length && (o == -1 || o == 1)  && signbit(o * partials[$-1]))
+            {
+                // problem case: decide whether result is representable
+                F x = o * M;
+                F y = partials[$-1] / 2;
+                F h = x + y;
+                F d = h - x;
+                F l = (y - d) * 2;
+                y = h * 2;
+                d = h + l;
+                F t = d - h;
+                version(X86)
+                {
+                    if (!.isInfinity(cast(T)y) || !.isInfinity(sum()))
+                        return 0;
+                }
+                else
+                {
+                    if (!.isInfinity(cast(T)y) || partials.length > 1 && !signbit(l * partials[$-2]) && t == l)
+                        return 0;
+                }
+            }
+            return F.infinity * o;
+        }        
+    }
+    else 
+    static if (summation == Summation.KB2)
+    {
+        F s;
+        F cs;
+        F ccs;
+    }
+    else 
+    static if (summation == Summation.KBN)
+    {
+        F s;
+        F c;
+    }
+    else
+    static if (summation == Summation.Kahan)
+    {
+        F s;
+        F c;
+        F y; // do not declare in the loop/put (algo can be used for matrixes and etc)
+        F t; // ditto
     }
 
-    //Returns corresponding infinity if is overflow and 0 otherwise.
-    F overflow() const
-    {
-        if (o == 0)
-            return 0;
-        if (partials.length && (o == -1 || o == 1)  && signbit(o * partials[$-1]))
-        {
-            // problem case: decide whether result is representable
-            F x = o * M;
-            F y = partials[$-1] / 2;
-            F h = x + y;
-            F d = h - x;
-            F l = (y - d) * 2;
-            y = h * 2;
-            d = h + l;
-            F t = d - h;
-            version(X86)
-            {
-                if (!.isInfinity(cast(T)y) || !.isInfinity(sum()))
-                    return 0;
-            }
-            else
-            {
-                if (!.isInfinity(cast(T)y) || partials.length > 1 && !signbit(l * partials[$-2]) && t == l)
-                    return 0;
-            }
-        }
-        return F.infinity * o;
-    }
 
 public:
 
     ///
-    this(F x)
+    this(T n)
     {
-        partials = scopeBuffer(scopeBufferArray);
-        s = 0;
-        o = 0;
-        if (x) put(x);
+        static if (summation == Summation.Precise)
+        {
+            partials = scopeBuffer(scopeBufferArray);
+            s = 0.0;
+            o = 0;
+            if (n) put(n);
+        }
+        else 
+        static if (summation == Summation.KB2)
+        {
+            s = n;
+            cs = 0.0;
+            ccs = 0.0;
+
+        }
+        else 
+        static if (summation == Summation.KBN)
+        {
+            s = n;
+            c = 0.0;
+        }
+        else
+        static if (summation == Summation.Kahan)
+        {
+            s = n;
+            c = 0.0;
+        }
     }
 
     ///
     @disable this();
 
     // free ScopeBuffer
+    static if (summation == Summation.Precise)
     ~this()
     {
         partials.free;
     }
 
     // copy ScopeBuffer if necessary
+    static if (summation == Summation.Precise)
     this(this)
     {
         auto a = partials[];
@@ -457,66 +528,187 @@ public:
     }
 
     ///Adds $(D x) to the internal partial sums.
-    void put(T _x)
+    void put(T n)
     {
-        F x = _x;
-        if (.isFinite(x))
-        {
-            size_t i;
-            foreach (y; partials[])
+        F x = n;
+        static if (summation == Summation.Precise)
+        {            
+            if (.isFinite(x))
             {
-                F h = x + y;
-                if (.isInfinity(cast(T)h))
+                size_t i;
+                foreach (y; partials[])
                 {
+                    F h = x + y;
+                    if (.isInfinity(cast(T)h))
+                    {
+                        if (fabs(x) < fabs(y))
+                        {
+                            F t = x; x = y; y = t;
+                        }
+                        //h == -F.infinity
+                        if (signbit(h))
+                        {
+                            x += M;
+                            x += M;
+                            o--;
+                        }
+                        //h == +F.infinity
+                        else
+                        {
+                            x -= M;
+                            x -= M;
+                            o++;
+                        }
+                        debug(numeric) assert(x.isFinite);
+                        h = x + y;
+                    }
+                    debug(numeric) assert(h.isFinite);
+                    F l;
                     if (fabs(x) < fabs(y))
                     {
-                        F t = x; x = y; y = t;
+                        F t = h - y;
+                        l = x - t;
                     }
-                    //h == -F.infinity
-                    if (signbit(h))
-                    {
-                        x += M;
-                        x += M;
-                        o--;
-                    }
-                    //h == +F.infinity
                     else
                     {
-                        x -= M;
-                        x -= M;
-                        o++;
+                        F t = h - x;
+                        l = y - t;
                     }
-                    debug(numeric) assert(x.isFinite);
-                    h = x + y;
+                    debug(numeric) assert(l.isFinite);
+                    if (l)
+                    {
+                        partials[i++] = l;
+                    }
+                    x = h;
                 }
-                debug(numeric) assert(h.isFinite);
-                F l;
-                if (fabs(x) < fabs(y))
+                partials.length = i;
+                if (x)
                 {
-                    F t = h - y;
-                    l = x - t;
+                    partials.put(x);
+                }
+            }
+            else
+            {
+                s += x;
+            }
+        }
+        else 
+        static if (summation == Summation.KB2)
+        {
+            static if (isFloatingPoint!F)
+            {
+                F t = s + x;
+                F c = void;
+                if (fabs(s) >= fabs(x))
+                {
+                    F d = s - t;
+                    c = d + x;
                 }
                 else
                 {
-                    F t = h - x;
-                    l = y - t;
+                    F d = x - t;
+                    c = d + s;
                 }
-                debug(numeric) assert(l.isFinite);
-                if (l)
+                s = t;
+                t = cs + c;
+                if (fabs(cs) >= fabs(c))
                 {
-                    partials[i++] = l;
+                    F d = cs - t;
+                    d += c;
+                    ccs += d;
                 }
-                x = h;
+                else
+                {
+                    F d = c - t;
+                    d += cs;
+                    ccs += d;
+                }
+                cs = t;
             }
-            partials.length = i;
-            if (x)
+            else
             {
-                partials.put(x);
+                F t = s + x;
+                if (fabs(s.re) < fabs(x.re))
+                {
+                    auto t_re = s.re;
+                    s.re = x.re;
+                    x.re = t_re;
+                }
+                if (fabs(s.im) < fabs(x.im))
+                {
+                    auto t_im = s.im;
+                    s.im = x.im;
+                    x.im = t_im;
+                }
+                F c = (s-t)+x;
+                s = t;
+                if (fabs(cs.re) < fabs(c.re))
+                {
+                    auto t_re = cs.re;
+                    cs.re = c.re;
+                    c.re = t_re;
+                }
+                if (fabs(cs.im) < fabs(c.im))
+                {
+                    auto t_im = cs.im;
+                    cs.im = c.im;
+                    c.im = t_im;
+                }
+                F d = cs - t;
+                d += c;
+                ccs += d;
+                cs = t;
+            }
+        }
+        else 
+        static if (summation == Summation.KBN)
+        {
+            static if (isFloatingPoint!F)
+            {
+                F t = s + x;
+                if (fabs(s) >= fabs(x))
+                {
+                    F d = s - t;
+                    d += x;
+                    c += d;
+                }
+                else
+                {
+                    F d = x - t;
+                    d += s;
+                    c += d;
+                }
+                s = t;
+            }
+            else
+            {
+                F t = s + x;
+                if (fabs(s.re) < fabs(x.re))
+                {
+                    auto t_re = s.re;
+                    s.re = x.re;
+                    x.re = t_re;
+                }
+                if (fabs(s.im) < fabs(x.im))
+                {
+                    auto t_im = s.im;
+                    s.im = x.im;
+                    x.im = t_im;
+                }
+                F d = s - t;
+                d += x;
+                c += d;
+                s = t;
             }
         }
         else
+        static if (summation == Summation.Kahan)
         {
-            s += x;
+            y = x - c;
+            t = s + y;
+            c = t - s;
+            c -= y;
+            s = t;
         }
     }
 
@@ -526,6 +718,7 @@ public:
     value semantics across iterations (i.e. handling -inf + inf).
     Preconditions: $(D isFinite(x)).
     +/
+    static if (summation == Summation.Precise)
     package void unsafePut(F x)
     in {
         assert(.isFinite(x));
@@ -565,86 +758,106 @@ public:
     unittest {
         import std.math, std.algorithm, std.range;
         auto r = iota(1000).map!(n => 1.7L.pow(n+1) - 1.7L.pow(n));
-        Summator!real s = 0;
+        Summator!real s = 0.0;
         put(s, r);
         s -= 1.7L.pow(1000);
         assert(s.sum() == -1);
     }
 
-    /++
-    Returns the value of the sum, rounded to the nearest representable
-    floating-point number using the round-half-to-even rule.
-    Result can be differ from the exact value on $(D X86), $(D nextDown(proir) <= result &&  result <= nextUp(proir)).
-    +/
+    ///Returns the value of the sum.
     T sum() const
     {
-        debug(numeric)
+        /++
+        Returns the value of the sum, rounded to the nearest representable
+        floating-point number using the round-half-to-even rule.
+        Result can be differ from the exact value on $(D X86), $(D nextDown(proir) <= result &&  result <= nextUp(proir)).
+        +/
+        static if (summation == Summation.Precise)
         {
-            foreach (y; partials[])
+            debug(numeric)
             {
-                assert(y);
-                assert(y.isFinite);
-            }
-            //TODO: Add Non-Overlapping check to std.math
-            import std.algorithm : isSorted, map;
-            assert(partials[].map!(a => fabs(a)).isSorted);
-        }
-
-        if (s)
-            return s;
-        auto parts = partials[];
-        F y = 0;
-        //pick last
-        if (parts.length)
-        {
-            y = parts[$-1];
-            parts = parts[0..$-1];
-        }
-        if (o)
-        {
-            immutable F of = o;
-            if (y && (o == -1 || o == 1)  && signbit(of * y))
-            {
-                // problem case: decide whether result is representable
-                y /= 2;
-                F x = of * M;
-                immutable F h = x + y;
-                F t = h - x;
-                F l = (y - t) * 2;
-                y = h * 2;
-                if (.isInfinity(cast(T)y))
+                foreach (y; partials[])
                 {
-                    // overflow, except in edge case...
-                    x = h + l;
-                    t = x - h;
-                    y = parts.length && t == l && !signbit(l*parts[$-1]) ?
-                        x * 2 :
-                        F.infinity * of;
+                    assert(y);
+                    assert(y.isFinite);
+                }
+                //TODO: Add Non-Overlapping check to std.math
+                import std.algorithm : isSorted, map;
+                assert(partials[].map!(a => fabs(a)).isSorted);
+            }
+
+            if (s)
+                return s;
+            auto parts = partials[];
+            F y = 0.0;
+            //pick last
+            if (parts.length)
+            {
+                y = parts[$-1];
+                parts = parts[0..$-1];
+            }
+            if (o)
+            {
+                immutable F of = o;
+                if (y && (o == -1 || o == 1)  && signbit(of * y))
+                {
+                    // problem case: decide whether result is representable
+                    y /= 2;
+                    F x = of * M;
+                    immutable F h = x + y;
+                    F t = h - x;
+                    F l = (y - t) * 2;
+                    y = h * 2;
+                    if (.isInfinity(cast(T)y))
+                    {
+                        // overflow, except in edge case...
+                        x = h + l;
+                        t = x - h;
+                        y = parts.length && t == l && !signbit(l*parts[$-1]) ?
+                            x * 2 :
+                            F.infinity * of;
+                        parts = null;
+                    }
+                    else if (l)
+                    {
+                        bool _break;
+                        y = partialsReducePred(y, l, parts.length ? parts[$-1] : 0, _break);
+                        if (_break)
+                            parts = null;
+                    }
+                }
+                else
+                {
+                    y = F.infinity * of;
                     parts = null;
                 }
-                else if (l)
-                {
-                    bool _break;
-                    y = partialsReducePred(y, l, parts.length ? parts[$-1] : 0, _break);
-                    if (_break)
-                        parts = null;
-                }
             }
-            else
-            {
-                y = F.infinity * of;
-                parts = null;
-            }
+            return partialsReduce(y, parts);
         }
-        return partialsReduce(y, parts);
+        else 
+        static if (summation == Summation.KB2)
+        {
+            return cast(T)(s+(cs+ccs));
+        }
+        else 
+        static if (summation == Summation.KBN)
+        {
+            return cast(T)(s+c);
+        }
+        else
+        static if (summation == Summation.Kahan)
+        {
+            return cast(T)s;
+        }
     }
 
     version(none)
+    static if (summation == Summation.Precise)
     F partialsSum() const
     {
         debug(numeric) partialsDebug;
         auto parts = partials[];
-        F y = 0;
+        F y = 0.0;
         //pick last
         if (parts.length)
         {
@@ -663,8 +876,9 @@ public:
         )
     {
         static if (is(P == T))
-            return this;
+                return this;
         else
+        static if (summation == Summation.Precise)
         {
             typeof(return) ret = void;
             ret.s = s;
@@ -687,6 +901,31 @@ public:
             }
             return ret;
         }
+        else 
+        static if (summation == Summation.KB2)
+        {
+            typeof(return) ret = void;
+            ret.s = s;
+            ret.cs = cs;
+            ret.ccs = ccs;
+            return ret;
+        }
+        else 
+        static if (summation == Summation.KBN)
+        {
+            typeof(return) ret = void;
+            ret.s = s;
+            ret.c = c;
+            return ret;
+        }
+        else
+        static if (summation == Summation.Kahan)
+        {
+            typeof(return) ret = void;
+            ret.s = s;
+            ret.c = c;
+            return ret;
+        }
     }
 
     ///
@@ -705,59 +944,136 @@ public:
     }
 
     /++
-    $(D cast(F)) operator overloading. Returns $(D cast(T)sum()).
+    $(D cast(C)) operator overloading. Returns $(D cast(C)sum()).
     See also: $(D cast)
     +/
-    F opCast(C)() if (is(Unqual!C == T))
+    C opCast(C)() if (is(Unqual!C == T))
     {
-        return sum();
+        return cast(C)sum();
     }
 
-    ///The assignment operator $(D =) overloading.
-    void opAssign(F rhs)
+    ///Operator overloading.
+    void opAssign(T rhs)
     {
-        partials.length = 0;
-        s = 0;
-        o = 0;
-        if (rhs) put(rhs);
+        static if (summation == Summation.Precise)
+        {
+            partials.length = 0;
+            s = 0.0;
+            o = 0;
+            if (rhs) put(rhs);
+        }
+        else 
+        static if (summation == Summation.KB2)
+        {
+            s = rhs;
+            cs = 0.0;
+            ccs = 0.0;
+        }
+        else 
+        static if (summation == Summation.KBN)
+        {
+            s = rhs;
+            c = 0.0;
+        }
+        else
+        static if (summation == Summation.Kahan)
+        {
+            s = rhs;
+            c = 0.0;
+        }
     }
 
-    /// $(D +=) and $(D -=) operator overloading.
-    void opOpAssign(string op : "+")(F f)
+    ///ditto
+    void opOpAssign(string op : "+")(T rhs)
     {
-        put(f);
+        put(rhs);
     }
 
     ///ditto
     void opOpAssign(string op : "+")(ref const Summator rhs)
     {
-        s += rhs.s;
-        o += rhs.o;
-        foreach (f; rhs.partials[])
-            put(f);
+        static if (summation == Summation.Precise)
+        {
+            s += rhs.s;
+            o += rhs.o;
+            foreach (f; rhs.partials[])
+                put(f);
+        }
+        else 
+        static if (summation == Summation.KB2)
+        {
+            put(rhs.ccs);
+            put(rhs.cs);
+            put(rhs.s);
+        }
+        else 
+        static if (summation == Summation.KBN)
+        {
+            put(rhs.c);
+            put(rhs.s);
+        }
+        else
+        static if (summation == Summation.Kahan)
+        {
+            put(rhs.s);
+        }
     }
 
     ///ditto
-    void opOpAssign(string op : "-")(F f)
+    void opOpAssign(string op : "-")(T rhs)
     {
-        put(-f);
+        static if (summation == Summation.Kahan)
+        {
+            y = 0.0;
+            y -= rhs;
+            y -= c;
+            t = s + y;
+            c = t - s;
+            c -= y;
+            s = t;
+        }
+        else
+        {
+            put(-rhs);
+        }
     }
 
     ///ditto
     void opOpAssign(string op : "-")(ref const Summator rhs)
     {
-        s -= rhs.s;
-        o -= rhs.o;
-        foreach (f; rhs.partials[])
-            put(-f);
+        static if (summation == Summation.Precise)
+        {
+            s -= rhs.s;
+            o -= rhs.o;
+            foreach (f; rhs.partials[])
+                put(-f);
+        }
+        else 
+        static if (summation == Summation.KB2)
+        {
+            put(-rhs.ccs);
+            put(-rhs.cs);
+            put(-rhs.s);
+        }
+        else 
+        static if (summation == Summation.KBN)
+        {
+            put(-rhs.c);
+            put(-rhs.s);
+        }
+        else
+        static if (summation == Summation.Kahan)
+        {
+            this -= rhs.s;
+        }
     }
 
     ///
-    unittest {
+    @nogc nothrow unittest {
         import std.math, std.algorithm, std.range;
         auto r1 = iota(500).map!(a => 1.7L.pow(a+1) - 1.7L.pow(a));
         auto r2 = iota(500, 1000).map!(a => 1.7L.pow(a+1) - 1.7L.pow(a));
-        Summator!real s1 = 0, s2 = 0;
+        Summator!real s1 = 0, s2 = 0.0;
         foreach (e; r1) s1 += e;
         foreach (e; r2) s2 -= e;
         s1 -= s2;
@@ -765,34 +1081,123 @@ public:
         assert(s1.sum() == -1);
     }
 
-    ///Returns $(D true) if current sum is a NaN.
-    bool isNaN() const
-    {
-        return .isNaN(s);
+    @nogc nothrow unittest {
+        import std.typetuple;
+        with(Summation)
+        foreach (summation; TypeTuple!(Kahan, KBN, KB2, Precise))
+        foreach (T; TypeTuple!(float, double, real))
+        {
+            Summator!(T, summation) sum = 1;
+            sum += 3;
+            assert(sum.sum == 4);
+            sum -= 10;
+            assert(sum.sum == -6);
+            Summator!(T, summation) sum2 = 3;
+            sum -= sum2;
+            assert(sum.sum == -9);
+            sum2 = 100;
+            sum += 100;
+            assert(sum.sum == 91);
+            auto sum3 = cast(Summator!(real, summation))sum;
+            assert(sum3.sum == 91);
+            sum = sum2;
+        }
     }
 
-    ///Returns $(D true) if current sum is finite (not infinite or NaN).
-    bool isFinite() const
+    static if (summation == Summation.Precise)
     {
-        if (s)
-            return false;
-        return !overflow;
-    }
+        ///Returns $(D true) if current sum is a NaN.
+        bool isNaN() const
+        {
+            return .isNaN(s);
+        }
 
-    ///Returns $(D true) if current sum is ±∞.
-    bool isInfinity() const
+        ///Returns $(D true) if current sum is finite (not infinite or NaN).
+        bool isFinite() const
+        {
+            if (s)
+                return false;
+            return !overflow;
+        }
+
+        ///Returns $(D true) if current sum is ±∞.
+        bool isInfinity() const
+        {
+            return .isInfinity(s) || overflow();
+        }
+    }
+    else static if(isFloatingPoint!F)
     {
-        return .isInfinity(s) || overflow();
+        ///Returns $(D true) if current sum is a NaN.
+        bool isNaN() const
+        {
+            return .isNaN(sum());
+        }
+
+        ///Returns $(D true) if current sum is finite (not infinite or NaN).
+        bool isFinite() const
+        {
+            return cast(bool).isFinite(sum());
+        }
+
+        ///Returns $(D true) if current sum is ±∞.
+        bool isInfinity() const
+        {
+            return .isInfinity(sum());
+        }
     }
 }
 
-unittest
+///
+unittest {
+    import std.range;
+    import std.algorithm.mutation : swap;
+
+    ///Moving mean
+    class MovingAverage
+    {
+        Summator!double summator;
+        double[] circularBuffer;
+        size_t frontIndex;
+
+        double avg() @property
+        {
+            return summator.sum() / circularBuffer.length;
+        }
+
+        this(double[] buffer)
+        {
+            assert(!buffer.empty);
+            circularBuffer = buffer;
+            summator = 0;
+            .put(summator, buffer);
+        }
+
+        ///operation without rounding
+        void put(double x)
+        {
+            summator += x;
+            swap(circularBuffer[frontIndex++], x);
+            summator -= x;
+            frontIndex %= circularBuffer.length;
+        }
+    }
+
+    /// ma always keeps pricese average of last 1000 elements
+    auto ma = new MovingAverage(iota(0.0, 1000.0).array);
+    assert(ma.avg == (1000*999/2) / 1000.0);
+    /// move by 10 elements
+    put(ma, iota(1000.0, 1010.0));
+    assert(ma.avg == (1010*1009/2 - 10*9/2) / 1000.0);
+}
+
+nothrow unittest
 {
     import std.range;
     import std.algorithm;
     import std.math;
 
-    Summator!double summator = 0;
+    Summator!double summator = 0.0;
 
     enum double M = (cast(double)2) ^^ (double.max_exp - 1);
     Tuple!(double[], double)[] tests = [
@@ -859,7 +1264,7 @@ unittest
             assert(summator.isInfinity() == r.isInfinity());
             assert(s == r || s.isNaN && r.isNaN);                        
         }
-        summator = 0;
+        summator = 0.0;
     }
 }
 
@@ -901,6 +1306,19 @@ else
     }    
 }
 
+template isSummable(F)
+{
+    enum bool isSummable =
+        __traits(compiles,
+        {
+            F a = 0.1, b, c;
+            b = 2.3;
+            c = a + b;
+            c = a - b;
+            a += b;
+            a -= b;
+        });
+}
 
 template isSummable(Range, F)
 {
@@ -908,14 +1326,7 @@ template isSummable(Range, F)
         isInputRange!Range &&
         isImplicitlyConvertible!(Unqual!(ForeachType!Range), F) &&
         !isInfinite!Range &&
-        __traits(compiles,
-        {
-            F a = 0.1, b, c;
-            c = a + b;
-            c = a - b;
-            a += b;
-            a -= b;
-        });
+        isSummable!F;
 }
 
 /++
@@ -958,6 +1369,22 @@ F sumPairwise(Range, F = Unqual!(ForeachType!Range))(Range r, F seed)
 }
 
 
+template sumGenericKahan(Summation summation)
+{
+    T sumGenericKahan(Range, T = Unqual!(ForeachType!Range))(Range r, T s = 0.0)
+        if (summation == Summation.Kahan && isSummable!T
+        || (summation == Summation.KBN || summation == Summation.KB2) 
+            && (isFloatingPoint!T || isComplex!T))
+    {
+        auto sum = Summator!(Unqual!T, summation)(s);
+        foreach (e; r)
+        {
+            sum.put(e);
+        }
+        return sum.sum;
+    }
+}
+
 /++
 $(LUCKY Kahan summation) algorithm.
 +/
@@ -973,26 +1400,12 @@ s := t
 END DO
 ---------------------
 +/
-F sumKahan(Range, F = Unqual!(ForeachType!Range))(Range r, F s = 0)
-{
-    F c = 0.0;
-    F y; // do not declare in the loop (algo can be used for matrixes and etc)
-    F t; // ditto
-    foreach (F x; r)
-    {
-        y = x - c;
-        t = s + y;
-        c = t - s;
-        c -= y;
-        s = t;
-    }
-    return s;
-}
+alias sumKahan = sumGenericKahan!(Summation.Kahan);
 
 
 /++
 $(LUCKY Kahan-Babuška-Neumaier summation algorithm).
-$(D КBN) gives more accurate results then $(D Kahan).
+$(D KBN) gives more accurate results then $(D Kahan).
 +/
 /++
 ---------------------
@@ -1010,63 +1423,12 @@ END DO
 s := s + c
 ---------------------
 +/
-T sumKBN(Range, T = Unqual!(ForeachType!Range))(Range r, T _s = 0)
-    if (isFloatingPoint!T || isComplex!T)
-{
-    alias F = SummationType!T;
-    F s = _s;
-    F c = 0.0;
-    static if (isFloatingPoint!F)
-    {
-        foreach (F x; r)
-        {
-            F t = s + x;
-            if (fabs(s) >= fabs(x))
-            {
-                F d = s - t;
-                d += x;
-                c += d;
-            }
-            else
-            {
-                F d = x - t;
-                d += s;
-                c += d;
-            }
-            s = t;
-        }
-    }
-    else
-    {
-        foreach (F x; r)
-        {
-            F t = s + x;
-            if (fabs(s.re) < fabs(x.re))
-            {
-                auto t_re = s.re;
-                s.re = x.re;
-                x.re = t_re;
-            }
-            if (fabs(s.im) < fabs(x.im))
-            {
-                auto t_im = s.im;
-                s.im = x.im;
-                x.im = t_im;
-            }
-            F d = s - t;
-            d += x;
-            c += d;
-            s = t;
-        }
-    }
-    s += c;
-    return cast(T)s;
-}
+alias sumKBN = sumGenericKahan!(Summation.KBN);
 
 
 /++
 $(LUCKY Generalized Kahan-Babuška summation algorithm), order 2.
-$(D КB2) gives more accurate results then $(D Kahan) and $(D КBN).
+$(D KB2) gives more accurate results then $(D Kahan) and $(D KBN).
 +/
 /++
 ---------------------
@@ -1091,87 +1453,7 @@ END FOR
 RETURN s+cs+ccs
 ---------------------
 +/
-T sumKB2(Range, T = Unqual!(ForeachType!Range))(Range r, T _s = 0)
-    if (isFloatingPoint!T || isComplex!T)
-{
-    alias F = SummationType!T;
-    F s = _s;
-    F cs = 0.0;
-    F ccs = 0.0;
-    static if (isFloatingPoint!F)
-    {
-        foreach (F x; r)
-        {
-            F t = s + x;
-            F c = void;
-            if (fabs(s) >= fabs(x))
-            {
-                F d = s - t;
-                c = d + x;
-            }
-            else
-            {
-                F d = x - t;
-                c = d + s;
-            }
-            s = t;
-            t = cs + c;
-            if (fabs(cs) >= fabs(c))
-            {
-                F d = cs - t;
-                d += c;
-                ccs += d;
-            }
-            else
-            {
-                F d = c - t;
-                d += cs;
-                ccs += d;
-            }
-            cs = t;
-        }
-    }
-    else
-    {
-        foreach (F x; r)
-        {
-            F t = s + x;
-            if (fabs(s.re) < fabs(x.re))
-            {
-                auto t_re = s.re;
-                s.re = x.re;
-                x.re = t_re;
-            }
-            if (fabs(s.im) < fabs(x.im))
-            {
-                auto t_im = s.im;
-                s.im = x.im;
-                x.im = t_im;
-            }
-            F c = (s-t)+x;
-            s = t;
-            if (fabs(cs.re) < fabs(c.re))
-            {
-                auto t_re = cs.re;
-                cs.re = c.re;
-                c.re = t_re;
-            }
-            if (fabs(cs.im) < fabs(c.im))
-            {
-                auto t_im = cs.im;
-                cs.im = c.im;
-                c.im = t_im;
-            }
-            F d = cs - t;
-            d += c;
-            ccs += d;
-            cs = t;
-        }
-    }
-    cs += ccs;
-    s += cs;
-    return cast(T)s;
-}
+alias sumKB2 = sumGenericKahan!(Summation.KB2);
 
 unittest
 {
@@ -1186,6 +1468,7 @@ unittest
         assert(r == ar.fsum!Kahan());
         assert(r == ar.fsum!KBN());
         assert(r == ar.fsum!KB2());
+        assert(r == ar.fsum!Appropriate());
     }
 }
 
@@ -1252,7 +1535,7 @@ F sumPrecise(Range, F = Unqual!(ForeachType!Range))(Range r, F seed = 0)
     }
 }
 
-template Algo(Summation summation)
+template Algo(Range, Summation summation)
 {
     static if (summation == Summation.Fast)
         alias Algo = sumFast;
@@ -1275,5 +1558,39 @@ template Algo(Summation summation)
     static if (summation == Summation.Precise)
         alias Algo = sumPrecise;
     else
+    static if (summation == Summation.Appropriate)
+    {
+        static if (isRandomAccessRange!Range)
+            alias Algo = Algo!(Range, Summation.Pairwise);
+        else
+        static if (isFloatingPoint!(ForeachType!Range) || isComplex!(ForeachType!Range))
+            alias Algo = Algo!(Range, Summation.KBN);
+        else
+            alias Algo = Algo!(Range, Summation.Kahan);
+    }
+    else
     static assert(0);
+}
+
+unittest {
+    static struct UDT
+    {
+        UDT opBinary(string op)(auto ref UDT rhs) const {
+            UDT ret;
+            return ret;
+        }
+        UDT opOpAssign(string op)(auto ref UDT rhs) {
+            return this;
+        }
+        this(double f){}
+        void opAssign(double f){}
+    }
+    import std.range.interfaces;
+    import std.complex : Complex;
+    static assert(__traits(isSame, Algo!(double[], Summation.Appropriate), sumPairwise));
+    static assert(__traits(isSame, Algo!(Complex!double[], Summation.Appropriate), sumPairwise));
+    static assert(__traits(isSame, Algo!(UDT[], Summation.Appropriate), sumPairwise));
+    static assert(__traits(isSame, Algo!(ForwardRange!double, Summation.Appropriate), sumKBN));
+    static assert(__traits(isSame, Algo!(ForwardRange!(Complex!double), Summation.Appropriate), sumKBN));
+    static assert(__traits(isSame, Algo!(ForwardRange!UDT, Summation.Appropriate), sumKahan));
 }

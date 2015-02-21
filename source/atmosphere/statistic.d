@@ -11,8 +11,9 @@ import core.stdc.tgmath;
 
 import std.traits;
 import std.typecons;
-import std.algorithm : fsum = sum;
-
+import std.math : LN2;
+import std.algorithm.iteration : map;
+import std.numeric : sumOfLog2s;
 
 /++
 Minimal sufficient and complete statistic for the generalized inverse Gaussin disributoin.
@@ -32,10 +33,9 @@ struct GeneralizedInverseGaussinStatistic(T)
 	in {
 	}
 	body {
-		import std.algorithm : map;
 		immutable n = sample.length;
-		mean = sample.fsum() / n;
-		meani = sample.map!"1/a".fsum() / n;
+		mean = sample.wfsum() / n;
+		meani = sample.map!"1/a".wfsum() / n;
 		meanl = T(LN2) * sample.sumOfLog2s() / n;
 	}
 
@@ -45,8 +45,7 @@ struct GeneralizedInverseGaussinStatistic(T)
 		assert(positiveSampleCheck(sample, weights));
 	}
 	body {
-		import std.algorithm : map, zip;
-		immutable n = weights.fsum;
+		immutable n = weights.wfsum;
 		mean = sample.wfsum(weights) / n;
 		meani = sample.map!"1/a".wfsum(weights) / n;
 		meanl = T(LN2) * sample.map!log2.wfsum(weights) / n;
@@ -61,6 +60,10 @@ struct GeneralizedInverseGaussinStatistic(T)
 	}
 }
 
+unittest {
+	alias st = GeneralizedInverseGaussinStatistic!double;
+}
+
 
 struct GeneralizedGammaFixedPowerStatistic(T)
 	if(isFloatingPoint!T)
@@ -69,8 +72,6 @@ struct GeneralizedGammaFixedPowerStatistic(T)
 	T meanp;
 	///`Σ weights[j] * log(sample[j]) / Σ weights[j]`
 	T meanl;
-	///`Σ weights[j] * log(sample[j]) * sample[j] ^^ power / sample[j] / Σ weights[j]`
-	T meanlp;
 
 	///
 	this(T power, in T[] sample)
@@ -79,9 +80,8 @@ struct GeneralizedGammaFixedPowerStatistic(T)
 	}
 	body {
 		immutable n = sample.length;
-		mean = sample.fsum() / n;
-		meani = sample.map!"1/a".fsum() / n;
-		meanl = T(LN2) * sample.sumOfLog2s() / n;
+		meanp = sample.map!(x => x.pow(power)).wfsum / n;
+		meanl = T(LN2) * sample.map!log2.wfsum / n;
 	}
 
 	///
@@ -90,32 +90,109 @@ struct GeneralizedGammaFixedPowerStatistic(T)
 		assert(positiveSampleCheck(sample, weights));
 	}
 	body {
-		Summator!T n = 0, a = 0, b = 0, c = 0;
-		foreach(i, x; sample)
-		{
-			immutable w = weights[i];
-			immutable l = log2(x);
-			immutable y = x.pow(power);
-			n += w;
-			a += w * y;
-			b += w * l;
-			c += w * (l * y);
-		}
-		b *= T(LN2);
-		c *= T(LN2);
-		meanp = a / n;
-		meanl = b / n;
-		meanlp = c / n;
+		immutable n = weights.wfsum;
+		meanp = sample.map!(x => x.pow(power)).wfsum(weights) / n;
+		meanl = T(LN2) * sample.map!log2.wfsum(weights) / n;
 	}
 
 	///
-	this(T mean, T meani, T meanl)
+	this(T mean, T meanl, T meanlp)
+	{
+		this.meanp = meanp;
+		this.meanl = meanl;
+	}
+}
+
+unittest {
+	alias st = GeneralizedGammaFixedPowerStatistic!double;
+}
+
+
+struct GammaStatistic(T)
+	if(isFloatingPoint!T)
+{
+	///`Σ weights[j] * sample[j] / Σ weights[j]`
+	T mean;
+	///`Σ weights[j] * log(sample[j]) / Σ weights[j]`
+	T meanl;
+
+	///
+	this(in T[] sample)
+	in {
+		assert(positiveSampleCheck(sample));
+	}
+	body {
+		immutable n = sample.length;
+		mean = sample.wfsum / n;
+		meanl = T(LN2) * sample.sumOfLog2s / n;
+	}
+
+	///
+	this(in T[] sample, in T[] weights)
+	in {
+		assert(positiveSampleCheck(sample, weights));
+	}
+	body {
+		immutable n = weights.wfsum;
+		mean = sample.wfsum(weights) / n;
+		meanl = T(LN2) * sample.map!log2.wfsum(weights) / n;
+	}
+
+	///
+	this(T mean, T meanl)
 	{
 		this.mean = mean;
+		this.meanl = meanl;
+	}
+}
+
+unittest {
+	alias st = GammaStatistic!double;
+}
+
+
+struct InverseGammaStatistic(T)
+	if(isFloatingPoint!T)
+{
+	///`Σ weights[j] / sample[j] / Σ weights[j]`
+	T meani;
+	///`Σ weights[j] * log(1/sample[j]) / Σ weights[j]`
+	T meanl;
+
+	///
+	this(in T[] sample)
+	in {
+		assert(positiveSampleCheck(sample));
+	}
+	body {
+		immutable n = sample.length;
+		meani = sample.map!"1/a".wfsum / n;
+		meanl = T(LN2) * sample.sumOfLog2s / n;
+	}
+
+	///
+	this(in T[] sample, in T[] weights)
+	in {
+		assert(positiveSampleCheck(sample, weights));
+	}
+	body {
+		immutable n = weights.wfsum;
+		meani = sample.map!"1/a".wfsum(weights) / n;
+		meanl = T(LN2) * sample.map!log2.wfsum(weights) / n;
+	}
+
+	///
+	this(T meani, T meanl)
+	{
 		this.meani = meani;
 		this.meanl = meanl;
 	}
 }
+
+unittest {
+	alias st = InverseGammaStatistic!double;
+}
+
 
 bool positiveSampleCheck(T)(in T[] sample)
 {
@@ -133,14 +210,30 @@ bool positiveSampleCheck(T)(in T[] sample, in T[] weights)
 	&& weights.any!"a > 0";
 }
 
-private T wfsum(Range)(in Range sample, in T[] weights)
+package auto wfsum(Range)(Range sample)
 {
+	import atmosphere.summation;
+	return sample.fsum!(Summation.KB2);
+}
+
+unittest {
+	assert(wfsum([1.0, 2]) == 3);
+}
+
+package T wfsum(Range, T)(Range sample, in T[] weights)
+{
+	import atmosphere.summation;
+	import std.range.primitives;
 	assert(sample.length == weights.length);
-	Summator!T s = 0;
-	foreach(x; sample)
+	Summator!(T, Summation.KB2) s = 0;
+	foreach(i, w; weights)
 	{
-		s += x * weights.front;
-		weights.popFront;
+		s += sample.front * w;
+		sample.popFront;
 	}
 	return s.sum;
+}
+
+unittest {
+	assert(wfsum([1.0, 2], [3.0, 4]) == 11);
 }
