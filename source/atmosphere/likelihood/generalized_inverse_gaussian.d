@@ -12,8 +12,7 @@ import core.stdc.tgmath;
 import std.traits;
 import std.typecons;
 import std.math : LN2;
-import atmosphere.utilities : sumOfLog2s, dotProduct;
-
+version(none):
 /++
 Normalized log-likelihood function of the generalized inverse Gaussian distribution.
 Params:
@@ -28,6 +27,7 @@ T generalizedInverseGaussianLikelihood(T)(T lambda, T eta, T omega, in T[] sampl
 	if(isFloatingPoint!T)
 {
 	import std.algorithm : sum, map;
+	import atmosphere.summation : sumOfLog2s;
 	immutable n = sample.length;
 	immutable one = sample.sum() / n;
 	immutable mone = sample.map!"1/a".sum() / n;

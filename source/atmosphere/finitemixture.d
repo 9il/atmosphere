@@ -59,6 +59,8 @@ body {
 ///
 unittest
 {
+	import std.algorithm : map;
+	import std.range : sequence;
 	import atmosphere.pdf;
 	import atmosphere.utilities;
 	auto pdfs = sequence!"n+1"().map!(shape => GammaSPDF!real(shape, 1));

@@ -56,7 +56,6 @@ import core.stdc.tgmath;
 
 import atmosphere.mixture;
 import atmosphere.internal;
-import atmosphere.utilities : sumOfLog2s;
 import std.algorithm;
 import std.range;
 import std.numeric;

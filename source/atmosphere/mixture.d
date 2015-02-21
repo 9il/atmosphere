@@ -41,11 +41,11 @@ module atmosphere.mixture;
 import core.stdc.tgmath;
 
 import atmosphere.internal;
-import atmosphere.utilities : sumOfLog2s;
 import std.range;
 import std.traits;
 import std.numeric : dotProduct;
 import std.algorithm;
+import std.typecons;
 
 import atmosphere.internal;
 
@@ -633,7 +633,8 @@ class CoordinateDescent(alias Gradient, T) : MixtureOptimizer!T
 
 	final override void eval(scope bool delegate(T a, T b) @nogc nothrow findRootTolerance = null)
 	{
-		coordinateDescentIteration!(Gradient, T)(cast(Matrix!(const T))_featuresT.matrix, _weights, mixture, pi[0.._featuresT.matrix.width], xi[0.._featuresT.matrix.width], gamma[0.._featuresT.matrix.width], findRootTolerance is null ? (a, b) => false : findRootTolerance);
+		immutable n = _featuresT.matrix.width;
+		coordinateDescentIteration!(Gradient, T)(cast(Matrix!(const T))_featuresT.matrix, _weights, _mixture[0..n], pi[0..n], xi[0..n], gamma[0..n], findRootTolerance is null ? (a, b) => false : findRootTolerance);
 		updateMixture;
 	}
 
@@ -878,6 +879,6 @@ unittest {
 
 package T _likelihood_(T)(in T[] mixture)
 {
-	import atmosphere.utilities : sumOfLog2s;
+	import atmosphere.summation : sumOfLog2s;
 	return T(LN2) * mixture.sumOfLog2s / mixture.length;
 }

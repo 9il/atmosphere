@@ -12,8 +12,8 @@ import core.stdc.tgmath;
 import std.traits;
 import std.typecons;
 import std.math : LN2, signbit, isNormal;
-import atmosphere.utilities : sumOfLog2s, dotProduct;
 
+version(none):
 /++
 Estimates parameters of the generalized inverse Gaussian distribution.
 Params:
@@ -141,7 +141,7 @@ See_Also: `distribution.params.GIGEtaOmega`
 +/
 Tuple!(T, "lambda", T, "eta", T, "omega") 
 generalizedInverseGaussianEstimate(T, OmegaBoundsFun)
-	(T[2] lambdaBounds, scope OmegaBoundsFun omegaBoundsFun, in T sample[])
+	(T[2] lambdaBounds, scope OmegaBoundsFun omegaBoundsFun, in T[] sample)
 	if(isFloatingPoint!T)
 in {
 	import std.algorithm : all;
@@ -169,7 +169,7 @@ See_Also: `distribution.params.GIGEtaOmega`
 +/
 Tuple!(T, "lambda", T, "eta", T, "omega") 
 generalizedInverseGaussianEstimate(T, OmegaBoundsFun)
-	(T[2] lambdaBounds, scope OmegaBoundsFun omegaBoundsFun, in T sample[], in T weights[])
+	(T[2] lambdaBounds, scope OmegaBoundsFun omegaBoundsFun, in T[] sample, in T[] weights)
 	if(isFloatingPoint!T)
 in {
 	import std.algorithm : all, any;

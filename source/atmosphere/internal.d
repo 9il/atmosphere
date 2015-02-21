@@ -69,12 +69,12 @@ Preconditions:
 void gradientDescentIteration(alias grad, T)
 	(
 		Matrix!(const T) WTransposed,
-		T[] p,
+		scope T[] p,
 		in T[] mixture,
-		T[] pi,
-		T[] xi,
-		T[] gamma,
-		T[] c,
+		scope T[] pi,
+		scope T[] xi,
+		scope T[] gamma,
+		scope T[] c,
 		in bool delegate(T, T) @nogc nothrow tolerance = (a, b) => false,
 	)
 in
@@ -127,11 +127,11 @@ Preconditions:
 void gradientDescentIterationPartial(alias PartialDerivative, T)
 	(
 		Matrix!(const T) WTransposed,
-		T[] p,
-		T[] mixture,
-		T[] pi,
-		T[] xi,
-		T[] c,
+		scope T[] p,
+		in T[] mixture,
+		scope T[] pi,
+		scope T[] xi,
+		scope T[] c,
 		in bool delegate(T, T) @nogc nothrow tolerance = (a, b) => false,
 	)
 in
@@ -143,7 +143,8 @@ in
 	assert(WTransposed.width == pi.length);
 }
 body
-{	
+{
+	import std.functional : unaryFun;
 	//gemv(WTransposed.transposed, p, mixture);
 	// xi = grad(mixture);
 	foreach(j; 0..mixture.length)
@@ -188,11 +189,11 @@ Preconditions:
 void coordinateDescentIteration(alias grad, T)
 	(
 		Matrix!(const T) WTransposed,
-		T[] p,
-		T[] mixture,
-		T[] pi,
-		T[] xi,
-		T[] gamma,
+		scope T[] p,
+		scope T[] mixture,
+		scope T[] pi,
+		scope T[] xi,
+		scope T[] gamma,
 		in bool delegate(T, T) @nogc nothrow tolerance = (a, b) => false,
 	)
 in
@@ -251,9 +252,9 @@ Preconditions:
 void coordinateDescentIterationPartial(alias PartialDerivative, T)
 	(
 		Matrix!(const T) WTransposed,
-		T[] p,
-		T[] mixture,
-		T[] pi,
+		scope T[] p,
+		scope T[] mixture,
+		scope T[] pi,
 		in bool delegate(T, T) @nogc nothrow tolerance = (a, b) => false,
 	)
 in
@@ -302,10 +303,10 @@ Preconditions:
 void EMIteration(alias grad, T)
 	(
 		Matrix!(const T) WTransposed,
-		T[] p,
+		scope T[] p,
 		in T[] mixture,
-		T[] pi,
-		T[] c,
+		scope T[] pi,
+		scope T[] c,
 	)
 in
 {
@@ -337,10 +338,10 @@ T gRoot
 	)
 	(
 		in T[] mixture,
-		T[] pi,
+		scope T[] pi,
 		in T[] columni,
-		T[] xi,
-		T[] gamma,
+		scope T[] xi,
+		scope T[] gamma,
 		in bool delegate(T, T) @nogc nothrow tolerance = (a, b) => false,
 	)
 {
@@ -379,7 +380,7 @@ T gRoot
 	)
 	(
 		in T[] mixture,
-		T[] pi,
+		scope T[] pi,
 		in T[] columni,
 		in bool delegate(T, T) @nogc nothrow tolerance = (a, b) => false,
 	)

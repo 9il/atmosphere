@@ -35,6 +35,7 @@ interface DistributionRNG(T)
 ///
 unittest
 {
+	import std.algorithm.iteration : map;
 	class NormalRNG : DistributionRNG!double
 	{
 		double front() @property
@@ -169,6 +170,7 @@ struct GammaSRNG(T, UniformRNG = Random)
 ///
 unittest
 {
+	import std.algorithm.iteration : map;
 	import std.range;
 	auto rng = GammaSRNG!double(rndGen, 1.1, 1.1);
 	auto sample = rng.map!(x => x + 4).take(9).array;
@@ -216,6 +218,7 @@ struct InverseGammaSRNG(T, UniformRNG = Random)
 ///
 unittest
 {
+	import std.algorithm.iteration : map;
 	import std.range;
 	auto rng = InverseGammaSRNG!double(rndGen, 1.1, 1.1);
 	auto sample = rng.map!(x => x + 4).take(9).array;
@@ -265,6 +268,7 @@ struct GeneralizedGammaSRNG(T, UniformRNG = Random)
 ///
 unittest
 {
+	import std.algorithm.iteration : map;
 	import std.range;
 	auto rng = GeneralizedGammaSRNG!double(rndGen, 1.1, 1.1, 1.1);
 	auto sample = rng.map!(x => x + 4).take(9).array;
@@ -312,6 +316,7 @@ struct InverseGaussianSRNG(T, UniformRNG = Random)
 ///
 unittest
 {
+	import std.algorithm.iteration : map;
 	import std.range;
 	auto rng = InverseGaussianSRNG!double(rndGen, 1.1, 1.1);
 	auto sample = rng.map!(x => x + 4).take(9).array;
@@ -403,6 +408,7 @@ struct ProperGeneralizedInverseGaussianSRNG(T, UniformRNG = Random)
 ///
 unittest
 {
+	import std.algorithm.iteration : map;
 	import std.range;
 	auto rng = ProperGeneralizedInverseGaussianSRNG!double(rndGen, -2, 5.0, 2);
 	auto sample = rng.map!(x => x + 4).take(9).array;
@@ -458,6 +464,7 @@ final class GeneralizedInverseGaussianRNG(T, UniformRNG = Random) : Distribution
 ///
 unittest
 {
+	import std.algorithm.iteration : map;
 	import std.range;
 	auto rng = new GeneralizedInverseGaussianRNG!double(rndGen, -2, 5.0, 2);
 	auto sample = rng.map!(x => x + 4).take(9).array;
@@ -491,6 +498,7 @@ final class VarianceGammaRNG(T, UniformRNG = Random) : NormalVarianceMeanMixture
 ///
 unittest
 {
+	import std.algorithm.iteration : map;
 	import std.range;
 	auto rng = new VarianceGammaRNG!double(rndGen, 1.1, 1.1, 1.1);
 	auto sample = rng.map!(x => x + 4).take(9).array;
@@ -524,6 +532,7 @@ final class HyperbolicAsymmetricTRNG(T, UniformRNG = Random) : NormalVarianceMea
 ///
 unittest
 {
+	import std.algorithm.iteration : map;
 	import std.range;
 	auto rng = new HyperbolicAsymmetricTRNG!double(rndGen, 1.1, 1.1, 1.1);
 	auto sample = rng.map!(x => x + 4).take(9).array;
@@ -558,6 +567,7 @@ final class GeneralizedVarianceGammaRNG(T, UniformRNG = Random) : NormalVariance
 ///
 unittest
 {
+	import std.algorithm.iteration : map;
 	import std.range;
 	auto rng = new GeneralizedVarianceGammaRNG!double(rndGen, 1.1, 1.1, 1.1, 1.1);
 	auto sample = rng.map!(x => x + 4).take(9).array;
@@ -591,6 +601,7 @@ final class NormalInverseGaussianRNG(T, UniformRNG = Random) : NormalVarianceMea
 ///
 unittest
 {
+	import std.algorithm.iteration : map;
 	import std.range;
 	auto rng = new NormalInverseGaussianRNG!double(rndGen, 1.1, 1.1, 1.1);
 	auto sample = rng.map!(x => x + 4).take(9).array;
@@ -627,6 +638,7 @@ final class ProperGeneralizedHyperbolicRNG(T, UniformRNG = Random) : NormalVaria
 ///
 unittest
 {
+	import std.algorithm.iteration : map;
 	import std.range;
 	auto rng = new ProperGeneralizedHyperbolicRNG!double(rndGen, 1.1, 1.1, 1.1, 1.1);
 	auto sample = rng.map!(x => x + 4).take(9).array;
@@ -663,6 +675,7 @@ final class GeneralizedHyperbolicRNG(T, UniformRNG = Random) : NormalVarianceMea
 ///
 unittest
 {
+	import std.algorithm.iteration : map;
 	import std.range;
 	auto rng = new GeneralizedHyperbolicRNG!double(rndGen, 1.1, 1.1, 1.1, 1.1);
 	auto sample = rng.map!(x => x + 4).take(9).array;

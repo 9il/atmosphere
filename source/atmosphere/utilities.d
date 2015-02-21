@@ -16,6 +16,8 @@ import std.compiler;
 
 import std.math : isFinite, isIdentical, approxEqual, isNaN, NaN;
 
+package:
+
 version(LDC)
 {
 	import ldc.intrinsics;
@@ -27,43 +29,6 @@ package:
 
 import cblas;
 import simple_matrix;
-
-
-/**
-Computes accurate sum of binary logarithms of input range `r`.
-Will be avalible in std.numeric with with DMD 2.068.
- */
-public // @@BUG@@
-ForeachType!Range sumOfLog2s(Range)(Range r) 
-{
-	version(LDC)
-		alias log2 = llvm_log2;
-	static if(version_minor < 67)
-		import core.stdc.tgmath : frexp;
-	else
-		import std.math : frexp; 
-	import std.traits : Unqual;
-
-    long exp = 0;
-    Unqual!(typeof(return)) x = 1; 
-    foreach (e; r)
-    {
-        if (e < 0)
-            return typeof(return).nan;
-        int lexp = void;
-		static if(version_minor < 68)
-    	    x *= frexp(e, &lexp);
-    	else
-    	    x *= frexp(e, lexp);
-        exp += lexp;
-        if (x < 0.5) 
-        {
-            x *= 2;
-            exp--;
-        }
-    }
-    return exp + log2(x);
-}
 
 version(LDC)
 {
@@ -392,58 +357,6 @@ else
 		}
 		return ret;
 	}
-}
-
-// DAC: These values are Bn / n for n=2,4,6,8,10,12,14.
-immutable real [7] Bn_n  = [
-    1.0L/(6*2), -1.0L/(30*4), 1.0L/(42*6), -1.0L/(30*8),
-    5.0L/(66*10), -691.0L/(2730*12), 7.0L/(6*14) ];
-
-/** Log Minus Digamma function
-*
-*  logmdigamma(x) = log(x) - digamma(x)
-*  Will be avalible in std.math with with DMD 2.068.
-*/
-real logmdigamma(real x)
-{
-	import std.math : poly;
-	version(LDC)
-		alias log2 = llvm_log2;
-    if (x <= 0.0)
-    {
-        if (x == 0.0)
-        {
-            return real.infinity;
-        }
-        return real.nan;
-    }
-
-    real s = x;
-    real w = 0.0;
-    real y, z;
-    while ( s < 10.0 ) {
-        w += 1.0/s;
-        s += 1.0;
-    }
-
-    if ( s < 1.0e17 ) {
-        z = 1.0/(s * s);
-        y = z * poly(z, Bn_n);
-    } else
-        y = 0.0;
-
-    return x == s ? y + 0.5L/s : (log(x/s) + 0.5L/s + y + w);
-}
-
-unittest {
-	import std.mathspecial : digamma;
-    assert(logmdigamma(-5.0).isNaN());
-    assert(isIdentical(logmdigamma(NaN(0xABC)), NaN(0xABC)));
-    assert(logmdigamma(0.0) == real.infinity);
-    for(auto x = 0.01; x < 1.0; x += 0.1)
-        assert(approxEqual(digamma(x), log(x) - logmdigamma(x)));
-    for(auto x = 1.0; x < 15.0; x += 1.0)
-        assert(approxEqual(digamma(x), log(x) - logmdigamma(x)));
 }
 
 /**

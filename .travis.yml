@@ -1,5 +1,8 @@
 language: d
 
+d:
+  - dmd-2.067.0-b2
+
 before_install:
   - sudo apt-get update
   - sudo apt-get install liblapack-dev

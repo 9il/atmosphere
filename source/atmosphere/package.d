@@ -53,6 +53,7 @@ unittest
 	import core.time;
 	import std.random;
 	import std.range;
+	import std.algorithm;
 	import std.stdio;
 	import atmosphere;
 
