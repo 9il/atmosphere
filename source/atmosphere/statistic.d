@@ -15,6 +15,7 @@ import std.math : LN2;
 import std.algorithm.iteration : map;
 import std.numeric : sumOfLog2s;
 
+
 /++
 Minimal sufficient and complete statistic for the generalized inverse Gaussin disributoin.
 +/
@@ -65,6 +66,9 @@ unittest {
 }
 
 
+/++
+Minimal sufficient and complete statistic for the generalized gamma disributoin with fixed `power` parameter.
++/
 struct GeneralizedGammaFixedPowerStatistic(T)
 	if(isFloatingPoint!T)
 {
@@ -108,6 +112,9 @@ unittest {
 }
 
 
+/++
+Minimal sufficient and complete statistic for the gamma disributoin.
++/
 struct GammaStatistic(T)
 	if(isFloatingPoint!T)
 {
@@ -151,12 +158,15 @@ unittest {
 }
 
 
+/++
+Minimal sufficient and complete statistic for the inverse-gamma disributoin.
++/
 struct InverseGammaStatistic(T)
 	if(isFloatingPoint!T)
 {
 	///`Σ weights[j] / sample[j] / Σ weights[j]`
 	T meani;
-	///`Σ weights[j] * log(1/sample[j]) / Σ weights[j]`
+	///`Σ weights[j] * log(sample[j]) / Σ weights[j]`
 	T meanl;
 
 	///
@@ -189,6 +199,8 @@ struct InverseGammaStatistic(T)
 	}
 }
 
+package:
+
 unittest {
 	alias st = InverseGammaStatistic!double;
 }
@@ -210,7 +222,7 @@ bool positiveSampleCheck(T)(in T[] sample, in T[] weights)
 	&& weights.any!"a > 0";
 }
 
-package auto wfsum(Range)(Range sample)
+auto wfsum(Range)(Range sample)
 {
 	import atmosphere.summation;
 	return sample.fsum!(Summation.KB2);
@@ -220,7 +232,7 @@ unittest {
 	assert(wfsum([1.0, 2]) == 3);
 }
 
-package T wfsum(Range, T)(Range sample, in T[] weights)
+T wfsum(Range, T)(Range sample, in T[] weights)
 {
 	import atmosphere.summation;
 	import std.range.primitives;
