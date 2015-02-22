@@ -37,7 +37,7 @@ struct GeneralizedInverseGaussinStatistic(T)
 		immutable n = sample.length;
 		mean = sample.wfsum() / n;
 		meani = sample.map!"1/a".wfsum() / n;
-		meanl = T(LN2) * sample.sumOfLog2s() / n;
+		meanl = T(LN2) * sample.map!(x => cast(Unqual!T)x).sumOfLog2s() / n;
 	}
 
 	///
@@ -131,7 +131,7 @@ struct GammaStatistic(T)
 	body {
 		immutable n = sample.length;
 		mean = sample.wfsum / n;
-		meanl = T(LN2) * sample.sumOfLog2s / n;
+		meanl = T(LN2) * sample.map!(x => cast(Unqual!T)x).sumOfLog2s / n;
 	}
 
 	///
@@ -177,7 +177,7 @@ struct InverseGammaStatistic(T)
 	body {
 		immutable n = sample.length;
 		meani = sample.map!"1/a".wfsum / n;
-		meanl = T(LN2) * sample.sumOfLog2s / n;
+		meanl = T(LN2) * sample.map!(x => cast(Unqual!T)x).sumOfLog2s / n;
 	}
 
 	///

@@ -880,5 +880,5 @@ unittest {
 package T _likelihood_(T)(in T[] mixture)
 {
 	import atmosphere.summation : sumOfLog2s;
-	return T(LN2) * mixture.sumOfLog2s / mixture.length;
+	return T(LN2) * mixture.map!(x => cast(Unqual!T)x).sumOfLog2s / mixture.length;
 }
