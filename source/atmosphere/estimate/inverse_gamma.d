@@ -77,13 +77,10 @@ Tuple!(T, "shape", T, "scale")
 inverseGammaEstimate(T)(InverseGammaStatistic!T stat)
 	if(isFloatingPoint!T)
 {
-	import std.mathspecial: logmdigamma;
-	import std.numeric: findRoot;
+	import atmosphere.math: logmdigammaInverse;
 	with(stat)
 	{
-		immutable y = log(meani) + meanl;
-		//TODO optmize interval
-		immutable shape = findRoot((T x) => logmdigamma(x)-y, T.min_normal, T.max);
+		immutable shape = logmdigammaInverse(log(meani) + meanl);
 		immutable scale = shape / meani;
 		return typeof(return)(shape, scale);		
 	}

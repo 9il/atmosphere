@@ -75,13 +75,10 @@ Tuple!(T, "shape", T, "scale")
 generalizedGammaFixedPowerEstimate(T)(T power, GeneralizedGammaFixedPowerStatistic!T stat)
 	if(isFloatingPoint!T)
 {
-	import std.mathspecial: logmdigamma;
-	import std.numeric: findRoot;
+	import atmosphere.math: logmdigammaInverse;
 	with(stat)
 	{
-		immutable y = log(meanp) - power * meanl;
-		//TODO optmize interval
-		immutable shape = findRoot((T x) => logmdigamma(x)-y, T.min_normal, T.max);
+		immutable shape = logmdigammaInverse(log(meanp) - power * meanl);
 		immutable scale = pow(meanp / shape, 1 / power);
 		return typeof(return)(shape, scale);		
 	}
