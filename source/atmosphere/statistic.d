@@ -98,13 +98,6 @@ struct GeneralizedGammaFixedPowerStatistic(T)
 		meanp = sample.map!(x => x.pow(power)).wfsum(weights) / n;
 		meanl = T(LN2) * sample.map!log2.wfsum(weights) / n;
 	}
-
-	///
-	this(T mean, T meanl, T meanlp)
-	{
-		this.meanp = meanp;
-		this.meanl = meanl;
-	}
 }
 
 unittest {
@@ -144,13 +137,6 @@ struct GammaStatistic(T)
 		mean = sample.wfsum(weights) / n;
 		meanl = T(LN2) * sample.map!log2.wfsum(weights) / n;
 	}
-
-	///
-	this(T mean, T meanl)
-	{
-		this.mean = mean;
-		this.meanl = meanl;
-	}
 }
 
 unittest {
@@ -189,13 +175,6 @@ struct InverseGammaStatistic(T)
 		immutable n = weights.wfsum;
 		meani = sample.map!"1/a".wfsum(weights) / n;
 		meanl = T(LN2) * sample.map!log2.wfsum(weights) / n;
-	}
-
-	///
-	this(T meani, T meanl)
-	{
-		this.meani = meani;
-		this.meanl = meanl;
 	}
 }
 
