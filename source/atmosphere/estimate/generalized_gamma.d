@@ -78,8 +78,8 @@ generalizedGammaFixedPowerEstimate(T)(T power, GeneralizedGammaFixedPowerStatist
 	import atmosphere.math: logmdigammaInverse;
 	with(stat)
 	{
-		immutable shape = logmdigammaInverse(log(meanp) - power * meanl);
-		immutable scale = pow(meanp / shape, 1 / power);
+		immutable T shape = logmdigammaInverse(log(meanp) - power * meanl);
+		immutable T scale = pow(meanp / shape, 1 / power);
 		return typeof(return)(shape, scale);		
 	}
 }

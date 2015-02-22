@@ -11,9 +11,11 @@ import core.stdc.tgmath;
 
 import std.traits;
 import std.typecons;
-import std.math : LN2, signbit, isNormal;
+import std.math : signbit, isNormal;
 
+import atmosphere.statistic: GeneralizedInverseGaussinStatistic;
 version(none):
+
 /++
 Estimates parameters of the generalized inverse Gaussian distribution.
 Params:
@@ -27,11 +29,7 @@ Tuple!(T, "lambda", T, "eta", T, "omega")
 generalizedInverseGaussianEstimate(T)
 	(in T[] sample, T[2] lambdaBounds = [-25, 25], T[2] omegaBounds = [1e-10, 1e10])
 	if(isFloatingPoint!T)
-in {
-	import std.algorithm : all;
-	assert(sample.all!"a > 0 && isNormal(a)");
-}
-body {
+{
 	return generalizedInverseGaussianEstimate!T(lambdaBounds, (T lambda, T one, T mone, T dzero){ return omegaBounds; }, sample);
 }
 
@@ -81,14 +79,7 @@ Tuple!(T, "lambda", T, "eta", T, "omega")
 generalizedInverseGaussianEstimate(T)
 	(in T[] sample, in T[] weights, T[2] lambdaBounds = [-25, 25], T[2] omegaBounds = [1e-10, 1e10])
 	if(isFloatingPoint!T)
-in {
-	import std.algorithm : all, any;
-	assert(weights.length == sample.length);
-	assert(sample.all!"a > 0 && isNormal(a)");
-	assert(weights.all!"a >= 0 && isFinite(a)");
-	assert(weights.any!"a > 0");
-}
-body {
+{
 	return generalizedInverseGaussianEstimate!T(lambdaBounds, (T lambda, T one, T mone, T dzero) => omegaBounds, sample, weights);
 }
 
@@ -124,10 +115,10 @@ See_Also: `distribution.params.GIGEtaOmega`
 +/
 Tuple!(T, "lambda", T, "eta", T, "omega") 
 generalizedInverseGaussianEstimate(T)
-	(T one, T mone, T dzero, T[2] lambdaBounds = [-25, 25], T[2] omegaBounds = [1e-10, 1e10])
+	(GeneralizedInverseGaussinStatistic!T, T[2] lambdaBounds = [-25, 25], T[2] omegaBounds = [1e-10, 1e10])
 	if(isFloatingPoint!T)
 {
-	return generalizedInverseGaussianEstimate!T(lambdaBounds, (T lambda, T one, T mone, T dzero) => omegaBounds, one, mone, dzero);
+	return generalizedInverseGaussianEstimate!T(lambdaBounds, (T lambda, GeneralizedInverseGaussinStatistic!T stat) => omegaBounds, stat);
 }
 
 /++
@@ -143,11 +134,7 @@ Tuple!(T, "lambda", T, "eta", T, "omega")
 generalizedInverseGaussianEstimate(T, OmegaBoundsFun)
 	(T[2] lambdaBounds, scope OmegaBoundsFun omegaBoundsFun, in T[] sample)
 	if(isFloatingPoint!T)
-in {
-	import std.algorithm : all;
-	assert(sample.all!"a > 0 && isNormal(a)");
-}
-body {
+{
 
 	import std.algorithm : sum, map;
 	immutable n = sample.length;
@@ -171,14 +158,7 @@ Tuple!(T, "lambda", T, "eta", T, "omega")
 generalizedInverseGaussianEstimate(T, OmegaBoundsFun)
 	(T[2] lambdaBounds, scope OmegaBoundsFun omegaBoundsFun, in T[] sample, in T[] weights)
 	if(isFloatingPoint!T)
-in {
-	import std.algorithm : all, any;
-	assert(weights.length == sample.length);
-	assert(sample.all!"a > 0 && isNormal(a)");
-	assert(weights.all!"a >= 0 && isFinite(a)");
-	assert(weights.any!"a > 0");
-}
-body {
+{
 
 	import std.algorithm : sum, map;
 	immutable n = weights.sum;
@@ -252,11 +232,7 @@ Tuple!(T, "lambda", T, "eta", T, "omega")
 generalizedInverseGaussianEstimate(T)
 	(T lambda, T[2] omegaBounds, in T[] sample)
 	if(isFloatingPoint!T)
-in {
-	import std.algorithm : all;
-	assert(sample.all!"a > 0 && isNormal(a)");
-}
-body {
+{
 	import std.algorithm : sum, map;
 	immutable n = sample.length;
 	immutable one = sample.sum / n;
@@ -278,14 +254,7 @@ Tuple!(T, "lambda", T, "eta", T, "omega")
 generalizedInverseGaussianEstimate(T)
 	(T lambda, T[2] omegaBounds, in T[] sample, in T[] weights)
 	if(isFloatingPoint!T)
-in {
-	import std.algorithm : all, any;
-	assert(weights.length == sample.length);
-	assert(sample.all!"a > 0 && isNormal(a)");
-	assert(weights.all!"a >= 0 && isFinite(a)");
-	assert(weights.any!"a > 0");
-}
-body {
+{
 	immutable n = weights.sum;
 	immutable one = sample.dotProduct(weights) / n;
 	immutable mone = sample.map!"1/a".dotProduct(weights) / n;
@@ -314,6 +283,8 @@ generalizedInverseGaussianEstimate(T)
 	immutable eta = (-tau + sqrt(tau^^2 + prod)) / mone;
 	return typeof(return)(lambda, eta, omega);
 }
+
+
 
 private:
 

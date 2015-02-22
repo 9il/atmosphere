@@ -80,8 +80,8 @@ inverseGammaEstimate(T)(InverseGammaStatistic!T stat)
 	import atmosphere.math: logmdigammaInverse;
 	with(stat)
 	{
-		immutable shape = logmdigammaInverse(log(meani) + meanl);
-		immutable scale = shape / meani;
+		immutable T shape = logmdigammaInverse(log(meani) + meanl);
+		immutable T scale = shape / meani;
 		return typeof(return)(shape, scale);		
 	}
 }
