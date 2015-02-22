@@ -11,56 +11,59 @@ import core.stdc.tgmath;
 
 import std.traits;
 
-int j;
-int j2;
-
-/**
-Returns x such `log(x) - digamma(x) == y`.
-*/
+/** Inverse of the Log Minus Digamma function
+ * 
+ *   Returns x such $(D log(x) - digamma(x) == y).
+ *
+ * References:
+ *   1. Abramowitz, M., and Stegun, I. A. (1970).
+ *      Handbook of mathematical functions. Dover, New York,
+ *      pages 258-259, equation 6.3.18.
+ * 
+ * Authors: Ilya Yaroshenko
+ */
 real logmdigammaInverse(real y)
 {
-	alias T = real;
-	import std.mathspecial: logmdigamma;
-	import std.numeric: findRoot;
-	enum maxY = logmdigamma(T.min_normal);
-	static assert(maxY > 0 && maxY < T.infinity);
-	int i, i2;
-	T f(T x)
-	{
-		i++; j++;
-		return logmdigamma(x)-y;
-	}
-	T f2(T x)
-	{
-		i2++; j2++;
-		return logmdigamma(1 / x) - y;
-	}
-	import std.stdio;
-	//scope(exit) writeln("i = ", i, " j = ", j);
-	//scope(exit) writeln("i2 = ", i2, " j2 = ", j2);
-	if(y > maxY)
-		return 0;
-	if(y < 0)
-		return T.nan;
-	if(y == 0)
-		return T.infinity;
-	if(y > 0)
-	{
-		//auto x = findRoot(&f, 1 / (2 * y), 1/y);
-		auto x2 = 1 / findRoot(&f2, y, 2 * y);
-		//writeln("x = ", x, " x2 = ", x2);
-		return x2;
-	}
-	return y; //NaN
+    import std.mathspecial: logmdigamma;
+    import std.numeric: findRoot;
+    enum maxY = logmdigamma(real.min_normal);
+    static assert(maxY > 0 && maxY <= real.max);
+    if (y >= maxY)
+        return 1 / y; //lim x->0 (log(x)-digamma(x))*x == 1
+    if (y < 0)
+        return real.nan;
+    if (y < real.min_normal)
+        return 0.5 / y; //6.3.18
+    if (y > 0)
+        // x/2 <= logmdigamma(1 / x) <= x, x > 0
+        // calls logmdigamma ~6 times
+        return 1 / findRoot((real x) => logmdigamma(1 / x) - y, y,  2*y); // ~6 times
+    return y; //NaN
 }
 
 unittest {
-	import std.range : iota;
-	import std.math : approxEqual;
-	import std.mathspecial: logmdigamma;
-	foreach(x; iota(1.3, 10.0, 2.0))
-	{
-		assert(logmdigammaInverse(logmdigamma(x)).approxEqual(x));
-		//assert(logmdigammaInverse(logmdigamma(1/x)).approxEqual(1/x));
-	}
+    import std.range : iota;
+    import std.math : approxEqual, nextDown;
+    import std.mathspecial: logmdigamma;
+    foreach (x; iota(1.3L, 2L, 0.1L))
+    {
+        assert(logmdigammaInverse(logmdigamma(x)).approxEqual(x));
+        assert(logmdigammaInverse(logmdigamma(1/x)).approxEqual(1/x));
+    }
+    //WolframAlpha, 22.02.2015
+    immutable testData = [
+        [1.0L, 0.615556766479594378978099158335549201923L],
+        [1.0L/8, 4.15937801516894947161054974029150730555L],
+        [1.0L/1024, 512.166612384991507850643277924243523243L],
+        [0.000500083333325000003968249801594877323784632117L, 1000.0L],
+        [1017.644138623741168814449776695062817947092468536L, 1.0L/1024],
+    ];
+    foreach(test; testData)
+        assert(approxEqual(logmdigammaInverse(test[0]), test[1], 1e-15, 0));
+    assert(approxEqual(logmdigamma(logmdigammaInverse(1)), 1, 1e-15, 0));
+    assert(approxEqual(logmdigamma(logmdigammaInverse(real.min_normal)), real.min_normal, 1e-15, 0));
+    assert(approxEqual(logmdigamma(logmdigammaInverse(real.max/2)), real.max/2, 1e-15, 0));
+    assert(approxEqual(logmdigammaInverse(logmdigamma(1)), 1, 1e-15, 0));
+    assert(approxEqual(logmdigammaInverse(logmdigamma(real.min_normal)), real.min_normal, 1e-15, 0));
+    assert(approxEqual(logmdigammaInverse(logmdigamma(real.max/2)), real.max/2, 1e-15, 0));
 }
