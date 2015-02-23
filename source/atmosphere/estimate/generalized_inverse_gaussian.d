@@ -14,6 +14,21 @@ import std.typecons;
 import std.math : signbit, isNormal;
 
 import atmosphere.statistic: GeneralizedInverseGaussinStatistic;
+
+Tuple!(T, "eta", T, "omega") 
+generalizedInverseGaussianFixedLambdaEstimate(T)
+	(T lambda, GeneralizedInverseGaussinStatistic!T stat)
+	if(isFloatingPoint!T)
+{
+	immutable prod = stat.mean * stat.meani;
+	
+	return typeof(return)(1, 2);	
+}
+
+unittest {
+	alias est = generalizedInverseGaussianFixedLambdaEstimate!double;
+}
+
 version(none):
 
 /++

@@ -32,6 +32,7 @@ struct GeneralizedInverseGaussinStatistic(T)
 	///
 	this(in T[] sample)
 	in {
+		assert(positiveSampleCheck(sample));
 	}
 	body {
 		immutable n = sample.length;
@@ -53,16 +54,55 @@ struct GeneralizedInverseGaussinStatistic(T)
 	}
 
 	///
-	this(T mean, T meani, T meanl)
+	C opCast(C : GeneralizedInverseGaussinFixedLambdaStatistic!T)()
 	{
-		this.mean = mean;
-		this.meani = meani;
-		this.meanl = meanl;
+		GeneralizedInverseGaussinFixedLambdaStatistic!T stat = void;
+		stat.mean = mean;
+		stat.meani = meani;
+		return stat;
 	}
 }
 
 unittest {
 	alias st = GeneralizedInverseGaussinStatistic!double;
+}
+
+/++
+Minimal sufficient and complete statistic for the generalized inverse Gaussin disributoin with fixed lambda.
++/
+struct GeneralizedInverseGaussinFixedLambdaStatistic(T)
+	if(isFloatingPoint!T)
+{
+	///`Σ weights[j] * sample[j] / Σ weights[j]`
+	T mean;
+	///`Σ weights[j] / sample[j] / Σ weights[j]`
+	T meani;
+
+	///
+	this(in T[] sample)
+	in {
+		assert(positiveSampleCheck(sample));
+	}
+	body {
+		immutable n = sample.length;
+		mean = sample.wfsum() / n;
+		meani = sample.map!"1/a".wfsum() / n;
+	}
+
+	///
+	this(in T[] sample, in T[] weights)
+	in {
+		assert(positiveSampleCheck(sample, weights));
+	}
+	body {
+		immutable n = weights.wfsum;
+		mean = sample.wfsum(weights) / n;
+		meani = sample.map!"1/a".wfsum(weights) / n;
+	}
+}
+
+unittest {
+	alias st = GeneralizedInverseGaussinFixedLambdaStatistic!double;
 }
 
 
