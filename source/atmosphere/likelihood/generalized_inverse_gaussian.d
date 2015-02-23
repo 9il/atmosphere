@@ -18,28 +18,28 @@ import atmosphere.statistic: GeneralizedInverseGaussinStatistic;
 Normalized log-likelihood function of the generalized inverse Gaussian distribution.
 See_Also: `distribution.params.GIGEtaOmega`
 +/
-T generalizedInverseGaussianLikelihood(T)(T lambda, T eta, T omega, in T[] sample)
+T properGeneralizedInverseGaussianLikelihood(T)(T lambda, T eta, T omega, in T[] sample)
 	if(isFloatingPoint!T)
 {
-	return generalizedInverseGaussianLikelihood(lambda, eta, omega, GeneralizedInverseGaussinStatistic!T(sample));
+	return properGeneralizedInverseGaussianLikelihood(lambda, eta, omega, GeneralizedInverseGaussinStatistic!T(sample));
 }
 
 ///ditto
-T generalizedInverseGaussianLikelihood(T)(T lambda, T eta, T omega, in T[] sample, in T[] weights)
+T properGeneralizedInverseGaussianLikelihood(T)(T lambda, T eta, T omega, in T[] sample, in T[] weights)
 	if(isFloatingPoint!T)
 {
-	return generalizedInverseGaussianLikelihood(lambda, eta, omega, GeneralizedInverseGaussinStatistic!T(sample, weights));
+	return properGeneralizedInverseGaussianLikelihood(lambda, eta, omega, GeneralizedInverseGaussinStatistic!T(sample, weights));
 }
 
 ///
 unittest {
-	immutable l = generalizedInverseGaussianLikelihood!double(1,2,3,[1,2,2]);
-	immutable m = generalizedInverseGaussianLikelihood!double(1,2,3,[1,2],[2,4]);
+	immutable l = properGeneralizedInverseGaussianLikelihood!double(1,2,3,[1,2,2]);
+	immutable m = properGeneralizedInverseGaussianLikelihood!double(1,2,3,[1,2],[2,4]);
 	assert(l == m);
 }
 
 ///ditto
-T generalizedInverseGaussianLikelihood(T)(T lambda, T eta, T omega, GeneralizedInverseGaussinStatistic!T stat)
+T properGeneralizedInverseGaussianLikelihood(T)(T lambda, T eta, T omega, GeneralizedInverseGaussinStatistic!T stat)
 	if(isFloatingPoint!T)
 {
 	import bessel;
