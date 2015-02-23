@@ -8,8 +8,8 @@
 	"license": "Subject to the terms of the MIT license, as written in the included LICENSE.md file.",
 	"dependencies": {
 		"simple_matrix": "~>0.3.1",
-		"cblas": "~>0.0.4",
-		"bessel": "~>3.1.4",
+		"cblas": "~>0.1.0",
+		"bessel": "~>3.1.5",
 		"scid": "~master",
 	}
 }
