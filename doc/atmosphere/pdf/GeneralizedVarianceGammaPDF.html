@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<link rel="stylesheet" type="text/css" href="../../style.css"/>
+<script src="../../highlight.pack.js"></script>
+<title>GeneralizedVarianceGammaPDF</title>
+<base href="../../"/>
+<script src="search.js"></script>
+<script src="show_hide.js"></script>
+</head>
+<body>
+<div class="main">
+<div class="breadcrumbs">
+<table id="results"></table>
+<a href="index.html" class="home">⌂</a><input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
+<small>atmosphere.<a href=atmosphere/pdf.html>pdf</a>.</small><span class="highlight">GeneralizedVarianceGammaPDF</span>
+</div>
+<div class="sidebar">
+<a href="atmosphere/pdf.html#hide-toc" class="hide" id="hide-toc">&#171;</a>
+<a href="atmosphere/pdf.html#show-toc" class="show" id="show-toc">&#187;</a>
+<div id="toc-id" class="toc">
+<ul><li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
+<ul id="atmosphere" style='display:block'>
+<li>atmosphere.<a href="atmosphere/cdf.html">cdf</a></li>
+<li>atmosphere.<a href="atmosphere/derivative.html">derivative</a></li>
+<li><span class="package" onclick="show_hide('atmosphere.estimate');">atmosphere.<a href="atmosphere/estimate.html">estimate</a></span>
+<ul id="atmosphere.estimate">
+<li>atmosphere.estimate.<a href="atmosphere/estimate/gamma.html">gamma</a></li>
+<li>atmosphere.estimate.<a href="atmosphere/estimate/generalized_gamma.html">generalized_gamma</a></li>
+<li>atmosphere.estimate.<a href="atmosphere/estimate/inverse_gamma.html">inverse_gamma</a></li>
+<li>atmosphere.estimate.<a href="atmosphere/estimate/nvmm.html">nvmm</a></li>
+</ul>
+</li>
+<li>atmosphere.<a href="atmosphere/finitemixture.html">finitemixture</a></li>
+<li><span class="package" onclick="show_hide('atmosphere.likelihood');">atmosphere.<a href="atmosphere/likelihood.html">likelihood</a></span>
+<ul id="atmosphere.likelihood">
+<li>atmosphere.likelihood.<a href="atmosphere/likelihood/gamma.html">gamma</a></li>
+<li>atmosphere.likelihood.<a href="atmosphere/likelihood/generalized_gamma.html">generalized_gamma</a></li>
+<li>atmosphere.likelihood.<a href="atmosphere/likelihood/generalized_inverse_gaussian.html">generalized_inverse_gaussian</a></li>
+<li>atmosphere.likelihood.<a href="atmosphere/likelihood/inverse_gamma.html">inverse_gamma</a></li>
+</ul>
+</li>
+<li>atmosphere.<a href="atmosphere/mixture.html">mixture</a></li>
+<li>atmosphere.<a href="atmosphere/moment.html">moment</a></li>
+<li>atmosphere.<a href="atmosphere/params.html">params</a></li>
+<li><span class=" selected">atmosphere.<a href="atmosphere/pdf.html">pdf</a></span>
+</li>
+<li>atmosphere.<a href="atmosphere/quantile.html">quantile</a></li>
+<li>atmosphere.<a href="atmosphere/random.html">random</a></li>
+<li>atmosphere.<a href="atmosphere/statistic.html">statistic</a></li>
+<li>atmosphere.<a href="atmosphere/summation.html">summation</a></li>
+</ul>
+</li>
+
+</ul>
+</div></div>
+<div class="content">
+<div class="aggregate-symbol"><div class="description"><pre><code>public final class GeneralizedVarianceGammaPDF(T) : <a href="atmosphere/pdf/NormalVarianceMeanMixturePDF.html">NormalVarianceMeanMixturePDF</a>!T
+if(isFloatingPoint!T)
+</code></pre>
+<div class="section "><p>Generalized variance-gamma (generalized gamma mixture of normals) PDF. <span style="color: red;">Unstable</span> algorithm.
+</p>
+
+
+</div>
+<div class="section "><h2>Example</h2>
+<pre><code>auto pdf = new <a href="atmosphere/pdf/GeneralizedVarianceGammaPDF.html">GeneralizedVarianceGammaPDF</a>!double(1.1, 1.1, 0.9, 1.1, 1.1);
+auto x = pdf(0.1);
+assert(x.isNormal);
+
+import scid.calculus : integrate;
+auto result = pdf.integrate(-double.infinity, double.infinity);
+assert(fabs(result.value - 1) < result.error);
+
+</code></pre>
+
+</div>
+</div><a class="anchor" id="this"></a><div class="symbol"><div class="description"><pre><code>public this(
+    T shape, 
+    T power, 
+    T scale, 
+    T beta, 
+    T mu)
+</code></pre>
+<div class="section "><h2>Contracts</h2><pre><code>in
+{
+    assert (shape.isNormal);
+    assert (shape > 0);
+    assert (power.isFinite);
+    assert (scale.isNormal);
+    assert (scale > 0);
+    assert (beta.isFinite);
+    assert (mu.isFinite);
+}
+</code></pre>
+
+</div>
+<div class="section"><h2>Parameters</h2>
+<table class="params">
+<tr class="param"><td class="paramName">shape</td><td class="paramDoc"><p>shape parameter (generalized gamma)
+</p>
+</td></tr>
+<tr class="param"><td class="paramName">power</td><td class="paramDoc"><p>power parameter (generalized gamma)
+</p>
+</td></tr>
+<tr class="param"><td class="paramName">scale</td><td class="paramDoc"><p>scale parameter (generalized gamma)
+</p>
+</td></tr>
+<tr class="param"><td class="paramName">beta</td><td class="paramDoc"><p>NVMM scale
+</p>
+</td></tr>
+<tr class="param"><td class="paramName">mu</td><td class="paramDoc"><p>NVMM location
+</p>
+</td></tr>
+</table>
+</div>
+</div></div><div class="section members"><h2>Functions</h2><table><tr><td><a href="atmosphere/pdf/GeneralizedVarianceGammaPDF.html#this">this</a></td><td></td><td></td></tr></table>
+</div>
+</div><script>hljs.initHighlightingOnLoad();</script>
+
+</div>
+<footer>
+Generated with <a href="https://github.com/kiith-sa/harbored-mod">harbored-mod</a>
+</footer>
+</div>
+</body>
+</html>

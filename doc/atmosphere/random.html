@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<link rel="stylesheet" type="text/css" href="../style.css"/>
+<script src="../highlight.pack.js"></script>
+<title>atmosphere.random</title>
+<base href="../"/>
+<script src="search.js"></script>
+<script src="show_hide.js"></script>
+</head>
+<body>
+<div class="main">
+<div class="breadcrumbs">
+<table id="results"></table>
+<a href="index.html" class="home">⌂</a><input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
+<small>atmosphere.random</small>
+</div>
+<div class="sidebar">
+<a href="atmosphere/random.html#hide-toc" class="hide" id="hide-toc">&#171;</a>
+<a href="atmosphere/random.html#show-toc" class="show" id="show-toc">&#187;</a>
+<div id="toc-id" class="toc">
+<ul><li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
+<ul id="atmosphere" style='display:block'>
+<li>atmosphere.<a href="atmosphere/cdf.html">cdf</a></li>
+<li>atmosphere.<a href="atmosphere/derivative.html">derivative</a></li>
+<li><span class="package" onclick="show_hide('atmosphere.estimate');">atmosphere.<a href="atmosphere/estimate.html">estimate</a></span>
+<ul id="atmosphere.estimate">
+<li>atmosphere.estimate.<a href="atmosphere/estimate/gamma.html">gamma</a></li>
+<li>atmosphere.estimate.<a href="atmosphere/estimate/generalized_gamma.html">generalized_gamma</a></li>
+<li>atmosphere.estimate.<a href="atmosphere/estimate/inverse_gamma.html">inverse_gamma</a></li>
+<li>atmosphere.estimate.<a href="atmosphere/estimate/nvmm.html">nvmm</a></li>
+</ul>
+</li>
+<li>atmosphere.<a href="atmosphere/finitemixture.html">finitemixture</a></li>
+<li><span class="package" onclick="show_hide('atmosphere.likelihood');">atmosphere.<a href="atmosphere/likelihood.html">likelihood</a></span>
+<ul id="atmosphere.likelihood">
+<li>atmosphere.likelihood.<a href="atmosphere/likelihood/gamma.html">gamma</a></li>
+<li>atmosphere.likelihood.<a href="atmosphere/likelihood/generalized_gamma.html">generalized_gamma</a></li>
+<li>atmosphere.likelihood.<a href="atmosphere/likelihood/generalized_inverse_gaussian.html">generalized_inverse_gaussian</a></li>
+<li>atmosphere.likelihood.<a href="atmosphere/likelihood/inverse_gamma.html">inverse_gamma</a></li>
+</ul>
+</li>
+<li>atmosphere.<a href="atmosphere/mixture.html">mixture</a></li>
+<li>atmosphere.<a href="atmosphere/moment.html">moment</a></li>
+<li>atmosphere.<a href="atmosphere/params.html">params</a></li>
+<li>atmosphere.<a href="atmosphere/pdf.html">pdf</a></li>
+<li>atmosphere.<a href="atmosphere/quantile.html">quantile</a></li>
+<li><span class=" selected">atmosphere.<a href="atmosphere/random.html">random</a></span>
+</li>
+<li>atmosphere.<a href="atmosphere/statistic.html">statistic</a></li>
+<li>atmosphere.<a href="atmosphere/summation.html">summation</a></li>
+</ul>
+</li>
+
+</ul>
+</div></div>
+<div class="content">
+<div class="aggregate-symbol"><a class="anchor" id="toDistributionRNG"></a><div class="symbol"><div class="description"><pre><code>public <a href="atmosphere/random/DistributionRNG.html">DistributionRNG</a>!F <a href="atmosphere/random.html#toDistributionRNG">toDistributionRNG</a>(Rng, F = ReturnType!(Rng.front))(Rng rng)
+</code></pre>
+<div class="section "><h2>Example</h2>
+<pre><code><a href="atmosphere/random/DistributionRNG.html">DistributionRNG</a>!double rng = <a href="atmosphere/random/GammaSRNG.html">GammaSRNG</a>!double(rndGen, 1, 3)<a href="atmosphere/random.html#toDistributionRNG">.toDistributionRNG</a>;
+
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="rNormal"></a><div class="symbol"><div class="description"><pre><code>public T <a href="atmosphere/random.html#rNormal">rNormal</a>(T = <a href="http://dlang.org/type.html#basic-data-types">double</a>)() 
+if(isFloatingPoint!T)
+</code></pre>
+<div class="section "><p>Function to generate random observationb from
+standard normal 
+distribution.
+</p>
+
+
+</div>
+</div></div><a class="anchor" id="rNormal"></a><div class="symbol"><div class="description"><pre><code>public T <a href="atmosphere/random.html#rNormal">rNormal</a>(T = <a href="http://dlang.org/type.html#basic-data-types">double</a>, UniformRNG)(ref UniformRNG rng) 
+if(isFloatingPoint!T && isUniformRNG!UniformRNG)
+</code></pre>
+<div class="section "><p>Function to generate random observationb from
+standard normal 
+distribution.
+</p>
+
+
+</div>
+<div class="section "><h2>Example</h2>
+<pre><code>auto x = <a href="atmosphere/random.html#rNormal">rNormal</a>() * 5 + 1;
+
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="rExponential"></a><div class="symbol"><div class="description"><pre><code>public T <a href="atmosphere/random.html#rExponential">rExponential</a>(T = <a href="http://dlang.org/type.html#basic-data-types">double</a>)() 
+if(isFloatingPoint!T)
+</code></pre>
+<div class="section "><p>Function to generate random observation from
+standard exponential 
+distribution.
+</p>
+
+
+</div>
+</div></div><a class="anchor" id="rExponential"></a><div class="symbol"><div class="description"><pre><code>public T <a href="atmosphere/random.html#rExponential">rExponential</a>(T = <a href="http://dlang.org/type.html#basic-data-types">double</a>, UniformRNG)(ref UniformRNG rng) 
+if(isFloatingPoint!T && isUniformRNG!UniformRNG)
+</code></pre>
+<div class="section "><p>Function to generate random observation from
+standard exponential 
+distribution.
+</p>
+
+
+</div>
+<div class="section "><h2>Example</h2>
+<pre><code>auto x = <a href="atmosphere/random.html#rExponential">rExponential</a>() * 5;
+
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="rGamma"></a><div class="symbol"><div class="description"><pre><code>public T <a href="atmosphere/random.html#rGamma">rGamma</a>(T = <a href="http://dlang.org/type.html#basic-data-types">double</a>)(T shape) 
+if(isFloatingPoint!T)
+</code></pre>
+<div class="section "><p>Function to generate random observation from a
+gamma 
+distribution.
+</p>
+
+
+</div>
+<div class="section"><p>References
+	"Computer Generation of Statistical Distributions" by Richard Saucier
+</p>
+
+
+</div>
+</div></div><a class="anchor" id="rGamma"></a><div class="symbol"><div class="description"><pre><code>public T <a href="atmosphere/random.html#rGamma">rGamma</a>(T = <a href="http://dlang.org/type.html#basic-data-types">double</a>, UniformRNG)(
+    ref UniformRNG rng, 
+    T shape) 
+if(isFloatingPoint!T && isUniformRNG!UniformRNG)
+</code></pre>
+<div class="section "><p>Function to generate random observation from a
+gamma 
+distribution.
+</p>
+
+
+</div>
+<div class="section "><h2>Contracts</h2><pre><code>in
+{
+    assert (shape.isNormal);
+    assert (shape > 0);
+}
+</code></pre>
+
+</div>
+<div class="section"><p>References
+	"Computer Generation of Statistical Distributions" by Richard Saucier
+</p>
+
+
+</div>
+<div class="section "><h2>Example</h2>
+<pre><code>auto x = <a href="atmosphere/random.html#rGamma">rGamma</a>(2.0) * 5;
+
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="rGeneralizedGamma"></a><div class="symbol"><div class="description"><pre><code>public T <a href="atmosphere/random.html#rGeneralizedGamma">rGeneralizedGamma</a>(T = <a href="http://dlang.org/type.html#basic-data-types">double</a>)(
+    T shape, 
+    T power) 
+if(isFloatingPoint!T)
+</code></pre>
+<div class="section "><p>Function to generate random observation from a
+generalized gamma 
+distribution.
+</p>
+
+
+</div>
+</div></div><a class="anchor" id="rGeneralizedGamma"></a><div class="symbol"><div class="description"><pre><code>public T <a href="atmosphere/random.html#rGeneralizedGamma">rGeneralizedGamma</a>(T = <a href="http://dlang.org/type.html#basic-data-types">double</a>, UniformRNG)(
+    ref UniformRNG rng, 
+    T shape, 
+    T power) 
+if(isFloatingPoint!T && isUniformRNG!UniformRNG)
+</code></pre>
+<div class="section "><p>Function to generate random observation from a
+generalized gamma 
+distribution.
+</p>
+
+
+</div>
+<div class="section "><h2>Contracts</h2><pre><code>in
+{
+    assert (power.isFinite);
+    assert (shape.isNormal);
+    assert (shape > 0);
+}
+</code></pre>
+
+</div>
+<div class="section "><h2>Example</h2>
+<pre><code>auto x = <a href="atmosphere/random.html#rGeneralizedGamma">rGeneralizedGamma</a>(0.8, 3.0) * 5;
+
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="rInverseGamma"></a><div class="symbol"><div class="description"><pre><code>public T <a href="atmosphere/random.html#rInverseGamma">rInverseGamma</a>(T = <a href="http://dlang.org/type.html#basic-data-types">double</a>)(T shape) 
+if(isFloatingPoint!T)
+</code></pre>
+<div class="section "><p>Function to generate random observation from a
+inverse-gamma 
+distribution.
+</p>
+
+
+</div>
+</div></div><a class="anchor" id="rInverseGamma"></a><div class="symbol"><div class="description"><pre><code>public T <a href="atmosphere/random.html#rInverseGamma">rInverseGamma</a>(T = <a href="http://dlang.org/type.html#basic-data-types">double</a>, UniformRNG)(
+    ref UniformRNG rng, 
+    T shape) 
+if(isFloatingPoint!T && isUniformRNG!UniformRNG)
+</code></pre>
+<div class="section "><p>Function to generate random observation from a
+inverse-gamma 
+distribution.
+</p>
+
+
+</div>
+<div class="section "><h2>Contracts</h2><pre><code>in
+{
+    assert (shape.isNormal);
+    assert (shape > 0);
+}
+</code></pre>
+
+</div>
+<div class="section "><h2>Example</h2>
+<pre><code>auto x = <a href="atmosphere/random.html#rInverseGamma">rInverseGamma</a>(2.0) * 5;
+
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="rInverseGaussian"></a><div class="symbol"><div class="description"><pre><code>public T <a href="atmosphere/random.html#rInverseGaussian">rInverseGaussian</a>(T = <a href="http://dlang.org/type.html#basic-data-types">double</a>)(
+    T lambda, 
+    T mu) 
+if(isFloatingPoint!T)
+</code></pre>
+<div class="section "><p>Function to generate random observation from a
+inverse Gaussian
+distribution.
+</p>
+
+
+</div>
+<div class="section"><h2>References</h2>
+<pre class="prettyprint"><code>Michael, John R.; Schucany, William R.; Haas, Roy W. (May 1976). "Generating Random Variates Using Transformations with Multiple Roots".
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="rInverseGaussian"></a><div class="symbol"><div class="description"><pre><code>public T <a href="atmosphere/random.html#rInverseGaussian">rInverseGaussian</a>(T = <a href="http://dlang.org/type.html#basic-data-types">double</a>, UniformRNG)(
+    ref UniformRNG rng, 
+    T lambda, 
+    T mu) 
+if(isFloatingPoint!T && isUniformRNG!UniformRNG)
+</code></pre>
+<div class="section "><p>Function to generate random observation from a
+inverse Gaussian
+distribution.
+</p>
+
+
+</div>
+<div class="section "><h2>Contracts</h2><pre><code>in
+{
+    assert (lambda.isNormal);
+    assert (lambda > 0);
+    assert (mu.isNormal);
+    assert (mu > 0);
+}
+</code></pre>
+
+</div>
+<div class="section"><h2>References</h2>
+<pre class="prettyprint"><code>Michael, John R.; Schucany, William R.; Haas, Roy W. (May 1976). "Generating Random Variates Using Transformations with Multiple Roots".
+</code></pre>
+
+</div>
+<div class="section "><h2>Example</h2>
+<pre><code>auto x = <a href="atmosphere/random.html#rInverseGaussian">rInverseGaussian</a>(2.0, 3.0) * 5;
+
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="rChiSquare"></a><div class="symbol"><div class="description"><pre><code>public T <a href="atmosphere/random.html#rChiSquare">rChiSquare</a>(T = <a href="http://dlang.org/type.html#basic-data-types">double</a>)(T shape) 
+if(isFloatingPoint!T)
+</code></pre>
+<div class="section "><p>Function to generate random observation from a
+Chi-squared
+distribution.
+</p>
+
+
+</div>
+</div></div><a class="anchor" id="rChiSquare"></a><div class="symbol"><div class="description"><pre><code>public T <a href="atmosphere/random.html#rChiSquare">rChiSquare</a>(T = <a href="http://dlang.org/type.html#basic-data-types">double</a>, UniformRNG)(
+    ref UniformRNG rng, 
+    T shape) 
+if(isFloatingPoint!T && isUniformRNG!UniformRNG)
+</code></pre>
+<div class="section "><p>Function to generate random observation from a
+Chi-squared
+distribution.
+</p>
+
+
+</div>
+<div class="section "><h2>Contracts</h2><pre><code>in
+{
+    assert (shape.isNormal);
+    assert (shape > 0);
+}
+</code></pre>
+
+</div>
+<div class="section "><h2>Example</h2>
+<pre><code>auto x = <a href="atmosphere/random.html#rChiSquare">rChiSquare</a>(2.0) * 5;
+
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="rStudentT"></a><div class="symbol"><div class="description"><pre><code>public T <a href="atmosphere/random.html#rStudentT">rStudentT</a>(T = <a href="http://dlang.org/type.html#basic-data-types">double</a>)(T shape) 
+if(isFloatingPoint!T)
+</code></pre>
+<div class="section "><p>Function to generate random observation from a
+Student's t-distribution.
+</p>
+
+
+</div>
+</div></div><a class="anchor" id="rStudentT"></a><div class="symbol"><div class="description"><pre><code>public T <a href="atmosphere/random.html#rStudentT">rStudentT</a>(T = <a href="http://dlang.org/type.html#basic-data-types">double</a>, UniformRNG)(
+    ref UniformRNG rng, 
+    T shape) 
+if(isFloatingPoint!T && isUniformRNG!UniformRNG)
+</code></pre>
+<div class="section "><p>Function to generate random observation from a
+Student's t-distribution.
+</p>
+
+
+</div>
+<div class="section "><h2>Contracts</h2><pre><code>in
+{
+    assert (shape.isNormal);
+    assert (shape > 0);
+}
+</code></pre>
+
+</div>
+<div class="section "><h2>Example</h2>
+<pre><code>auto x = <a href="atmosphere/random.html#rStudentT">rStudentT</a>(2.0) * 5;
+
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="rWeibull"></a><div class="symbol"><div class="description"><pre><code>public T <a href="atmosphere/random.html#rWeibull">rWeibull</a>(T = <a href="http://dlang.org/type.html#basic-data-types">double</a>)(T shape) 
+if(isFloatingPoint!T)
+</code></pre>
+<div class="section "><p>Function to generate random observation from a
+Weibull
+distribution.
+</p>
+
+
+</div>
+</div></div><a class="anchor" id="rWeibull"></a><div class="symbol"><div class="description"><pre><code>public T <a href="atmosphere/random.html#rWeibull">rWeibull</a>(T = <a href="http://dlang.org/type.html#basic-data-types">double</a>, UniformRNG)(
+    ref UniformRNG rng, 
+    T power) 
+if(isFloatingPoint!T && isUniformRNG!UniformRNG)
+</code></pre>
+<div class="section "><p>Function to generate random observation from a
+Weibull
+distribution.
+</p>
+
+
+</div>
+<div class="section "><h2>Contracts</h2><pre><code>in
+{
+    assert (power.isFinite);
+}
+</code></pre>
+
+</div>
+<div class="section "><h2>Example</h2>
+<pre><code>auto x = <a href="atmosphere/random.html#rWeibull">rWeibull</a>(2.0) * 5 + 1;
+
+</code></pre>
+
+</div>
+</div></div><div class="description"><div class="section"><h2>Authors</h2>
+<p> <a href="http://9il.github.io">Ilya Yaroshenko</a>
+</p>
+
+
+</div>
+<div class="section"><h2>Copyright</h2>
+<p> © 2014-2015 <a href="http://9il.github.io">Ilya Yaroshenko</a>
+</p>
+
+
+</div>
+<div class="section"><h2>License</h2>
+<p> MIT
+</p>
+
+
+</div>
+</div><div class="section members"><h2>Functions</h2><table><tr><td><a href="atmosphere/random.html#toDistributionRNG">toDistributionRNG</a><span class="extrainfo"></span></td><td></td><td></td></tr><tr><td><a href="atmosphere/random.html#rNormal">rNormal</a><span class="extrainfo"></span></td><td></td><td><p>Function to generate random observationb from
+standard normal 
+distribution.
+</p>
+</td></tr><tr><td><a href="atmosphere/random.html#rNormal">rNormal</a><span class="extrainfo"></span></td><td></td><td><p>Function to generate random observationb from
+standard normal 
+distribution.
+</p>
+</td></tr><tr><td><a href="atmosphere/random.html#rExponential">rExponential</a><span class="extrainfo"></span></td><td></td><td><p>Function to generate random observation from
+standard exponential 
+distribution.
+</p>
+</td></tr><tr><td><a href="atmosphere/random.html#rExponential">rExponential</a><span class="extrainfo"></span></td><td></td><td><p>Function to generate random observation from
+standard exponential 
+distribution.
+</p>
+</td></tr><tr><td><a href="atmosphere/random.html#rGamma">rGamma</a><span class="extrainfo"></span></td><td></td><td><p>Function to generate random observation from a
+gamma 
+distribution.
+</p>
+</td></tr><tr><td><a href="atmosphere/random.html#rGamma">rGamma</a><span class="extrainfo"></span></td><td></td><td><p>Function to generate random observation from a
+gamma 
+distribution.
+</p>
+</td></tr><tr><td><a href="atmosphere/random.html#rGeneralizedGamma">rGeneralizedGamma</a><span class="extrainfo"></span></td><td></td><td><p>Function to generate random observation from a
+generalized gamma 
+distribution.
+</p>
+</td></tr><tr><td><a href="atmosphere/random.html#rGeneralizedGamma">rGeneralizedGamma</a><span class="extrainfo"></span></td><td></td><td><p>Function to generate random observation from a
+generalized gamma 
+distribution.
+</p>
+</td></tr><tr><td><a href="atmosphere/random.html#rInverseGamma">rInverseGamma</a><span class="extrainfo"></span></td><td></td><td><p>Function to generate random observation from a
+inverse-gamma 
+distribution.
+</p>
+</td></tr><tr><td><a href="atmosphere/random.html#rInverseGamma">rInverseGamma</a><span class="extrainfo"></span></td><td></td><td><p>Function to generate random observation from a
+inverse-gamma 
+distribution.
+</p>
+</td></tr><tr><td><a href="atmosphere/random.html#rInverseGaussian">rInverseGaussian</a><span class="extrainfo"></span></td><td></td><td><p>Function to generate random observation from a
+inverse Gaussian
+distribution.
+</p>
+</td></tr><tr><td><a href="atmosphere/random.html#rInverseGaussian">rInverseGaussian</a><span class="extrainfo"></span></td><td></td><td><p>Function to generate random observation from a
+inverse Gaussian
+distribution.
+</p>
+</td></tr><tr><td><a href="atmosphere/random.html#rChiSquare">rChiSquare</a><span class="extrainfo"></span></td><td></td><td><p>Function to generate random observation from a
+Chi-squared
+distribution.
+</p>
+</td></tr><tr><td><a href="atmosphere/random.html#rChiSquare">rChiSquare</a><span class="extrainfo"></span></td><td></td><td><p>Function to generate random observation from a
+Chi-squared
+distribution.
+</p>
+</td></tr><tr><td><a href="atmosphere/random.html#rStudentT">rStudentT</a><span class="extrainfo"></span></td><td></td><td><p>Function to generate random observation from a
+Student's t-distribution.
+</p>
+</td></tr><tr><td><a href="atmosphere/random.html#rStudentT">rStudentT</a><span class="extrainfo"></span></td><td></td><td><p>Function to generate random observation from a
+Student's t-distribution.
+</p>
+</td></tr><tr><td><a href="atmosphere/random.html#rWeibull">rWeibull</a><span class="extrainfo"></span></td><td></td><td><p>Function to generate random observation from a
+Weibull
+distribution.
+</p>
+</td></tr><tr><td><a href="atmosphere/random.html#rWeibull">rWeibull</a><span class="extrainfo"></span></td><td></td><td><p>Function to generate random observation from a
+Weibull
+distribution.
+</p>
+</td></tr></table><h2>Structs</h2><table><tr><td><a href="atmosphere/random/GammaSRNG.html">GammaSRNG</a></td><td></td><td><p>Class to generate random observations from a
+gamma
+distribution.
+</p>
+</td></tr><tr><td><a href="atmosphere/random/InverseGammaSRNG.html">InverseGammaSRNG</a></td><td></td><td><p>Class to generate random observations from a
+inverse-gamma
+distribution.
+</p>
+</td></tr><tr><td><a href="atmosphere/random/GeneralizedGammaSRNG.html">GeneralizedGammaSRNG</a></td><td></td><td><p>Class to generate random observations from a
+generalized gamma
+distribution.
+</p>
+</td></tr><tr><td><a href="atmosphere/random/InverseGaussianSRNG.html">InverseGaussianSRNG</a></td><td></td><td><p>Class to generate random observations from a
+inverse Gaussian
+distribution.
+</p>
+</td></tr><tr><td><a href="atmosphere/random/ProperGeneralizedInverseGaussianSRNG.html">ProperGeneralizedInverseGaussianSRNG</a></td><td></td><td><p>Class to generate random observations from a
+proper (chi > 0, psi > 0) generalized inverse Gaussian distribution. 
+The algorithm is based on that given by Dagpunar (1989).
+</p>
+</td></tr></table><h2>Interfaces</h2><table><tr><td><a href="atmosphere/random/DistributionRNG.html">DistributionRNG</a></td><td></td><td><p>Interface for infinity input range of random numbers.
+</p>
+</td></tr></table><h2>Classes</h2><table><tr><td><a href="atmosphere/random/NormalVarianceMeanMixtureRNG.html">NormalVarianceMeanMixtureRNG</a></td><td></td><td><p>Class to create normal variance-mean mixture random number generators.
+Assume <code class="prettyprint">U</code> has mixing probability density, <code class="prettyprint">Y ~ N(0, 1)</code>.
+Class constructs <code class="prettyprint">RNG</code> for <code class="prettyprint">Z = Y*U^(1/2)+beta*U</code>.
+</p>
+</td></tr><tr><td><a href="atmosphere/random/GeneralizedInverseGaussianRNG.html">GeneralizedInverseGaussianRNG</a></td><td></td><td><p>Class to generate random observations from a
+generalized inverse Gaussian 
+distribution. 
+</p>
+</td></tr><tr><td><a href="atmosphere/random/VarianceGammaRNG.html">VarianceGammaRNG</a></td><td></td><td><p>Class to generate random observations from a
+variance-gamma 
+distribution using normal variance-mean mixture of 
+gamma
+distribution.
+</p>
+</td></tr><tr><td><a href="atmosphere/random/HyperbolicAsymmetricTRNG.html">HyperbolicAsymmetricTRNG</a></td><td></td><td><p>Class to generate random observations from a
+hyperbolic asymmetric 
+t-distribution using normal variance-mean mixture of 
+inverse-gamma
+distribution.
+</p>
+</td></tr><tr><td><a href="atmosphere/random/GeneralizedVarianceGammaRNG.html">GeneralizedVarianceGammaRNG</a></td><td></td><td><p>Class to generate random observations from a
+generalized variance-gamma 
+distribution using normal variance-mean mixture of 
+generalized gamma
+distribution.
+</p>
+</td></tr><tr><td><a href="atmosphere/random/NormalInverseGaussianRNG.html">NormalInverseGaussianRNG</a></td><td></td><td><p>Class to generate random observations from a
+normal inverse Gaussian 
+distribution using normal variance-mean mixture of 
+inverse Gaussian
+distribution.
+</p>
+</td></tr><tr><td><a href="atmosphere/random/ProperGeneralizedHyperbolicRNG.html">ProperGeneralizedHyperbolicRNG</a></td><td></td><td><p>Class to generate random observations from a
+proper generalized hyperbolic 
+distribution using normal variance-mean mixture of 
+proper generalized inverse Gaussian
+distribution.
+</p>
+</td></tr><tr><td><a href="atmosphere/random/GeneralizedHyperbolicRNG.html">GeneralizedHyperbolicRNG</a></td><td></td><td><p>Class to generate random observations from a
+generalized hyperbolic 
+distribution using normal variance-mean mixture of 
+generalized inverse Gaussian
+distribution.
+</p>
+</td></tr></table>
+</div>
+</div><script>hljs.initHighlightingOnLoad();</script>
+
+</div>
+<footer>
+Generated with <a href="https://github.com/kiith-sa/harbored-mod">harbored-mod</a>
+</footer>
+</div>
+</body>
+</html>

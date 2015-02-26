@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<link rel="stylesheet" type="text/css" href="../../style.css"/>
+<script src="../../highlight.pack.js"></script>
+<title>atmosphere.estimate.generalized_gamma</title>
+<base href="../../"/>
+<script src="search.js"></script>
+<script src="show_hide.js"></script>
+</head>
+<body>
+<div class="main">
+<div class="breadcrumbs">
+<table id="results"></table>
+<a href="index.html" class="home">⌂</a><input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
+<small>atmosphere.estimate.generalized_gamma</small>
+</div>
+<div class="sidebar">
+<a href="atmosphere/estimate/generalized_gamma.html#hide-toc" class="hide" id="hide-toc">&#171;</a>
+<a href="atmosphere/estimate/generalized_gamma.html#show-toc" class="show" id="show-toc">&#187;</a>
+<div id="toc-id" class="toc">
+<ul><li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
+<ul id="atmosphere" style='display:block'>
+<li>atmosphere.<a href="atmosphere/cdf.html">cdf</a></li>
+<li>atmosphere.<a href="atmosphere/derivative.html">derivative</a></li>
+<li><span class="package" onclick="show_hide('atmosphere.estimate');">atmosphere.<a href="atmosphere/estimate.html">estimate</a></span>
+<ul id="atmosphere.estimate" style='display:block'>
+<li>atmosphere.estimate.<a href="atmosphere/estimate/gamma.html">gamma</a></li>
+<li><span class=" selected">atmosphere.estimate.<a href="atmosphere/estimate/generalized_gamma.html">generalized_gamma</a></span>
+</li>
+<li>atmosphere.estimate.<a href="atmosphere/estimate/inverse_gamma.html">inverse_gamma</a></li>
+<li>atmosphere.estimate.<a href="atmosphere/estimate/nvmm.html">nvmm</a></li>
+</ul>
+</li>
+<li>atmosphere.<a href="atmosphere/finitemixture.html">finitemixture</a></li>
+<li><span class="package" onclick="show_hide('atmosphere.likelihood');">atmosphere.<a href="atmosphere/likelihood.html">likelihood</a></span>
+<ul id="atmosphere.likelihood">
+<li>atmosphere.likelihood.<a href="atmosphere/likelihood/gamma.html">gamma</a></li>
+<li>atmosphere.likelihood.<a href="atmosphere/likelihood/generalized_gamma.html">generalized_gamma</a></li>
+<li>atmosphere.likelihood.<a href="atmosphere/likelihood/generalized_inverse_gaussian.html">generalized_inverse_gaussian</a></li>
+<li>atmosphere.likelihood.<a href="atmosphere/likelihood/inverse_gamma.html">inverse_gamma</a></li>
+</ul>
+</li>
+<li>atmosphere.<a href="atmosphere/mixture.html">mixture</a></li>
+<li>atmosphere.<a href="atmosphere/moment.html">moment</a></li>
+<li>atmosphere.<a href="atmosphere/params.html">params</a></li>
+<li>atmosphere.<a href="atmosphere/pdf.html">pdf</a></li>
+<li>atmosphere.<a href="atmosphere/quantile.html">quantile</a></li>
+<li>atmosphere.<a href="atmosphere/random.html">random</a></li>
+<li>atmosphere.<a href="atmosphere/statistic.html">statistic</a></li>
+<li>atmosphere.<a href="atmosphere/summation.html">summation</a></li>
+</ul>
+</li>
+
+</ul>
+</div></div>
+<div class="content">
+<div class="aggregate-symbol"><a class="anchor" id="generalizedGammaFixedPowerEstimate"></a><div class="symbol"><div class="description"><pre><code>public Tuple!(T, "shape", T, "scale") <a href="atmosphere/estimate/generalized_gamma.html#generalizedGammaFixedPowerEstimate">generalizedGammaFixedPowerEstimate</a>(T)(
+    T power, 
+    in T[] sample) 
+if(isFloatingPoint!T)
+</code></pre>
+<div class="section "><p>Estimates parameters of the generalized gamma distribution.
+</p>
+
+
+</div>
+<div class="section "><h2>Example</h2>
+<pre><code>import std.range;
+import std.random;
+import <a href="atmosphere/random.html">atmosphere.random</a>;
+import <a href="atmosphere/likelihood.html">atmosphere.likelihood</a>;
+size_t length = 1000;
+auto shape = 2.0, power = 1.4, scale = 2.3;
+auto rng = Random(1234);
+auto sample = <a href="atmosphere/random/GeneralizedGammaSRNG.html">GeneralizedGammaSRNG</a>!double(rng, shape, power, scale).take(length).array;
+auto params = <a href="atmosphere/estimate/generalized_gamma.html#generalizedGammaFixedPowerEstimate">generalizedGammaFixedPowerEstimate</a>!double(power, sample);
+auto lh0 = <a href="atmosphere/likelihood/generalized_gamma.html#generalizedGammaLikelihood">generalizedGammaLikelihood</a>(shape, power, scale, sample);
+auto lh1 = <a href="atmosphere/likelihood/generalized_gamma.html#generalizedGammaLikelihood">generalizedGammaLikelihood</a>(params.shape, power, params.scale, sample);
+assert(lh0 <= lh1);
+
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="generalizedGammaFixedPowerEstimate"></a><div class="symbol"><div class="description"><pre><code>public Tuple!(T, "shape", T, "scale") <a href="atmosphere/estimate/generalized_gamma.html#generalizedGammaFixedPowerEstimate">generalizedGammaFixedPowerEstimate</a>(T)(
+    T power, 
+    in T[] sample, 
+    in T[] weights) 
+if(isFloatingPoint!T)
+</code></pre>
+<div class="section "><p>Estimates parameters of the generalized gamma distribution.
+</p>
+
+
+</div>
+<div class="section "><h2>Example</h2>
+<pre><code>import std.range;
+import std.random;
+import <a href="atmosphere/random.html">atmosphere.random</a>;
+import <a href="atmosphere/likelihood.html">atmosphere.likelihood</a>;
+size_t length = 1000;
+auto shape = 2.0, power = 1.4, scale = 2.3;
+auto rng = Random(1234);
+auto sample = <a href="atmosphere/random/GeneralizedGammaSRNG.html">GeneralizedGammaSRNG</a>!double(rng, shape, power, scale).take(length).array;
+auto weights = iota(1.0, length + 1.0).array;
+auto params = <a href="atmosphere/estimate/generalized_gamma.html#generalizedGammaFixedPowerEstimate">generalizedGammaFixedPowerEstimate</a>!double(power, sample, weights);
+auto lh0 = <a href="atmosphere/likelihood/generalized_gamma.html#generalizedGammaLikelihood">generalizedGammaLikelihood</a>(shape, power, scale, sample, weights);
+auto lh1 = <a href="atmosphere/likelihood/generalized_gamma.html#generalizedGammaLikelihood">generalizedGammaLikelihood</a>(params.shape, power, params.scale, sample, weights);
+assert(lh0 <= lh1);
+
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="generalizedGammaFixedPowerEstimate"></a><div class="symbol"><div class="description"><pre><code>public Tuple!(T, "shape", T, "scale") <a href="atmosphere/estimate/generalized_gamma.html#generalizedGammaFixedPowerEstimate">generalizedGammaFixedPowerEstimate</a>(T)(
+    T power, 
+    <a href="atmosphere/statistic/GeneralizedGammaFixedPowerStatistic.html">GeneralizedGammaFixedPowerStatistic</a>!T stat) 
+if(isFloatingPoint!T)
+</code></pre>
+<div class="section "><p>Estimates parameters of the generalized gamma distribution.
+</p>
+
+
+</div>
+</div></div><div class="description"><div class="section"><h2>Authors</h2>
+<p> <a href="http://9il.github.io">Ilya Yaroshenko</a>
+</p>
+
+
+</div>
+<div class="section"><h2>Copyright</h2>
+<p> © 2014-2015 <a href="http://9il.github.io">Ilya Yaroshenko</a>
+</p>
+
+
+</div>
+<div class="section"><h2>License</h2>
+<p> MIT
+</p>
+
+
+</div>
+</div><div class="section members"><h2>Functions</h2><table><tr><td><a href="atmosphere/estimate/generalized_gamma.html#generalizedGammaFixedPowerEstimate">generalizedGammaFixedPowerEstimate</a><span class="extrainfo"></span></td><td></td><td><p>Estimates parameters of the generalized gamma distribution.
+</p>
+</td></tr><tr><td><a href="atmosphere/estimate/generalized_gamma.html#generalizedGammaFixedPowerEstimate">generalizedGammaFixedPowerEstimate</a><span class="extrainfo"></span></td><td></td><td><p>Estimates parameters of the generalized gamma distribution.
+</p>
+</td></tr><tr><td><a href="atmosphere/estimate/generalized_gamma.html#generalizedGammaFixedPowerEstimate">generalizedGammaFixedPowerEstimate</a><span class="extrainfo"></span></td><td></td><td><p>Estimates parameters of the generalized gamma distribution.
+</p>
+</td></tr></table>
+</div>
+</div><script>hljs.initHighlightingOnLoad();</script>
+
+</div>
+<footer>
+Generated with <a href="https://github.com/kiith-sa/harbored-mod">harbored-mod</a>
+</footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<link rel="stylesheet" type="text/css" href="../../style.css"/>
+<script src="../../highlight.pack.js"></script>
+<title>GeneralizedInverseGaussinStatistic</title>
+<base href="../../"/>
+<script src="search.js"></script>
+<script src="show_hide.js"></script>
+</head>
+<body>
+<div class="main">
+<div class="breadcrumbs">
+<table id="results"></table>
+<a href="index.html" class="home">⌂</a><input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
+<small>atmosphere.<a href=atmosphere/statistic.html>statistic</a>.</small><span class="highlight">GeneralizedInverseGaussinStatistic</span>
+</div>
+<div class="sidebar">
+<a href="atmosphere/statistic.html#hide-toc" class="hide" id="hide-toc">&#171;</a>
+<a href="atmosphere/statistic.html#show-toc" class="show" id="show-toc">&#187;</a>
+<div id="toc-id" class="toc">
+<ul><li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
+<ul id="atmosphere" style='display:block'>
+<li>atmosphere.<a href="atmosphere/cdf.html">cdf</a></li>
+<li>atmosphere.<a href="atmosphere/derivative.html">derivative</a></li>
+<li><span class="package" onclick="show_hide('atmosphere.estimate');">atmosphere.<a href="atmosphere/estimate.html">estimate</a></span>
+<ul id="atmosphere.estimate">
+<li>atmosphere.estimate.<a href="atmosphere/estimate/gamma.html">gamma</a></li>
+<li>atmosphere.estimate.<a href="atmosphere/estimate/generalized_gamma.html">generalized_gamma</a></li>
+<li>atmosphere.estimate.<a href="atmosphere/estimate/inverse_gamma.html">inverse_gamma</a></li>
+<li>atmosphere.estimate.<a href="atmosphere/estimate/nvmm.html">nvmm</a></li>
+</ul>
+</li>
+<li>atmosphere.<a href="atmosphere/finitemixture.html">finitemixture</a></li>
+<li><span class="package" onclick="show_hide('atmosphere.likelihood');">atmosphere.<a href="atmosphere/likelihood.html">likelihood</a></span>
+<ul id="atmosphere.likelihood">
+<li>atmosphere.likelihood.<a href="atmosphere/likelihood/gamma.html">gamma</a></li>
+<li>atmosphere.likelihood.<a href="atmosphere/likelihood/generalized_gamma.html">generalized_gamma</a></li>
+<li>atmosphere.likelihood.<a href="atmosphere/likelihood/generalized_inverse_gaussian.html">generalized_inverse_gaussian</a></li>
+<li>atmosphere.likelihood.<a href="atmosphere/likelihood/inverse_gamma.html">inverse_gamma</a></li>
+</ul>
+</li>
+<li>atmosphere.<a href="atmosphere/mixture.html">mixture</a></li>
+<li>atmosphere.<a href="atmosphere/moment.html">moment</a></li>
+<li>atmosphere.<a href="atmosphere/params.html">params</a></li>
+<li>atmosphere.<a href="atmosphere/pdf.html">pdf</a></li>
+<li>atmosphere.<a href="atmosphere/quantile.html">quantile</a></li>
+<li>atmosphere.<a href="atmosphere/random.html">random</a></li>
+<li><span class=" selected">atmosphere.<a href="atmosphere/statistic.html">statistic</a></span>
+</li>
+<li>atmosphere.<a href="atmosphere/summation.html">summation</a></li>
+</ul>
+</li>
+
+</ul>
+</div></div>
+<div class="content">
+<div class="aggregate-symbol"><div class="description"><pre><code>public struct GeneralizedInverseGaussinStatistic(T)
+if(isFloatingPoint!T)
+</code></pre>
+<div class="section "><p>Minimal sufficient and complete statistic for the generalized inverse Gaussin disributoin.
+</p>
+
+
+</div>
+</div><a class="anchor" id="mean"></a><div class="symbol"><div class="description"><pre><code>public T mean
+</code></pre>
+<div class="section "><p><code class="prettyprint">Σ weights[j] * sample[j] / Σ weights[j]</code>
+</p>
+
+
+</div>
+</div></div><a class="anchor" id="meani"></a><div class="symbol"><div class="description"><pre><code>public T meani
+</code></pre>
+<div class="section "><p><code class="prettyprint">Σ weights[j] / sample[j] / Σ weights[j]</code>
+</p>
+
+
+</div>
+</div></div><a class="anchor" id="meanl"></a><div class="symbol"><div class="description"><pre><code>public T meanl
+</code></pre>
+<div class="section "><p><code class="prettyprint">Σ weights[j] * log(sample[j]) / Σ weights[j]</code>
+</p>
+
+
+</div>
+</div></div><a class="anchor" id="this"></a><div class="symbol"><div class="description"><pre><code>public this(in T[] sample)
+</code></pre>
+<div class="section "><h2>Contracts</h2><pre><code>in
+{
+    assert (positiveSampleCheck(sample));
+}
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="this"></a><div class="symbol"><div class="description"><pre><code>public this(
+    in T[] sample, 
+    in T[] weights)
+</code></pre>
+<div class="section "><h2>Contracts</h2><pre><code>in
+{
+    assert (positiveSampleCheck(sample, weights));
+}
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="opCast"></a><div class="symbol"><div class="description"><pre><code>public C <a href="atmosphere/statistic/GeneralizedInverseGaussinStatistic.html#opCast">opCast</a>(C : <a href="atmosphere/statistic/GeneralizedInverseGaussinFixedLambdaStatistic.html">GeneralizedInverseGaussinFixedLambdaStatistic</a>!T)()
+</code></pre>
+</div></div><div class="section members"><h2>Variables</h2><table><tr><td><a href="atmosphere/statistic/GeneralizedInverseGaussinStatistic.html#mean">mean</a></td><td><pre><code>T
+</code></pre>
+</td><td><p><code class="prettyprint">Σ weights[j] * sample[j] / Σ weights[j]</code>
+</p>
+</td></tr><tr><td><a href="atmosphere/statistic/GeneralizedInverseGaussinStatistic.html#meani">meani</a></td><td><pre><code>T
+</code></pre>
+</td><td><p><code class="prettyprint">Σ weights[j] / sample[j] / Σ weights[j]</code>
+</p>
+</td></tr><tr><td><a href="atmosphere/statistic/GeneralizedInverseGaussinStatistic.html#meanl">meanl</a></td><td><pre><code>T
+</code></pre>
+</td><td><p><code class="prettyprint">Σ weights[j] * log(sample[j]) / Σ weights[j]</code>
+</p>
+</td></tr></table><h2>Functions</h2><table><tr><td><a href="atmosphere/statistic/GeneralizedInverseGaussinStatistic.html#this">this</a></td><td></td><td></td></tr><tr><td><a href="atmosphere/statistic/GeneralizedInverseGaussinStatistic.html#this">this</a></td><td></td><td></td></tr><tr><td><a href="atmosphere/statistic/GeneralizedInverseGaussinStatistic.html#opCast">opCast</a><span class="extrainfo"></span></td><td></td><td></td></tr></table>
+</div>
+</div><script>hljs.initHighlightingOnLoad();</script>
+
+</div>
+<footer>
+Generated with <a href="https://github.com/kiith-sa/harbored-mod">harbored-mod</a>
+</footer>
+</div>
+</body>
+</html>

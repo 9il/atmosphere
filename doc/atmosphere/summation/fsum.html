@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<link rel="stylesheet" type="text/css" href="../../style.css"/>
+<script src="../../highlight.pack.js"></script>
+<title>fsum</title>
+<base href="../../"/>
+<script src="search.js"></script>
+<script src="show_hide.js"></script>
+</head>
+<body>
+<div class="main">
+<div class="breadcrumbs">
+<table id="results"></table>
+<a href="index.html" class="home">⌂</a><input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
+<small>atmosphere.<a href=atmosphere/summation.html>summation</a>.</small><span class="highlight">fsum</span>
+</div>
+<div class="sidebar">
+<a href="atmosphere/summation.html#hide-toc" class="hide" id="hide-toc">&#171;</a>
+<a href="atmosphere/summation.html#show-toc" class="show" id="show-toc">&#187;</a>
+<div id="toc-id" class="toc">
+<ul><li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
+<ul id="atmosphere" style='display:block'>
+<li>atmosphere.<a href="atmosphere/cdf.html">cdf</a></li>
+<li>atmosphere.<a href="atmosphere/derivative.html">derivative</a></li>
+<li><span class="package" onclick="show_hide('atmosphere.estimate');">atmosphere.<a href="atmosphere/estimate.html">estimate</a></span>
+<ul id="atmosphere.estimate">
+<li>atmosphere.estimate.<a href="atmosphere/estimate/gamma.html">gamma</a></li>
+<li>atmosphere.estimate.<a href="atmosphere/estimate/generalized_gamma.html">generalized_gamma</a></li>
+<li>atmosphere.estimate.<a href="atmosphere/estimate/inverse_gamma.html">inverse_gamma</a></li>
+<li>atmosphere.estimate.<a href="atmosphere/estimate/nvmm.html">nvmm</a></li>
+</ul>
+</li>
+<li>atmosphere.<a href="atmosphere/finitemixture.html">finitemixture</a></li>
+<li><span class="package" onclick="show_hide('atmosphere.likelihood');">atmosphere.<a href="atmosphere/likelihood.html">likelihood</a></span>
+<ul id="atmosphere.likelihood">
+<li>atmosphere.likelihood.<a href="atmosphere/likelihood/gamma.html">gamma</a></li>
+<li>atmosphere.likelihood.<a href="atmosphere/likelihood/generalized_gamma.html">generalized_gamma</a></li>
+<li>atmosphere.likelihood.<a href="atmosphere/likelihood/generalized_inverse_gaussian.html">generalized_inverse_gaussian</a></li>
+<li>atmosphere.likelihood.<a href="atmosphere/likelihood/inverse_gamma.html">inverse_gamma</a></li>
+</ul>
+</li>
+<li>atmosphere.<a href="atmosphere/mixture.html">mixture</a></li>
+<li>atmosphere.<a href="atmosphere/moment.html">moment</a></li>
+<li>atmosphere.<a href="atmosphere/params.html">params</a></li>
+<li>atmosphere.<a href="atmosphere/pdf.html">pdf</a></li>
+<li>atmosphere.<a href="atmosphere/quantile.html">quantile</a></li>
+<li>atmosphere.<a href="atmosphere/random.html">random</a></li>
+<li>atmosphere.<a href="atmosphere/statistic.html">statistic</a></li>
+<li><span class=" selected">atmosphere.<a href="atmosphere/summation.html">summation</a></span>
+</li>
+</ul>
+</li>
+
+</ul>
+</div></div>
+<div class="content">
+<div class="aggregate-symbol"><div class="description"><pre><code>public template fsum(F, <a href="atmosphere/summation/Summation.html">Summation</a> summation = <a href="atmosphere/summation/Summation.html">Summation</a>.Precise)
+if(isFloatingPoint!F && isMutable!F)
+</code></pre>
+<div class="section "><p>Computes sum of range.
+</p>
+
+
+</div>
+</div></div><div class="aggregate-symbol"><div class="description"><pre><code>public template fsum(<a href="atmosphere/summation/Summation.html">Summation</a> summation = <a href="atmosphere/summation/Summation.html">Summation</a>.Precise)
+</code></pre>
+<div class="section "><p>Computes sum of range.
+</p>
+
+
+</div>
+<div class="section "><h2>Example</h2>
+<pre><code>import std.algorithm;
+auto ar = [1, 1e100, 1, -1e100].map!(a => a*10000);
+const r = 20000;
+assert(r == ar.<a href="atmosphere/summation/fsum.html">fsum</a>!(<a href="atmosphere/summation/Summation.html#KBN">Summation.KBN</a>));
+assert(r == ar.<a href="atmosphere/summation/fsum.html">fsum</a>!(<a href="atmosphere/summation/Summation.html#KB2">Summation.KB2</a>));
+assert(r == ar.<a href="atmosphere/summation/fsum.html">fsum</a>); //<a href="atmosphere/summation/Summation.html#Precise">Summation.Precise</a>
+
+</code></pre>
+
+</div>
+<div class="section "><h2>Example</h2>
+<pre><code>import std.math, std.algorithm, std.range;
+auto ar = 1000
+    .iota
+    .map!(n => 1.7L.pow(n+1) - 1.7L.pow(n))
+    .array
+    ;
+//<a href="atmosphere/summation/Summation.html#Precise">Summation.Precise</a> is default
+real d = 1.7L.pow(1000);
+import std.stdio;
+assert(<a href="atmosphere/summation/fsum.html">fsum</a>(ar.chain([-d])) == -1);
+assert(<a href="atmosphere/summation/fsum.html">fsum</a>(-d, ar.retro) == -1);
+
+</code></pre>
+
+</div>
+<div class="section "><h2>Example</h2>
+<div class="section "><code class="d_inlinecode">Naive</code>, <code class="d_inlinecode">Pairwise</code> and <code class="d_inlinecode">Kahan</code> algorithms can be used for user defined types.
+
+</div>
+<pre><code>static struct Quaternion(F)
+    if (isFloatingPoint!F)
+{
+    F[3] array;
+
+    /// + and - operator overloading
+    Quaternion opBinary(string op)(auto ref Quaternion rhs) const
+        if (op == "+" || op == "-")
+    {
+        Quaternion ret = void;
+        foreach (i, ref e; ret.array)
+            mixin("e = array[i] "~op~" rhs.array[i];");
+        return ret;
+    }
+
+    /// += and -= operator overloading
+    Quaternion opOpAssign(string op)(auto ref Quaternion rhs)
+        if (op == "+" || op == "-")
+    {
+        foreach (i, ref e; array)
+            mixin("e "~op~"= rhs.array[i];");
+        return this;
+    }
+
+    ///constructor with single FP argument
+    this(F f)
+    {
+        array[] = f;
+    }
+
+    ///assigment with single FP argument
+    void opAssign(F f)
+    {
+        array[] = f;
+    }
+}
+
+Quaternion!double q, p, r;
+q.array = [0, 1, 2];
+p.array = [3, 4, 5];
+r.array = [3, 5, 7];
+
+assert(r == [p, q]<a href="atmosphere/summation/fsum.html">.fsum</a>!(<a href="atmosphere/summation/Summation.html#Naive">Summation.Naive</a>));
+assert(r == [p, q]<a href="atmosphere/summation/fsum.html">.fsum</a>!(<a href="atmosphere/summation/Summation.html#Pairwise">Summation.Pairwise</a>));
+assert(r == [p, q]<a href="atmosphere/summation/fsum.html">.fsum</a>!(<a href="atmosphere/summation/Summation.html#Kahan">Summation.Kahan</a>));
+
+</code></pre>
+
+</div>
+<div class="section "><h2>Example</h2>
+<div class="section ">All summation algorithms available for complex numbers.
+
+</div>
+<pre><code>import std.complex;
+Complex!double[] ar = [complex(1.0, 2), complex(2, 3), complex(3, 4), complex(4, 5)];
+Complex!double r = complex(10, 14);
+assert(r == ar.<a href="atmosphere/summation/fsum.html">fsum</a>!(<a href="atmosphere/summation/Summation.html#Fast">Summation.Fast</a>));
+assert(r == ar.<a href="atmosphere/summation/fsum.html">fsum</a>!(<a href="atmosphere/summation/Summation.html#Naive">Summation.Naive</a>));
+assert(r == ar.<a href="atmosphere/summation/fsum.html">fsum</a>!(<a href="atmosphere/summation/Summation.html#Pairwise">Summation.Pairwise</a>));
+assert(r == ar.<a href="atmosphere/summation/fsum.html">fsum</a>!(<a href="atmosphere/summation/Summation.html#Kahan">Summation.Kahan</a>));
+assert(r == ar.<a href="atmosphere/summation/fsum.html">fsum</a>!(<a href="atmosphere/summation/Summation.html#KBN">Summation.KBN</a>));
+assert(r == ar.<a href="atmosphere/summation/fsum.html">fsum</a>!(<a href="atmosphere/summation/Summation.html#KB2">Summation.KB2</a>));
+assert(r == ar.<a href="atmosphere/summation/fsum.html">fsum</a>); //<a href="atmosphere/summation/Summation.html#Precise">Summation.Precise</a>
+
+</code></pre>
+
+</div>
+</div></div><script>hljs.initHighlightingOnLoad();</script>
+
+</div>
+<footer>
+Generated with <a href="https://github.com/kiith-sa/harbored-mod">harbored-mod</a>
+</footer>
+</div>
+</body>
+</html>

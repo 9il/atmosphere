@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<link rel="stylesheet" type="text/css" href="../../style.css"/>
+<script src="../../highlight.pack.js"></script>
+<title>Summator</title>
+<base href="../../"/>
+<script src="search.js"></script>
+<script src="show_hide.js"></script>
+</head>
+<body>
+<div class="main">
+<div class="breadcrumbs">
+<table id="results"></table>
+<a href="index.html" class="home">⌂</a><input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
+<small>atmosphere.<a href=atmosphere/summation.html>summation</a>.</small><span class="highlight">Summator</span>
+</div>
+<div class="sidebar">
+<a href="atmosphere/summation.html#hide-toc" class="hide" id="hide-toc">&#171;</a>
+<a href="atmosphere/summation.html#show-toc" class="show" id="show-toc">&#187;</a>
+<div id="toc-id" class="toc">
+<ul><li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
+<ul id="atmosphere" style='display:block'>
+<li>atmosphere.<a href="atmosphere/cdf.html">cdf</a></li>
+<li>atmosphere.<a href="atmosphere/derivative.html">derivative</a></li>
+<li><span class="package" onclick="show_hide('atmosphere.estimate');">atmosphere.<a href="atmosphere/estimate.html">estimate</a></span>
+<ul id="atmosphere.estimate">
+<li>atmosphere.estimate.<a href="atmosphere/estimate/gamma.html">gamma</a></li>
+<li>atmosphere.estimate.<a href="atmosphere/estimate/generalized_gamma.html">generalized_gamma</a></li>
+<li>atmosphere.estimate.<a href="atmosphere/estimate/inverse_gamma.html">inverse_gamma</a></li>
+<li>atmosphere.estimate.<a href="atmosphere/estimate/nvmm.html">nvmm</a></li>
+</ul>
+</li>
+<li>atmosphere.<a href="atmosphere/finitemixture.html">finitemixture</a></li>
+<li><span class="package" onclick="show_hide('atmosphere.likelihood');">atmosphere.<a href="atmosphere/likelihood.html">likelihood</a></span>
+<ul id="atmosphere.likelihood">
+<li>atmosphere.likelihood.<a href="atmosphere/likelihood/gamma.html">gamma</a></li>
+<li>atmosphere.likelihood.<a href="atmosphere/likelihood/generalized_gamma.html">generalized_gamma</a></li>
+<li>atmosphere.likelihood.<a href="atmosphere/likelihood/generalized_inverse_gaussian.html">generalized_inverse_gaussian</a></li>
+<li>atmosphere.likelihood.<a href="atmosphere/likelihood/inverse_gamma.html">inverse_gamma</a></li>
+</ul>
+</li>
+<li>atmosphere.<a href="atmosphere/mixture.html">mixture</a></li>
+<li>atmosphere.<a href="atmosphere/moment.html">moment</a></li>
+<li>atmosphere.<a href="atmosphere/params.html">params</a></li>
+<li>atmosphere.<a href="atmosphere/pdf.html">pdf</a></li>
+<li>atmosphere.<a href="atmosphere/quantile.html">quantile</a></li>
+<li>atmosphere.<a href="atmosphere/random.html">random</a></li>
+<li>atmosphere.<a href="atmosphere/statistic.html">statistic</a></li>
+<li><span class=" selected">atmosphere.<a href="atmosphere/summation.html">summation</a></span>
+</li>
+</ul>
+</li>
+
+</ul>
+</div></div>
+<div class="content">
+<div class="aggregate-symbol"><div class="description"><pre><code>public struct Summator(T, <a href="atmosphere/summation/Summation.html">Summation</a> summation = <a href="atmosphere/summation/Summation.html">Summation</a>.Precise)
+if(isMutable!T && (summation == <a href="atmosphere/summation/Summation.html">Summation</a>.Precise && isFloatingPoint!T || summation == <a href="atmosphere/summation/Summation.html">Summation</a>.Kahan && isSummable!T || (summation == <a href="atmosphere/summation/Summation.html">Summation</a>.KBN || summation == <a href="atmosphere/summation/Summation.html">Summation</a>.KB2) && (isFloatingPoint!T || isComplex!T)))
+</code></pre>
+<div class="section "><p>Output range for summation.
+<code class="d_inlinecode">Precise</code>, <code class="d_inlinecode">KB2</code>, <code class="d_inlinecode">KBN</code> and <code class="d_inlinecode">Kahan</code> algorithms are supported.
+</p>
+
+
+</div>
+<div class="section "><h2>Example</h2>
+<pre><code>import std.range;
+import std.algorithm.mutation : swap;
+
+///Moving mean
+class <a href="atmosphere/summation/MovingAverage.html">MovingAverage</a>
+{
+    <a href="atmosphere/summation/Summator.html">Summator</a>!double summator;
+    double[] circularBuffer;
+    size_t frontIndex;
+
+    double avg() @property
+    {
+        return summator.<a href="atmosphere/summation/Summator.html#sum">sum</a>() / circularBuffer.length;
+    }
+
+    <a href="atmosphere/summation/Summator.html#this">this</a>(double[] buffer)
+    {
+        assert(!buffer.empty);
+        circularBuffer = buffer;
+        summator = 0;
+        .<a href="atmosphere/summation/Summator.html#put">put</a>(summator, buffer);
+    }
+
+    ///operation without rounding
+    void <a href="atmosphere/summation/Summator.html#put">put</a>(double x)
+    {
+        summator += x;
+        swap(circularBuffer[frontIndex++], x);
+        summator -= x;
+        frontIndex %= circularBuffer.length;
+    }
+}
+
+/// <a href="atmosphere/summation.html#ma">ma</a> always keeps pricese average of last 1000 elements
+auto <a href="atmosphere/summation.html#ma">ma</a> = new <a href="atmosphere/summation/MovingAverage.html">MovingAverage</a>(iota(0.0, 1000.0).array);
+assert(<a href="atmosphere/summation.html#ma">ma</a>.avg == (1000*999/2) / 1000.0);
+/// move by 10 elements
+<a href="atmosphere/summation/Summator.html#put">put</a>(<a href="atmosphere/summation.html#ma">ma</a>, iota(1000.0, 1010.0));
+assert(<a href="atmosphere/summation.html#ma">ma</a>.avg == (1010*1009/2 - 10*9/2) / 1000.0);
+
+</code></pre>
+
+</div>
+</div><a class="anchor" id="partialsReduce"></a><div class="symbol"><div class="description"><pre><code>private static F <a href="atmosphere/summation/Summator.html#partialsReduce">partialsReduce</a>(
+    F s, 
+    in F[] partials)
+</code></pre>
+<div class="section "><p>Compute the sum of a list of nonoverlapping floats.
+        On input, partials is a list of nonzero, nonspecial,
+        nonoverlapping floats, strictly increasing in magnitude, but
+        possibly not all having the same sign.
+        On output, the sum of partials gives the error in the returned
+        result, which is correctly rounded (using the round-half-to-even
+        rule).
+        Two floating point values x and y are non-overlapping if the least significant nonzero
+        bit of x is more significant than the most significant nonzero bit of y, or vice-versa.
+</p>
+
+
+</div>
+<div class="section "><h2>Contracts</h2><pre><code>in
+{
+    
+debug(numeric)
+        assert (!partials.length || s.<a href="atmosphere/summation/Summator.html#isFinite">isFinite</a>);
+}
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="this"></a><div class="symbol"><div class="description"><pre><code>public this(T n)
+</code></pre>
+</div></div><a class="anchor" id="this"></a><div class="symbol"><div class="description"><pre><code>public @disable this()
+</code></pre>
+</div></div><a class="anchor" id="put"></a><div class="symbol"><div class="description"><pre><code>public <a href="http://dlang.org/type.html#basic-data-types">void</a> <a href="atmosphere/summation/Summator.html#put">put</a>(T n)
+</code></pre>
+<div class="section "><p>Adds <code class="d_inlinecode">x</code> to the internal partial sums.
+</p>
+
+
+</div>
+</div></div><a class="anchor" id="sum"></a><div class="symbol"><div class="description"><pre><code>public T <a href="atmosphere/summation/Summator.html#sum">sum</a>() const
+</code></pre>
+<div class="section "><p>Returns the value of the sum.
+</p>
+
+
+</div>
+</div></div><a class="anchor" id="opCast"></a><div class="symbol"><div class="description"><pre><code>public C <a href="atmosphere/summation/Summator.html#opCast">opCast</a>(C : <a href="atmosphere/summation/Summator.html">Summator</a>!P, P)() 
+if(isMutable!C && P.max_exp >= T.max_exp && P.mant_dig >= T.mant_dig)
+</code></pre>
+<div class="section "><p>Returns <code class="d_inlinecode">Summator</code> with extended internal partial sums.
+</p>
+
+
+</div>
+<div class="section "><h2>Example</h2>
+<pre><code>import std.math;
+float  M = 2.0f ^^ (float.max_exp-1);
+double N = 2.0  ^^ (float.max_exp-1);
+auto s = <a href="atmosphere/summation/Summator.html">Summator</a>!float(0); //float summator
+s += M;
+s += M;
+assert(float.infinity == s.<a href="atmosphere/summation/Summator.html#sum">sum</a>());
+auto e = cast(<a href="atmosphere/summation/Summator.html">Summator</a>!double) s;
+assert(<a href="atmosphere/summation/Summator.html#isFinite">isFinite</a>(e.<a href="atmosphere/summation/Summator.html#sum">sum</a>()));
+assert(N+N == e.<a href="atmosphere/summation/Summator.html#sum">sum</a>());
+
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="opCast"></a><div class="symbol"><div class="description"><pre><code>public C <a href="atmosphere/summation/Summator.html#opCast">opCast</a>(C)() 
+if(is(Unqual!C == T))
+</code></pre>
+<div class="section "><p><code class="d_inlinecode">cast(C)</code> operator overloading. Returns <code class="d_inlinecode">cast(C)sum()</code>.
+    See also: <code class="d_inlinecode">cast</code>
+</p>
+
+
+</div>
+</div></div><a class="anchor" id="opAssign"></a><div class="symbol"><div class="description"><pre><code>public <a href="http://dlang.org/type.html#basic-data-types">void</a> <a href="atmosphere/summation/Summator.html#opAssign">opAssign</a>(T rhs)
+</code></pre>
+<div class="section "><p>Operator overloading.
+</p>
+
+
+</div>
+</div></div><a class="anchor" id="opOpAssign"></a><div class="symbol"><div class="description"><pre><code>public <a href="http://dlang.org/type.html#basic-data-types">void</a> <a href="atmosphere/summation/Summator.html#opOpAssign">opOpAssign</a>(string op : "+")(T rhs)
+</code></pre>
+<div class="section "><p>Operator overloading.
+</p>
+
+
+</div>
+</div></div><a class="anchor" id="opOpAssign"></a><div class="symbol"><div class="description"><pre><code>public <a href="http://dlang.org/type.html#basic-data-types">void</a> <a href="atmosphere/summation/Summator.html#opOpAssign">opOpAssign</a>(string op : "+")(ref const <a href="atmosphere/summation/Summator.html">Summator</a> rhs)
+</code></pre>
+<div class="section "><p>Operator overloading.
+</p>
+
+
+</div>
+</div></div><a class="anchor" id="opOpAssign"></a><div class="symbol"><div class="description"><pre><code>public <a href="http://dlang.org/type.html#basic-data-types">void</a> <a href="atmosphere/summation/Summator.html#opOpAssign">opOpAssign</a>(string op : "-")(T rhs)
+</code></pre>
+<div class="section "><p>Operator overloading.
+</p>
+
+
+</div>
+</div></div><a class="anchor" id="opOpAssign"></a><div class="symbol"><div class="description"><pre><code>public <a href="http://dlang.org/type.html#basic-data-types">void</a> <a href="atmosphere/summation/Summator.html#opOpAssign">opOpAssign</a>(string op : "-")(ref const <a href="atmosphere/summation/Summator.html">Summator</a> rhs)
+</code></pre>
+<div class="section "><p>Operator overloading.
+</p>
+
+
+</div>
+<div class="section "><h2>Example</h2>
+<pre><code>import std.math, std.algorithm, std.range;
+auto r1 = iota(500).map!(a => 1.7L.pow(a+1) - 1.7L.pow(a));
+auto r2 = iota(500, 1000).map!(a => 1.7L.pow(a+1) - 1.7L.pow(a));
+<a href="atmosphere/summation/Summator.html">Summator</a>!real s1 = 0, s2 = 0.0;
+foreach (e; r1) s1 += e;
+foreach (e; r2) s2 -= e;
+s1 -= s2;
+s1 -= 1.7L.pow(1000);
+assert(s1.<a href="atmosphere/summation/Summator.html#sum">sum</a>() == -1);
+
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="isNaN"></a><div class="symbol"><div class="description"><pre><code>public <a href="http://dlang.org/type.html#basic-data-types">bool</a> <a href="atmosphere/summation/Summator.html#isNaN">isNaN</a>() const
+</code></pre>
+<div class="section "><p>Returns <code class="d_inlinecode">true</code> if current sum is a NaN.
+</p>
+
+
+</div>
+</div></div><a class="anchor" id="isFinite"></a><div class="symbol"><div class="description"><pre><code>public <a href="http://dlang.org/type.html#basic-data-types">bool</a> <a href="atmosphere/summation/Summator.html#isFinite">isFinite</a>() const
+</code></pre>
+<div class="section "><p>Returns <code class="d_inlinecode">true</code> if current sum is finite (not infinite or NaN).
+</p>
+
+
+</div>
+</div></div><a class="anchor" id="isInfinity"></a><div class="symbol"><div class="description"><pre><code>public <a href="http://dlang.org/type.html#basic-data-types">bool</a> <a href="atmosphere/summation/Summator.html#isInfinity">isInfinity</a>() const
+</code></pre>
+<div class="section "><p>Returns <code class="d_inlinecode">true</code> if current sum is ±∞.
+</p>
+
+
+</div>
+</div></div><a class="anchor" id="isNaN"></a><div class="symbol"><div class="description"><pre><code>public <a href="http://dlang.org/type.html#basic-data-types">bool</a> <a href="atmosphere/summation/Summator.html#isNaN">isNaN</a>() const
+</code></pre>
+<div class="section "><p>Returns <code class="d_inlinecode">true</code> if current sum is a NaN.
+</p>
+
+
+</div>
+</div></div><a class="anchor" id="isFinite"></a><div class="symbol"><div class="description"><pre><code>public <a href="http://dlang.org/type.html#basic-data-types">bool</a> <a href="atmosphere/summation/Summator.html#isFinite">isFinite</a>() const
+</code></pre>
+<div class="section "><p>Returns <code class="d_inlinecode">true</code> if current sum is finite (not infinite or NaN).
+</p>
+
+
+</div>
+</div></div><a class="anchor" id="isInfinity"></a><div class="symbol"><div class="description"><pre><code>public <a href="http://dlang.org/type.html#basic-data-types">bool</a> <a href="atmosphere/summation/Summator.html#isInfinity">isInfinity</a>() const
+</code></pre>
+<div class="section "><p>Returns <code class="d_inlinecode">true</code> if current sum is ±∞.
+</p>
+
+
+</div>
+</div></div><div class="section members"><h2>Functions</h2><table><tr><td><span class="extrainfo"><span class="attribs"><span class="attr-static">static</span></span></span><a href="atmosphere/summation/Summator.html#partialsReduce">partialsReduce</a><span class="extrainfo"></span></td><td></td><td><p>Compute the sum of a list of nonoverlapping floats.
+        On input, partials is a list of nonzero, nonspecial,
+        nonoverlapping floats, strictly increasing in magnitude, but
+        possibly not all having the same sign.
+        On output, the sum of partials gives the error in the returned
+        result, which is correctly rounded (using the round-half-to-even
+        rule).
+        Two floating point values x and y are non-overlapping if the least significant nonzero
+        bit of x is more significant than the most significant nonzero bit of y, or vice-versa.
+</p>
+</td></tr><tr><td><a href="atmosphere/summation/Summator.html#this">this</a></td><td></td><td></td></tr><tr><td><a href="atmosphere/summation/Summator.html#this">this</a></td><td></td><td></td></tr><tr><td><a href="atmosphere/summation/Summator.html#put">put</a><span class="extrainfo"></span></td><td></td><td><p>Adds <code class="d_inlinecode">x</code> to the internal partial sums.
+</p>
+</td></tr><tr><td><a href="atmosphere/summation/Summator.html#sum">sum</a><span class="extrainfo"><span class="method-attribs"><span class="attr-const">const</span></span></span></td><td></td><td><p>Returns the value of the sum.
+</p>
+</td></tr><tr><td><a href="atmosphere/summation/Summator.html#opCast">opCast</a><span class="extrainfo"></span></td><td></td><td><p>Returns <code class="d_inlinecode">Summator</code> with extended internal partial sums.
+</p>
+</td></tr><tr><td><a href="atmosphere/summation/Summator.html#opCast">opCast</a><span class="extrainfo"></span></td><td></td><td><p><code class="d_inlinecode">cast(C)</code> operator overloading. Returns <code class="d_inlinecode">cast(C)sum()</code>.
+    See also: <code class="d_inlinecode">cast</code>
+</p>
+</td></tr><tr><td><a href="atmosphere/summation/Summator.html#opAssign">opAssign</a><span class="extrainfo"></span></td><td></td><td><p>Operator overloading.
+</p>
+</td></tr><tr><td><a href="atmosphere/summation/Summator.html#opOpAssign">opOpAssign</a><span class="extrainfo"></span></td><td></td><td><p>Operator overloading.
+</p>
+</td></tr><tr><td><a href="atmosphere/summation/Summator.html#opOpAssign">opOpAssign</a><span class="extrainfo"></span></td><td></td><td><p>Operator overloading.
+</p>
+</td></tr><tr><td><a href="atmosphere/summation/Summator.html#opOpAssign">opOpAssign</a><span class="extrainfo"></span></td><td></td><td><p>Operator overloading.
+</p>
+</td></tr><tr><td><a href="atmosphere/summation/Summator.html#opOpAssign">opOpAssign</a><span class="extrainfo"></span></td><td></td><td><p>Operator overloading.
+</p>
+</td></tr><tr><td><a href="atmosphere/summation/Summator.html#isNaN">isNaN</a><span class="extrainfo"><span class="method-attribs"><span class="attr-const">const</span></span></span></td><td></td><td><p>Returns <code class="d_inlinecode">true</code> if current sum is a NaN.
+</p>
+</td></tr><tr><td><a href="atmosphere/summation/Summator.html#isFinite">isFinite</a><span class="extrainfo"><span class="method-attribs"><span class="attr-const">const</span></span></span></td><td></td><td><p>Returns <code class="d_inlinecode">true</code> if current sum is finite (not infinite or NaN).
+</p>
+</td></tr><tr><td><a href="atmosphere/summation/Summator.html#isInfinity">isInfinity</a><span class="extrainfo"><span class="method-attribs"><span class="attr-const">const</span></span></span></td><td></td><td><p>Returns <code class="d_inlinecode">true</code> if current sum is ±∞.
+</p>
+</td></tr><tr><td><a href="atmosphere/summation/Summator.html#isNaN">isNaN</a><span class="extrainfo"><span class="method-attribs"><span class="attr-const">const</span></span></span></td><td></td><td><p>Returns <code class="d_inlinecode">true</code> if current sum is a NaN.
+</p>
+</td></tr><tr><td><a href="atmosphere/summation/Summator.html#isFinite">isFinite</a><span class="extrainfo"><span class="method-attribs"><span class="attr-const">const</span></span></span></td><td></td><td><p>Returns <code class="d_inlinecode">true</code> if current sum is finite (not infinite or NaN).
+</p>
+</td></tr><tr><td><a href="atmosphere/summation/Summator.html#isInfinity">isInfinity</a><span class="extrainfo"><span class="method-attribs"><span class="attr-const">const</span></span></span></td><td></td><td><p>Returns <code class="d_inlinecode">true</code> if current sum is ±∞.
+</p>
+</td></tr></table>
+</div>
+</div><script>hljs.initHighlightingOnLoad();</script>
+
+</div>
+<footer>
+Generated with <a href="https://github.com/kiith-sa/harbored-mod">harbored-mod</a>
+</footer>
+</div>
+</body>
+</html>

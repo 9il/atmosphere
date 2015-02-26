@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<link rel="stylesheet" type="text/css" href="../../style.css"/>
+<script src="../../highlight.pack.js"></script>
+<title>NumericQuantile</title>
+<base href="../../"/>
+<script src="search.js"></script>
+<script src="show_hide.js"></script>
+</head>
+<body>
+<div class="main">
+<div class="breadcrumbs">
+<table id="results"></table>
+<a href="index.html" class="home">⌂</a><input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
+<small>atmosphere.<a href=atmosphere/quantile.html>quantile</a>.</small><span class="highlight">NumericQuantile</span>
+</div>
+<div class="sidebar">
+<a href="atmosphere/quantile.html#hide-toc" class="hide" id="hide-toc">&#171;</a>
+<a href="atmosphere/quantile.html#show-toc" class="show" id="show-toc">&#187;</a>
+<div id="toc-id" class="toc">
+<ul><li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
+<ul id="atmosphere" style='display:block'>
+<li>atmosphere.<a href="atmosphere/cdf.html">cdf</a></li>
+<li>atmosphere.<a href="atmosphere/derivative.html">derivative</a></li>
+<li><span class="package" onclick="show_hide('atmosphere.estimate');">atmosphere.<a href="atmosphere/estimate.html">estimate</a></span>
+<ul id="atmosphere.estimate">
+<li>atmosphere.estimate.<a href="atmosphere/estimate/gamma.html">gamma</a></li>
+<li>atmosphere.estimate.<a href="atmosphere/estimate/generalized_gamma.html">generalized_gamma</a></li>
+<li>atmosphere.estimate.<a href="atmosphere/estimate/inverse_gamma.html">inverse_gamma</a></li>
+<li>atmosphere.estimate.<a href="atmosphere/estimate/nvmm.html">nvmm</a></li>
+</ul>
+</li>
+<li>atmosphere.<a href="atmosphere/finitemixture.html">finitemixture</a></li>
+<li><span class="package" onclick="show_hide('atmosphere.likelihood');">atmosphere.<a href="atmosphere/likelihood.html">likelihood</a></span>
+<ul id="atmosphere.likelihood">
+<li>atmosphere.likelihood.<a href="atmosphere/likelihood/gamma.html">gamma</a></li>
+<li>atmosphere.likelihood.<a href="atmosphere/likelihood/generalized_gamma.html">generalized_gamma</a></li>
+<li>atmosphere.likelihood.<a href="atmosphere/likelihood/generalized_inverse_gaussian.html">generalized_inverse_gaussian</a></li>
+<li>atmosphere.likelihood.<a href="atmosphere/likelihood/inverse_gamma.html">inverse_gamma</a></li>
+</ul>
+</li>
+<li>atmosphere.<a href="atmosphere/mixture.html">mixture</a></li>
+<li>atmosphere.<a href="atmosphere/moment.html">moment</a></li>
+<li>atmosphere.<a href="atmosphere/params.html">params</a></li>
+<li>atmosphere.<a href="atmosphere/pdf.html">pdf</a></li>
+<li><span class=" selected">atmosphere.<a href="atmosphere/quantile.html">quantile</a></span>
+</li>
+<li>atmosphere.<a href="atmosphere/random.html">random</a></li>
+<li>atmosphere.<a href="atmosphere/statistic.html">statistic</a></li>
+<li>atmosphere.<a href="atmosphere/summation.html">summation</a></li>
+</ul>
+</li>
+
+</ul>
+</div></div>
+<div class="content">
+<div class="aggregate-symbol"><div class="description"><pre><code>public abstract class NumericQuantile(T) : <a href="atmosphere/quantile/Quantile.html">Quantile</a>!T
+</code></pre>
+<div class="section "><p>Class to compute quantile function as root of it's cumulative density function. <span style="color: red;">Unstable</span> algorithm.
+</p>
+
+
+</div>
+<div class="section "><h2>Example</h2>
+<div class="section ">Numeric quantile function of standard normal distribution
+
+</div>
+<pre><code>import std.traits, std.mathspecial;
+import <a href="atmosphere/pdf.html">atmosphere.pdf</a>;
+import <a href="atmosphere/cdf.html">atmosphere.cdf</a>;
+
+class NormalPDF : <a href="atmosphere/pdf/PDF.html">PDF</a>!real
+{
+	real <a href="atmosphere/quantile/NumericQuantile.html#opCall">opCall</a>(real x)
+	{
+		// 1/sqrt(2 PI)
+		enum c = 0.398942280401432677939946L;
+		return c * exp(-0.5f * x * x);
+	}
+}
+
+class NormalCDF : <a href="atmosphere/cdf/NumericCDF.html">NumericCDF</a>!real ///$(RED Unstable) algorithm.
+{
+	<a href="atmosphere/quantile/NumericQuantile.html#this">this</a>()
+	{
+		super(new NormalPDF, [-3, -1, 0, 1, 3]);
+	}
+}
+
+class NormalQuantile : <a href="atmosphere/quantile/NumericQuantile.html">NumericQuantile</a>!real ///$(RED Unstable) algorithm.
+{
+	<a href="atmosphere/quantile/NumericQuantile.html#this">this</a>()
+	{
+		super(new NormalCDF);
+	}
+}
+
+auto qf = new NormalQuantile;
+
+assert(approxEqual(qf(0.3), normalDistributionInverse(0.3)));
+
+</code></pre>
+
+</div>
+<div class="section "><h2>Example</h2>
+<div class="section ">Numeric quantile function of Generalized Hyperbolic distribution
+
+</div>
+<pre><code>import <a href="atmosphere/pdf.html">atmosphere.pdf</a>;
+import <a href="atmosphere/cdf.html">atmosphere.cdf</a>;
+import <a href="atmosphere/params.html">atmosphere.params</a>;
+import <a href="atmosphere/moment.html">atmosphere.moment</a>;
+
+class GHypCDF: <a href="atmosphere/cdf/NumericCDF.html">NumericCDF</a>!real ///$(RED Unstable) algorithm.
+{
+	<a href="atmosphere/quantile/NumericQuantile.html#this">this</a>(real lambda, <a href="atmosphere/params/GHypChiPsi.html">GHypChiPsi</a>!real params)
+	{
+		immutable mu = 0;
+		auto pdf = new <a href="atmosphere/pdf/GeneralizedHyperbolicPDF.html">GeneralizedHyperbolicPDF</a>!real(lambda, params.alpha, params.beta, params.delta, mu);
+		immutable mean = <a href="atmosphere/moment.html#generalizedHyperbolicMean">generalizedHyperbolicMean</a>!real(lambda, params.beta, params.chi, params.psi);
+		super(pdf, [mean]);	
+	}
+}
+
+class GHypQuantile : <a href="atmosphere/quantile/NumericQuantile.html">NumericQuantile</a>!real ///$(RED Unstable) algorithm.
+{
+	<a href="atmosphere/quantile/NumericQuantile.html#this">this</a>(real lambda, <a href="atmosphere/params/GHypChiPsi.html">GHypChiPsi</a>!real params)
+	{
+		super(new GHypCDF(lambda, params), -1000, 1000);	
+	}
+}
+
+auto qf = new GHypQuantile(0.5, <a href="atmosphere/params/GHypChiPsi.html">GHypChiPsi</a>!real(5, 0.7, 0.6));
+import std.stdio, std.conv;
+assert(approxEqual(qf(0.95), 40.9263));
+assert(approxEqual(qf(0.99), 64.977));
+
+</code></pre>
+
+</div>
+</div><a class="anchor" id="this"></a><div class="symbol"><div class="description"><pre><code>public this(
+    <a href="atmosphere/cdf/CDF.html">CDF</a>!T cdf, 
+    T a = -T.max, 
+    T b = T.max)
+</code></pre>
+<div class="section "><p>Constructor
+</p>
+
+
+</div>
+<div class="section"><h2>Parameters</h2>
+<table class="params">
+<tr class="param"><td class="paramName">cdf</td><td class="paramDoc"><p>The CDF to to inverse.
+</p>
+</td></tr>
+<tr class="param"><td class="paramName">a</td><td class="paramDoc"><p>(optional) The lower bound.
+</p>
+</td></tr>
+<tr class="param"><td class="paramName">b</td><td class="paramDoc"><p>(optional) The upper bound.
+</p>
+</td></tr>
+</table>
+</div>
+</div></div><a class="anchor" id="opCall"></a><div class="symbol"><div class="description"><pre><code>public final T <a href="atmosphere/quantile/NumericQuantile.html#opCall">opCall</a>(T x)
+</code></pre>
+<div class="section "><p>Call operator
+</p>
+
+
+</div>
+<div class="section "><h2>Contracts</h2><pre><code>in
+{
+    assert (x >= 0);
+    assert (x <= 1);
+}
+out (result)
+{
+    assert (!result.isNaN);
+}
+</code></pre>
+
+</div>
+</div></div><div class="section members"><h2>Functions</h2><table><tr><td><a href="atmosphere/quantile/NumericQuantile.html#this">this</a></td><td></td><td><p>Constructor
+</p>
+</td></tr><tr><td><span class="extrainfo"><span class="attribs"><span class="attr-final">final</span></span></span><a href="atmosphere/quantile/NumericQuantile.html#opCall">opCall</a><span class="extrainfo"></span></td><td></td><td><p>Call operator
+</p>
+</td></tr></table>
+</div>
+</div><script>hljs.initHighlightingOnLoad();</script>
+
+</div>
+<footer>
+Generated with <a href="https://github.com/kiith-sa/harbored-mod">harbored-mod</a>
+</footer>
+</div>
+</body>
+</html>
