@@ -44,7 +44,7 @@ sudo apt-get install libblas-dev liblapack-dev
 There is no instruction for **Windows**. You are welcome to create it.
 
 ## Intro to D
-1. Install D [compiler](http://dlang.org/download.html). The [2.067-b2](https://dlang.dawg.eu/downloads/dmd.2.067.0-b2/) is recured.
+1. Install D [compiler](http://dlang.org/download.html). The [2.067-b2](https://dlang.dawg.eu/downloads/dmd.2.067.0-b2/) is required.
 2. Install [DUB registry](http://code.dlang.org/download)
 3. Read about [DUB](http://code.dlang.org/about)
 4. Read about [DUB package format](http://code.dlang.org/package-format)
