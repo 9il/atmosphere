@@ -9,7 +9,7 @@
 	"dependencies": {
 		"simple_matrix": "~>0.3.1",
 		"cblas": "~>0.1.0",
-		"bessel": "~>3.1.5",
-		"scid": "~master",
+		"bessel": "~>3.1.6",
+		"scid": "==0.1.0+gedc429ecd31fe6903e25ed501400ce34d723c975",
 	}
 }
