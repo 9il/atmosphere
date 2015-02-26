@@ -3,8 +3,7 @@ Atmosphere GM contains Maximum likelihood estimation algorithms, density functio
 # Travis-CI Status
 [![Coverage Status](https://coveralls.io/repos/9il/atmosphere_gm/badge.svg?branch=master)](https://coveralls.io/r/9il/atmosphere_gm?branch=master)
 [![Join the chat at https://gitter.im/9il/atmosphere_gm](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/9il/atmosphere_gm?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-+ [![Build Status](https://travis-ci.org/9il/atmosphere_gm.svg)](https://travis-ci.org/9il/atmosphere_gm) - [Atmosphere GM ~master and DMD 2.067.0-b2](https://travis-ci.org/9il/atmosphere_gm)
-+ [![Build Status](https://travis-ci.org/9il/atmosphere_gm.svg?branch=v0.0.13)](https://travis-ci.org/9il/atmosphere_gm) - [Atmosphere GM v0.0.13](https://travis-ci.org/9il/atmosphere_gm)
++ [![Build Status](https://travis-ci.org/9il/atmosphere_gm.svg)](https://travis-ci.org/9il/atmosphere_gm) - [Atmosphere GM](https://travis-ci.org/9il/atmosphere_gm) with [DMD 2.067.0-b2](https://dlang.dawg.eu/downloads/dmd.2.067.0-b2/).
 + [![Build Status](https://travis-ci.org/9il/atmosphere_gm_test.svg)](https://travis-ci.org/9il/atmosphere_gm_test) - [Atmosphere GM Test](https://travis-ci.org/9il/atmosphere_gm_test)
 
 #Features
@@ -22,8 +21,8 @@ Atmosphere GM contains Maximum likelihood estimation algorithms, density functio
   + Random observations generators
   + Maximum Likelihood Estimations (MLE)
 
-<img src="http://9il.github.io/atmosphere_gm/view/images/GHyp_0148.svg" alt="Generalized hyperbolic distribution" width="280" />
-<img src="http://9il.github.io/atmosphere_gm/view/images/GV-gamma_0120.svg" alt="Generalized variance-gamma distribution" width="280" />
+<img src="http://9il.github.io/atmosphere_gm/doc/images/GHyp_0148.svg" alt="Generalized hyperbolic distribution" width="280" />
+<img src="http://9il.github.io/atmosphere_gm/doc/images/GV-gamma_0120.svg" alt="Generalized variance-gamma distribution" width="280" />
 
 #### What can I use this package for? 
 Atmosphere GM can be used for risk management in economics, finance and thermonuclear reactors ;-)
@@ -45,7 +44,7 @@ sudo apt-get install libblas-dev liblapack-dev
 There is no instruction for **Windows**. You are welcome to create it.
 
 ## Intro to D
-1. Install D [compiler](http://dlang.org/download.html)
+1. Install D [compiler](http://dlang.org/download.html). The [2.067-b2](https://dlang.dawg.eu/downloads/dmd.2.067.0-b2/) is recured.
 2. Install [DUB registry](http://code.dlang.org/download)
 3. Read about [DUB](http://code.dlang.org/about)
 4. Read about [DUB package format](http://code.dlang.org/package-format)
