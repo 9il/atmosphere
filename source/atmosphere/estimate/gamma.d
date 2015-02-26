@@ -82,6 +82,6 @@ gammaEstimate(T)(GammaStatistic!T stat)
 	{
 		immutable T shape = logmdigammaInverse(log(mean) - meanl);
 		immutable T scale = mean / shape;
-		return typeof(return)(shape, scale);		
+		return typeof(return)(shape, scale);
 	}
 }
