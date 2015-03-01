@@ -15,5 +15,5 @@ install:
   - chmod +x doveralls
 
 script:
-  - dub test -b unittest-cov
+  - dub test -b unittest-cov --compiler={DC}
   - ./doveralls
