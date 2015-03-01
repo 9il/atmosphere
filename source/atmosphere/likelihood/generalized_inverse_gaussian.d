@@ -43,7 +43,6 @@ T properGeneralizedInverseGaussianLikelihood(T)(T lambda, T eta, T omega, Genera
 	if(isFloatingPoint!T)
 {
 	import bessel;
-	import std.typecons : Flag;
 	with(stat) return
 		- log(2 * eta * besselK(omega, lambda, Flag!"ExponentiallyScaled".yes))
 		+ (lambda - 1) * (stat.meanl - log(eta))

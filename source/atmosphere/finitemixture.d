@@ -59,7 +59,7 @@ body {
 ///
 unittest
 {
-	import std.algorithm.iteration : map;
+	import std.algorithm : map;
 	import std.range : sequence;
 	import atmosphere.pdf;
 	import atmosphere.utilities;

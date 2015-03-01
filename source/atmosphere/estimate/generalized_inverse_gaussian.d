@@ -11,22 +11,31 @@ import core.stdc.tgmath;
 
 import std.traits;
 import std.typecons;
-import std.math : signbit, isNormal;
+import std.math : signbit, isNormal, isFinite;
 
-import atmosphere.statistic: GeneralizedInverseGaussinStatistic;
+import atmosphere.statistic: GeneralizedInverseGaussinStatistic, GeneralizedInverseGaussinFixedLambdaStatistic;
 
 Tuple!(T, "eta", T, "omega") 
-generalizedInverseGaussianFixedLambdaEstimate(T)
-	(T lambda, GeneralizedInverseGaussinStatistic!T stat)
+properGeneralizedInverseGaussianFixedLambdaEstimate(T)
+	(T lambda, GeneralizedInverseGaussinFixedLambdaStatistic!T stat)
 	if(isFloatingPoint!T)
-{
+in {
+	assert(isNormal(lambda));
+}
+body {
 	immutable prod = stat.mean * stat.meani;
-	
-	return typeof(return)(1, 2);	
+	if(!isFinite(prod) || prod <= 1)
+		return typeof(return)(T.nan, T.nan);
+	immutable u = prod / (prod - 1);
+	assert(isFinite(u));
+	immutable alambda = fabs(lambda);
+	if(alambda >= u)
+		return typeof(return)(alambda > 0 ? 0 : T.infinity, 0);
+	return typeof(return)(1, 2);
 }
 
 unittest {
-	alias est = generalizedInverseGaussianFixedLambdaEstimate!double;
+	alias est = properGeneralizedInverseGaussianFixedLambdaEstimate!double;
 }
 
 version(none):

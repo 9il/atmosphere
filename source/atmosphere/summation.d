@@ -11,7 +11,7 @@ module atmosphere.summation;
 
 import std.traits;
 import std.typecons;
-import std.range.primitives;
+import std.range;
 import std.math;
 
 private template SummationType(F)
@@ -419,7 +419,7 @@ struct Summator(T, Summation summation = Summation.Precise)
         }
 
         //Returns corresponding infinity if is overflow and 0 otherwise.
-        F overflow() const
+        F overflow()
         {
             if (o == 0)
                 return 0;
@@ -506,7 +506,7 @@ public:
     }
 
     ///
-    @disable this();
+    //@disable this();
 
     // free ScopeBuffer
     static if (summation == Summation.Precise)
@@ -765,7 +765,7 @@ public:
     }
 
     ///Returns the value of the sum.
-    T sum() const
+    T sum()
     {
         /++
         Returns the value of the sum, rounded to the nearest representable
@@ -853,7 +853,7 @@ public:
 
     version(none)
     static if (summation == Summation.Precise)
-    F partialsSum() const
+    F partialsSum()
     {
         debug(numeric) partialsDebug;
         auto parts = partials[];
@@ -957,7 +957,8 @@ public:
     {
         static if (summation == Summation.Precise)
         {
-            partials.length = 0;
+            partials.free;
+            partials = scopeBuffer(scopeBufferArray);
             s = 0.0;
             o = 0;
             if (rhs) put(rhs);
@@ -990,7 +991,7 @@ public:
     }
 
     ///ditto
-    void opOpAssign(string op : "+")(ref const Summator rhs)
+    void opOpAssign(string op : "+")(ref Summator rhs)
     {
         static if (summation == Summation.Precise)
         {
@@ -1039,7 +1040,7 @@ public:
     }
 
     ///ditto
-    void opOpAssign(string op : "-")(ref const Summator rhs)
+    void opOpAssign(string op : "-")(ref Summator rhs)
     {
         static if (summation == Summation.Precise)
         {
@@ -1069,7 +1070,7 @@ public:
     }
 
     ///
-    @nogc nothrow unittest {
+    nothrow unittest {
         import std.math, std.algorithm, std.range;
         auto r1 = iota(500).map!(a => 1.7L.pow(a+1) - 1.7L.pow(a));
         auto r2 = iota(500, 1000).map!(a => 1.7L.pow(a+1) - 1.7L.pow(a));
@@ -1081,7 +1082,7 @@ public:
         assert(s1.sum() == -1);
     }
 
-    @nogc nothrow unittest {
+    nothrow unittest {
         import std.typetuple;
         with(Summation)
         foreach (summation; TypeTuple!(Kahan, KBN, KB2, Precise))
@@ -1107,13 +1108,13 @@ public:
     static if (summation == Summation.Precise)
     {
         ///Returns $(D true) if current sum is a NaN.
-        bool isNaN() const
+        bool isNaN()
         {
             return .isNaN(s);
         }
 
         ///Returns $(D true) if current sum is finite (not infinite or NaN).
-        bool isFinite() const
+        bool isFinite()
         {
             if (s)
                 return false;
@@ -1121,7 +1122,7 @@ public:
         }
 
         ///Returns $(D true) if current sum is ±∞.
-        bool isInfinity() const
+        bool isInfinity()
         {
             return .isInfinity(s) || overflow();
         }
@@ -1129,19 +1130,19 @@ public:
     else static if(isFloatingPoint!F)
     {
         ///Returns $(D true) if current sum is a NaN.
-        bool isNaN() const
+        bool isNaN()
         {
             return .isNaN(sum());
         }
 
         ///Returns $(D true) if current sum is finite (not infinite or NaN).
-        bool isFinite() const
+        bool isFinite()
         {
             return cast(bool).isFinite(sum());
         }
 
         ///Returns $(D true) if current sum is ±∞.
-        bool isInfinity() const
+        bool isInfinity()
         {
             return .isInfinity(sum());
         }
@@ -1151,7 +1152,7 @@ public:
 ///
 unittest {
     import std.range;
-    import std.algorithm.mutation : swap;
+    import std.algorithm: swap;
 
     ///Moving mean
     class MovingAverage
@@ -1189,6 +1190,20 @@ unittest {
     /// move by 10 elements
     put(ma, iota(1000.0, 1010.0));
     assert(ma.avg == (1010*1009/2 - 10*9/2) / 1000.0);
+}
+
+// check default constructor
+unittest
+{
+    Summator!double d;
+    assert(d.isNaN());
+    assert(d.sum().isNaN());
+    d += 100;
+    assert(d.isNaN());
+    assert(d.sum().isNaN());
+    d = 1;
+    d += 1000;
+    assert(d.sum == 1001);
 }
 
 nothrow unittest
@@ -1585,7 +1600,7 @@ unittest {
         this(double f){}
         void opAssign(double f){}
     }
-    import std.range.interfaces;
+    import std.range;
     import std.complex : Complex;
     static assert(__traits(isSame, Algo!(double[], Summation.Appropriate), sumPairwise));
     static assert(__traits(isSame, Algo!(Complex!double[], Summation.Appropriate), sumPairwise));

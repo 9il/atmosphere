@@ -4,7 +4,7 @@
 		{
 			"cmd":
 			[
-				"dub test --compiler=../../dmd2/osx/bin/dmd"
+				"dub test --compiler=dmd"
 			],
 			"file_regex": "^(.*?)\\(([0-9]+)\\)",
 			"name": "dub package",
@@ -15,9 +15,9 @@
 				{
 					"cmd":
 					[
-						"dub test"
+						"dub test --compiler=../ldc/build/bin/ldc2"
 					],
-					"name": "Run",
+					"name": "LDC",
 					"shell": true
 				}
 			],

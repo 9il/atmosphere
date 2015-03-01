@@ -12,9 +12,9 @@ import core.stdc.tgmath;
 import std.traits;
 import std.typecons;
 import std.math : LN2;
-import std.algorithm.iteration : map;
-import std.numeric : sumOfLog2s;
-
+import std.algorithm : map;
+//import std.numeric : sumOfLog2s;
+import atmosphere.math: sumOfLog2s;
 
 /++
 Minimal sufficient and complete statistic for the generalized inverse Gaussin disributoin.
@@ -254,7 +254,7 @@ unittest {
 T wfsum(Range, T)(Range sample, in T[] weights)
 {
 	import atmosphere.summation;
-	import std.range.primitives;
+	import std.range;
 	assert(sample.length == weights.length);
 	Summator!(T, Summation.KB2) s = 0;
 	foreach(i, w; weights)
