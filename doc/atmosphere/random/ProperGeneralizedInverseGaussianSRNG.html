@@ -61,7 +61,6 @@
 <li><span class=" selected">atmosphere.<a href="atmosphere/random.html">random</a></span>
 </li>
 <li>atmosphere.<a href="atmosphere/statistic.html">statistic</a></li>
-<li>atmosphere.<a href="atmosphere/summation.html">summation</a></li>
 </ul>
 </li>
 
@@ -85,7 +84,7 @@ The algorithm is based on that given by Dagpunar (1989).
 
 </div>
 <div class="section "><h2>Example</h2>
-<pre><code>import std.algorithm.iteration : map;
+<pre><code>import std.algorithm : map;
 import std.range;
 auto rng = <a href="atmosphere/random/ProperGeneralizedInverseGaussianSRNG.html">ProperGeneralizedInverseGaussianSRNG</a>!double(rndGen, -2, 5.0, 2);
 auto sample = rng.map!(x => x + 4).take(9).array;

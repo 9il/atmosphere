@@ -61,7 +61,6 @@
 <li><span class=" selected">atmosphere.<a href="atmosphere/random.html">random</a></span>
 </li>
 <li>atmosphere.<a href="atmosphere/statistic.html">statistic</a></li>
-<li>atmosphere.<a href="atmosphere/summation.html">summation</a></li>
 </ul>
 </li>
 
@@ -89,7 +88,7 @@ distribution.
 </div>
 </div>
 <div class="section "><h2>Example</h2>
-<pre><code>import std.algorithm.iteration : map;
+<pre><code>import std.algorithm : map;
 import std.range;
 auto rng = new <a href="atmosphere/random/ProperGeneralizedHyperbolicRNG.html">ProperGeneralizedHyperbolicRNG</a>!double(rndGen, 1.1, 1.1, 1.1, 1.1);
 auto sample = rng.map!(x => x + 4).take(9).array;
