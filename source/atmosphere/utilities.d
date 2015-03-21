@@ -296,7 +296,7 @@ version(LDC)
 				%r = fadd fast float %0, %d
 				ret float %r`, float)(ret, a[j], b[j]);
 			else
-			ret += a[j] * b[j];
+			ret += a[j] / b[j];
 		return ret;
 	}
 }
