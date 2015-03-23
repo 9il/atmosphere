@@ -10,13 +10,7 @@ module atmosphere.math;
 //import core.stdc.tgmath;
 import std.range;
 import std.traits;
-import std.stdio;
-import std.math : approxEqual;
-
-import std.stdio;
-
-
-//import std.math: nextUp, nextDown;
+import std.typecons;
 import std.math;
 
 
@@ -140,7 +134,6 @@ unittest {
 	foreach(test; testData)
 	{
 		import std.stdio;
-		writeln(logmdigammaInverse(test[0]));
 		assert(approxEqual(logmdigammaInverse(test[0]), test[1], 1e-10, 0));
 	}
 	assert(approxEqual(logmdigamma(logmdigammaInverse(1.0)), 1, 1e-15, 0));
@@ -175,7 +168,7 @@ T logmdigamma(T)(const T x)
 	T y;
 	if ( s < 1.0e17 ) {
 		immutable T z = 1.0/(s * s);
-		version(none)
+		version(LDC)
 		{
 			y = z * 
 				llvm_fmuladd(z,
@@ -226,23 +219,6 @@ unittest {
 }
 
 
-
-T besselKR(T)(T x, T lambda)
-{
-	import bessel;
-	immutable b = besselK(x, lambda+1, Flag!"ExponentiallyScaled".yes);
-	immutable c = besselK(x, lambda  , Flag!"ExponentiallyScaled".yes);
-	return b / c;
-}
-
-
-import std.math : sqrt, isNormal, isFinite, isNaN;
-alias fmin = findLocalMin!(double, double delegate(double));
-import std.typecons;
-import std.stdio;
-
-import std.math : frexp, ldexp;
-
 /++
 Find a real minimum of a real function $(D f(x)) via bracketing. 
 Given a function $(D f) and a range $(D (ax..bx)), 
@@ -275,192 +251,10 @@ References:
 	"Algorithms for Minimization without Derivatives", Richard Brent, Prentice-Hall, Inc. (1973)
 
 See_Also: $(LREF findRoot), $(XREF math, isNormal)
-
-Authors: Ilya Yaroshenko (adaptive golden section search)
 +/
 
-///
-unittest
-{
-	int i;
-	double f(double x)
-	{
-		i++;
-		return fabs(x-1);
-	}
-
-	//slow
-	auto minD = findLocalMin(&f, -double.max/2, double.max/2, double.min_normal, 2*double.epsilon);
-	writeln(minD);
-	writeln(10 * double.epsilon);
-	writeln(i);
-	with(minD)
-	{
-		assert(approxEqual(x, 1));
-		assert(approxEqual(y, 0));
-		assert(error <= 10 * double.epsilon);
-		//assert(minD.error == 0);
-	}
-}
-
-unittest
-{
-	auto ret = findLocalMin((double x) => double.init, 0.0, 1.0, double.min_normal, 2*double.epsilon);
-	assert(!ret.x.isNaN);
-	assert(ret.y.isNaN);
-	assert(ret.error.isNaN);
-}
-
-unittest
-{
-	auto ret = findLocalMin((double x) => log(x), 0.0, 1.0, double.min_normal, 2*double.epsilon);
-	assert(ret.error < 3.00001 * ((2*double.epsilon)*fabs(ret.x)+ double.min_normal));
-	assert(ret.x >= 0 && ret.x <= ret.error);
-}
-
-
-unittest
-{
-	size_t i;
-	auto ret = findLocalMin((double x) {i++; return log(x);}, 0.0, double.max, double.min_normal, 2*double.epsilon);
-	writeln(i);
-	assert(ret.y < -18);
-	assert(ret.error < 5e-08);
-	assert(ret.x >= 0 && ret.x <= ret.error);
-}
-
-//unittest
-//{
-//	size_t i;
-//	auto ret = findLocalMin((double x) {i++; return fabs(x);}, -double.max, double.max, double.min_normal, 2*double.epsilon);
-//	writeln(i);
-//	assert(ret.x.approxEqual(0));
-//	assert(ret.y.approxEqual(0));
-//	assert(ret.error.approxEqual(0));
-//}
-
-unittest
-{
-	size_t i;
-	auto ret = findLocalMin((double x) {i++; return -fabs(x);}, -1.0, 1.0, double.min_normal, 2*double.epsilon);
-	writeln(i);
-	assert(ret.x.fabs.approxEqual(1));
-	assert(ret.y.fabs.approxEqual(1));
-	assert(ret.error.approxEqual(0));
-}
-
-
-//unittest
-//{
-//	size_t i;
-//	auto ret = findLocalMin((double x) {i++; return fabs(x);}, -double.max, double.max, double.min_normal, 2*double.epsilon);
-//	writeln(i);
-//	assert(ret.x.approxEqual(0));
-//	assert(ret.y.approxEqual(0));
-//	assert(ret.error.approxEqual(0));
-//}
-
-unittest
-{
-	size_t i;
-	auto ret = findLocalMin((double x) {i++; return -fabs(x);}, -1.0, 1.0, double.min_normal, 2*double.epsilon);
-	writeln(i);
-	assert(ret.x.fabs.approxEqual(1));
-	assert(ret.y.fabs.approxEqual(1));
-	assert(ret.error.approxEqual(0));
-}
-
-
-version(none)
-// check speed regressions and infinity loops
-unittest
-{
-	import std.typetuple;
-	import std.math;
-	size_t i = 0;
-	R f00(T, R)(T x) { i++; return 0; }
-	R f01(T, R)(T x) { i++; return 1; }
-	R f02(T, R)(T x) { i++; return R.min_normal/2; } //subnormal
-	R f03(T, R)(T x) { i++; return R(PI); }
-	R f04(T, R)(T x) { i++; return log2(cast(R)x); }
-	R f05(T, R)(T x) { i++; return log(cast(R)x); }
-	R f06(T, R)(T x) { i++; return exp2(cast(R)x); }
-	R f07(T, R)(T x) { i++; return exp(cast(R)x); }
-	R f08(T, R)(T x) { i++; return sqrt(cast(R)x); }
-	R f09(T, R)(T x) { i++; return cbrt(cast(R)x); }
-	R f10(T, R)(T x) { i++; return x; }
-	R f11(T, R)(T x) { i++; return cast(R)(x)^^2; }
-	R f12(T, R)(T x) { i++; return cast(R)(x)^^PI; }
-	R f13(T, R)(T x) { i++; return cast(R)(x)^^(1/PI); }
-	R f14(T, R)(T x) { i++; return sin(cast(R)x); }
-	R f15(T, R)(T x) { i++; return cos(cast(R)x); }
-	R f16(T, R)(T x) { i++; return sqrt(abs(cast(R)(x)^^2 - 1)); }
-	R f17(T, R)(T x) { i++; return sqrt(abs(cast(R)(x)^^2 - 1)); }
-	R f18(T, R)(T x) { i++; return floor(exp(cast(R)x)); } //multiminimum
-	R f19(T, R)(T x) { i++; return floor(log(cast(R)x)); } //multiminimum
-	R f20(T, R)(T x) { i++; return floor(cast(R)x); }      //multiminimum
-	// vars for global checks
-	int s1, s2;
-	int c1, c2, c;
-	foreach(T; TypeTuple!(
-		float,
-		double,
-		real,
-		)) // 1
-	foreach(R; TypeTuple!(
-		float,
-		double,
-		real,
-		)) // 2
-	{
-		immutable ar1 = [ 
-			&f00!(T, R),
-			&f01!(T, R),
-			&f02!(T, R),
-			&f03!(T, R),
-			&f04!(T, R),
-			&f05!(T, R),
-			&f06!(T, R),
-			&f07!(T, R),
-			&f08!(T, R),
-			&f09!(T, R),
-			&f10!(T, R),
-			&f11!(T, R),
-			&f12!(T, R),
-			&f13!(T, R),
-			&f14!(T, R),
-			&f15!(T, R),
-			&f16!(T, R),
-			&f17!(T, R),
-			&f18!(T, R),
-			&f19!(T, R),
-			&f20!(T, R),
-		];
-		
-		foreach(relTol; [
-			T.min_normal, 
-			T.epsilon, 
-			sqrt(T.epsilon), 
-			T.epsilon^^0.25,
-			]) // 3
-		foreach(absTol; [
-			2*T.epsilon, 
-			sqrt(T.epsilon),
-			]) // 4
-		{
-			foreach(sign; [-1, 1]) // 5
-			foreach(rBound; [1, T.max]) // 6
-			foreach(shift; [0, -1, 1]) // 7
-			foreach(j, f; ar1) // 8
-			{
-				auto m2 = findLocalMin!T((T x) => sign * f(x-shift), shift, rBound+shift, relTol, absTol);
-			}
-		}
-	}
-}
-
 Tuple!(T, "x", Unqual!(ReturnType!DF), "y", T, "error") 
-	findLocalMin(T, DF)(
+findLocalMin(T, DF)(
 		scope DF f,
 		in T ax,
 		in T bx,
@@ -618,12 +412,166 @@ body
 	return typeof(return)(x, fx, tolerance * 3);
 }
 
-double chebev(in double[] c, in double x) 
+///
+unittest
 {
+	int i;
+	double f(double x)
+	{
+		i++;
+		return fabs(x-1);
+	}
+
+	//slow
+	auto minD = findLocalMin(&f, -double.max/2, double.max/2, double.min_normal, 2*double.epsilon);
+	with(minD)
+	{
+		assert(approxEqual(x, 1));
+		assert(approxEqual(y, 0));
+		assert(error <= 10 * double.epsilon);
+		//assert(minD.error == 0);
+	}
+}
+
+unittest
+{
+	auto ret = findLocalMin((double x) => double.init, 0.0, 1.0, double.min_normal, 2*double.epsilon);
+	assert(!ret.x.isNaN);
+	assert(ret.y.isNaN);
+	assert(ret.error.isNaN);
+}
+
+unittest
+{
+	auto ret = findLocalMin((double x) => log(x), 0.0, 1.0, double.min_normal, 2*double.epsilon);
+	assert(ret.error < 3.00001 * ((2*double.epsilon)*fabs(ret.x)+ double.min_normal));
+	assert(ret.x >= 0 && ret.x <= ret.error);
+}
 
 
-	double d = 0;
-	double dd=0;
+unittest
+{
+	size_t i;
+	auto ret = findLocalMin((double x) {i++; return log(x);}, 0.0, double.max, double.min_normal, 2*double.epsilon);
+	assert(ret.y < -18);
+	assert(ret.error < 5e-08);
+	assert(ret.x >= 0 && ret.x <= ret.error);
+}
+
+
+unittest
+{
+	size_t i;
+	auto ret = findLocalMin((double x) {i++; return -fabs(x);}, -1.0, 1.0, double.min_normal, 2*double.epsilon);
+	assert(ret.x.fabs.approxEqual(1));
+	assert(ret.y.fabs.approxEqual(1));
+	assert(ret.error.approxEqual(0));
+}
+
+unittest
+{
+	size_t i;
+	auto ret = findLocalMin((double x) {i++; return -fabs(x);}, -1.0, 1.0, double.min_normal, 2*double.epsilon);
+	assert(ret.x.fabs.approxEqual(1));
+	assert(ret.y.fabs.approxEqual(1));
+	assert(ret.error.approxEqual(0));
+}
+
+
+version(none)
+// check speed regressions and infinity loops
+unittest
+{
+	import std.typetuple;
+	import std.math;
+	size_t i = 0;
+	R f00(T, R)(T x) { i++; return 0; }
+	R f01(T, R)(T x) { i++; return 1; }
+	R f02(T, R)(T x) { i++; return R.min_normal/2; } //subnormal
+	R f03(T, R)(T x) { i++; return R(PI); }
+	R f04(T, R)(T x) { i++; return log2(cast(R)x); }
+	R f05(T, R)(T x) { i++; return log(cast(R)x); }
+	R f06(T, R)(T x) { i++; return exp2(cast(R)x); }
+	R f07(T, R)(T x) { i++; return exp(cast(R)x); }
+	R f08(T, R)(T x) { i++; return sqrt(cast(R)x); }
+	R f09(T, R)(T x) { i++; return cbrt(cast(R)x); }
+	R f10(T, R)(T x) { i++; return x; }
+	R f11(T, R)(T x) { i++; return cast(R)(x)^^2; }
+	R f12(T, R)(T x) { i++; return cast(R)(x)^^PI; }
+	R f13(T, R)(T x) { i++; return cast(R)(x)^^(1/PI); }
+	R f14(T, R)(T x) { i++; return sin(cast(R)x); }
+	R f15(T, R)(T x) { i++; return cos(cast(R)x); }
+	R f16(T, R)(T x) { i++; return sqrt(abs(cast(R)(x)^^2 - 1)); }
+	R f17(T, R)(T x) { i++; return sqrt(abs(cast(R)(x)^^2 - 1)); }
+	R f18(T, R)(T x) { i++; return floor(exp(cast(R)x)); } //multiminimum
+	R f19(T, R)(T x) { i++; return floor(log(cast(R)x)); } //multiminimum
+	R f20(T, R)(T x) { i++; return floor(cast(R)x); }      //multiminimum
+	// vars for global checks
+	int s1, s2;
+	int c1, c2, c;
+	foreach(T; TypeTuple!(
+		float,
+		double,
+		real,
+		)) // 1
+	foreach(R; TypeTuple!(
+		float,
+		double,
+		real,
+		)) // 2
+	{
+		immutable ar1 = [ 
+			&f00!(T, R),
+			&f01!(T, R),
+			&f02!(T, R),
+			&f03!(T, R),
+			&f04!(T, R),
+			&f05!(T, R),
+			&f06!(T, R),
+			&f07!(T, R),
+			&f08!(T, R),
+			&f09!(T, R),
+			&f10!(T, R),
+			&f11!(T, R),
+			&f12!(T, R),
+			&f13!(T, R),
+			&f14!(T, R),
+			&f15!(T, R),
+			&f16!(T, R),
+			&f17!(T, R),
+			&f18!(T, R),
+			&f19!(T, R),
+			&f20!(T, R),
+		];
+		
+		foreach(relTol; [
+			T.min_normal, 
+			T.epsilon, 
+			sqrt(T.epsilon), 
+			T.epsilon^^0.25,
+			]) // 3
+		foreach(absTol; [
+			2*T.epsilon, 
+			sqrt(T.epsilon),
+			]) // 4
+		{
+			foreach(sign; [-1, 1]) // 5
+			foreach(rBound; [1, T.max]) // 6
+			foreach(shift; [0, -1, 1]) // 7
+			foreach(j, f; ar1) // 8
+			{
+				auto m2 = findLocalMin!T((T x) => sign * f(x-shift), shift, rBound+shift, relTol, absTol);
+			}
+		}
+	}
+}
+
+
+Unqual!(CommonType!(T1, T2)) 
+chebev(T1, T2)(in T1[] c, in T2 x) 
+{
+	typeof(return) d = 0;
+	typeof(return) dd = 0;
 	for (size_t j=c.length-1;j>0;j--)
 	{
 		immutable sv = d;
@@ -658,12 +606,10 @@ immutable double[8] c2 = [
 unittest
 {
 	import std.math;
-	writeln(besselIK(1, 2));
 	assert(approxEqual(besselIK(1, 2)[2], 0.139865881816522427284));
 	assert(approxEqual(besselIK(1, 20)[2], 5.88305796955703817765028e-10));
 	assert(approxEqual(besselIK(1.2, 1)[2], 0.701080));
 	assert(approxEqual(besselIK(10, 400)[2], 1.359308280937876101049800424530298700140591995078599604e-175));
-	writeln(besselIK(1, 1e+100)[2]);
 }
 
 // Sets io, ko, ipo, and kpo respectively to the Bessel functions I .x/, K .x/ and their derivatives I0 .x/, K0 .x/, 
@@ -672,7 +618,6 @@ unittest
 // FPMIN is a number close to the machine’s smallest floating-point number.
 auto  besselIK(in double nu, in double x)
 {
-	//writeln("nu = ", nu, " x = ", x);
 	import std.math : abs, sin, sinh, cosh, exp, floor;
 	immutable size_t MAXIT=10000;
 	immutable double EPS= double.epsilon;
@@ -714,15 +659,10 @@ auto  besselIK(in double nu, in double x)
 		h=del*h;
 		if (abs(del-1.0) <= EPS)
 			break; 
-		//writeln(del);
 	}
 
 	//Evaluate CF1 by modified Lentz’s method (÷5.2).
 	//Denominators cannot be zero here, so no need for special precau- tions.
-	//if (i >= MAXIT)
-	//	throw new Exception("x too large in besselik; try asymptotic expansion");
-	//else
-		//writeln("i = ", i);
 	ril=FPMIN;
 	ripl=h*ril;
 	ril1=ril;
@@ -788,7 +728,7 @@ auto  besselIK(in double nu, in double x)
 		a1=0.25-xmu2;
 		q=c=a1;
 		a = -a1;
-		s=1.0+q*delh;
+		s=1 + q*delh;
 		for (i=1;i<MAXIT;i++)
 		{
 			//Bessel Function Implementations 5
@@ -812,9 +752,8 @@ auto  besselIK(in double nu, in double x)
 		}
 		if (i >= MAXIT) 
 			throw new Exception("besselIK: failure to converge in cf2");
-		//else
-		//	writeln("i = ", i);
 		h=a1*h;
+		
 		rkmu=sqrt(PI/(2.0*x))*exp(-x)/s;
 		rk1=rkmu*(xmu+x+0.5-h)*xi;
 	}
@@ -836,110 +775,66 @@ auto  besselIK(in double nu, in double x)
 }
 
 
-double modifiedBesselCF2(double nu, double x)
+T modifiedBesselCF2(T)(in T nu, in T x)
+	if(isFloatingPoint!T)
 in {
 	assert(fabs(nu) <= 0.5f);
 	assert(x >= 2);
 	assert(isFinite(x));
 }
-out(result)
-{
-	//writeln("modifiedBesselCF2 = ", result);
-}
 body {
-	//writeln("nu = ", nu, " x = ", x);
-	//immutable size_t MAXIT=10000;
-	//immutable nl = cast(int)floor(nu+0.5);
-	//immutable xmu=nu-nl;
-	//nl is the number of downward re- xmu=nu-nl; currences of the I ’s and upward
-	//recurrences of K’s. xmu lies be- tween 􏰀1=2 and 1/2.
-	//besselfrac.h
-	//Copyright 2007 Numerical Recipes Software
-	//4
-	//Bessel Function Implementations
-	//immutable xmu2 = xmu * xmu;
-	double b = 2 * (1 + x);
+	T b = 2 * (1 + x);
 	if(isInfinity(b))
 		return 1;
-	double d = 1 / b;
-	double h = d;
-	double delh = d;
-	double a1 = 0.25f - nu^^2;
-	double a = -a1;
+	T d = 1 / b;
+	T h = d;
+	T delh = d;
+	T a1 = 0.25f - nu^^2;
+	T a = -a1;
 	uint i;
-	//for (i=1;i<MAXIT;i++)
 	do
 	{
-		//Bessel Function Implementations 5
-		//Evaluate CF2 by Steed’s algorithm (÷5.2), which is OK because there can be no zero denominators.
-		//Initializations for recurrence (6.6.35). First term in equation (6.6.34).
-		//writeln("a = ", a);
-		//writeln("b = ", b);
+		i++;
 		a -= 2 * i;
 		b += 2;
 		d = 1 / (b + a * d);
-		//writeln("d = ", d);
-		delh = (b * d - 1.0) * delh;
+		delh = (b * d - 1) * delh;
 		h += delh;
-		//writeln("delh = ", delh);
-		//writeln("h = ", h);
-		//writeln(fabs(delh / h));
 		assert(!isNaN(fabs(delh / h)));
 	}
-	while(fabs(delh / h) > double.epsilon);
-	//if (i >= MAXIT) 
-	//	throw new Exception("modifiedBesselCF2: failure to converge");
-	//else
-	//	writeln("modifiedBesselCF2: i = ", i);
+	while(fabs(delh / h) > T.epsilon);
 	return (nu + 0.5 + x - a1 * h) / x;
 }
 
 
 
-double[2] modifiedBesselCF2Full(double nu, double x)
+T[2] modifiedBesselCF2Full(T)(in T nu, in T x)
+	if(isFloatingPoint!T)
 in {
 	assert(fabs(nu) <= 0.5f);
 	assert(x >= 2);
 	assert(isFinite(x));
 }
-out(result)
-{
-	//writeln("modifiedBesselCF2 = ", result);
-}
 body {
-	//writeln("nu = ", nu, " x = ", x);
-	//immutable size_t MAXIT=10000;
-	//immutable nl = cast(int)floor(nu+0.5);
-	//immutable xmu=nu-nl;
-	//nl is the number of downward re- xmu=nu-nl; currences of the I ’s and upward
-	//recurrences of K’s. xmu lies be- tween 􏰀1=2 and 1/2.
-	//besselfrac.h
-	//Copyright 2007 Numerical Recipes Software
-	//4
-	//Bessel Function Implementations
-	//immutable xmu2 = xmu * xmu;
-
-	double b = 2 * (1 + x);
+	T b = 2 * (1 + x);
 	if(isInfinity(b))
 		return [nu < 0.5f ? 0 : 1.2533141373155003, 1];
-	double d = 1 / b;
-	double h = d;
-	double delh = d;
-	double a1 = 0.25f - nu^^2;
-	double a = -a1;
+	T d = 1 / b;
+	T h = d;
+	T delh = d;
+	T a1 = 0.25f - nu^^2;
+	T a = -a1;
+	T q1 = 0;
+	T q2 = 1;
+	T q = a1;
+	T c = a1;
+	T s = 1 + q*delh;
+	T dels = void;
 	uint i;
-	double q1 = 0;
-	double q2 = 1;
-	double q = a1;
-	double c = a1;
-	double s = 1 + q*delh;
-	double dels = void;
+
 	do
 	{
-		//Bessel Function Implementations 5
-		//Evaluate CF2 by Steed’s algorithm (÷5.2), which is OK because there can be no zero denominators.
-		//Initializations for recurrence (6.6.35). First term in equation (6.6.34).
-
+		i++;
 		a -= 2 * i;
 		c = -a * c / (i + 1);
 		immutable qnew = (q1 - b * q2) / a;
@@ -947,52 +842,35 @@ body {
 		q2 = qnew;
 		q += c * qnew;
 		b += 2;
-		d = 1 / (b + a *  d);
+		d = 1 / (b + a * d);
 		delh = (b * d - 1) * delh;
 		dels = q * delh;
 		h += delh;
 		s += dels;
 		//Need only test convergence of sum since CF2 itself converges more quickly.
 	}
-	while(fabs(dels / s) > double.epsilon);
+	while(fabs(dels / s) > T.epsilon);
 
-	enum double SQRTPI_2 = sqrt(PI / 2);
+	enum T SQRTPI_2 = sqrt(PI / 2);
 	return [SQRTPI_2 / s, (nu + 0.5 + x - a1 * h) / x];
 }
 
 
 unittest
 {
-	import std.math;
-	//writeln(modifiedBesselCF2(0.4, 1));
-	//assert(approxEqual(modifiedBesselCF2(0.4, 1), 1.87491));
-	//assert(approxEqual(modifiedBesselCF2(0.499, 1), 1.99872));
-	//assert(approxEqual(modifiedBesselCF2(0, 1), 1.429625398260401758028108023450365630080017018192662983459034));
-
-	//assert(0.5.nextDown+0.5 < 1);
-	writeln(modifiedBesselCF2(0.5, 4.0.nextUp));
-	writeln(modifiedBesselCF2(0.49999999, 4.00001));
-	writeln(modifiedBesselCF2(0, 4.00001));
-	//writeln(besselIK(1, 2.00001)[2] / besselIK(0, 2.00001)[2]);
-
-	assert(approxEqual(modifiedBesselCF2(0.4, 2.00001), 1.44212));
-	assert(approxEqual(modifiedBesselCF2(0.5, 2.00001), 1.5));
-	assert(approxEqual(modifiedBesselCF2(0, 2.00001), 1.22804));
-
-	//assert(approxEqual(modifiedBesselCF2(0.4, 1000), 1.00100));
-	//assert(approxEqual(modifiedBesselCF2(0.499, 1000), 1.00090));
-	//assert(approxEqual(modifiedBesselCF2(0, 1000), 1.000499875124805092705355767307116656100795175108335495396004));
-
-	assert(approxEqual(modifiedBesselCF2(0.4, 1000), 1.00100));
-	assert(approxEqual(modifiedBesselCF2(0.499, 1000), 1.00090));
-	assert(approxEqual(modifiedBesselCF2(0, 1000), 1.000499875124805092705355767307116656100795175108335495396004));
+	assert(approxEqual(modifiedBesselCF2(0.4, 2.00001), 1.44212, 0.0, 1e-4));
+	assert(approxEqual(modifiedBesselCF2(0.5, 2.00001), 1.5, 0.0, 1e-4));
+	assert(approxEqual(modifiedBesselCF2(0.0, 2.00001), 1.22804, 0.0, 1e-4));
+	assert(approxEqual(modifiedBesselCF2(0.4, 1000.0), 1.00100, 0.0, 1e-3));
+	assert(approxEqual(modifiedBesselCF2(0.499, 1000.0), 1.00090, 0.0, 1e-4));
+	assert(approxEqual(modifiedBesselCF2(0.0, 1000), 1.000499875124805092705355767307116656100795175108335495396004, 0.0));
 }
 
 /++
 Returns:
 	[K(x, nu), 2 / x * K(x, nu+1)]
 +/
-double[2] modifiedBesselTemmeSeriesImpl(double EPS = double.epsilon)(double nu, double x)
+T[2] modifiedBesselTemmeSeriesImpl(T)(in T nu, in T x)
 in {
 	assert(fabs(nu) <= 0.5f);
 	assert(x <= 2);
@@ -1000,26 +878,26 @@ in {
 body {
 	import std.math;
 	immutable size_t MAXIT=10000;
-	immutable double x2=0.5*x;
-	immutable double pimu=PI*nu;
-	immutable double nu2 = nu^^2;
-	immutable double fact = (abs(pimu) < EPS ? 1.0 : pimu / sin(pimu));
-	double d = -log(x2);
-	double e = nu * d;
-	immutable double fact2 = (abs(e) < EPS ? 1.0 : sinh(e) / e);
-	immutable double xx=8.0*nu^^2-1.0;
-	immutable double gam1=chebev(c1, xx);
-	immutable double gam2=chebev(c2, xx);
-	immutable double gampl= gam2-nu*gam1;
-	immutable double gammi= gam2+nu*gam1;
-	double ff=fact*(gam1*cosh(e)+gam2*fact2*d);
-	double sum=ff;
+	immutable T x2=0.5*x;
+	immutable T pimu=PI*nu;
+	immutable T nu2 = nu^^2;
+	immutable T fact = (abs(pimu) < T.epsilon ? 1.0 : pimu / sin(pimu));
+	T d = -log(x2);
+	T e = nu * d;
+	immutable T fact2 = (abs(e) < T.epsilon ? 1.0 : sinh(e) / e);
+	immutable T xx=8.0*nu^^2-1.0;
+	immutable T gam1=chebev(c1, xx);
+	immutable T gam2=chebev(c2, xx);
+	immutable T gampl= gam2-nu*gam1;
+	immutable T gammi= gam2+nu*gam1;
+	T ff=fact*(gam1*cosh(e)+gam2*fact2*d);
+	T sum=ff;
 	e = exp(e);
-	double p=0.5*e/gampl;
-	double q=0.5/(e*gammi);
-	double c=1.0;
+	T p=0.5*e/gampl;
+	T q=0.5/(e*gammi);
+	T c=1.0;
 	d = x2*x2;
-	double sum1=p;
+	T sum1=p;
 	int i;
 	for (i=1;i<=MAXIT;i++) {
 		ff=(i*ff+p+q)/(i*i-nu2);
@@ -1030,13 +908,11 @@ body {
 		sum += del;
 		immutable del1=c*(p-i*ff);
 		sum1 += del1;
-		if (abs(del) < abs(sum)*EPS)
+		if (abs(del) < abs(sum)*T.epsilon)
 			break;
 	}
 	if (i > MAXIT) 
 		throw new Exception("besselK series failed to converge");
-	//else
-	//	writeln("modifiedBesselTemmeSeriesImpl: i = ", i);
 	return [sum, sum1];
 }
 
@@ -1044,49 +920,41 @@ body {
 Returns:
 	2 / x * K(x, nu+1) / K(x, nu)
 +/
-double modifiedBesselTemmeSeries(double EPS = double.epsilon)(double nu, double x)
+T modifiedBesselTemmeSeries(T)(in T nu, in T x)
 in {
 	assert(fabs(nu) <= 0.5f);
 	assert(x <= 2);
 }
 body {
-	immutable sums = modifiedBesselTemmeSeriesImpl!EPS(nu, x);
+	immutable sums = modifiedBesselTemmeSeriesImpl(nu, x);
 	return sums[1] / sums[0] / x * 2;
 }
 
 unittest
 {
-	import std.math;
-	writeln(modifiedBesselTemmeSeries(0.4, 1));
-	assert(approxEqual(modifiedBesselTemmeSeries(0.4, 1), 1.87491));
-	assert(approxEqual(modifiedBesselTemmeSeries(0.499, 1), 1.99872));
-	assert(approxEqual(modifiedBesselTemmeSeries(0, 1), 1.429625398260401758028108023450365630080017018192662983459034));
-
-	//assert(approxEqual(modifiedBesselCF2(0.4, 2.00001), 1.44212));
-	//assert(approxEqual(modifiedBesselCF2(0.5, 2.00001), 1.5));
-	//assert(approxEqual(modifiedBesselCF2(0, 2.00001), 1.22804));
-
+	assert(approxEqual(modifiedBesselTemmeSeries(0.4, 1.0), 1.87491, 0.0, 1e-4));
+	assert(approxEqual(modifiedBesselTemmeSeries(0.499, 1.0), 1.9987, 0.0, 1e-4));
+	assert(approxEqual(modifiedBesselTemmeSeries(0.0, 1.0), 1.429625398260401758028108023450365630080017018192662983459034, 0.0));
 }
 
 
-double besselKD(double nu, double x)
+T besselKD(T)(in T nu, in T x)
+	if(isFloatingPoint!T)
 in {
 
 }
 body {
 	immutable anu = fabs(nu);
 	int nl = cast(int)floor(anu+0.5);
-	double mu=anu-nl;
-	//writeln("nl = ", nl);
-	//auto l = mu;
+	T mu=anu-nl;
 
 	if(x >= 2)
 	{
-		double r = modifiedBesselCF2(mu, x);
+		T r = modifiedBesselCF2(mu, x);
 		mu *= 2;
 		if(nl)
 		{
-			double d;
+			T d;
 			do
 			{
 				d = r;
@@ -1104,11 +972,11 @@ body {
 	else
 	{
 		immutable sums = modifiedBesselTemmeSeriesImpl(mu, x);
-		double r = sums[1] / sums[0];
+		T r = sums[1] / sums[0];
 		if(nl)
 		{
 			immutable x2_4 = x * x / 4;
-			double d;
+			T d;
 			do
 			{
 				d = r;
@@ -1120,17 +988,16 @@ body {
 		}
 		else
 		{
-			//writeln("SSSS");
 			return r / x * (r - mu) / x * 4;
 		}
 	}
 }
 
 unittest {
-	assert(approxEqual(besselKD(2, 3), 1.296650971433360224728795947829976056477719397636727742896));
-	assert(approxEqual(besselKD(2.2, 0.8), 1.624595391806645609233071414803368115353081130470326304255669));
-	assert(approxEqual(besselKD(0.4, 3), 1.334349384832101337822320699631685431560403480505548447388101));
-	assert(approxEqual(besselKD(0.4, 0.8), 2.275575715445329347201695021084846610619371526255383391028726));
+	assert(approxEqual(besselKD(2.0, 3.0), 1.296650971433360224728795947829976056477719397636727742896, 0.0));
+	assert(approxEqual(besselKD(2.2, 0.8), 1.624595391806645609233071414803368115353081130470326304255669, 0.0));
+	assert(approxEqual(besselKD(0.4, 3.0), 1.334349384832101337822320699631685431560403480505548447388101, 0.0));
+	assert(approxEqual(besselKD(0.4, 0.8), 2.275575715445329347201695021084846610619371526255383391028726, 0.0));
 
 	double[3][] data = [
 		[1, 1, 1.888245647341297344338366806469818100073176922119421727713106268163595832389436074069065151380128808],
@@ -1146,94 +1013,81 @@ unittest {
 	];
 	foreach(test; data)
 	{
-		assert(approxEqual(besselKD(test[1], test[0]), test[2]));
+		assert(approxEqual(besselKD(test[1], test[0]), test[2], 0.0, 1e4));
 	}
 	assert(isFinite(besselKD(0.1, double.epsilon)));
 	assert(isFinite(besselKD(0, double.epsilon)));
 }
 
-unittest {
-	import std.numeric;
-	import std.datetime;
-	import std.algorithm;
-	size_t i;
-	auto lambdas = iota(-100, 101, 1).map!"a/2".array;
-	auto ret = new double[lambdas.length];
-	StopWatch sw;
-	sw.start;
-	foreach(k, lambda; lambdas)
-	{
-		double f(double x)
-		{
-			//i++;
-			//writeln("lambda = ", lambda);
-			//writeln("x = ", x);
-			//writeln("l = ", besselKD(lambda, double.min_normal)-1.02);
-			//writeln("r = ", besselKD(lambda, double.max)-1.02);
-			return besselKD(lambda, x)-1.02;
-		}
-		//ret[k] = findRoot(&f, double.min_normal, double.max);
-		ret[k] = besselKD(lambda, 2);
-	}
-	sw.stop;
-	writeln(ret);
-	writeln(cast(Duration)sw.peek);
-	//writeln(findRoot(&f, double.min_normal, double.max));
-	//writeln("IC = ", i);
-}
 
-
-double logBesselK(const double nu, const double x)
+T logBesselK(T)(in T nu, in T x)
+	if(isFloatingPoint!T)
 in {
 
 }
 body {
 	immutable anu = fabs(nu);
 	int nl = cast(int)floor(anu+0.5);
-	double mu = anu - nl;
+	T mu = anu - nl;
 	if(x >= 2)
 	{
 		immutable r2 = modifiedBesselCF2Full(mu, x);
-		double r = r2[1];
-		double ret = log(r2[0]) + log(x) / 2 - x;
+		T r = r2[1];
+		T ret = log(r2[0]) - log(x) / 2 - x;
 		if(nl)
 		{
 			mu *= 2;
-			double l = 1;
+			T l = 1;
+			long exs;
 			do
 			{
 				int ex = void;
 				l *= frexp(r, ex);
-				ret += ex;
+				exs += ex;
 				mu += 2;
 				r = mu / x + 1 / r;
 			}
 			while(--nl);
-			ret += log(l);
+			ret +=  cast(T)LN2 * (exs + log2(l));
 		}
 		return ret;
 	}
 	else
 	{
 		immutable sums = modifiedBesselTemmeSeriesImpl(mu, x);
-		double r = sums[1] / sums[0];
-		double ret = log(sums[0]);
+		T r = sums[1] / sums[0];
+		T ret = log(sums[0]);
 		if(nl)
 		{
 			ret += nl * log(2 / x);
 			immutable x2_4 = x * x / 4;
-			double l = 1;
+			T l = 1;
+			long exs;
 			do
 			{
 				int ex = void;
 				l *= frexp(r, ex);
-				ret += ex;
+				exs += ex;
 				mu += 1;
 				r = mu + x2_4 / r;
 			}
 			while(--nl);
-			ret += log(l);
+			ret +=  cast(T)LN2 * (exs + log2(l));
 		}
 		return ret;
 	}
+}
+
+unittest {
+	assert(approxEqual(logBesselK(0.0, 1.0),  -0.86506439890678809679875790803368568022489315035161867839839, 0.0));
+	assert(approxEqual(logBesselK(0.0, 2.0), -2.17248820497570993473841333643717923143973636448830725037508, 0.0));
+	assert(approxEqual(logBesselK(0.0, 0.5), -0.07858976986908141689523697453802973224104044591707028228710, 0.0));
+	assert(approxEqual(logBesselK(1.0, 0.5), 0.504671397304651177308416839874408827783443947120148152746119, 0.0));
+	assert(approxEqual(logBesselK(1.0, 1.0), -0.50765194821075233094791485120634298590875979858568077818450, 0.0));
+	assert(approxEqual(logBesselK(1.0, 2.0), -1.96707130256051389147686464265533209478058062247688850653003, 0.0));
+	assert(approxEqual(logBesselK(0.4, 2.0), -2.13936877477972262972321591624176676086808535490162854194273, 0.0));
+	assert(approxEqual(logBesselK(0.4, 1.0), -0.80679541168661951923202239125477303379665660825595791745329, 0.0));
+	assert(approxEqual(logBesselK(0.4, 0.5), 0.018456437585950072585426399714417863872587115447191398524780, 0.0));
+	assert(approxEqual(logBesselK(11.1, 1.11e+10), -1.110000001133931411444888363310129265544563412394720435e10, 0.0));
+	assert(approxEqual(logBesselK(11.1, 1.11e-10), 276.7693978383758755547170249282452519578463074349871817713218, 0.0));
 }
