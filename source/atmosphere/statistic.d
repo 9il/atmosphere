@@ -54,11 +54,29 @@ struct GeneralizedInverseGaussinStatistic(T)
 	}
 
 	///
-	C opCast(C : GeneralizedInverseGaussinFixedLambdaStatistic!T)()
+	C opCast(C : GeneralizedInverseGaussinFixedLambdaStatistic!T)() pure const
 	{
 		GeneralizedInverseGaussinFixedLambdaStatistic!T stat = void;
 		stat.mean = mean;
 		stat.meani = meani;
+		return stat;
+	}
+
+	///
+	C opCast(C : GammaStatistic!T)() pure const
+	{
+		GammaStatistic!T stat = void;
+		stat.mean = mean;
+		stat.meanl = meanl;
+		return stat;
+	}
+
+	///
+	C opCast(C : InverseGammaStatistic!T)() pure const
+	{
+		InverseGammaStatistic!T stat = void;
+		stat.meani = meani;
+		stat.meanl = meanl;
 		return stat;
 	}
 }
