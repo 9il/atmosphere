@@ -26,13 +26,11 @@ Params:
 	relTolerance = Relative tolerance.
 	absTolerance = Absolute tolerance.
 
-Preconditions:
-	$(D ax) and $(D bx) shall be finite reals. $(BR)
+Preconditions: $(D ax) and $(D bx) shall be finite reals. $(BR)
 	$(D relTolerance) shall be normal positive real. $(BR)
-	$(D absTolerance) shall be normal positive real no less then $(T.epsilon*2).
+	$(D absTolerance) shall be normal positive real no less then $(D T.epsilon*2).
 
-References:
-	1. "Algorithms for Minimization without Derivatives", Richard Brent, Prentice-Hall, Inc. (1973)
+References: "Algorithms for Minimization without Derivatives", Richard Brent, Prentice-Hall, Inc. (1973)
 
 See_Also: `atmosphere.params`
 +/
@@ -123,13 +121,11 @@ Params:
 	relTolerance = Relative tolerance.
 	absTolerance = Absolute tolerance.
 
-Preconditions:
-	$(D ax) and $(D bx) shall be finite reals. $(BR)
+Preconditions: $(D ax) and $(D bx) shall be finite reals. $(BR)
 	$(D relTolerance) shall be normal positive real. $(BR)
-	$(D absTolerance) shall be normal positive real no less then $(T.epsilon*2).
+	$(D absTolerance) shall be normal positive real no less then $(D T.epsilon*2).
 
-References:
-	1. "Algorithms for Minimization without Derivatives", Richard Brent, Prentice-Hall, Inc. (1973)
+References: "Algorithms for Minimization without Derivatives", Richard Brent, Prentice-Hall, Inc. (1973)
 
 See_Also: `atmosphere.params`
 +/
