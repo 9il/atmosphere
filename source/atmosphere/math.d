@@ -23,11 +23,11 @@ import std.math;
 //	import std.math: log, log2, fabs;
 //}
 
-//version (LDC)
-//{
-//	pragma(LDC_intrinsic, "llvm.fmuladd.f#")
-//		T llvm_fmuladd(T)(T vala, T valb, T valc) @safe pure nothrow @nogc;
-//}
+version (LDC)
+{
+	pragma(LDC_intrinsic, "llvm.fmuladd.f#")
+		T llvm_fmuladd(T)(T vala, T valb, T valc) @safe pure nothrow @nogc;
+}
 
 /**
 Computes accurate sum of binary logarithms of input range $(D r).
