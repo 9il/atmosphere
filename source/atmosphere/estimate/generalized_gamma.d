@@ -19,7 +19,7 @@ import atmosphere.statistic: GeneralizedGammaFixedPowerStatistic;
 Estimates parameters of the generalized gamma distribution.
 +/
 Tuple!(T, "shape", T, "scale")
-generalizedGammaFixedPowerEstimate(T)(T power, in T[] sample)
+generalizedGammaFixedPowerEstimate(T)(in T power, in T[] sample)
 	if(isFloatingPoint!T)
 {
 	return generalizedGammaFixedPowerEstimate(power, GeneralizedGammaFixedPowerStatistic!T(power, sample));
@@ -45,7 +45,7 @@ unittest
 
 ///ditto
 Tuple!(T, "shape", T, "scale")
-generalizedGammaFixedPowerEstimate(T)(T power, in T[] sample, in T[] weights)
+generalizedGammaFixedPowerEstimate(T)(in T power, in T[] sample, in T[] weights)
 	if(isFloatingPoint!T)
 {
 	return generalizedGammaFixedPowerEstimate(power, GeneralizedGammaFixedPowerStatistic!T(power, sample, weights));
@@ -72,7 +72,7 @@ unittest
 
 ///ditto
 Tuple!(T, "shape", T, "scale")
-generalizedGammaFixedPowerEstimate(T)(T power, GeneralizedGammaFixedPowerStatistic!T stat)
+generalizedGammaFixedPowerEstimate(T)(in T power, in GeneralizedGammaFixedPowerStatistic!T stat)
 	if(isFloatingPoint!T)
 {
 	import atmosphere.math: logmdigammaInverse;

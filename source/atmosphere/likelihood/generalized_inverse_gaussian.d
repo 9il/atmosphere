@@ -18,14 +18,14 @@ import atmosphere.statistic: GeneralizedInverseGaussinStatistic;
 Normalized log-likelihood function of the generalized inverse Gaussian distribution.
 See_Also: `distribution.params.GIGEtaOmega`
 +/
-T properGeneralizedInverseGaussianLikelihood(T)(T lambda, T eta, T omega, in T[] sample)
+T properGeneralizedInverseGaussianLikelihood(T)(in T lambda, in T eta, in T omega, in T[] sample)
 	if(isFloatingPoint!T)
 {
 	return properGeneralizedInverseGaussianLikelihood(lambda, eta, omega, GeneralizedInverseGaussinStatistic!T(sample));
 }
 
 ///ditto
-T properGeneralizedInverseGaussianLikelihood(T)(T lambda, T eta, T omega, in T[] sample, in T[] weights)
+T properGeneralizedInverseGaussianLikelihood(T)(in T lambda, in T eta, in T omega, in T[] sample, in T[] weights)
 	if(isFloatingPoint!T)
 {
 	return properGeneralizedInverseGaussianLikelihood(lambda, eta, omega, GeneralizedInverseGaussinStatistic!T(sample, weights));
@@ -39,12 +39,12 @@ unittest {
 }
 
 ///ditto
-T properGeneralizedInverseGaussianLikelihood(T)(T lambda, T eta, T omega, GeneralizedInverseGaussinStatistic!T stat)
+T properGeneralizedInverseGaussianLikelihood(T)(in T lambda, in T eta, in T omega, in GeneralizedInverseGaussinStatistic!T stat)
 	if(isFloatingPoint!T)
 {
-	import bessel;
+	import atmosphere.math: logBesselK;
 	with(stat) return
-		- log(2 * eta * besselK(omega, lambda, Flag!"ExponentiallyScaled".yes))
+		- log(2 * eta) - logBesselK(lambda, omega)
 		+ (lambda - 1) * (stat.meanl - log(eta))
-		+ omega * (1 - (mean / eta + meani * eta) / 2);
+		- omega * (mean / eta + meani * eta) / 2;
 }

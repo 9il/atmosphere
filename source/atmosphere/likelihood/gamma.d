@@ -18,7 +18,7 @@ import atmosphere.statistic: GammaStatistic;
 /++
 Normalized log-likelihood function of the gamma distribution.
 +/
-T gammaLikelihood(T)(T shape, T scale, in T[] sample)
+T gammaLikelihood(T)(in T shape, in T scale, in T[] sample)
 	if(isFloatingPoint!T)
 {
 	return gammaLikelihood!T(shape, scale, GammaStatistic!T(sample));
@@ -33,7 +33,7 @@ unittest {
 }
 
 ///ditto
-T gammaLikelihood(T)(T shape, T scale, in T[] sample, in T[] weights)
+T gammaLikelihood(T)(in T shape, in T scale, in T[] sample, in T[] weights)
 	if(isFloatingPoint!T)
 {
 	return gammaLikelihood!T(shape, scale, GammaStatistic!T(sample, weights));
@@ -55,7 +55,7 @@ unittest {
 }
 
 ///ditto
-T gammaLikelihood(T)(T shape, T scale, GammaStatistic!T stat)
+T gammaLikelihood(T)(in T shape, in T scale, in GammaStatistic!T stat)
 	if(isFloatingPoint!T)
 {
 	with(stat) return 

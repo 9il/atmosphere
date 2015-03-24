@@ -74,7 +74,7 @@ unittest {
 
 ///ditto
 Tuple!(T, "shape", T, "scale")
-inverseGammaEstimate(T)(InverseGammaStatistic!T stat)
+inverseGammaEstimate(T)(in InverseGammaStatistic!T stat)
 	if(isFloatingPoint!T)
 {
 	import atmosphere.math: logmdigammaInverse;
