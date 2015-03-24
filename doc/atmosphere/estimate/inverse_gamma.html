@@ -40,6 +40,7 @@
 <ul id="atmosphere.estimate" style='display:block'>
 <li>atmosphere.estimate.<a href="atmosphere/estimate/gamma.html">gamma</a></li>
 <li>atmosphere.estimate.<a href="atmosphere/estimate/generalized_gamma.html">generalized_gamma</a></li>
+<li>atmosphere.estimate.<a href="atmosphere/estimate/generalized_inverse_gaussian.html">generalized_inverse_gaussian</a></li>
 <li><span class=" selected">atmosphere.estimate.<a href="atmosphere/estimate/inverse_gamma.html">inverse_gamma</a></span>
 </li>
 <li>atmosphere.estimate.<a href="atmosphere/estimate/nvmm.html">nvmm</a></li>
@@ -126,7 +127,7 @@ assert(p0.scale == p1.scale);
 </code></pre>
 
 </div>
-</div></div><a class="anchor" id="inverseGammaEstimate"></a><div class="symbol"><div class="description"><pre><code>public Tuple!(T, "shape", T, "scale") <a href="atmosphere/estimate/inverse_gamma.html#inverseGammaEstimate">inverseGammaEstimate</a>(T)(<a href="atmosphere/statistic/InverseGammaStatistic.html">InverseGammaStatistic</a>!T stat) 
+</div></div><a class="anchor" id="inverseGammaEstimate"></a><div class="symbol"><div class="description"><pre><code>public Tuple!(T, "shape", T, "scale") <a href="atmosphere/estimate/inverse_gamma.html#inverseGammaEstimate">inverseGammaEstimate</a>(T)(in <a href="atmosphere/statistic/InverseGammaStatistic.html">InverseGammaStatistic</a>!T stat) 
 if(isFloatingPoint!T)
 </code></pre>
 <div class="section "><p>Estimates parameters of the inverse-gamma distribution.

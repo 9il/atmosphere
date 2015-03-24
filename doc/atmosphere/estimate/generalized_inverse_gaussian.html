@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<link rel="stylesheet" type="text/css" href="../../style.css"/>
+<script src="../../highlight.pack.js"></script>
+<title>atmosphere.estimate.generalized_inverse_gaussian</title>
+<base href="../../"/>
+<script src="search.js"></script>
+<script src="show_hide.js"></script>
+</head>
+<body>
+<div class="main">
+<div class="breadcrumbs">
+<table id="results"></table>
+<a href="index.html" class="home">⌂</a><input type="search" id="search" placeholder="Search" onkeyup="searchSubmit(this.value, event)"/>
+<small>atmosphere.estimate.generalized_inverse_gaussian</small>
+</div>
+<div class="sidebar">
+<a href="atmosphere/estimate/generalized_inverse_gaussian.html#hide-toc" class="hide" id="hide-toc">&#171;</a>
+<a href="atmosphere/estimate/generalized_inverse_gaussian.html#show-toc" class="show" id="show-toc">&#187;</a>
+<div id="toc-id" class="toc">
+<div class="toc-additional">
+<div class="section "><ul>
+<li><a href="http://9il.github.io/atmosphere_gm/">GitHub IO</a>
+</li>
+<li><a href="https://github.com/9il/atmosphere_gm">Source GitHub</a>
+</li>
+</ul>
+
+
+</div>
+
+</div>
+<ul><li><span class="package" onclick="show_hide('atmosphere');"><a href="atmosphere.html">atmosphere</a></span>
+<ul id="atmosphere" style='display:block'>
+<li>atmosphere.<a href="atmosphere/cdf.html">cdf</a></li>
+<li>atmosphere.<a href="atmosphere/derivative.html">derivative</a></li>
+<li><span class="package" onclick="show_hide('atmosphere.estimate');">atmosphere.<a href="atmosphere/estimate.html">estimate</a></span>
+<ul id="atmosphere.estimate" style='display:block'>
+<li>atmosphere.estimate.<a href="atmosphere/estimate/gamma.html">gamma</a></li>
+<li>atmosphere.estimate.<a href="atmosphere/estimate/generalized_gamma.html">generalized_gamma</a></li>
+<li><span class=" selected">atmosphere.estimate.<a href="atmosphere/estimate/generalized_inverse_gaussian.html">generalized_inverse_gaussian</a></span>
+</li>
+<li>atmosphere.estimate.<a href="atmosphere/estimate/inverse_gamma.html">inverse_gamma</a></li>
+<li>atmosphere.estimate.<a href="atmosphere/estimate/nvmm.html">nvmm</a></li>
+</ul>
+</li>
+<li>atmosphere.<a href="atmosphere/finitemixture.html">finitemixture</a></li>
+<li><span class="package" onclick="show_hide('atmosphere.likelihood');">atmosphere.<a href="atmosphere/likelihood.html">likelihood</a></span>
+<ul id="atmosphere.likelihood">
+<li>atmosphere.likelihood.<a href="atmosphere/likelihood/gamma.html">gamma</a></li>
+<li>atmosphere.likelihood.<a href="atmosphere/likelihood/generalized_gamma.html">generalized_gamma</a></li>
+<li>atmosphere.likelihood.<a href="atmosphere/likelihood/generalized_inverse_gaussian.html">generalized_inverse_gaussian</a></li>
+<li>atmosphere.likelihood.<a href="atmosphere/likelihood/inverse_gamma.html">inverse_gamma</a></li>
+</ul>
+</li>
+<li>atmosphere.<a href="atmosphere/mixture.html">mixture</a></li>
+<li>atmosphere.<a href="atmosphere/moment.html">moment</a></li>
+<li>atmosphere.<a href="atmosphere/params.html">params</a></li>
+<li>atmosphere.<a href="atmosphere/pdf.html">pdf</a></li>
+<li>atmosphere.<a href="atmosphere/quantile.html">quantile</a></li>
+<li>atmosphere.<a href="atmosphere/random.html">random</a></li>
+<li>atmosphere.<a href="atmosphere/statistic.html">statistic</a></li>
+</ul>
+</li>
+
+</ul>
+</div></div>
+<div class="content">
+<div class="aggregate-symbol"><a class="anchor" id="properGeneralizedInverseGaussianEstimate"></a><div class="symbol"><div class="description"><pre><code>public Tuple!(T, "lambda", T, "eta", T, "omega") <a href="atmosphere/estimate/generalized_inverse_gaussian.html#properGeneralizedInverseGaussianEstimate">properGeneralizedInverseGaussianEstimate</a>(T)(
+    in T[] sample, 
+    in T relTolerance = sqrt(T.epsilon), 
+    in T absTolerance = sqrt(T.epsilon)) 
+if(isFloatingPoint!T)
+</code></pre>
+<div class="section "><p>Estimates parameters of the proper generalized inverse Gaussian distribution.
+</p>
+
+
+</div>
+<div class="section"><h2>Parameters</h2>
+<table class="params">
+<tr class="param"><td class="paramName">stat</td><td class="paramDoc"><p>GIG statistica.
+</p>
+</td></tr>
+<tr class="param"><td class="paramName">sample</td><td class="paramDoc"><p>obeservation.
+</p>
+</td></tr>
+<tr class="param"><td class="paramName">weights</td><td class="paramDoc"><p>sample weights.
+</p>
+</td></tr>
+<tr class="param"><td class="paramName">relTolerance</td><td class="paramDoc"><p>Relative tolerance.
+</p>
+</td></tr>
+<tr class="param"><td class="paramName">absTolerance</td><td class="paramDoc"><p>Absolute tolerance.
+</p>
+</td></tr>
+</table>
+</div>
+<div class="section"><h2>Preconditions</h2>
+<p> <code class="d_inlinecode">ax</code> and <code class="d_inlinecode">bx</code> shall be finite reals. <br/>
+	<code class="d_inlinecode">relTolerance</code> shall be normal positive real. <br/>
+	<code class="d_inlinecode">absTolerance</code> shall be normal positive real no less then <code class="d_inlinecode">T.epsilon*2</code>.
+</p>
+
+
+</div>
+<div class="section"><h2>References</h2>
+<p> "Algorithms for Minimization without Derivatives", Richard Brent, Prentice-Hall, Inc. (1973)
+</p>
+
+
+</div>
+<div class="section seealso">
+<h2>See Also:</h2>
+<div class="seealso-content">
+<p> <code class="prettyprint"><a href="atmosphere/params.html">atmosphere.params</a></code>
+</p>
+
+</div>
+</div>
+<div class="section "><h2>Example</h2>
+<pre><code>import std.range;
+import std.random;
+import <a href="atmosphere/random.html">atmosphere.random</a>;
+import <a href="atmosphere/likelihood.html">atmosphere.likelihood</a>;
+auto length = 1000;
+auto lambda = -2.0, eta = 1.4, omega = 2.3;
+auto rng = Random(1234);
+auto sample = <a href="atmosphere/random/ProperGeneralizedInverseGaussianSRNG.html">ProperGeneralizedInverseGaussianSRNG</a>!double(rng, lambda, eta, omega).take(length).array;
+auto params1 = <a href="atmosphere/estimate/generalized_inverse_gaussian.html#properGeneralizedInverseGaussianEstimate">properGeneralizedInverseGaussianEstimate</a>(sample);
+auto params2 = <a href="atmosphere/estimate/generalized_inverse_gaussian.html#properGeneralizedInverseGaussianFixedLambdaEstimate">properGeneralizedInverseGaussianFixedLambdaEstimate</a>!double(lambda, sample);
+auto lh0 = <a href="atmosphere/likelihood/generalized_inverse_gaussian.html#properGeneralizedInverseGaussianLikelihood">properGeneralizedInverseGaussianLikelihood</a>(lambda, eta, omega, sample);
+auto lh1 = <a href="atmosphere/likelihood/generalized_inverse_gaussian.html#properGeneralizedInverseGaussianLikelihood">properGeneralizedInverseGaussianLikelihood</a>(params1.lambda, params1.eta, params1.omega, sample);
+auto lh2 = <a href="atmosphere/likelihood/generalized_inverse_gaussian.html#properGeneralizedInverseGaussianLikelihood">properGeneralizedInverseGaussianLikelihood</a>(lambda, params2.eta, params2.omega, sample);
+assert(lh0 <= lh1);
+assert(lh0 <= lh2);
+assert(lh2 <= lh1);
+
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="properGeneralizedInverseGaussianEstimate"></a><div class="symbol"><div class="description"><pre><code>public Tuple!(T, "lambda", T, "eta", T, "omega") <a href="atmosphere/estimate/generalized_inverse_gaussian.html#properGeneralizedInverseGaussianEstimate">properGeneralizedInverseGaussianEstimate</a>(T)(
+    in T[] sample, 
+    in T[] weights, 
+    in T relTolerance = sqrt(T.epsilon), 
+    in T absTolerance = sqrt(T.epsilon)) 
+if(isFloatingPoint!T)
+</code></pre>
+<div class="section "><p>Estimates parameters of the proper generalized inverse Gaussian distribution.
+</p>
+
+
+</div>
+<div class="section"><h2>Parameters</h2>
+<table class="params">
+<tr class="param"><td class="paramName">stat</td><td class="paramDoc"><p>GIG statistica.
+</p>
+</td></tr>
+<tr class="param"><td class="paramName">sample</td><td class="paramDoc"><p>obeservation.
+</p>
+</td></tr>
+<tr class="param"><td class="paramName">weights</td><td class="paramDoc"><p>sample weights.
+</p>
+</td></tr>
+<tr class="param"><td class="paramName">relTolerance</td><td class="paramDoc"><p>Relative tolerance.
+</p>
+</td></tr>
+<tr class="param"><td class="paramName">absTolerance</td><td class="paramDoc"><p>Absolute tolerance.
+</p>
+</td></tr>
+</table>
+</div>
+<div class="section"><h2>Preconditions</h2>
+<p> <code class="d_inlinecode">ax</code> and <code class="d_inlinecode">bx</code> shall be finite reals. <br/>
+	<code class="d_inlinecode">relTolerance</code> shall be normal positive real. <br/>
+	<code class="d_inlinecode">absTolerance</code> shall be normal positive real no less then <code class="d_inlinecode">T.epsilon*2</code>.
+</p>
+
+
+</div>
+<div class="section"><h2>References</h2>
+<p> "Algorithms for Minimization without Derivatives", Richard Brent, Prentice-Hall, Inc. (1973)
+</p>
+
+
+</div>
+<div class="section seealso">
+<h2>See Also:</h2>
+<div class="seealso-content">
+<p> <code class="prettyprint"><a href="atmosphere/params.html">atmosphere.params</a></code>
+</p>
+
+</div>
+</div>
+<div class="section "><h2>Example</h2>
+<pre><code>import std.range;
+import std.random;
+import <a href="atmosphere/random.html">atmosphere.random</a>;
+import <a href="atmosphere/likelihood.html">atmosphere.likelihood</a>;
+auto length = 1000;
+auto lambda = -2.0, eta = 1.4, omega = 2.3;
+auto rng = Random(1234);
+auto sample = <a href="atmosphere/random/ProperGeneralizedInverseGaussianSRNG.html">ProperGeneralizedInverseGaussianSRNG</a>!double(rng, lambda, eta, omega).take(length).array;
+auto weights = iota(1.0, length + 1.0).array;
+auto params1 = <a href="atmosphere/estimate/generalized_inverse_gaussian.html#properGeneralizedInverseGaussianEstimate">properGeneralizedInverseGaussianEstimate</a>!double(sample, weights);
+auto params2 = <a href="atmosphere/estimate/generalized_inverse_gaussian.html#properGeneralizedInverseGaussianFixedLambdaEstimate">properGeneralizedInverseGaussianFixedLambdaEstimate</a>!double(lambda, sample, weights);
+auto lh0 = <a href="atmosphere/likelihood/generalized_inverse_gaussian.html#properGeneralizedInverseGaussianLikelihood">properGeneralizedInverseGaussianLikelihood</a>(lambda, eta, omega, sample, weights);
+auto lh1 = <a href="atmosphere/likelihood/generalized_inverse_gaussian.html#properGeneralizedInverseGaussianLikelihood">properGeneralizedInverseGaussianLikelihood</a>(params1.lambda, params1.eta, params1.omega, sample, weights);
+auto lh2 = <a href="atmosphere/likelihood/generalized_inverse_gaussian.html#properGeneralizedInverseGaussianLikelihood">properGeneralizedInverseGaussianLikelihood</a>(lambda, params2.eta, params2.omega, sample, weights);
+assert(lh0 <= lh1);
+assert(lh0 <= lh2);
+assert(lh2 <= lh1);
+
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="properGeneralizedInverseGaussianEstimate"></a><div class="symbol"><div class="description"><pre><code>public Tuple!(T, "lambda", T, "eta", T, "omega") <a href="atmosphere/estimate/generalized_inverse_gaussian.html#properGeneralizedInverseGaussianEstimate">properGeneralizedInverseGaussianEstimate</a>(T)(
+    in <a href="atmosphere/statistic/GeneralizedInverseGaussinStatistic.html">GeneralizedInverseGaussinStatistic</a>!T stat, 
+    in T relTolerance = sqrt(T.epsilon), 
+    in T absTolerance = sqrt(T.epsilon)) 
+if(isFloatingPoint!T)
+</code></pre>
+<div class="section "><p>Estimates parameters of the proper generalized inverse Gaussian distribution.
+</p>
+
+
+</div>
+<div class="section"><h2>Parameters</h2>
+<table class="params">
+<tr class="param"><td class="paramName">stat</td><td class="paramDoc"><p>GIG statistica.
+</p>
+</td></tr>
+<tr class="param"><td class="paramName">sample</td><td class="paramDoc"><p>obeservation.
+</p>
+</td></tr>
+<tr class="param"><td class="paramName">weights</td><td class="paramDoc"><p>sample weights.
+</p>
+</td></tr>
+<tr class="param"><td class="paramName">relTolerance</td><td class="paramDoc"><p>Relative tolerance.
+</p>
+</td></tr>
+<tr class="param"><td class="paramName">absTolerance</td><td class="paramDoc"><p>Absolute tolerance.
+</p>
+</td></tr>
+</table>
+</div>
+<div class="section"><h2>Preconditions</h2>
+<p> <code class="d_inlinecode">ax</code> and <code class="d_inlinecode">bx</code> shall be finite reals. <br/>
+	<code class="d_inlinecode">relTolerance</code> shall be normal positive real. <br/>
+	<code class="d_inlinecode">absTolerance</code> shall be normal positive real no less then <code class="d_inlinecode">T.epsilon*2</code>.
+</p>
+
+
+</div>
+<div class="section"><h2>References</h2>
+<p> "Algorithms for Minimization without Derivatives", Richard Brent, Prentice-Hall, Inc. (1973)
+</p>
+
+
+</div>
+<div class="section seealso">
+<h2>See Also:</h2>
+<div class="seealso-content">
+<p> <code class="prettyprint"><a href="atmosphere/params.html">atmosphere.params</a></code>
+</p>
+
+</div>
+</div>
+</div></div><a class="anchor" id="generalizedInverseGaussianEstimate"></a><div class="symbol"><div class="description"><pre><code>public Tuple!(T, "lambda", T, "chi", T, "psi") <a href="atmosphere/estimate/generalized_inverse_gaussian.html#generalizedInverseGaussianEstimate">generalizedInverseGaussianEstimate</a>(T)(
+    in T[] sample, 
+    in T relTolerance = sqrt(T.epsilon), 
+    in T absTolerance = sqrt(T.epsilon)) 
+if(isFloatingPoint!T)
+</code></pre>
+<div class="section "><p>Estimates parameters of the generalized inverse Gaussian distribution.
+</p>
+
+
+</div>
+<div class="section"><h2>Parameters</h2>
+<table class="params">
+<tr class="param"><td class="paramName">stat</td><td class="paramDoc"><p>GIG statistica.
+</p>
+</td></tr>
+<tr class="param"><td class="paramName">sample</td><td class="paramDoc"><p>obeservation.
+</p>
+</td></tr>
+<tr class="param"><td class="paramName">weights</td><td class="paramDoc"><p>sample weights.
+</p>
+</td></tr>
+<tr class="param"><td class="paramName">relTolerance</td><td class="paramDoc"><p>Relative tolerance.
+</p>
+</td></tr>
+<tr class="param"><td class="paramName">absTolerance</td><td class="paramDoc"><p>Absolute tolerance.
+</p>
+</td></tr>
+</table>
+</div>
+<div class="section"><h2>Preconditions</h2>
+<p> <code class="d_inlinecode">ax</code> and <code class="d_inlinecode">bx</code> shall be finite reals. <br/>
+	<code class="d_inlinecode">relTolerance</code> shall be normal positive real. <br/>
+	<code class="d_inlinecode">absTolerance</code> shall be normal positive real no less then <code class="d_inlinecode">T.epsilon*2</code>.
+</p>
+
+
+</div>
+<div class="section"><h2>References</h2>
+<p> "Algorithms for Minimization without Derivatives", Richard Brent, Prentice-Hall, Inc. (1973)
+</p>
+
+
+</div>
+<div class="section seealso">
+<h2>See Also:</h2>
+<div class="seealso-content">
+<p> <code class="prettyprint"><a href="atmosphere/params.html">atmosphere.params</a></code>
+</p>
+
+</div>
+</div>
+<div class="section "><h2>Example</h2>
+<pre><code>import std.range;
+import std.random;
+import <a href="atmosphere/random.html">atmosphere.random</a>;
+import <a href="atmosphere/likelihood.html">atmosphere.likelihood</a>;
+import <a href="atmosphere/params.html">atmosphere.params</a>;
+auto length = 1000;
+auto lambda = -2.0, chi = 1.4, psi = 2.3;
+auto rng = Random(1234);
+auto sample = new <a href="atmosphere/random/GeneralizedInverseGaussianRNG.html">GeneralizedInverseGaussianRNG</a>!double(rng, lambda, chi, psi).take(length).array;
+auto params1 = <a href="atmosphere/estimate/generalized_inverse_gaussian.html#generalizedInverseGaussianEstimate">generalizedInverseGaussianEstimate</a>(sample);
+auto params2 = <a href="atmosphere/estimate/generalized_inverse_gaussian.html#generalizedInverseGaussianFixedLambdaEstimate">generalizedInverseGaussianFixedLambdaEstimate</a>!double(lambda, sample);
+auto p0 = <a href="atmosphere/params/GIGChiPsi.html">GIGChiPsi</a>!double(chi, psi);
+auto p1 = <a href="atmosphere/params/GIGChiPsi.html">GIGChiPsi</a>!double(params1.chi, params1.psi);
+auto p2 = <a href="atmosphere/params/GIGChiPsi.html">GIGChiPsi</a>!double(params2.chi, params2.psi);
+auto lh0 = <a href="atmosphere/likelihood/generalized_inverse_gaussian.html#properGeneralizedInverseGaussianLikelihood">properGeneralizedInverseGaussianLikelihood</a>(lambda, p0.eta, p0.omega, sample);
+auto lh1 = <a href="atmosphere/likelihood/generalized_inverse_gaussian.html#properGeneralizedInverseGaussianLikelihood">properGeneralizedInverseGaussianLikelihood</a>(params1.lambda, p1.eta, p1.omega, sample);
+auto lh2 = <a href="atmosphere/likelihood/generalized_inverse_gaussian.html#properGeneralizedInverseGaussianLikelihood">properGeneralizedInverseGaussianLikelihood</a>(lambda, p2.eta, p2.omega, sample);
+assert(lh0 <= lh1);
+assert(lh0 <= lh2);
+assert(lh2 <= lh1);
+
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="generalizedInverseGaussianEstimate"></a><div class="symbol"><div class="description"><pre><code>public Tuple!(T, "lambda", T, "chi", T, "psi") <a href="atmosphere/estimate/generalized_inverse_gaussian.html#generalizedInverseGaussianEstimate">generalizedInverseGaussianEstimate</a>(T)(
+    in T[] sample, 
+    in T[] weights, 
+    in T relTolerance = sqrt(T.epsilon), 
+    in T absTolerance = sqrt(T.epsilon)) 
+if(isFloatingPoint!T)
+</code></pre>
+<div class="section "><p>Estimates parameters of the generalized inverse Gaussian distribution.
+</p>
+
+
+</div>
+<div class="section"><h2>Parameters</h2>
+<table class="params">
+<tr class="param"><td class="paramName">stat</td><td class="paramDoc"><p>GIG statistica.
+</p>
+</td></tr>
+<tr class="param"><td class="paramName">sample</td><td class="paramDoc"><p>obeservation.
+</p>
+</td></tr>
+<tr class="param"><td class="paramName">weights</td><td class="paramDoc"><p>sample weights.
+</p>
+</td></tr>
+<tr class="param"><td class="paramName">relTolerance</td><td class="paramDoc"><p>Relative tolerance.
+</p>
+</td></tr>
+<tr class="param"><td class="paramName">absTolerance</td><td class="paramDoc"><p>Absolute tolerance.
+</p>
+</td></tr>
+</table>
+</div>
+<div class="section"><h2>Preconditions</h2>
+<p> <code class="d_inlinecode">ax</code> and <code class="d_inlinecode">bx</code> shall be finite reals. <br/>
+	<code class="d_inlinecode">relTolerance</code> shall be normal positive real. <br/>
+	<code class="d_inlinecode">absTolerance</code> shall be normal positive real no less then <code class="d_inlinecode">T.epsilon*2</code>.
+</p>
+
+
+</div>
+<div class="section"><h2>References</h2>
+<p> "Algorithms for Minimization without Derivatives", Richard Brent, Prentice-Hall, Inc. (1973)
+</p>
+
+
+</div>
+<div class="section seealso">
+<h2>See Also:</h2>
+<div class="seealso-content">
+<p> <code class="prettyprint"><a href="atmosphere/params.html">atmosphere.params</a></code>
+</p>
+
+</div>
+</div>
+<div class="section "><h2>Example</h2>
+<pre><code>import std.range;
+import std.random;
+import <a href="atmosphere/random.html">atmosphere.random</a>;
+import <a href="atmosphere/likelihood.html">atmosphere.likelihood</a>;
+import <a href="atmosphere/params.html">atmosphere.params</a>;
+auto length = 1000;
+auto lambda = -2.0, chi = 1.4, psi = 2.3;
+auto rng = Random(1234);
+auto sample = new <a href="atmosphere/random/GeneralizedInverseGaussianRNG.html">GeneralizedInverseGaussianRNG</a>!double(rng, lambda, chi, psi).take(length).array;
+auto weights = iota(1.0, length + 1.0).array;
+auto params1 = <a href="atmosphere/estimate/generalized_inverse_gaussian.html#generalizedInverseGaussianEstimate">generalizedInverseGaussianEstimate</a>!double(sample, weights);
+auto params2 = <a href="atmosphere/estimate/generalized_inverse_gaussian.html#generalizedInverseGaussianFixedLambdaEstimate">generalizedInverseGaussianFixedLambdaEstimate</a>!double(lambda, sample, weights);
+auto p0 = <a href="atmosphere/params/GIGChiPsi.html">GIGChiPsi</a>!double(chi, psi);
+auto p1 = <a href="atmosphere/params/GIGChiPsi.html">GIGChiPsi</a>!double(params1.chi, params1.psi);
+auto p2 = <a href="atmosphere/params/GIGChiPsi.html">GIGChiPsi</a>!double(params2.chi, params2.psi);
+auto lh0 = <a href="atmosphere/likelihood/generalized_inverse_gaussian.html#properGeneralizedInverseGaussianLikelihood">properGeneralizedInverseGaussianLikelihood</a>(lambda, p0.eta, p0.omega, sample, weights);
+auto lh1 = <a href="atmosphere/likelihood/generalized_inverse_gaussian.html#properGeneralizedInverseGaussianLikelihood">properGeneralizedInverseGaussianLikelihood</a>(params1.lambda, p1.eta, p1.omega, sample, weights);
+auto lh2 = <a href="atmosphere/likelihood/generalized_inverse_gaussian.html#properGeneralizedInverseGaussianLikelihood">properGeneralizedInverseGaussianLikelihood</a>(lambda, p2.eta, p2.omega, sample, weights);
+assert(lh0 <= lh1);
+assert(lh0 <= lh2);
+assert(lh2 <= lh1);
+
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="generalizedInverseGaussianEstimate"></a><div class="symbol"><div class="description"><pre><code>public Tuple!(T, "lambda", T, "chi", T, "psi") <a href="atmosphere/estimate/generalized_inverse_gaussian.html#generalizedInverseGaussianEstimate">generalizedInverseGaussianEstimate</a>(T)(
+    in <a href="atmosphere/statistic/GeneralizedInverseGaussinStatistic.html">GeneralizedInverseGaussinStatistic</a>!T stat, 
+    in T relTolerance = sqrt(T.epsilon), 
+    in T absTolerance = sqrt(T.epsilon)) 
+if(isFloatingPoint!T)
+</code></pre>
+<div class="section "><p>Estimates parameters of the generalized inverse Gaussian distribution.
+</p>
+
+
+</div>
+<div class="section"><h2>Parameters</h2>
+<table class="params">
+<tr class="param"><td class="paramName">stat</td><td class="paramDoc"><p>GIG statistica.
+</p>
+</td></tr>
+<tr class="param"><td class="paramName">sample</td><td class="paramDoc"><p>obeservation.
+</p>
+</td></tr>
+<tr class="param"><td class="paramName">weights</td><td class="paramDoc"><p>sample weights.
+</p>
+</td></tr>
+<tr class="param"><td class="paramName">relTolerance</td><td class="paramDoc"><p>Relative tolerance.
+</p>
+</td></tr>
+<tr class="param"><td class="paramName">absTolerance</td><td class="paramDoc"><p>Absolute tolerance.
+</p>
+</td></tr>
+</table>
+</div>
+<div class="section"><h2>Preconditions</h2>
+<p> <code class="d_inlinecode">ax</code> and <code class="d_inlinecode">bx</code> shall be finite reals. <br/>
+	<code class="d_inlinecode">relTolerance</code> shall be normal positive real. <br/>
+	<code class="d_inlinecode">absTolerance</code> shall be normal positive real no less then <code class="d_inlinecode">T.epsilon*2</code>.
+</p>
+
+
+</div>
+<div class="section"><h2>References</h2>
+<p> "Algorithms for Minimization without Derivatives", Richard Brent, Prentice-Hall, Inc. (1973)
+</p>
+
+
+</div>
+<div class="section seealso">
+<h2>See Also:</h2>
+<div class="seealso-content">
+<p> <code class="prettyprint"><a href="atmosphere/params.html">atmosphere.params</a></code>
+</p>
+
+</div>
+</div>
+</div></div><a class="anchor" id="properGeneralizedInverseGaussianFixedLambdaEstimate"></a><div class="symbol"><div class="description"><pre><code>public Tuple!(T, "eta", T, "omega") <a href="atmosphere/estimate/generalized_inverse_gaussian.html#properGeneralizedInverseGaussianFixedLambdaEstimate">properGeneralizedInverseGaussianFixedLambdaEstimate</a>(T)(
+    in T lambda, 
+    in T[] sample) 
+if(isFloatingPoint!T)
+</code></pre>
+<div class="section "><p>Estimates parameters of the proper generalized inverse Gaussian distribution for fixed <code class="prettyprint">lambda</code>.
+</p>
+
+
+</div>
+<div class="section seealso">
+<h2>See Also:</h2>
+<div class="seealso-content">
+<p> <code class="prettyprint"><a href="atmosphere/params.html">atmosphere.params</a></code>
+</p>
+
+</div>
+</div>
+<div class="section "><h2>Example</h2>
+<pre><code>import std.range;
+import std.random;
+import <a href="atmosphere/random.html">atmosphere.random</a>;
+import <a href="atmosphere/likelihood.html">atmosphere.likelihood</a>;
+auto length = 1000;
+auto lambda = -2.0, eta = 1.4, omega = 2.3;
+auto rng = Random(1234);
+auto sample = <a href="atmosphere/random/ProperGeneralizedInverseGaussianSRNG.html">ProperGeneralizedInverseGaussianSRNG</a>!double(rng, lambda, eta, omega).take(length).array;
+auto params = <a href="atmosphere/estimate/generalized_inverse_gaussian.html#properGeneralizedInverseGaussianFixedLambdaEstimate">properGeneralizedInverseGaussianFixedLambdaEstimate</a>!double(lambda, sample);
+auto lh0 = <a href="atmosphere/likelihood/generalized_inverse_gaussian.html#properGeneralizedInverseGaussianLikelihood">properGeneralizedInverseGaussianLikelihood</a>(lambda, eta, omega, sample);
+auto lh1 = <a href="atmosphere/likelihood/generalized_inverse_gaussian.html#properGeneralizedInverseGaussianLikelihood">properGeneralizedInverseGaussianLikelihood</a>(lambda, params.eta, params.omega, sample);
+assert(lh0 <= lh1);
+
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="properGeneralizedInverseGaussianFixedLambdaEstimate"></a><div class="symbol"><div class="description"><pre><code>public Tuple!(T, "eta", T, "omega") <a href="atmosphere/estimate/generalized_inverse_gaussian.html#properGeneralizedInverseGaussianFixedLambdaEstimate">properGeneralizedInverseGaussianFixedLambdaEstimate</a>(T)(
+    in T lambda, 
+    in T[] sample, 
+    in T[] weights) 
+if(isFloatingPoint!T)
+</code></pre>
+<div class="section "><p>Estimates parameters of the proper generalized inverse Gaussian distribution for fixed <code class="prettyprint">lambda</code>.
+</p>
+
+
+</div>
+<div class="section seealso">
+<h2>See Also:</h2>
+<div class="seealso-content">
+<p> <code class="prettyprint"><a href="atmosphere/params.html">atmosphere.params</a></code>
+</p>
+
+</div>
+</div>
+<div class="section "><h2>Example</h2>
+<pre><code>import std.range;
+import std.random;
+import <a href="atmosphere/random.html">atmosphere.random</a>;
+import <a href="atmosphere/likelihood.html">atmosphere.likelihood</a>;
+auto length = 1000;
+auto lambda = -2.0, eta = 1.4, omega = 2.3;
+auto rng = Random(1234);
+auto sample = <a href="atmosphere/random/ProperGeneralizedInverseGaussianSRNG.html">ProperGeneralizedInverseGaussianSRNG</a>!double(rng, lambda, eta, omega).take(length).array;
+auto weights = iota(1.0, length + 1.0).array;
+auto params = <a href="atmosphere/estimate/generalized_inverse_gaussian.html#properGeneralizedInverseGaussianFixedLambdaEstimate">properGeneralizedInverseGaussianFixedLambdaEstimate</a>!double(lambda, sample, weights);
+auto lh0 = <a href="atmosphere/likelihood/generalized_inverse_gaussian.html#properGeneralizedInverseGaussianLikelihood">properGeneralizedInverseGaussianLikelihood</a>(lambda, eta, omega, sample, weights);
+auto lh1 = <a href="atmosphere/likelihood/generalized_inverse_gaussian.html#properGeneralizedInverseGaussianLikelihood">properGeneralizedInverseGaussianLikelihood</a>(lambda, params.eta, params.omega, sample, weights);
+assert(lh0 <= lh1);
+
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="properGeneralizedInverseGaussianFixedLambdaEstimate"></a><div class="symbol"><div class="description"><pre><code>public Tuple!(T, "eta", T, "omega") <a href="atmosphere/estimate/generalized_inverse_gaussian.html#properGeneralizedInverseGaussianFixedLambdaEstimate">properGeneralizedInverseGaussianFixedLambdaEstimate</a>(T)(
+    in T lambda, 
+    in <a href="atmosphere/statistic/GeneralizedInverseGaussinFixedLambdaStatistic.html">GeneralizedInverseGaussinFixedLambdaStatistic</a>!T stat) 
+if(isFloatingPoint!T)
+</code></pre>
+<div class="section "><p>Estimates parameters of the proper generalized inverse Gaussian distribution for fixed <code class="prettyprint">lambda</code>.
+</p>
+
+
+</div>
+<div class="section "><h2>Contracts</h2><pre><code>in
+{
+    assert (isNormal(lambda));
+}
+</code></pre>
+
+</div>
+<div class="section seealso">
+<h2>See Also:</h2>
+<div class="seealso-content">
+<p> <code class="prettyprint"><a href="atmosphere/params.html">atmosphere.params</a></code>
+</p>
+
+</div>
+</div>
+</div></div><a class="anchor" id="generalizedInverseGaussianFixedLambdaEstimate"></a><div class="symbol"><div class="description"><pre><code>public Tuple!(T, "chi", T, "psi") <a href="atmosphere/estimate/generalized_inverse_gaussian.html#generalizedInverseGaussianFixedLambdaEstimate">generalizedInverseGaussianFixedLambdaEstimate</a>(T)(
+    in T lambda, 
+    in T[] sample) 
+if(isFloatingPoint!T)
+</code></pre>
+<div class="section "><p>Estimates parameters of the generalized inverse Gaussian distribution for fixed <code class="prettyprint">lambda</code>.
+</p>
+
+
+</div>
+<div class="section seealso">
+<h2>See Also:</h2>
+<div class="seealso-content">
+<p> <code class="prettyprint"><a href="atmosphere/params.html">atmosphere.params</a></code>
+</p>
+
+</div>
+</div>
+<div class="section "><h2>Example</h2>
+<pre><code>import std.range;
+import std.random;
+import <a href="atmosphere/random.html">atmosphere.random</a>;
+import <a href="atmosphere/likelihood.html">atmosphere.likelihood</a>;
+import <a href="atmosphere/params.html">atmosphere.params</a>;
+auto length = 1000;
+auto lambda = -2.0, chi = 1.4, psi = 2.3;
+auto rng = Random(1234);
+auto sample = new <a href="atmosphere/random/GeneralizedInverseGaussianRNG.html">GeneralizedInverseGaussianRNG</a>!double(rng, lambda, chi, psi).take(length).array;
+auto params = <a href="atmosphere/estimate/generalized_inverse_gaussian.html#generalizedInverseGaussianFixedLambdaEstimate">generalizedInverseGaussianFixedLambdaEstimate</a>!double(lambda, sample);
+auto p0 = <a href="atmosphere/params/GIGChiPsi.html">GIGChiPsi</a>!double(chi, psi);
+auto p1 = <a href="atmosphere/params/GIGChiPsi.html">GIGChiPsi</a>!double(params.chi, params.psi);
+auto lh0 = <a href="atmosphere/likelihood/generalized_inverse_gaussian.html#properGeneralizedInverseGaussianLikelihood">properGeneralizedInverseGaussianLikelihood</a>(lambda, p0.chi, p0.psi, sample);
+auto lh1 = <a href="atmosphere/likelihood/generalized_inverse_gaussian.html#properGeneralizedInverseGaussianLikelihood">properGeneralizedInverseGaussianLikelihood</a>(lambda, p1.chi, p1.psi, sample);
+assert(lh0 <= lh1);
+
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="generalizedInverseGaussianFixedLambdaEstimate"></a><div class="symbol"><div class="description"><pre><code>public Tuple!(T, "chi", T, "psi") <a href="atmosphere/estimate/generalized_inverse_gaussian.html#generalizedInverseGaussianFixedLambdaEstimate">generalizedInverseGaussianFixedLambdaEstimate</a>(T)(
+    in T lambda, 
+    in T[] sample, 
+    in T[] weights) 
+if(isFloatingPoint!T)
+</code></pre>
+<div class="section "><p>Estimates parameters of the generalized inverse Gaussian distribution for fixed <code class="prettyprint">lambda</code>.
+</p>
+
+
+</div>
+<div class="section seealso">
+<h2>See Also:</h2>
+<div class="seealso-content">
+<p> <code class="prettyprint"><a href="atmosphere/params.html">atmosphere.params</a></code>
+</p>
+
+</div>
+</div>
+<div class="section "><h2>Example</h2>
+<pre><code>import std.range;
+import std.random;
+import <a href="atmosphere/random.html">atmosphere.random</a>;
+import <a href="atmosphere/likelihood.html">atmosphere.likelihood</a>;
+import <a href="atmosphere/params.html">atmosphere.params</a>;
+auto length = 1000;
+auto lambda = -2.0, chi = 1.4, psi = 2.3;
+auto rng = Random(1234);
+auto sample = new <a href="atmosphere/random/GeneralizedInverseGaussianRNG.html">GeneralizedInverseGaussianRNG</a>!double(rng, lambda, chi, psi).take(length).array;
+auto weights = iota(1.0, length + 1.0).array;
+auto params = <a href="atmosphere/estimate/generalized_inverse_gaussian.html#generalizedInverseGaussianFixedLambdaEstimate">generalizedInverseGaussianFixedLambdaEstimate</a>!double(lambda, sample, weights);
+auto p0 = <a href="atmosphere/params/GIGChiPsi.html">GIGChiPsi</a>!double(chi, psi);
+auto p1 = <a href="atmosphere/params/GIGChiPsi.html">GIGChiPsi</a>!double(params.chi, params.psi);
+auto lh0 = <a href="atmosphere/likelihood/generalized_inverse_gaussian.html#properGeneralizedInverseGaussianLikelihood">properGeneralizedInverseGaussianLikelihood</a>(lambda, p0.chi, p0.psi, sample, weights);
+auto lh1 = <a href="atmosphere/likelihood/generalized_inverse_gaussian.html#properGeneralizedInverseGaussianLikelihood">properGeneralizedInverseGaussianLikelihood</a>(lambda, p1.chi, p1.psi, sample, weights);
+assert(lh0 <= lh1);
+
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="generalizedInverseGaussianFixedLambdaEstimate"></a><div class="symbol"><div class="description"><pre><code>public Tuple!(T, "chi", T, "psi") <a href="atmosphere/estimate/generalized_inverse_gaussian.html#generalizedInverseGaussianFixedLambdaEstimate">generalizedInverseGaussianFixedLambdaEstimate</a>(T)(
+    in T lambda, 
+    in <a href="atmosphere/statistic/GeneralizedInverseGaussinFixedLambdaStatistic.html">GeneralizedInverseGaussinFixedLambdaStatistic</a>!T stat) 
+if(isFloatingPoint!T)
+</code></pre>
+<div class="section "><p>Estimates parameters of the generalized inverse Gaussian distribution for fixed <code class="prettyprint">lambda</code>.
+</p>
+
+
+</div>
+<div class="section "><h2>Contracts</h2><pre><code>in
+{
+    assert (isNormal(lambda));
+}
+</code></pre>
+
+</div>
+<div class="section seealso">
+<h2>See Also:</h2>
+<div class="seealso-content">
+<p> <code class="prettyprint"><a href="atmosphere/params.html">atmosphere.params</a></code>
+</p>
+
+</div>
+</div>
+</div></div><a class="anchor" id="properGeneralizedInverseGaussianFixedLambdaEtaEstimate"></a><div class="symbol"><div class="description"><pre><code>public T <a href="atmosphere/estimate/generalized_inverse_gaussian.html#properGeneralizedInverseGaussianFixedLambdaEtaEstimate">properGeneralizedInverseGaussianFixedLambdaEtaEstimate</a>(T)(
+    in T lambda, 
+    in T eta, 
+    in T[] sample) 
+if(isFloatingPoint!T)
+</code></pre>
+<div class="section "><p>Estimates parameter <code class="prettyprint">omega</code> of the proper generalized inverse Gaussian distribution for fixed <code class="prettyprint">lambda</code> and <code class="prettyprint">eta</code>.
+</p>
+
+
+</div>
+<div class="section seealso">
+<h2>See Also:</h2>
+<div class="seealso-content">
+<p> <code class="prettyprint"><a href="atmosphere/params.html">atmosphere.params</a></code>
+</p>
+
+</div>
+</div>
+<div class="section "><h2>Example</h2>
+<pre><code>import std.range;
+import std.random;
+import <a href="atmosphere/random.html">atmosphere.random</a>;
+import <a href="atmosphere/likelihood.html">atmosphere.likelihood</a>;
+auto length = 1000;
+auto lambda = -2.0, eta = 1.4, omega = 2.3;
+auto rng = Random(1234);
+auto sample = <a href="atmosphere/random/ProperGeneralizedInverseGaussianSRNG.html">ProperGeneralizedInverseGaussianSRNG</a>!double(rng, lambda, eta, omega).take(length).array;
+auto omega1 = <a href="atmosphere/estimate/generalized_inverse_gaussian.html#properGeneralizedInverseGaussianFixedLambdaEtaEstimate">properGeneralizedInverseGaussianFixedLambdaEtaEstimate</a>!double(lambda, eta, sample);
+auto lh0 = <a href="atmosphere/likelihood/generalized_inverse_gaussian.html#properGeneralizedInverseGaussianLikelihood">properGeneralizedInverseGaussianLikelihood</a>(lambda, eta, omega , sample);
+auto lh1 = <a href="atmosphere/likelihood/generalized_inverse_gaussian.html#properGeneralizedInverseGaussianLikelihood">properGeneralizedInverseGaussianLikelihood</a>(lambda, eta, omega1, sample);
+assert(lh0 <= lh1);
+
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="properGeneralizedInverseGaussianFixedLambdaEtaEstimate"></a><div class="symbol"><div class="description"><pre><code>public T <a href="atmosphere/estimate/generalized_inverse_gaussian.html#properGeneralizedInverseGaussianFixedLambdaEtaEstimate">properGeneralizedInverseGaussianFixedLambdaEtaEstimate</a>(T)(
+    in T lambda, 
+    in T eta, 
+    in T[] sample, 
+    in T[] weights) 
+if(isFloatingPoint!T)
+</code></pre>
+<div class="section "><p>Estimates parameter <code class="prettyprint">omega</code> of the proper generalized inverse Gaussian distribution for fixed <code class="prettyprint">lambda</code> and <code class="prettyprint">eta</code>.
+</p>
+
+
+</div>
+<div class="section seealso">
+<h2>See Also:</h2>
+<div class="seealso-content">
+<p> <code class="prettyprint"><a href="atmosphere/params.html">atmosphere.params</a></code>
+</p>
+
+</div>
+</div>
+<div class="section "><h2>Example</h2>
+<pre><code>import std.range;
+import std.random;
+import <a href="atmosphere/random.html">atmosphere.random</a>;
+import <a href="atmosphere/likelihood.html">atmosphere.likelihood</a>;
+auto length = 1000;
+auto lambda = -2.0, eta = 1.4, omega = 2.3;
+auto rng = Random(1234);
+auto sample = <a href="atmosphere/random/ProperGeneralizedInverseGaussianSRNG.html">ProperGeneralizedInverseGaussianSRNG</a>!double(rng, lambda, eta, omega).take(length).array;
+auto weights = iota(1.0, length + 1.0).array;
+auto omega1 = <a href="atmosphere/estimate/generalized_inverse_gaussian.html#properGeneralizedInverseGaussianFixedLambdaEtaEstimate">properGeneralizedInverseGaussianFixedLambdaEtaEstimate</a>!double(lambda, eta, sample, weights);
+auto lh0 = <a href="atmosphere/likelihood/generalized_inverse_gaussian.html#properGeneralizedInverseGaussianLikelihood">properGeneralizedInverseGaussianLikelihood</a>(lambda, eta, omega , sample, weights);
+auto lh1 = <a href="atmosphere/likelihood/generalized_inverse_gaussian.html#properGeneralizedInverseGaussianLikelihood">properGeneralizedInverseGaussianLikelihood</a>(lambda, eta, omega1, sample, weights);
+assert(lh0 <= lh1);
+
+</code></pre>
+
+</div>
+</div></div><a class="anchor" id="properGeneralizedInverseGaussianFixedLambdaEtaEstimate"></a><div class="symbol"><div class="description"><pre><code>public T <a href="atmosphere/estimate/generalized_inverse_gaussian.html#properGeneralizedInverseGaussianFixedLambdaEtaEstimate">properGeneralizedInverseGaussianFixedLambdaEtaEstimate</a>(T)(
+    in T lambda, 
+    in T eta, 
+    in <a href="atmosphere/statistic/GeneralizedInverseGaussinFixedLambdaStatistic.html">GeneralizedInverseGaussinFixedLambdaStatistic</a>!T stat) 
+if(isFloatingPoint!T)
+</code></pre>
+<div class="section "><p>Estimates parameter <code class="prettyprint">omega</code> of the proper generalized inverse Gaussian distribution for fixed <code class="prettyprint">lambda</code> and <code class="prettyprint">eta</code>.
+</p>
+
+
+</div>
+<div class="section "><h2>Contracts</h2><pre><code>in
+{
+    assert (isNormal(lambda));
+}
+</code></pre>
+
+</div>
+<div class="section seealso">
+<h2>See Also:</h2>
+<div class="seealso-content">
+<p> <code class="prettyprint"><a href="atmosphere/params.html">atmosphere.params</a></code>
+</p>
+
+</div>
+</div>
+</div></div><div class="description"><div class="section"><h2>Authors</h2>
+<p> <a href="http://9il.github.io">Ilya Yaroshenko</a>
+</p>
+
+
+</div>
+<div class="section"><h2>Copyright</h2>
+<p> © 2014-2015 <a href="http://9il.github.io">Ilya Yaroshenko</a>
+</p>
+
+
+</div>
+<div class="section"><h2>License</h2>
+<p> MIT
+</p>
+
+
+</div>
+</div><div class="section members"><h2>Functions</h2><table><tr><td><a href="atmosphere/estimate/generalized_inverse_gaussian.html#properGeneralizedInverseGaussianEstimate">properGeneralizedInverseGaussianEstimate</a><span class="extrainfo"></span></td><td></td><td><p>Estimates parameters of the proper generalized inverse Gaussian distribution.
+</p>
+</td></tr><tr><td><a href="atmosphere/estimate/generalized_inverse_gaussian.html#properGeneralizedInverseGaussianEstimate">properGeneralizedInverseGaussianEstimate</a><span class="extrainfo"></span></td><td></td><td><p>Estimates parameters of the proper generalized inverse Gaussian distribution.
+</p>
+</td></tr><tr><td><a href="atmosphere/estimate/generalized_inverse_gaussian.html#properGeneralizedInverseGaussianEstimate">properGeneralizedInverseGaussianEstimate</a><span class="extrainfo"></span></td><td></td><td><p>Estimates parameters of the proper generalized inverse Gaussian distribution.
+</p>
+</td></tr><tr><td><a href="atmosphere/estimate/generalized_inverse_gaussian.html#generalizedInverseGaussianEstimate">generalizedInverseGaussianEstimate</a><span class="extrainfo"></span></td><td></td><td><p>Estimates parameters of the generalized inverse Gaussian distribution.
+</p>
+</td></tr><tr><td><a href="atmosphere/estimate/generalized_inverse_gaussian.html#generalizedInverseGaussianEstimate">generalizedInverseGaussianEstimate</a><span class="extrainfo"></span></td><td></td><td><p>Estimates parameters of the generalized inverse Gaussian distribution.
+</p>
+</td></tr><tr><td><a href="atmosphere/estimate/generalized_inverse_gaussian.html#generalizedInverseGaussianEstimate">generalizedInverseGaussianEstimate</a><span class="extrainfo"></span></td><td></td><td><p>Estimates parameters of the generalized inverse Gaussian distribution.
+</p>
+</td></tr><tr><td><a href="atmosphere/estimate/generalized_inverse_gaussian.html#properGeneralizedInverseGaussianFixedLambdaEstimate">properGeneralizedInverseGaussianFixedLambdaEstimate</a><span class="extrainfo"></span></td><td></td><td><p>Estimates parameters of the proper generalized inverse Gaussian distribution for fixed <code class="prettyprint">lambda</code>.
+</p>
+</td></tr><tr><td><a href="atmosphere/estimate/generalized_inverse_gaussian.html#properGeneralizedInverseGaussianFixedLambdaEstimate">properGeneralizedInverseGaussianFixedLambdaEstimate</a><span class="extrainfo"></span></td><td></td><td><p>Estimates parameters of the proper generalized inverse Gaussian distribution for fixed <code class="prettyprint">lambda</code>.
+</p>
+</td></tr><tr><td><a href="atmosphere/estimate/generalized_inverse_gaussian.html#properGeneralizedInverseGaussianFixedLambdaEstimate">properGeneralizedInverseGaussianFixedLambdaEstimate</a><span class="extrainfo"></span></td><td></td><td><p>Estimates parameters of the proper generalized inverse Gaussian distribution for fixed <code class="prettyprint">lambda</code>.
+</p>
+</td></tr><tr><td><a href="atmosphere/estimate/generalized_inverse_gaussian.html#generalizedInverseGaussianFixedLambdaEstimate">generalizedInverseGaussianFixedLambdaEstimate</a><span class="extrainfo"></span></td><td></td><td><p>Estimates parameters of the generalized inverse Gaussian distribution for fixed <code class="prettyprint">lambda</code>.
+</p>
+</td></tr><tr><td><a href="atmosphere/estimate/generalized_inverse_gaussian.html#generalizedInverseGaussianFixedLambdaEstimate">generalizedInverseGaussianFixedLambdaEstimate</a><span class="extrainfo"></span></td><td></td><td><p>Estimates parameters of the generalized inverse Gaussian distribution for fixed <code class="prettyprint">lambda</code>.
+</p>
+</td></tr><tr><td><a href="atmosphere/estimate/generalized_inverse_gaussian.html#generalizedInverseGaussianFixedLambdaEstimate">generalizedInverseGaussianFixedLambdaEstimate</a><span class="extrainfo"></span></td><td></td><td><p>Estimates parameters of the generalized inverse Gaussian distribution for fixed <code class="prettyprint">lambda</code>.
+</p>
+</td></tr><tr><td><a href="atmosphere/estimate/generalized_inverse_gaussian.html#properGeneralizedInverseGaussianFixedLambdaEtaEstimate">properGeneralizedInverseGaussianFixedLambdaEtaEstimate</a><span class="extrainfo"></span></td><td></td><td><p>Estimates parameter <code class="prettyprint">omega</code> of the proper generalized inverse Gaussian distribution for fixed <code class="prettyprint">lambda</code> and <code class="prettyprint">eta</code>.
+</p>
+</td></tr><tr><td><a href="atmosphere/estimate/generalized_inverse_gaussian.html#properGeneralizedInverseGaussianFixedLambdaEtaEstimate">properGeneralizedInverseGaussianFixedLambdaEtaEstimate</a><span class="extrainfo"></span></td><td></td><td><p>Estimates parameter <code class="prettyprint">omega</code> of the proper generalized inverse Gaussian distribution for fixed <code class="prettyprint">lambda</code> and <code class="prettyprint">eta</code>.
+</p>
+</td></tr><tr><td><a href="atmosphere/estimate/generalized_inverse_gaussian.html#properGeneralizedInverseGaussianFixedLambdaEtaEstimate">properGeneralizedInverseGaussianFixedLambdaEtaEstimate</a><span class="extrainfo"></span></td><td></td><td><p>Estimates parameter <code class="prettyprint">omega</code> of the proper generalized inverse Gaussian distribution for fixed <code class="prettyprint">lambda</code> and <code class="prettyprint">eta</code>.
+</p>
+</td></tr></table>
+</div>
+</div><script>hljs.initHighlightingOnLoad();</script>
+
+</div>
+<footer>
+Generated with <a href="https://github.com/kiith-sa/harbored-mod">harbored-mod</a>
+</footer>
+</div>
+</body>
+</html>

@@ -40,6 +40,7 @@
 <ul id="atmosphere.estimate">
 <li>atmosphere.estimate.<a href="atmosphere/estimate/gamma.html">gamma</a></li>
 <li>atmosphere.estimate.<a href="atmosphere/estimate/generalized_gamma.html">generalized_gamma</a></li>
+<li>atmosphere.estimate.<a href="atmosphere/estimate/generalized_inverse_gaussian.html">generalized_inverse_gaussian</a></li>
 <li>atmosphere.estimate.<a href="atmosphere/estimate/inverse_gamma.html">inverse_gamma</a></li>
 <li>atmosphere.estimate.<a href="atmosphere/estimate/nvmm.html">nvmm</a></li>
 </ul>
@@ -116,7 +117,11 @@ if(isFloatingPoint!T)
 </code></pre>
 
 </div>
-</div></div><a class="anchor" id="opCast"></a><div class="symbol"><div class="description"><pre><code>public C <a href="atmosphere/statistic/GeneralizedInverseGaussinStatistic.html#opCast">opCast</a>(C : <a href="atmosphere/statistic/GeneralizedInverseGaussinFixedLambdaStatistic.html">GeneralizedInverseGaussinFixedLambdaStatistic</a>!T)()
+</div></div><a class="anchor" id="opCast"></a><div class="symbol"><div class="description"><pre><code>public C <a href="atmosphere/statistic/GeneralizedInverseGaussinStatistic.html#opCast">opCast</a>(C : <a href="atmosphere/statistic/GeneralizedInverseGaussinFixedLambdaStatistic.html">GeneralizedInverseGaussinFixedLambdaStatistic</a>!T)() pure const
+</code></pre>
+</div></div><a class="anchor" id="opCast"></a><div class="symbol"><div class="description"><pre><code>public C <a href="atmosphere/statistic/GeneralizedInverseGaussinStatistic.html#opCast">opCast</a>(C : <a href="atmosphere/statistic/GammaStatistic.html">GammaStatistic</a>!T)() pure const
+</code></pre>
+</div></div><a class="anchor" id="opCast"></a><div class="symbol"><div class="description"><pre><code>public C <a href="atmosphere/statistic/GeneralizedInverseGaussinStatistic.html#opCast">opCast</a>(C : <a href="atmosphere/statistic/InverseGammaStatistic.html">InverseGammaStatistic</a>!T)() pure const
 </code></pre>
 </div></div><div class="section members"><h2>Variables</h2><table><tr><td><a href="atmosphere/statistic/GeneralizedInverseGaussinStatistic.html#mean">mean</a></td><td><pre><code>T
 </code></pre>
@@ -130,7 +135,7 @@ if(isFloatingPoint!T)
 </code></pre>
 </td><td><p><code class="prettyprint">Σ weights[j] * log(sample[j]) / Σ weights[j]</code>
 </p>
-</td></tr></table><h2>Functions</h2><table><tr><td><a href="atmosphere/statistic/GeneralizedInverseGaussinStatistic.html#this">this</a></td><td></td><td></td></tr><tr><td><a href="atmosphere/statistic/GeneralizedInverseGaussinStatistic.html#this">this</a></td><td></td><td></td></tr><tr><td><a href="atmosphere/statistic/GeneralizedInverseGaussinStatistic.html#opCast">opCast</a><span class="extrainfo"></span></td><td></td><td></td></tr></table>
+</td></tr></table><h2>Functions</h2><table><tr><td><a href="atmosphere/statistic/GeneralizedInverseGaussinStatistic.html#this">this</a></td><td></td><td></td></tr><tr><td><a href="atmosphere/statistic/GeneralizedInverseGaussinStatistic.html#this">this</a></td><td></td><td></td></tr><tr><td><a href="atmosphere/statistic/GeneralizedInverseGaussinStatistic.html#opCast">opCast</a><span class="extrainfo"><span class="method-attribs"><span class="attr-pure">pure</span>, <span class="attr-const">const</span></span></span></td><td></td><td></td></tr><tr><td><a href="atmosphere/statistic/GeneralizedInverseGaussinStatistic.html#opCast">opCast</a><span class="extrainfo"><span class="method-attribs"><span class="attr-pure">pure</span>, <span class="attr-const">const</span></span></span></td><td></td><td></td></tr><tr><td><a href="atmosphere/statistic/GeneralizedInverseGaussinStatistic.html#opCast">opCast</a><span class="extrainfo"><span class="method-attribs"><span class="attr-pure">pure</span>, <span class="attr-const">const</span></span></span></td><td></td><td></td></tr></table>
 </div>
 </div><script>hljs.initHighlightingOnLoad();</script>
 

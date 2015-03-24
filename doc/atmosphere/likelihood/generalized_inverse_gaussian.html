@@ -40,6 +40,7 @@
 <ul id="atmosphere.estimate">
 <li>atmosphere.estimate.<a href="atmosphere/estimate/gamma.html">gamma</a></li>
 <li>atmosphere.estimate.<a href="atmosphere/estimate/generalized_gamma.html">generalized_gamma</a></li>
+<li>atmosphere.estimate.<a href="atmosphere/estimate/generalized_inverse_gaussian.html">generalized_inverse_gaussian</a></li>
 <li>atmosphere.estimate.<a href="atmosphere/estimate/inverse_gamma.html">inverse_gamma</a></li>
 <li>atmosphere.estimate.<a href="atmosphere/estimate/nvmm.html">nvmm</a></li>
 </ul>
@@ -68,9 +69,9 @@
 </div></div>
 <div class="content">
 <div class="aggregate-symbol"><a class="anchor" id="properGeneralizedInverseGaussianLikelihood"></a><div class="symbol"><div class="description"><pre><code>public T <a href="atmosphere/likelihood/generalized_inverse_gaussian.html#properGeneralizedInverseGaussianLikelihood">properGeneralizedInverseGaussianLikelihood</a>(T)(
-    T lambda, 
-    T eta, 
-    T omega, 
+    in T lambda, 
+    in T eta, 
+    in T omega, 
     in T[] sample) 
 if(isFloatingPoint!T)
 </code></pre>
@@ -88,9 +89,9 @@ if(isFloatingPoint!T)
 </div>
 </div>
 </div></div><a class="anchor" id="properGeneralizedInverseGaussianLikelihood"></a><div class="symbol"><div class="description"><pre><code>public T <a href="atmosphere/likelihood/generalized_inverse_gaussian.html#properGeneralizedInverseGaussianLikelihood">properGeneralizedInverseGaussianLikelihood</a>(T)(
-    T lambda, 
-    T eta, 
-    T omega, 
+    in T lambda, 
+    in T eta, 
+    in T omega, 
     in T[] sample, 
     in T[] weights) 
 if(isFloatingPoint!T)
@@ -117,10 +118,10 @@ assert(l == m);
 
 </div>
 </div></div><a class="anchor" id="properGeneralizedInverseGaussianLikelihood"></a><div class="symbol"><div class="description"><pre><code>public T <a href="atmosphere/likelihood/generalized_inverse_gaussian.html#properGeneralizedInverseGaussianLikelihood">properGeneralizedInverseGaussianLikelihood</a>(T)(
-    T lambda, 
-    T eta, 
-    T omega, 
-    <a href="atmosphere/statistic/GeneralizedInverseGaussinStatistic.html">GeneralizedInverseGaussinStatistic</a>!T stat) 
+    in T lambda, 
+    in T eta, 
+    in T omega, 
+    in <a href="atmosphere/statistic/GeneralizedInverseGaussinStatistic.html">GeneralizedInverseGaussinStatistic</a>!T stat) 
 if(isFloatingPoint!T)
 </code></pre>
 <div class="section "><p>Normalized log-likelihood function of the generalized inverse Gaussian distribution.

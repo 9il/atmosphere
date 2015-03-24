@@ -41,6 +41,7 @@
 <li>atmosphere.estimate.<a href="atmosphere/estimate/gamma.html">gamma</a></li>
 <li><span class=" selected">atmosphere.estimate.<a href="atmosphere/estimate/generalized_gamma.html">generalized_gamma</a></span>
 </li>
+<li>atmosphere.estimate.<a href="atmosphere/estimate/generalized_inverse_gaussian.html">generalized_inverse_gaussian</a></li>
 <li>atmosphere.estimate.<a href="atmosphere/estimate/inverse_gamma.html">inverse_gamma</a></li>
 <li>atmosphere.estimate.<a href="atmosphere/estimate/nvmm.html">nvmm</a></li>
 </ul>
@@ -68,7 +69,7 @@
 </div></div>
 <div class="content">
 <div class="aggregate-symbol"><a class="anchor" id="generalizedGammaFixedPowerEstimate"></a><div class="symbol"><div class="description"><pre><code>public Tuple!(T, "shape", T, "scale") <a href="atmosphere/estimate/generalized_gamma.html#generalizedGammaFixedPowerEstimate">generalizedGammaFixedPowerEstimate</a>(T)(
-    T power, 
+    in T power, 
     in T[] sample) 
 if(isFloatingPoint!T)
 </code></pre>
@@ -95,7 +96,7 @@ assert(lh0 <= lh1);
 
 </div>
 </div></div><a class="anchor" id="generalizedGammaFixedPowerEstimate"></a><div class="symbol"><div class="description"><pre><code>public Tuple!(T, "shape", T, "scale") <a href="atmosphere/estimate/generalized_gamma.html#generalizedGammaFixedPowerEstimate">generalizedGammaFixedPowerEstimate</a>(T)(
-    T power, 
+    in T power, 
     in T[] sample, 
     in T[] weights) 
 if(isFloatingPoint!T)
@@ -124,8 +125,8 @@ assert(lh0 <= lh1);
 
 </div>
 </div></div><a class="anchor" id="generalizedGammaFixedPowerEstimate"></a><div class="symbol"><div class="description"><pre><code>public Tuple!(T, "shape", T, "scale") <a href="atmosphere/estimate/generalized_gamma.html#generalizedGammaFixedPowerEstimate">generalizedGammaFixedPowerEstimate</a>(T)(
-    T power, 
-    <a href="atmosphere/statistic/GeneralizedGammaFixedPowerStatistic.html">GeneralizedGammaFixedPowerStatistic</a>!T stat) 
+    in T power, 
+    in <a href="atmosphere/statistic/GeneralizedGammaFixedPowerStatistic.html">GeneralizedGammaFixedPowerStatistic</a>!T stat) 
 if(isFloatingPoint!T)
 </code></pre>
 <div class="section "><p>Estimates parameters of the generalized gamma distribution.

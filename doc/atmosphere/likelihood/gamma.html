@@ -40,6 +40,7 @@
 <ul id="atmosphere.estimate">
 <li>atmosphere.estimate.<a href="atmosphere/estimate/gamma.html">gamma</a></li>
 <li>atmosphere.estimate.<a href="atmosphere/estimate/generalized_gamma.html">generalized_gamma</a></li>
+<li>atmosphere.estimate.<a href="atmosphere/estimate/generalized_inverse_gaussian.html">generalized_inverse_gaussian</a></li>
 <li>atmosphere.estimate.<a href="atmosphere/estimate/inverse_gamma.html">inverse_gamma</a></li>
 <li>atmosphere.estimate.<a href="atmosphere/estimate/nvmm.html">nvmm</a></li>
 </ul>
@@ -68,8 +69,8 @@
 </div></div>
 <div class="content">
 <div class="aggregate-symbol"><a class="anchor" id="gammaLikelihood"></a><div class="symbol"><div class="description"><pre><code>public T <a href="atmosphere/likelihood/gamma.html#gammaLikelihood">gammaLikelihood</a>(T)(
-    T shape, 
-    T scale, 
+    in T shape, 
+    in T scale, 
     in T[] sample) 
 if(isFloatingPoint!T)
 </code></pre>
@@ -88,8 +89,8 @@ assert(l == m);
 
 </div>
 </div></div><a class="anchor" id="gammaLikelihood"></a><div class="symbol"><div class="description"><pre><code>public T <a href="atmosphere/likelihood/gamma.html#gammaLikelihood">gammaLikelihood</a>(T)(
-    T shape, 
-    T scale, 
+    in T shape, 
+    in T scale, 
     in T[] sample, 
     in T[] weights) 
 if(isFloatingPoint!T)
@@ -117,9 +118,9 @@ assert(l == m);
 
 </div>
 </div></div><a class="anchor" id="gammaLikelihood"></a><div class="symbol"><div class="description"><pre><code>public T <a href="atmosphere/likelihood/gamma.html#gammaLikelihood">gammaLikelihood</a>(T)(
-    T shape, 
-    T scale, 
-    <a href="atmosphere/statistic/GammaStatistic.html">GammaStatistic</a>!T stat) 
+    in T shape, 
+    in T scale, 
+    in <a href="atmosphere/statistic/GammaStatistic.html">GammaStatistic</a>!T stat) 
 if(isFloatingPoint!T)
 </code></pre>
 <div class="section "><p>Normalized log-likelihood function of the gamma distribution.
