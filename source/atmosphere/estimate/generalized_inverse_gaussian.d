@@ -67,7 +67,6 @@ unittest
 	assert(lh2 <= lh1);
 }
 
-
 ///ditto
 Tuple!(T, "lambda", T, "eta", T, "omega")
 properGeneralizedInverseGaussianEstimate(T)
@@ -80,6 +79,28 @@ properGeneralizedInverseGaussianEstimate(T)
 	if(isFloatingPoint!T)
 {
 	return properGeneralizedInverseGaussianEstimate(GeneralizedInverseGaussinStatistic!T(sample, weights), relTolerance, absTolerance);
+}
+
+///
+unittest
+{
+	import std.range;
+	import std.random;
+	import atmosphere.random;
+	import atmosphere.likelihood;
+	auto length = 1000;
+	auto lambda = -2.0, eta = 1.4, omega = 2.3;
+	auto rng = Random(1234);
+	auto sample = ProperGeneralizedInverseGaussianSRNG!double(rng, lambda, eta, omega).take(length).array;
+	auto weights = iota(1.0, length + 1.0).array;
+	auto params1 = properGeneralizedInverseGaussianEstimate!double(sample, weights);
+	auto params2 = properGeneralizedInverseGaussianFixedLambdaEstimate!double(lambda, sample, weights);
+	auto lh0 = properGeneralizedInverseGaussianLikelihood(lambda, eta, omega, sample, weights);
+	auto lh1 = properGeneralizedInverseGaussianLikelihood(params1.lambda, params1.eta, params1.omega, sample, weights);
+	auto lh2 = properGeneralizedInverseGaussianLikelihood(lambda, params2.eta, params2.omega, sample, weights);
+	assert(lh0 <= lh1);
+	assert(lh0 <= lh2);
+	assert(lh2 <= lh1);
 }
 
 
@@ -181,6 +202,31 @@ generalizedInverseGaussianEstimate(T)
 	return generalizedInverseGaussianEstimate(GeneralizedInverseGaussinStatistic!T(sample, weights), relTolerance, absTolerance);
 }
 
+///
+unittest
+{
+	import std.range;
+	import std.random;
+	import atmosphere.random;
+	import atmosphere.likelihood;
+	import atmosphere.params;
+	auto length = 1000;
+	auto lambda = -2.0, chi = 1.4, psi = 2.3;
+	auto rng = Random(1234);
+	auto sample = new GeneralizedInverseGaussianRNG!double(rng, lambda, chi, psi).take(length).array;
+	auto weights = iota(1.0, length + 1.0).array;
+	auto params1 = generalizedInverseGaussianEstimate!double(sample, weights);
+	auto params2 = generalizedInverseGaussianFixedLambdaEstimate!double(lambda, sample, weights);
+	auto p0 = GIGChiPsi!double(chi, psi);
+	auto p1 = GIGChiPsi!double(params1.chi, params1.psi);
+	auto p2 = GIGChiPsi!double(params2.chi, params2.psi);
+	auto lh0 = properGeneralizedInverseGaussianLikelihood(lambda, p0.eta, p0.omega, sample, weights);
+	auto lh1 = properGeneralizedInverseGaussianLikelihood(params1.lambda, p1.eta, p1.omega, sample, weights);
+	auto lh2 = properGeneralizedInverseGaussianLikelihood(lambda, p2.eta, p2.omega, sample, weights);
+	assert(lh0 <= lh1);
+	assert(lh0 <= lh2);
+	assert(lh2 <= lh1);
+}
 
 ///ditto
 Tuple!(T, "lambda", T, "chi", T, "psi")
@@ -262,12 +308,31 @@ unittest
 	assert(lh0 <= lh1);
 }
 
+
 ///ditto
 Tuple!(T, "eta", T, "omega")
 properGeneralizedInverseGaussianFixedLambdaEstimate(T)(in T lambda, in T[] sample, in T[] weights)
 	if(isFloatingPoint!T)
 {
 	return properGeneralizedInverseGaussianFixedLambdaEstimate(lambda, GeneralizedInverseGaussinFixedLambdaStatistic!T(sample, weights));
+}
+
+///
+unittest
+{
+	import std.range;
+	import std.random;
+	import atmosphere.random;
+	import atmosphere.likelihood;
+	auto length = 1000;
+	auto lambda = -2.0, eta = 1.4, omega = 2.3;
+	auto rng = Random(1234);
+	auto sample = ProperGeneralizedInverseGaussianSRNG!double(rng, lambda, eta, omega).take(length).array;
+	auto weights = iota(1.0, length + 1.0).array;
+	auto params = properGeneralizedInverseGaussianFixedLambdaEstimate!double(lambda, sample, weights);
+	auto lh0 = properGeneralizedInverseGaussianLikelihood(lambda, eta, omega, sample, weights);
+	auto lh1 = properGeneralizedInverseGaussianLikelihood(lambda, params.eta, params.omega, sample, weights);
+	assert(lh0 <= lh1);
 }
 
 ///ditto
@@ -336,6 +401,26 @@ generalizedInverseGaussianFixedLambdaEstimate(T)(in T lambda, in T[] sample, in 
 	return generalizedInverseGaussianFixedLambdaEstimate(lambda, GeneralizedInverseGaussinFixedLambdaStatistic!T(sample, weights));
 }
 
+///
+unittest
+{
+	import std.range;
+	import std.random;
+	import atmosphere.random;
+	import atmosphere.likelihood;
+	import atmosphere.params;
+	auto length = 1000;
+	auto lambda = -2.0, chi = 1.4, psi = 2.3;
+	auto rng = Random(1234);
+	auto sample = new GeneralizedInverseGaussianRNG!double(rng, lambda, chi, psi).take(length).array;
+	auto weights = iota(1.0, length + 1.0).array;
+	auto params = generalizedInverseGaussianFixedLambdaEstimate!double(lambda, sample, weights);
+	auto p0 = GIGChiPsi!double(chi, psi);
+	auto p1 = GIGChiPsi!double(params.chi, params.psi);
+	auto lh0 = properGeneralizedInverseGaussianLikelihood(lambda, p0.chi, p0.psi, sample, weights);
+	auto lh1 = properGeneralizedInverseGaussianLikelihood(lambda, p1.chi, p1.psi, sample, weights);
+	assert(lh0 <= lh1);
+}
 
 ///ditto
 Tuple!(T, "chi", T, "psi")
@@ -394,6 +479,25 @@ T properGeneralizedInverseGaussianFixedLambdaEtaEstimate(T)(in T lambda, in T et
 {
 	return properGeneralizedInverseGaussianFixedLambdaEtaEstimate(lambda, eta, GeneralizedInverseGaussinFixedLambdaStatistic!T(sample, weights));
 }
+
+///
+unittest
+{
+	import std.range;
+	import std.random;
+	import atmosphere.random;
+	import atmosphere.likelihood;
+	auto length = 1000;
+	auto lambda = -2.0, eta = 1.4, omega = 2.3;
+	auto rng = Random(1234);
+	auto sample = ProperGeneralizedInverseGaussianSRNG!double(rng, lambda, eta, omega).take(length).array;
+	auto weights = iota(1.0, length + 1.0).array;
+	auto omega1 = properGeneralizedInverseGaussianFixedLambdaEtaEstimate!double(lambda, eta, sample, weights);
+	auto lh0 = properGeneralizedInverseGaussianLikelihood(lambda, eta, omega , sample, weights);
+	auto lh1 = properGeneralizedInverseGaussianLikelihood(lambda, eta, omega1, sample, weights);
+	assert(lh0 <= lh1);
+}
+
 
 ///ditto
 T properGeneralizedInverseGaussianFixedLambdaEtaEstimate(T)
