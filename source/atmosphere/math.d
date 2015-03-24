@@ -237,7 +237,7 @@ Params:
 Preconditions:
 	$(D ax) and $(D bx) shall be finite reals. $(BR)
 	$(D relTolerance) shall be normal positive real. $(BR)
-	$(D absTolerance) shall be normal positive real no less then $(T.epsilon*2).
+	$(D absTolerance) shall be normal positive real no less then $(D T.epsilon*2).
 
 Returns:
 	A tuple consisting of $(D x), $(D y = f(x)) and $(D error = 3 * (absTolerance * fabs(x) + relTolerance)).
@@ -265,7 +265,7 @@ in
 {
 	assert(isFinite(ax) && isFinite(bx), "ax and bx shall be finite reals");
 	assert(isNormal(absTolerance) && absTolerance >= T.epsilon*2, 
-		"absTolerance shall be normal positive real no less then $(T.epsilon*2)");
+		"absTolerance shall be normal positive real no less then $(D T.epsilon*2)");
 	assert(isNormal(relTolerance) && relTolerance > 0, 
 		"relTolerance shall be normal positive real");
 }
