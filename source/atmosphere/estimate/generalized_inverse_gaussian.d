@@ -11,18 +11,280 @@ import core.stdc.tgmath;
 
 import std.traits;
 import std.typecons;
-import std.math : signbit, isNormal, isFinite;
+import std.math : isNormal, isFinite;
 
 import atmosphere.statistic: GeneralizedInverseGaussinStatistic, GeneralizedInverseGaussinFixedLambdaStatistic;
 
-Tuple!(T, "eta", T, "omega") 
+
+/++
+Estimates parameters of the proper generalized inverse Gaussian distribution.
+
+Params:
+	stat = GIG statistica.
+	sample = obeservation.
+	weights = sample weights.
+	relTolerance = Relative tolerance.
+	absTolerance = Absolute tolerance.
+
+Preconditions:
+	$(D ax) and $(D bx) shall be finite reals. $(BR)
+	$(D relTolerance) shall be normal positive real. $(BR)
+	$(D absTolerance) shall be normal positive real no less then $(T.epsilon*2).
+
+References:
+	1. "Algorithms for Minimization without Derivatives", Richard Brent, Prentice-Hall, Inc. (1973)
+
+See_Also: `atmosphere.params`
++/
+Tuple!(T, "lambda", T, "eta", T, "omega")
+properGeneralizedInverseGaussianEstimate(T)
+	(
+		in T[] sample, 
+		in T relTolerance = sqrt(T.epsilon),
+		in T absTolerance = sqrt(T.epsilon),
+	)
+	if(isFloatingPoint!T)
+{
+	return properGeneralizedInverseGaussianEstimate(GeneralizedInverseGaussinStatistic!T(sample), relTolerance, absTolerance);
+}
+
+///
+unittest
+{
+	import std.range;
+	import std.random;
+	import atmosphere.random;
+	import atmosphere.likelihood;
+	auto length = 1000;
+	auto lambda = -2.0, eta = 1.4, omega = 2.3;
+	auto rng = Random(1234);
+	auto sample = ProperGeneralizedInverseGaussianSRNG!double(rng, lambda, eta, omega).take(length).array;
+	auto params1 = properGeneralizedInverseGaussianEstimate(sample);
+	auto params2 = properGeneralizedInverseGaussianFixedLambdaEstimate!double(lambda, sample);
+	auto lh0 = properGeneralizedInverseGaussianLikelihood(lambda, eta, omega, sample);
+	auto lh1 = properGeneralizedInverseGaussianLikelihood(params1.lambda, params1.eta, params1.omega, sample);
+	auto lh2 = properGeneralizedInverseGaussianLikelihood(lambda, params2.eta, params2.omega, sample);
+	assert(lh0 <= lh1);
+	assert(lh0 <= lh2);
+	assert(lh2 <= lh1);
+}
+
+
+///ditto
+Tuple!(T, "lambda", T, "eta", T, "omega")
+properGeneralizedInverseGaussianEstimate(T)
+	(
+		in T[] sample, 
+		in T[] weights,
+		in T relTolerance = sqrt(T.epsilon),
+		in T absTolerance = sqrt(T.epsilon),
+	)
+	if(isFloatingPoint!T)
+{
+	return properGeneralizedInverseGaussianEstimate(GeneralizedInverseGaussinStatistic!T(sample, weights), relTolerance, absTolerance);
+}
+
+
+///ditto
+Tuple!(T, "lambda", T, "eta", T, "omega")
+properGeneralizedInverseGaussianEstimate(T)
+	(
+		in GeneralizedInverseGaussinStatistic!T stat, 		
+		in T relTolerance = sqrt(T.epsilon),
+		in T absTolerance = sqrt(T.epsilon),
+	)
+	if(isFloatingPoint!T)
+body {
+	import atmosphere.likelihood.generalized_inverse_gaussian;
+	immutable prod = stat.mean * stat.meani;
+	if(!isFinite(prod) || prod <= 1)
+		return typeof(return)(T.nan, T.nan, T.nan);
+	immutable u = prod / (prod - 1);
+	assert(isFinite(u));
+	immutable statFL = cast(GeneralizedInverseGaussinFixedLambdaStatistic!T) stat;
+	T f(T lambda) {
+		immutable params = properGeneralizedInverseGaussianFixedLambdaEstimate!T(lambda, statFL);
+		with(params) return -properGeneralizedInverseGaussianLikelihood!T(lambda, eta, omega, stat);
+	}
+	import atmosphere.math: findLocalMin;
+	immutable flm = findLocalMin!T(&f, -u, u, relTolerance, absTolerance);
+	immutable lambda = flm.x;
+	immutable params = properGeneralizedInverseGaussianFixedLambdaEstimate!T(lambda, statFL);
+	with(params) return typeof(return)(lambda, eta, omega);
+}
+
+/++
+Estimates parameters of the generalized inverse Gaussian distribution.
+
+Params:
+	stat = GIG statistica.
+	sample = obeservation.
+	weights = sample weights.
+	relTolerance = Relative tolerance.
+	absTolerance = Absolute tolerance.
+
+Preconditions:
+	$(D ax) and $(D bx) shall be finite reals. $(BR)
+	$(D relTolerance) shall be normal positive real. $(BR)
+	$(D absTolerance) shall be normal positive real no less then $(T.epsilon*2).
+
+References:
+	1. "Algorithms for Minimization without Derivatives", Richard Brent, Prentice-Hall, Inc. (1973)
+
+See_Also: `atmosphere.params`
++/
+Tuple!(T, "lambda", T, "chi", T, "psi")
+generalizedInverseGaussianEstimate(T)
+	(
+		in T[] sample,
+		in T relTolerance = sqrt(T.epsilon),
+		in T absTolerance = sqrt(T.epsilon),
+	)
+	if(isFloatingPoint!T)
+{
+	return generalizedInverseGaussianEstimate(GeneralizedInverseGaussinStatistic!T(sample), relTolerance, absTolerance);
+}
+
+///
+unittest
+{
+	import std.range;
+	import std.random;
+	import atmosphere.random;
+	import atmosphere.likelihood;
+	import atmosphere.params;
+	auto length = 1000;
+	auto lambda = -2.0, chi = 1.4, psi = 2.3;
+	auto rng = Random(1234);
+	auto sample = new GeneralizedInverseGaussianRNG!double(rng, lambda, chi, psi).take(length).array;
+	auto params1 = generalizedInverseGaussianEstimate(sample);
+	auto params2 = generalizedInverseGaussianFixedLambdaEstimate!double(lambda, sample);
+	auto p0 = GIGChiPsi!double(chi, psi);
+	auto p1 = GIGChiPsi!double(params1.chi, params1.psi);
+	auto p2 = GIGChiPsi!double(params2.chi, params2.psi);
+	auto lh0 = properGeneralizedInverseGaussianLikelihood(lambda, p0.eta, p0.omega, sample);
+	auto lh1 = properGeneralizedInverseGaussianLikelihood(params1.lambda, p1.eta, p1.omega, sample);
+	auto lh2 = properGeneralizedInverseGaussianLikelihood(lambda, p2.eta, p2.omega, sample);
+	assert(lh0 <= lh1);
+	assert(lh0 <= lh2);
+	assert(lh2 <= lh1);
+}
+
+
+///ditto
+Tuple!(T, "lambda", T, "chi", T, "psi")
+generalizedInverseGaussianEstimate(T)
+	(
+		in T[] sample,
+		in T[] weights,
+		in T relTolerance = sqrt(T.epsilon),
+		in T absTolerance = sqrt(T.epsilon),
+	)
+	if(isFloatingPoint!T)
+{
+	return generalizedInverseGaussianEstimate(GeneralizedInverseGaussinStatistic!T(sample, weights), relTolerance, absTolerance);
+}
+
+
+///ditto
+Tuple!(T, "lambda", T, "chi", T, "psi")
+generalizedInverseGaussianEstimate(T)
+	(
+		in GeneralizedInverseGaussinStatistic!T stat, 		
+		in T relTolerance = sqrt(T.epsilon),
+		in T absTolerance = sqrt(T.epsilon),
+	)
+	if(isFloatingPoint!T)
+body {
+	import atmosphere.params : GIGEtaOmega;
+	import atmosphere.estimate.gamma;
+	import atmosphere.estimate.inverse_gamma;
+	import atmosphere.likelihood.gamma;
+	import atmosphere.likelihood.inverse_gamma;
+	import atmosphere.likelihood.generalized_inverse_gaussian;
+	import atmosphere.statistic: GammaStatistic, InverseGammaStatistic;
+	
+	immutable prod = stat.mean * stat.meani;
+	if(!isFinite(prod) || prod <= 1)
+		return typeof(return)(T.nan, T.nan, T.nan);
+	immutable u = prod / (prod - 1);
+	assert(isFinite(u));
+	
+	immutable gammaStat = cast(GammaStatistic!T)stat;
+	immutable inverseGammaStat = cast(InverseGammaStatistic!T)stat;
+	
+	immutable gammaParams = gammaEstimate!T(gammaStat);
+	immutable inverseGammaParams = inverseGammaEstimate!T(inverseGammaStat);
+	immutable properParams = properGeneralizedInverseGaussianEstimate!T(stat, relTolerance, absTolerance);
+	
+	T gammaLikelihood = gammaLikelihood!T(gammaParams.shape, gammaParams.scale, gammaStat);
+	T inverseGammaLikelihood = inverseGammaLikelihood!T(inverseGammaParams.shape, inverseGammaParams.scale, inverseGammaStat);
+	T properLikelihood = properGeneralizedInverseGaussianLikelihood!T(properParams.lambda, properParams.eta, properParams.omega,  stat);
+	
+	if(!(gammaLikelihood > -T.infinity))
+		gammaLikelihood = T.infinity;
+	if(!(inverseGammaLikelihood > -T.infinity))
+		inverseGammaLikelihood = T.infinity;
+	if(!(properLikelihood > -T.infinity))
+		properLikelihood = T.infinity;
+	if(properLikelihood > gammaLikelihood && properLikelihood > inverseGammaLikelihood)
+		with(GIGEtaOmega!T(properParams.eta, properParams.omega)) return typeof(return)(properParams.lambda, chi, psi);
+	if(gammaLikelihood > inverseGammaLikelihood)
+		with(       gammaParams) return typeof(return)(shape,         0, 2 / scale);
+	if(gammaLikelihood < inverseGammaLikelihood)
+		with(inverseGammaParams) return typeof(return)(shape, scale / 2,         0);
+	return typeof(return).init;
+}
+
+
+/++
+Estimates parameters of the proper generalized inverse Gaussian distribution for fixed `lambda`.
+
+See_Also: `atmosphere.params`
++/
+Tuple!(T, "eta", T, "omega")
+properGeneralizedInverseGaussianFixedLambdaEstimate(T)(in T lambda, in T[] sample)
+	if(isFloatingPoint!T)
+{
+	return properGeneralizedInverseGaussianFixedLambdaEstimate(lambda, GeneralizedInverseGaussinFixedLambdaStatistic!T(sample));
+}
+
+///
+unittest
+{
+	import std.range;
+	import std.random;
+	import atmosphere.random;
+	import atmosphere.likelihood;
+	auto length = 1000;
+	auto lambda = -2.0, eta = 1.4, omega = 2.3;
+	auto rng = Random(1234);
+	auto sample = ProperGeneralizedInverseGaussianSRNG!double(rng, lambda, eta, omega).take(length).array;
+	auto params = properGeneralizedInverseGaussianFixedLambdaEstimate!double(lambda, sample);
+	auto lh0 = properGeneralizedInverseGaussianLikelihood(lambda, eta, omega, sample);
+	auto lh1 = properGeneralizedInverseGaussianLikelihood(lambda, params.eta, params.omega, sample);
+	assert(lh0 <= lh1);
+}
+
+///ditto
+Tuple!(T, "eta", T, "omega")
+properGeneralizedInverseGaussianFixedLambdaEstimate(T)(in T lambda, in T[] sample, in T[] weights)
+	if(isFloatingPoint!T)
+{
+	return properGeneralizedInverseGaussianFixedLambdaEstimate(lambda, GeneralizedInverseGaussinFixedLambdaStatistic!T(sample, weights));
+}
+
+///ditto
+Tuple!(T, "eta", T, "omega")
 properGeneralizedInverseGaussianFixedLambdaEstimate(T)
-	(T lambda, GeneralizedInverseGaussinFixedLambdaStatistic!T stat)
+	(in T lambda, in GeneralizedInverseGaussinFixedLambdaStatistic!T stat)
 	if(isFloatingPoint!T)
 in {
 	assert(isNormal(lambda));
 }
 body {
+	import std.numeric: findRoot;
+	import atmosphere.math;
 	immutable prod = stat.mean * stat.meani;
 	if(!isFinite(prod) || prod <= 1)
 		return typeof(return)(T.nan, T.nan);
@@ -31,44 +293,22 @@ body {
 	immutable alambda = fabs(lambda);
 	if(alambda >= u)
 		return typeof(return)(alambda > 0 ? 0 : T.infinity, 0);
-	return typeof(return)(1, 2);
+	immutable omega = findRoot((T omega) => besselKD(alambda, omega) - prod, T.min_normal, T.max);
+	immutable eta = sqrt(stat.mean / stat.meani) / besselKRM(lambda, omega);
+	return typeof(return)(eta, omega);
 }
 
-unittest {
-	alias est = properGeneralizedInverseGaussianFixedLambdaEstimate!double;
-}
-
-version(none):
 
 /++
-Estimates parameters of the generalized inverse Gaussian distribution.
-Params:
-	sample = sample
-	lambdaBounds = bounds of the parameter lambda
-	omegaBounds = bounds of the parameter omega, concetration
+Estimates parameters of the generalized inverse Gaussian distribution for fixed `lambda`.
 
-See_Also: `distribution.params.GIGEtaOmega`
+See_Also: `atmosphere.params`
 +/
-Tuple!(T, "lambda", T, "eta", T, "omega") 
-generalizedInverseGaussianEstimate(T)
-	(in T[] sample, T[2] lambdaBounds = [-25, 25], T[2] omegaBounds = [1e-10, 1e10])
+Tuple!(T, "chi", T, "psi")
+generalizedInverseGaussianFixedLambdaEstimate(T)(in T lambda, in T[] sample)
 	if(isFloatingPoint!T)
 {
-	return generalizedInverseGaussianEstimate!T(lambdaBounds, (T lambda, T one, T mone, T dzero){ return omegaBounds; }, sample);
-}
-
-unittest {
- 	import atmosphere.likelihood;
-	immutable lambda = -14.0;
-	immutable eta = 1.0;
-	immutable omega = 30.0;
-	immutable one = 0x1.68ca419d651acp-1;
-	immutable mone = 0x1.74ef782e761d4p+0;
-	immutable dzero = -0x1.73d7daf81500dp-2;
-	immutable params = generalizedInverseGaussianEstimate(lambda, [1e-10, 1e10], one, mone);
-	immutable lhPrior = generalizedInverseGaussianLikelihood(lambda, eta, omega, one, mone, dzero);
-	immutable lhCalc  = generalizedInverseGaussianLikelihood(params.lambda, params.eta, params.omega, one, mone, dzero);
-	assert(lhPrior <= lhCalc);
+	return generalizedInverseGaussianFixedLambdaEstimate(lambda, GeneralizedInverseGaussinFixedLambdaStatistic!T(sample));
 }
 
 ///
@@ -78,329 +318,118 @@ unittest
 	import std.random;
 	import atmosphere.random;
 	import atmosphere.likelihood;
+	import atmosphere.params;
 	auto length = 1000;
-	auto lambda = 2.0, eta = 1.4, omega = 2.3;
+	auto lambda = -2.0, chi = 1.4, psi = 2.3;
 	auto rng = Random(1234);
-	auto sample = ProperGeneralizedInverseGaussianSRNG!double(rng, lambda, eta, omega).take(length).array;
-	auto params = generalizedInverseGaussianEstimate!double(sample);
-	auto lh0 = generalizedInverseGaussianLikelihood(lambda, eta, omega, sample);
-	auto lh1 = generalizedInverseGaussianLikelihood(params.lambda, params.eta, params.omega, sample);
+	auto sample = new GeneralizedInverseGaussianRNG!double(rng, lambda, chi, psi).take(length).array;
+	auto params = generalizedInverseGaussianFixedLambdaEstimate!double(lambda, sample);
+	auto p0 = GIGChiPsi!double(chi, psi);
+	auto p1 = GIGChiPsi!double(params.chi, params.psi);
+	auto lh0 = properGeneralizedInverseGaussianLikelihood(lambda, p0.chi, p0.psi, sample);
+	auto lh1 = properGeneralizedInverseGaussianLikelihood(lambda, p1.chi, p1.psi, sample);
 	assert(lh0 <= lh1);
 }
 
 
-/++
-Estimates parameters of the generalized inverse Gaussian distribution.
-Params:
-	sample = sample
-	weights = weights for the sample
-	lambdaBounds = bounds of the parameter lambda
-	omegaBounds = bounds of the parameter omega
-
-See_Also: `distribution.params.GIGEtaOmega`
-+/
-Tuple!(T, "lambda", T, "eta", T, "omega") 
-generalizedInverseGaussianEstimate(T)
-	(in T[] sample, in T[] weights, T[2] lambdaBounds = [-25, 25], T[2] omegaBounds = [1e-10, 1e10])
+///ditto
+Tuple!(T, "chi", T, "psi")
+generalizedInverseGaussianFixedLambdaEstimate(T)(in T lambda, in T[] sample, in T[] weights)
 	if(isFloatingPoint!T)
 {
-	return generalizedInverseGaussianEstimate!T(lambdaBounds, (T lambda, T one, T mone, T dzero) => omegaBounds, sample, weights);
-}
-
-///
-unittest
-{
-	import std.range;
-	import std.random;
-	import atmosphere.random;
-	import atmosphere.likelihood;
-	auto length = 1000;
-	auto lambda = 2.0, eta = 1.4, omega = 2.3;
-	auto rng = Random(1234);
-	auto sample = ProperGeneralizedInverseGaussianSRNG!double(rng, lambda, eta, omega).take(length).array;
-	auto weights = iota(1.0, length + 1.0).array;
-	auto params = generalizedInverseGaussianEstimate!double(sample, weights);
-	auto lh0 = generalizedInverseGaussianLikelihood(lambda, eta, omega, sample, weights);
-	auto lh1 = generalizedInverseGaussianLikelihood(params.lambda, params.eta, params.omega, sample, weights);
-	assert(lh0 <= lh1);
+	return generalizedInverseGaussianFixedLambdaEstimate(lambda, GeneralizedInverseGaussinFixedLambdaStatistic!T(sample, weights));
 }
 
 
-/++
-Estimates parameters of the generalized inverse Gaussian distribution.
-Params:
-	one = `Σ weights[j] * sample[j] / Σ weights[j]`
-	mone = `Σ weights[j] / sample[j] / Σ weights[j]`
-	dzero = `Σ weights[j] * log(sample[j]) / Σ weights[j]`
-	lambdaBounds = bounds of the parameter lambda
-	omegaBounds = bounds of the parameter omega
-
-See_Also: `distribution.params.GIGEtaOmega`
-+/
-Tuple!(T, "lambda", T, "eta", T, "omega") 
-generalizedInverseGaussianEstimate(T)
-	(GeneralizedInverseGaussinStatistic!T, T[2] lambdaBounds = [-25, 25], T[2] omegaBounds = [1e-10, 1e10])
+///ditto
+Tuple!(T, "chi", T, "psi")
+generalizedInverseGaussianFixedLambdaEstimate(T)
+	(in T lambda, in GeneralizedInverseGaussinFixedLambdaStatistic!T stat)
 	if(isFloatingPoint!T)
-{
-	return generalizedInverseGaussianEstimate!T(lambdaBounds, (T lambda, GeneralizedInverseGaussinStatistic!T stat) => omegaBounds, stat);
+in {
+	assert(isNormal(lambda));
 }
-
-/++
-Estimates parameters of the generalized inverse Gaussian distribution.
-Params:
-	lambdaBounds = bounds of the parameter lambda
-	omegaBoundsFun = function to calculate bounds of the parameter omega
-	sample = sample
-
-See_Also: `distribution.params.GIGEtaOmega`
-+/
-Tuple!(T, "lambda", T, "eta", T, "omega") 
-generalizedInverseGaussianEstimate(T, OmegaBoundsFun)
-	(T[2] lambdaBounds, scope OmegaBoundsFun omegaBoundsFun, in T[] sample)
-	if(isFloatingPoint!T)
-{
-
-	import std.algorithm : sum, map;
-	immutable n = sample.length;
-	immutable one = sample.sum / n;
-	immutable mone = sample.map!"1/a".sum / n;
-	immutable dzero = T(LN2) * sample.sumOfLog2s() / n;
-	return generalizedInverseGaussianEstimate!T(lambdaBounds, omegaBoundsFun, one, mone, dzero);
-}
-
-/++
-Estimates parameters of the generalized inverse Gaussian distribution.
-Params:
-	lambdaBounds = bounds of the parameter lambda
-	omegaBoundsFun = function to calculate bounds of the parameter omega
-	sample = sample
-	weights = weights for the sample
-
-See_Also: `distribution.params.GIGEtaOmega`
-+/
-Tuple!(T, "lambda", T, "eta", T, "omega") 
-generalizedInverseGaussianEstimate(T, OmegaBoundsFun)
-	(T[2] lambdaBounds, scope OmegaBoundsFun omegaBoundsFun, in T[] sample, in T[] weights)
-	if(isFloatingPoint!T)
-{
-
-	import std.algorithm : sum, map;
-	immutable n = weights.sum;
-	immutable one = sample.dotProduct(weights) / n;
-	immutable mone = sample.map!"1/a".dotProduct(weights) / n;
-	immutable dzero = T(LN2) * sample.map!log2.dotProduct(weights) / n;
-	return generalizedInverseGaussianEstimate!T(lambdaBounds, omegaBoundsFun, one, mone, dzero);
-}
-
-/++
-Estimates parameters of the generalized inverse Gaussian distribution.
-Params:
-	lambdaBounds = bounds of the parameter lambda
-	omegaBoundsFun = function to calculate bounds of the parameter omega
-	one = `Σ weights[j] * sample[j] / Σ weights[j]`
-	mone = `Σ weights[j] / sample[j] / Σ weights[j]`
-	dzero = `Σ weights[j] * log(sample[j]) / Σ weights[j]`
-
-See_Also: `distribution.params.GIGEtaOmega`
-+/
-Tuple!(T, "lambda", T, "eta", T, "omega") 
-generalizedInverseGaussianEstimate(T, OmegaBoundsFun)
-	(T[2] lambdaBounds, scope OmegaBoundsFun omegaBoundsFun, T one, T mone, T dzero)
-	if(isFloatingPoint!T)
-{
-	import std.numeric : findRoot;
-	auto f(T lambda)
-	{
-		immutable omegaBounds = omegaBoundsFun(lambda, one, mone, dzero);
-		immutable params = generalizedInverseGaussianEstimate!T(lambda, omegaBounds, one, mone);
-		immutable eta = params.eta;
-		T dzeroScaled;
-		if(eta <= T.min_normal*16)
-		{
-			immutable tau = lambda / params.omega;
-			dzeroScaled = dzero - (log(one/(2*tau)) - one*mone/(4*tau^^2));
-		}
-		else
-		{
-			dzeroScaled = dzero - log(eta);
-		}
-		return GIGLikelihoodLambdaDerivative!T(lambda, params.omega, dzeroScaled);
-	}
-	immutable fax = f(lambdaBounds[0]);
-	immutable fbx = f(lambdaBounds[1]);
-	T lambda;
-	if(signbit(fax) == signbit(fbx))
-	{
-		lambda = !(fabs(fax) > fabs(fbx)) ? lambdaBounds[0] : lambdaBounds[1];
-	}
-	else
-	{
-	    auto r = findRoot(&f, lambdaBounds[0], lambdaBounds[1], fax, fbx, (T a, T b) => false);
-	    lambda = !(fabs(r[2]) > fabs(r[3])) ? r[0] : r[1];
-	}
-	immutable omegaBounds = omegaBoundsFun(lambda, one, mone, dzero);
-	immutable params = generalizedInverseGaussianEstimate!T(lambda, omegaBounds, one, mone);
-	return typeof(return)(lambda, params.eta, params.omega);
-}
-
-/++
-Estimates parameters of the generalized inverse Gaussian distribution.
-Params:
-	lambda = parameter lambda
-	omegaBounds = bounds of the parameter omega
-	sample = sample
-
-See_Also: `distribution.params.GIGEtaOmega`
-+/
-Tuple!(T, "lambda", T, "eta", T, "omega") 
-generalizedInverseGaussianEstimate(T)
-	(T lambda, T[2] omegaBounds, in T[] sample)
-	if(isFloatingPoint!T)
-{
-	import std.algorithm : sum, map;
-	immutable n = sample.length;
-	immutable one = sample.sum / n;
-	immutable mone = sample.map!"1/a".sum / n;
-	return generalizedInverseGaussianEstimate!T(lambda, omegaBounds, one, mone);
-}
-
-/++
-Estimates parameters of the generalized inverse Gaussian distribution.
-Params:
-	lambda = parameter lambda
-	omegaBounds = bounds of the parameter omega
-	sample = sample
-	weights = weights for the sample
-
-See_Also: `distribution.params.GIGEtaOmega`
-+/
-Tuple!(T, "lambda", T, "eta", T, "omega") 
-generalizedInverseGaussianEstimate(T)
-	(T lambda, T[2] omegaBounds, in T[] sample, in T[] weights)
-	if(isFloatingPoint!T)
-{
-	immutable n = weights.sum;
-	immutable one = sample.dotProduct(weights) / n;
-	immutable mone = sample.map!"1/a".dotProduct(weights) / n;
-	return generalizedInverseGaussianEstimate!T(lambda, omegaBounds, one, mone);
-}
-
-/++
-Estimates parameters of the generalized inverse Gaussian distribution.
-Params:
-	lambda = parameter lambda
-	omegaBounds = bounds of the parameter omega
-	one = `Σ weights[j] * sample[j] / Σ weights[j]`
-	mone = `Σ weights[j] / sample[j] / Σ weights[j]`
-
-See_Also: `distribution.params.GIGEtaOmega`
-+/
-Tuple!(T, "lambda", T, "eta", T, "omega") 
-generalizedInverseGaussianEstimate(T)
-	(T lambda, T[2] omegaBounds, T one, T mone)
-	if(isFloatingPoint!T)
-{
-	import std.algorithm : sum, map;
-	immutable prod = one * mone;
-	immutable omega = GIGLikelihoodOmegaDerivativeZero!T(lambda, omegaBounds, prod);
-	immutable tau = lambda / omega;
-	immutable eta = (-tau + sqrt(tau^^2 + prod)) / mone;
-	return typeof(return)(lambda, eta, omega);
-}
-
-
-
-private:
-
-T GIGLikelihoodOmegaDerivative(T)(T lambda, T omega, T prod)
-{
-	import bessel;
+body {
+	import atmosphere.params : GIGEtaOmega;
+	immutable prod = stat.mean * stat.meani;
+	if(!isFinite(prod) || prod <= 1)
+		return typeof(return)(T.nan, T.nan);
+	immutable u = prod / (prod - 1);
+	assert(isFinite(u));
 	immutable alambda = fabs(lambda);
-	immutable tau = alambda / omega;
-	return 
-		-besselK(omega, alambda-1, Flag!"ExponentiallyScaled".yes) / 
-		besselK(omega, alambda, Flag!"ExponentiallyScaled".yes) 
-		- (tau-sqrt(tau^^2 + prod));
+	if(alambda >= u)
+		return lambda > 0 ? typeof(return)(0, 2 * alambda / stat.mean) : typeof(return)(2 * alambda / stat.meani, 0);
+	immutable properParams = properGeneralizedInverseGaussianFixedLambdaEstimate!T(lambda, stat);
+	with(GIGEtaOmega!T(properParams.eta, properParams.omega)) return typeof(return)(chi, psi);
 }
 
-T GIGLikelihoodLambdaDerivative(T)(T lambda, T omega, T dzeroScaled)
+
+/++
+Estimates parameter `omega` of the proper generalized inverse Gaussian distribution for fixed `lambda` and `eta`.
+
+See_Also: `atmosphere.params`
++/
+T properGeneralizedInverseGaussianFixedLambdaEtaEstimate(T)(in T lambda, in T eta, in T[] sample)
+	if(isFloatingPoint!T)
 {
-	return -logBesselKParamDerivative!T(omega, lambda) + dzeroScaled;
+	return properGeneralizedInverseGaussianFixedLambdaEtaEstimate(lambda, eta, GeneralizedInverseGaussinFixedLambdaStatistic!T(sample));
 }
 
-T GIGLikelihoodOmegaDerivativeZero(T)(T lambda, T[2] omegaBounds, T prod)
+///
+unittest
 {
-	import std.numeric : findRoot;
-	T f(T omega)
-	{
-		return GIGLikelihoodOmegaDerivative!T(lambda, omega, prod);
-	}
-	immutable fax = f(omegaBounds[0]);
-	immutable fbx = f(omegaBounds[1]);
-	version(none)
-	debug {
-		import std.stdio;
-		immutable step = (omegaBounds[1]-omegaBounds[0])/100;
-		foreach(om; iota(omegaBounds[0], omegaBounds[1]+step/2, step)) {
-			writeln(om, " ", f(om));
-		}
-	}
-	if(signbit(fax) == signbit(fbx))
-	{
-		return !(fabs(fax) > fabs(fbx)) ? omegaBounds[0] : omegaBounds[1];
-	}
-    auto r = findRoot(&f, omegaBounds[0], omegaBounds[1], fax, fbx, (T a, T b) => false);
-    return !(fabs(r[2]) > fabs(r[3])) ? r[0] : r[1];
+	import std.range;
+	import std.random;
+	import atmosphere.random;
+	import atmosphere.likelihood;
+	auto length = 1000;
+	auto lambda = -2.0, eta = 1.4, omega = 2.3;
+	auto rng = Random(1234);
+	auto sample = ProperGeneralizedInverseGaussianSRNG!double(rng, lambda, eta, omega).take(length).array;
+	auto omega1 = properGeneralizedInverseGaussianFixedLambdaEtaEstimate!double(lambda, eta, sample);
+	auto lh0 = properGeneralizedInverseGaussianLikelihood(lambda, eta, omega , sample);
+	auto lh1 = properGeneralizedInverseGaussianLikelihood(lambda, eta, omega1, sample);
+	assert(lh0 <= lh1);
 }
 
-T logBesselKParamDerivative(T)(T x, T alpha)
+///ditto
+T properGeneralizedInverseGaussianFixedLambdaEtaEstimate(T)(in T lambda, in T eta, in T[] sample, in T[] weights)
+	if(isFloatingPoint!T)
 {
-	import bessel;
-	import std.typecons;
-	import scid.calculus;
-	immutable ret = diff((T alpha) => log(besselK(x, alpha, Flag!"ExponentiallyScaled".yes)), alpha, T(1), 16);
-	return ret.value;
+	return properGeneralizedInverseGaussianFixedLambdaEtaEstimate(lambda, eta, GeneralizedInverseGaussinFixedLambdaStatistic!T(sample, weights));
 }
 
-unittest {
-	auto l = logBesselKParamDerivative!real(.60L, -2.0L);
-	assert(isNormal(l));
+///ditto
+T properGeneralizedInverseGaussianFixedLambdaEtaEstimate(T)
+	(in T lambda, in T eta, in GeneralizedInverseGaussinFixedLambdaStatistic!T stat)
+	if(isFloatingPoint!T)
+in {
+	assert(isNormal(lambda));
 }
+body {
+	import std.numeric: findRoot;
+	import atmosphere.math;
+	immutable d = stat.mean / eta + stat.meani * eta;
+	return findRoot((T omega) => besselKRS(lambda, omega) - d, double.min_normal, double.max);
+}
+
 
 version(none)
-unittest {
-	import atmosphere;
-	import std.random;
-	import std.algorithm;
+unittest
+{
 	import std.range;
-	import std.stdio;
-	import std.conv;
-	double lambda = -14;
-	double eta = 1;
-	double omega = 30;
-	auto rng = ProperGeneralizedInverseGaussianSRNG!double(rndGen, lambda, eta, omega);
-	auto sample = rng.take(100).array;
-	auto params = generalizedInverseGaussianEstimate(lambda, [1e-10, 1e10], sample);
-	writeln(params);
-	writefln("\t%a", params.lambda);
-	writefln("\t%a", params.eta);
-	writefln("\t%a", params.omega);
-//	writefln("\t%a", params.one);
-//	writefln("\t%a", params.mone);
-	auto lhPrior = generalizedInverseGaussianLikelihood(lambda, eta, omega, sample);
-	auto lhCalc  = generalizedInverseGaussianLikelihood(params.lambda, params.eta, params.omega, sample);
-	//assert(lhPrior <= lhCalc, text(lhPrior-lhCalc));
-	writefln("ист = %s оцен = %s крит = %s", lhPrior, lhCalc, lhPrior <= lhCalc);
-	auto params2 = generalizedInverseGaussianEstimate(sample);
-	writeln(params2);
-	writefln("\t%a", params2.lambda);
-	writefln("\t%a", params2.eta);
-	writefln("\t%a", params2.omega);
-	//writefln("\t%a", params2.one);
-	//writefln("\t%a", params2.mone);
-	//writefln("\t%a", params2.dzero);
-
-	auto lhCalc2  = generalizedInverseGaussianLikelihood(params2.lambda, params2.eta, params2.omega, sample);
-	////assert(lhPrior <= lhCalc);
-	writefln("ист = %s оцен = %s крит = %s", lhPrior, lhCalc2, lhPrior <= lhCalc2 && lhCalc <= lhCalc2);
+	import std.random;
+	import atmosphere.random;
+	import atmosphere.likelihood;
+	import atmosphere.params;
+	auto length = 1000;
+	auto lambda = -2.0, chi = 1.4, psi = 2.3;
+	auto rng = Random(1234);
+	auto sample = new GeneralizedInverseGaussianRNG!double(rng, lambda, chi, psi).take(length).array;
+	auto chi1 = generalizedInverseGaussianFixedLambdaPsiEstimate!double(lambda, psi, sample);
+	auto p0 = GIGChiPsi!double(chi , psi);
+	auto p1 = GIGChiPsi!double(chi1, psi);
+	auto lh0 = properGeneralizedInverseGaussianLikelihood(lambda, p0.eta, p0.omega , sample);
+	auto lh1 = properGeneralizedInverseGaussianLikelihood(lambda, p1.eta, p1.omega, sample);
+	assert(lh0 <= lh1);
 }
