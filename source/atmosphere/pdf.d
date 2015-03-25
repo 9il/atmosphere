@@ -12,7 +12,6 @@ module atmosphere.pdf;
 
 import core.stdc.tgmath;
 
-import bessel;
 import std.traits;
 import std.numeric;
 import std.math : isNormal, isFinite, M_2_SQRTPI, SQRT2, PI, approxEqual;
@@ -22,6 +21,7 @@ import std.array;
 
 import atmosphere.params;
 import atmosphere.utilities;
+import atmosphere.math: besselK;
 
 
 /++
@@ -287,7 +287,7 @@ struct ProperGeneralizedInverseGaussianSPDF(T)
 
 	}
 	body {
-		this.c = 2 * eta * besselK(omega, lambda, Flag!"ExponentiallyScaled".yes);
+		this.c = 2 * eta * besselK!(Flag!"ExponentiallyScaled".yes)(lambda, omega);
 		this.eta = eta;
 		this.omega = omega;
 		this.lambdam1 = lambda - 1;
@@ -364,7 +364,7 @@ struct VarianceGammaSPDF(T)
 		immutable a = alpha * z;
 		return c 
 			* pow(z / alpha, lambdamh)
-			* besselK(a, lambdamh, Flag!"ExponentiallyScaled".yes)
+			* besselK!(Flag!"ExponentiallyScaled".yes)(lambdamh, a)
 			* exp(beta * y - a);
 	}
 }
@@ -429,7 +429,7 @@ struct HyperbolicAsymmetricTSPDF(T)
 		immutable a = z * alpha;
 		return c
 			* pow(z / alpha, lambdamh)
-			* besselK(a, lambdamh, Flag!"ExponentiallyScaled".yes)
+			* besselK!(Flag!"ExponentiallyScaled".yes)(lambdamh, a)
 			* exp(beta * y - a);
 	}
 }
@@ -491,7 +491,7 @@ struct NormalInverseGaussianSPDF(T)
 		immutable a = z * alpha;
 		return c
 			/ z
-			* besselK(a, 1, Flag!"ExponentiallyScaled".yes)
+			* besselK!(Flag!"ExponentiallyScaled".yes)(T(1), a)
 			* exp(beta * y - a);
 	}
 }
@@ -544,7 +544,7 @@ struct ProperGeneralizedHyperbolicSPDF(T)
 		this.omega = params.omega;
 		this.c = M_2_SQRTPI / (SQRT2 * 2)
 			* pow(params.eta, -lambda)
-			/ besselK(omega, lambda, Flag!"ExponentiallyScaled".yes);
+			/ besselK!(Flag!"ExponentiallyScaled".yes)(lambda, omega);
 		assert(c.isNormal);
 		this.lambdamh = lambda - 0.5f;
 		this.alpha = alpha;
@@ -561,7 +561,7 @@ struct ProperGeneralizedHyperbolicSPDF(T)
 		immutable a = z * alpha;
 		return c
 			* pow(z / alpha, lambdamh)
-			* besselK(a, lambdamh, Flag!"ExponentiallyScaled".yes)
+			* besselK!(Flag!"ExponentiallyScaled".yes)(lambdamh, a)
 			* exp(beta * y - (a - omega));
 	}
 }
