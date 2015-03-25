@@ -567,39 +567,20 @@ unittest
 
 
 Unqual!(CommonType!(T1, T2)) 
-chebev(T1, T2)(in T1[] c, in T2 x) 
+chebevReversed(T1, T2)(in T1[] c, in T2 x) 
 {
 	typeof(return) d = 0;
 	typeof(return) dd = 0;
-	for (size_t j=c.length-1;j>0;j--)
+	foreach(e; c[0..$-1])
 	{
 		immutable sv = d;
-		d = 2 * x * d - dd + c[j];
+		d = 2 * x * d - dd + e;
 		dd = sv;
 	}
-    return x * d - dd + c[0] / 2;
+    return x * d - dd + c[$-1] / 2;
 }
 
 
-immutable double[7] c1 = [
-	-1.142022680371168e0,
-	6.5165112670737e-3,
-	3.087090173086e-4,
-	-3.4706269649e-6,
-	6.9437664e-9,
-	3.67795e-11,
-	-1.356e-13,
-	];
-immutable double[8] c2 = [
-	1.843740587300905e0,
-	-7.68528408447867e-2,
-	1.2719271366546e-3,
-	-4.9717367042e-6,
-	-3.31261198e-8,
-	2.423096e-10,
-	-1.702e-13,
-	-1.49e-15,
-	];
 
 T modifiedBesselCF2(T)(in T nu, in T x)
 	if(isFloatingPoint!T)
@@ -702,43 +683,79 @@ in {
 	assert(x <= 2);
 }
 body {
-	import std.math;
-	immutable size_t MAXIT=10000;
-	immutable T x2=0.5*x;
-	immutable T pimu=PI*nu;
+	//TODO: recalculate c1 and c2 for different FP formats
+	static if(is(T == float))
+	{
+		static immutable float[4] c1 = [
+			-3.4706269649e-6,
+			3.087090173086e-4,
+			6.5165112670737e-3,
+			-1.142022680371168e0,
+			];
+		static immutable float[8] c2 = [
+			-4.9717367042e-6,
+			1.2719271366546e-3,
+			-7.68528408447867e-2,
+			1.843740587300905e0,
+			];
+	}
+	else
+	{
+		static immutable double[7] c1 = [
+			-1.356e-13,
+			3.67795e-11,
+			6.9437664e-9,
+			-3.4706269649e-6,
+			3.087090173086e-4,
+			6.5165112670737e-3,
+			-1.142022680371168e0,
+			];
+		static immutable double[8] c2 = [
+			-1.49e-15,
+			-1.702e-13,
+			2.423096e-10,
+			-3.31261198e-8,
+			-4.9717367042e-6,
+			1.2719271366546e-3,
+			-7.68528408447867e-2,
+			1.843740587300905e0,
+			];
+	}
+
+	immutable T x2 = x / 2;
+	immutable T pimu = cast(T) PI * nu;
 	immutable T nu2 = nu^^2;
-	immutable T fact = (abs(pimu) < T.epsilon ? 1.0 : pimu / sin(pimu));
+	immutable T fact = (abs(pimu) < T.epsilon ? 1 : pimu / sin(pimu));
 	T d = -log(x2);
 	T e = nu * d;
-	immutable T fact2 = (abs(e) < T.epsilon ? 1.0 : sinh(e) / e);
-	immutable T xx=8.0*nu^^2-1.0;
-	immutable T gam1=chebev(c1, xx);
-	immutable T gam2=chebev(c2, xx);
-	immutable T gampl= gam2-nu*gam1;
-	immutable T gammi= gam2+nu*gam1;
-	T ff=fact*(gam1*cosh(e)+gam2*fact2*d);
-	T sum=ff;
+	immutable T fact2 = (abs(e) < T.epsilon ? 1 : sinh(e) / e);
+	immutable T xx = 8 * nu^^2 - 1;
+	immutable T gam1 = chebevReversed(c1, xx);
+	immutable T gam2 = chebevReversed(c2, xx);
+	immutable T gampl = gam2-nu*gam1;
+	immutable T gammi = gam2+nu*gam1;
+	T ff = fact * (gam1 * cosh(e) + gam2 * fact2 * d);
+	T sum = ff;
 	e = exp(e);
-	T p=0.5*e/gampl;
-	T q=0.5/(e*gammi);
-	T c=1.0;
-	d = x2*x2;
-	T sum1=p;
+	T p = 0.5f * e / gampl;
+	T q = 0.5f / (e * gammi);
+	T c = 1;
+	d = x2^^2;
+	T sum1 = p;
 	int i;
-	for (i=1;i<=MAXIT;i++) {
-		ff=(i*ff+p+q)/(i*i-nu2);
-		c *= (d/i);
-		p /= (i-nu);
-		q /= (i+nu);
-		immutable del=c*ff;
+	T del = void;
+	do {
+		i++;
+		ff = (i * ff + p + q) / (i * i - nu2);
+		c *= d / i;
+		p /= i - nu;
+		q /= i + nu;
+		del = c * ff;
 		sum += del;
-		immutable del1=c*(p-i*ff);
+		immutable del1 = c * (p - i * ff);
 		sum1 += del1;
-		if (abs(del) < abs(sum)*T.epsilon)
-			break;
 	}
-	if (i > MAXIT) 
-		throw new Exception("besselK series failed to converge");
+	while(abs(del) >= abs(sum) * T.epsilon);
 	return [sum, sum1];
 }
 
