@@ -1,4 +1,6 @@
-Atmosphere GM contains Maximum likelihood estimation algorithms, density functions, random observations generators, etc.
+[![Dub](https://img.shields.io/badge/dub-code.dlang.org-FF4081.svg)](http://code.dlang.org/packages/atmosphere_gm)
+
+Atmosphere GM contains Maximum Likelihood Estimation algorithms, density functions, random observations generators, etc.
 
 # Travis-CI Status
 [![Coverage Status](https://coveralls.io/repos/9il/atmosphere_gm/badge.svg?branch=master)](https://coveralls.io/r/9il/atmosphere_gm?branch=master)
