@@ -582,7 +582,7 @@ chebevReversed(T1, T2)(in T1[] c, in T2 x)
 
 
 
-T modifiedBesselCF2(T)(in T nu, in T x)
+T modifiedBesselCF2(T)(in T nu, in T x) @nogc @safe pure nothrow
 	if(isFloatingPoint!T)
 in {
 	assert(fabs(nu) <= 0.5f);
@@ -590,32 +590,32 @@ in {
 	assert(isFinite(x));
 }
 body {
-	T b = 2 * (1 + x);
-	if(isInfinity(b))
+	T bc = 2 * (1 + x);
+	if(isInfinity(bc))
 		return 1;
-	T d = 1 / b;
+	T d = 1 / bc;
 	T h = d;
 	T delh = d;
-	T a1 = 0.25f - nu^^2;
-	T a = -a1;
-	uint i;
+	T ac = nu^^2 - 0.25f;
+	int i = 1;
 	do
 	{
-		i++;
-		a -= 2 * i;
-		b += 2;
+		immutable ip1 = i + 1;
+		immutable a = ac - ip1 * i;
+		immutable b = bc + i * 2;
+		i = ip1;
 		d = 1 / (b + a * d);
 		delh = (b * d - 1) * delh;
 		h += delh;
-		assert(!isNaN(fabs(delh / h)));
+		debug assert(!isNaN(delh / h));
 	}
 	while(fabs(delh / h) > T.epsilon);
-	return (nu + 0.5 + x - a1 * h) / x;
+	return (nu + 0.5f + x + ac * h) / x;
 }
 
 
 
-T[2] modifiedBesselCF2Full(T)(in T nu, in T x)
+T[2] modifiedBesselCF2Full(T)(in T nu, in T x) @nogc @safe pure nothrow
 	if(isFloatingPoint!T)
 in {
 	assert(fabs(nu) <= 0.5f);
@@ -623,43 +623,43 @@ in {
 	assert(isFinite(x));
 }
 body {
-	T b = 2 * (1 + x);
-	if(isInfinity(b))
+	T bc = 2 * (1 + x);
+	if(isInfinity(bc))
 		return [nu < 0.5f ? 0 : 1.2533141373155003, 1];
-	T d = 1 / b;
+	T d = 1 / bc;
 	T h = d;
 	T delh = d;
-	T a1 = 0.25f - nu^^2;
-	T a = -a1;
+	T ac = nu^^2 - 0.25f;
 	T q1 = 0;
 	T q2 = 1;
-	T q = a1;
-	T c = a1;
+	T q = -ac;
+	T c = -ac;
 	T s = 1 + q*delh;
 	T dels = void;
-	uint i;
-
+	uint i = 1;
+	T b = bc;
 	do
 	{
-		i++;
-		a -= 2 * i;
-		c = -a * c / (i + 1);
+		immutable ip1 = i + 1;
+		immutable a = ac - ip1 * i;
+		c = -a * c / ip1;
 		immutable qnew = (q1 - b * q2) / a;
 		q1 = q2;
 		q2 = qnew;
 		q += c * qnew;
-		b += 2;
+		b = bc + i * 2;
 		d = 1 / (b + a * d);
 		delh = (b * d - 1) * delh;
 		dels = q * delh;
 		h += delh;
 		s += dels;
-		//Need only test convergence of sum since CF2 itself converges more quickly.
+		i = ip1;
 	}
+	//Need only test convergence of sum since CF2 itself converges more quickly.
 	while(fabs(dels / s) > T.epsilon);
 
 	enum T SQRTPI_2 = sqrt(PI / 2);
-	return [SQRTPI_2 / s, (nu + 0.5 + x - a1 * h) / x];
+	return [SQRTPI_2 / s, (nu + 0.5 + x + ac * h) / x];
 }
 
 
@@ -677,7 +677,7 @@ unittest
 Returns:
 	[K(x, nu), 2 / x * K(x, nu+1)]
 +/
-T[2] modifiedBesselTemmeSeriesImpl(T)(in T nu, in T x)
+T[2] modifiedBesselTemmeSeriesImpl(T)(in T nu, in T x) @nogc @safe pure nothrow
 in {
 	assert(fabs(nu) <= 0.5f);
 	assert(x <= 2);
@@ -837,7 +837,6 @@ body {
 }
 
 unittest {
-
 	assert(approxEqual(besselKD(0.0, 1.0),  2.043828779351212337989476332008573915738881135574432645409779, 0.0, 1e-14));
 	assert(approxEqual(besselKD(0.0, 2.0), 1.508074700999049512999886217349628893603326842760291910336296, 0.0, 1e-14));
 	assert(approxEqual(besselKD(0.0, 0.5), 3.210807086475177172355017867637452321623564307416114645664507, 0.0, 1e-14));
