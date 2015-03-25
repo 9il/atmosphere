@@ -303,7 +303,6 @@ unittest
 	}
 
 	auto qf = new GHypQuantile(0.5, GHypChiPsi!real(5, 0.7, 0.6));
-	import std.stdio, std.conv;
 	assert(approxEqual(qf(0.95), 40.9263));
 	assert(approxEqual(qf(0.99), 64.977));
 }

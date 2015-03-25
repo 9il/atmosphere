@@ -245,7 +245,6 @@ unittest
         ;
     //Summation.Precise is default
     real d = 1.7L.pow(1000);
-    import std.stdio;
     assert(fsum(ar.chain([-d])) == -1);
     assert(fsum(-d, ar.retro) == -1);
 }

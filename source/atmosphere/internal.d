@@ -392,7 +392,6 @@ out(theta)
 body
 {
 	immutable g0 = gCorrectioin(mixture.length - dotProductInverse(columni, mixture)); //g_01!PartialDerivative(pi, mixture);
-	import std.stdio;
 	if(g0 > -T.min_normal)
 		return 0;
 	immutable g1 = gCorrectioin(dotProductInverse2(columni, mixture, pi) - mixture.length);

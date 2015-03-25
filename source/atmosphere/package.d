@@ -54,7 +54,6 @@ unittest
 	import std.random;
 	import std.range;
 	import std.algorithm;
-	import std.stdio;
 	import atmosphere;
 
 	alias F = double;

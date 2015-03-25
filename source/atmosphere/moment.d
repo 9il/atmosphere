@@ -10,7 +10,7 @@ License: MIT
 */
 module atmosphere.moment;
 
-import bessel;
+import atmosphere.math: besselKR;
 
 import core.stdc.tgmath;
 
@@ -52,11 +52,12 @@ unittest
 Moments of the generalized inverse Gaussian distribution
 +/
 T properGeneralizedInverseGaussianMean(T)(T lambda, T eta, T omega, uint order = 1)
-{
+in {
+	assert(order);
+}
+body {
 	import std.math : pow;
-	immutable k0 = besselK(omega, lambda        , Flag!"ExponentiallyScaled".yes);
-	immutable kr = besselK(omega, lambda + order, Flag!"ExponentiallyScaled".yes);
-	return eta.pow(order) * (kr / k0);
+	return eta.pow(order) * besselKR(lambda, omega, order-1);
 }
 
 ///
@@ -70,12 +71,11 @@ unittest
 /++
 Variance of the generalized inverse Gaussian distribution
 +/
+//(besselK[x-1, y] * besselK[x+1, y] - besselK[x, y]^2) / besselK[x-1, y]^2
 T properGeneralizedInverseGaussianVariance(T)(T lambda, T eta, T omega)
 {
-	immutable k0 = besselK(omega, lambda    , Flag!"ExponentiallyScaled".yes);
-	immutable k1 = besselK(omega, lambda + 1, Flag!"ExponentiallyScaled".yes);
-	immutable k2 = besselK(omega, lambda + 2, Flag!"ExponentiallyScaled".yes);
-	return eta^^2 * ((k0*k2 - k1^^2) / k0^^2);
+	immutable r = besselKR(lambda, omega);
+	return eta^^2 * (r * (2 * (lambda + 1) / omega - r) + 1);
 }
 
 ///
@@ -109,10 +109,8 @@ Variance of the generalized Hyperbolic distribution
 +/
 T generalizedHyperbolicVariance(T)(T lambda, T beta, T eta, T omega)
 {
-	immutable k0 = besselK(omega, lambda    , Flag!"ExponentiallyScaled".yes);
-	immutable k1 = besselK(omega, lambda + 1, Flag!"ExponentiallyScaled".yes);
-	immutable k2 = besselK(omega, lambda + 2, Flag!"ExponentiallyScaled".yes);
-	return eta * (k1 / k0) + (beta * eta)^^2 * ((k0*k2 - k1^^2) / k0^^2);
+	immutable r = besselKR(lambda, omega);
+	return eta * r + (beta * eta) ^^ 2 * (r * (2 * (lambda + 1) / omega - r) + 1);
 }
 
 ///
