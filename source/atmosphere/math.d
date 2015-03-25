@@ -1135,7 +1135,7 @@ body {
 		T ret = log(sums[0]);
 		if(nl)
 		{
-			ret += nl * log(2 / x);
+			ret += nl * (cast(T)LN2 - log(x));
 			immutable x2_4 = x * x / 4;
 			T l = 1;
 			long exs;
@@ -1168,6 +1168,68 @@ unittest {
 	assert(approxEqual(logBesselK(11.1, 1.11e-10), 276.7693978383758755547170249282452519578463074349871817713218, 0.0, 1e-14));
 }
 
+T besselK(Flag!"ExponentiallyScaled" expFlag = Flag!"ExponentiallyScaled".no, T)(in T nu, in T x)
+	if(isFloatingPoint!T)
+in {
+	assert(x.isFinite);
+	assert(x >= T.min_normal);
+}
+body {
+	immutable anu = fabs(nu);
+	int nl = cast(int)floor(anu+0.5f);
+	T mu = anu - nl;
+	T r = void, ret = void;
+	if(x >= 2)
+	{
+		immutable r2 = modifiedBesselCF2Full(mu, x);
+		r = r2[1];
+		static if(expFlag)
+			ret = r2[0] / sqrt(x);
+		else
+			ret = r2[0] / sqrt(x) * exp(-x);
+	}
+	else
+	{
+		immutable sums = modifiedBesselTemmeSeriesImpl(mu, x);
+		r = sums[1] / sums[0] / x * 2;
+		static if(expFlag)
+			ret = sums[0] * exp(x);
+		else
+			ret = sums[0];
+	}
+	if(nl)
+	{
+		mu *= 2;
+		do
+		{
+			ret *= r;
+			mu += 2;
+			r = mu / x + 1 / r;
+		}
+		while(--nl);
+	}
+	return ret;
+
+}
+
+unittest {
+	assert(approxEqual(besselK(0.0, 1.0),  0.421024438240708333335627379212609036136219748226660472298969, 0.0, 1e-14));
+	assert(approxEqual(besselK(0.0, 2.0), 0.113893872749533435652719574932481832998326624388808882892529, 0.0, 1e-14));
+	assert(approxEqual(besselK(0.0, 0.5), 0.924419071227665861781924167530216989538768311953529684815019, 0.0, 1e-14));
+	assert(approxEqual(besselK(1.0, 0.5), 1.656441120003300893696445403174091511534100759464077446055427, 0.0, 1e-14));
+	assert(approxEqual(besselK(1.0, 1.0), 0.601907230197234574737540001535617339261586889968106456017767, 0.0, 1e-14));
+	assert(approxEqual(besselK(1.0, 2.0), 0.139865881816522427284598807035411023887234584841515530384442, 0.0, 1e-14));
+	assert(approxEqual(besselK(0.4, 2.0), 0.117729133170423325690699234439848483526261145336868148793547, 0.0, 1e-14));
+	assert(approxEqual(besselK(0.4, 1.0), 0.446285939834668179310023409179745077844437039396299727961180, 0.0, 1e-14));
+	assert(approxEqual(besselK(0.4, 0.5), 1.018627810316608462220290727117637366662549451305627759999544, 0.0, 1e-14));
+	assert(approxEqual(besselK(11.1, 100000.0), 0.0, 0.0, 1e-14));
+	assert(approxEqual(besselK(11.1, 1/100000.0), 1.5940696949048155233993419471665743544335615887236248959e+65, 1e51, 1e-14));
+
+	assert(approxEqual(besselK!(Flag!"ExponentiallyScaled".yes)(0.4, 2.0), 0.869907169474735192472996963053995791191543506954884340734219, 0.0, 1e-14));
+	assert(approxEqual(besselK!(Flag!"ExponentiallyScaled".yes)(0.4, 1.0), 1.213130960549345270517674559709580335203213288805317162444177, 0.0, 1e-14));
+	assert(approxEqual(besselK!(Flag!"ExponentiallyScaled".yes)(0.4, 0.5), 1.679433337795687807090050796759423855788542163267174953125487, 0.0, 1e-14));
+	assert(approxEqual(besselK!(Flag!"ExponentiallyScaled".yes)(11.1, 100000.0), 0.003965764688216290045701642597190265433950245246337093558273, 0.0, 1e-14));
+}
 
 T besselKRS(T)(in T nu, in T x)
 	if(isFloatingPoint!T)
@@ -1226,9 +1288,6 @@ body {
 }
 
 unittest {
-	assert(besselKRX(10.0, double.min_normal).isFinite);
-	assert(besselKRX(0.0, double.min_normal).isFinite);
-	assert(besselKRX(0.1, double.min_normal).isFinite);
 	assert(approxEqual(besselKRS(0.0, 1.0), 2.859250796520803516056216046900731260160034036385325966918068, 0.0, 1e-14));
 	assert(approxEqual(besselKRS(0.0, 2.0), 2.456073859637815951485344904163437808478733905321719388934076, 0.0, 1e-14));
 	assert(approxEqual(besselKRS(0.0, 0.5), 3.583745016864440467305949390266788044526362750672196202869812, 0.0, 1e-14));
@@ -1302,9 +1361,97 @@ unittest {
 	assert(approxEqual(besselKRX(11, 2.0^^30), 1.000000010710209660444967811966826255158285934025032904639974*2.0^^30, 0.0, 1e-14));
 	assert(approxEqual(besselKRX(11, 2.0^^30), 1.000000010710209660444967811966826255158285934025032904639974*2.0^^30, 0.0, 1e-14));
 	assert(approxEqual(besselKRX(11, 2.0^^40), 1.000000000010459189070438615765505792843518644341506580233109*2.0^^40, 0.0, 1e-14));
-	//TODO: CHECK
-	assert(approxEqual(besselKRX(11, 1e+10), 1.0000000011500000006037499999396249998267992188210915625e+10, 0.0, 1e-5));
-	//TODO: CHECK
-	assert(approxEqual(besselKRX(11.1, 1.11e+10), 1.1100000011600000005538738738239753265465849195188195573e+10, 0.0, 1e-5));
+	assert(approxEqual(besselKRX(11, 1e+10), 1.0000000011500000006037499999396249998267992188210915625e+10, 1, 1e-14));
+	assert(approxEqual(besselKRX(11.1, 1.11e+10), 1.1100000011600000005538738738239753265465849195188195573e+10, 1, 1e-14));
 	assert(approxEqual(besselKRX(11.1, 1.11e-10), 22.20000000000000000000060995049504950495049502906321387905301, 0.0, 1e-14));
+}
+
+
+T besselKR(T)(in T nu, in T x)
+	if(isFloatingPoint!T)
+in {
+	assert(nu >= 0);
+	assert(x.isFinite);
+	assert(x >= T.min_normal);
+}
+body {
+	immutable anu = fabs(nu);
+	int nl = cast(int)floor(anu+0.5f);
+	T mu = anu - nl;
+	if(x >= 2)
+	{
+		T r = modifiedBesselCF2(mu, x);
+		if(nl)
+		{
+			mu *= 2;
+			do
+			{
+				mu += 2;
+				r = mu / x + 1 / r;
+			}
+			while(--nl);
+		}
+		return r;
+	}
+	else
+	{
+		immutable sums = modifiedBesselTemmeSeriesImpl(mu, x);
+		T r = sums[1] / sums[0];
+		if(nl)
+		{
+			immutable x2_4 = x * x / 4;
+			do
+			{
+				mu += 1;
+				r = mu + x2_4 / r;
+			}
+			while(--nl);
+		}
+		return r * 2 / x;			
+	}
+}
+
+unittest {
+	assert(approxEqual(besselKR(0.0, 1.0)    , 1.429625398260401758028108023450365630080017018192662983459034, 0.0, 1e-14));
+	assert(approxEqual(besselKR(0.0, 2.0) * 2, 2.456073859637815951485344904163437808478733905321719388934076, 0.0, 1e-14));
+	assert(approxEqual(besselKR(0.0, 0.5) / 2, 0.895936254216110116826487347566697011131590687668049050717453, 0.0, 1e-14));
+	assert(approxEqual(besselKR(1.0, 0.5) / 2, 2.279037709238292669935329085677207770848149633704932319112396, 0.0, 1e-14));
+	assert(approxEqual(besselKR(1.0, 1.0)    , 2.699483935593772343892677399771364754873520517403159467771749, 0.0, 1e-14));
+	assert(approxEqual(besselKR(1.0, 2.0) * 2, 3.628615517527578979897586948721927750995112315346619061302174, 0.0, 1e-14));
+	assert(approxEqual(besselKR(0.4, 2.0) * 2, 2.884249446052147531028619260526756105681146308342088119522102, 0.0, 1e-14));
+	assert(approxEqual(besselKR(0.4, 1.0)    , 1.874906583592085333383356604916732007598307565532513418821151, 0.0, 1e-14));
+	assert(approxEqual(besselKR(0.4, 0.5) / 2, 1.363275554524472315961701868715716630342968627361201917359588, 0.0, 1e-14));
+	assert(approxEqual(besselKR(11.1, 1.11e+10), 1.1100000011600000005538738738239753265465849195188195573e+10 / 1.11e+10, 1, 1e-14));
+	assert(approxEqual(besselKR(11.1, 1.11e-10) * 1.11e-10, 22.20000000000000000000060995049504950495049502906321387905301, 0.0, 1e-14));
+}
+
+
+T besselKR(T)(in T nu, in T x, uint k)
+{
+	T l = besselKR(nu, x);
+	T r = l;
+	T mu = nu * 2;
+	while(k--)
+	{
+		mu += 2;
+		r = mu / x + 1 / r;
+		l *= r;
+	}
+	return l;
+}
+
+unittest {
+	assert(approxEqual(besselKR(0.0, 1.0, 0)    , 1.429625398260401758028108023450365630080017018192662983459034, 0.0, 1e-14));
+	assert(approxEqual(besselKR(0.0, 2.0, 0) * 2, 2.456073859637815951485344904163437808478733905321719388934076, 0.0, 1e-14));
+	import std.stdio;
+	writeln(besselKR(0.0, 1.0, 3));
+	assert(approxEqual(besselKR(0.0, 1.0, 3), 105.0590223025824984495740493132204752844809530187891270737059, 1e-10, 1e-14));
+	assert(approxEqual(besselKR(0.0, 2.0, 3), 19.28036929818907975742672452081718904239366952660859694467038, 1e-10, 1e-14));
+	assert(approxEqual(besselKR(0.0, 0.5, 3), 813.7490033728880934611898780533576089052725501344392405739625, 1e-10, 1e-14));
+	assert(approxEqual(besselKR(1.0, 0.5, 3), 7303.597652823473130198226747312888245046226857159388835630678, 1e-10, 1e-14));
+	assert(approxEqual(besselKR(1.0, 1.0, 3), 599.6947228611295581541061895533584099941981855502445314254368, 1e-10, 1e-14));
+	assert(approxEqual(besselKR(1.0, 2.0, 3), 67.42923276291368469846380423082891626492668473019928591953262, 1e-10, 1e-14));
+	assert(approxEqual(besselKR(0.4, 2.0, 3), 32.55703150637502077170415944139304552928545885327101882556329, 1e-10, 1e-14));
+	assert(approxEqual(besselKR(0.4, 1.0, 3), 222.9905656901318819890519502437505989113682776582595951935857, 1e-10, 1e-14));
+	assert(approxEqual(besselKR(0.4, 0.5, 3), 2177.389452959348919338879066729351907090043415959389603727847, 1e-10, 1e-14));
 }
