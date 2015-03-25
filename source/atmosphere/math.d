@@ -744,7 +744,7 @@ body {
 
 /++
 Returns:
-	2 / x * K(x, nu+1) / K(x, nu)
+	K(x, nu+1) / K(x, nu)
 +/
 T modifiedBesselTemmeSeries(T)(in T nu, in T x)
 in {
@@ -1204,11 +1204,14 @@ unittest {
 T besselKR(T)(in T nu, in T x)
 	if(isFloatingPoint!T)
 in {
-	assert(nu >= 0);
-	assert(x.isFinite);
-	assert(x >= T.min_normal);
 }
 body {
+	if(nu < 0)
+		return 1 / besselKR(-nu-1, x);
+	if(x.isNaN() || nu.isNaN() || x < 0)
+		return T.init;
+	if(x < T.min_normal)
+		return T.infinity;
 	immutable anu = fabs(nu);
 	int nl = cast(int)floor(anu+0.5f);
 	T mu = anu - nl;
@@ -1257,6 +1260,8 @@ unittest {
 	assert(approxEqual(besselKR(0.4, 0.5) / 2, 1.363275554524472315961701868715716630342968627361201917359588, 0.0, 1e-14));
 	assert(approxEqual(besselKR(11.1, 1.11e+10), 1.1100000011600000005538738738239753265465849195188195573e+10 / 1.11e+10, 1, 1e-14));
 	assert(approxEqual(besselKR(11.1, 1.11e-10) * 1.11e-10, 22.20000000000000000000060995049504950495049502906321387905301, 0.0, 1e-14));
+
+	assert(approxEqual(besselKR(-1.0, 1.0), 1 / 1.429625398260401758028108023450365630080017018192662983459034, 0.0, 1e-14));
 }
 
 
