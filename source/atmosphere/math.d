@@ -1168,6 +1168,7 @@ unittest {
 	assert(approxEqual(logBesselK(11.1, 1.11e-10), 276.7693978383758755547170249282452519578463074349871817713218, 0.0, 1e-14));
 }
 
+
 T besselK(Flag!"ExponentiallyScaled" expFlag = Flag!"ExponentiallyScaled".no, T)(in T nu, in T x)
 	if(isFloatingPoint!T)
 in {
@@ -1230,6 +1231,7 @@ unittest {
 	assert(approxEqual(besselK!(Flag!"ExponentiallyScaled".yes)(0.4, 0.5), 1.679433337795687807090050796759423855788542163267174953125487, 0.0, 1e-14));
 	assert(approxEqual(besselK!(Flag!"ExponentiallyScaled".yes)(11.1, 100000.0), 0.003965764688216290045701642597190265433950245246337093558273, 0.0, 1e-14));
 }
+
 
 T besselKRS(T)(in T nu, in T x)
 	if(isFloatingPoint!T)
