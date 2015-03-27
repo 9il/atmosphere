@@ -14,15 +14,6 @@ import std.typecons;
 import std.math;
 
 
-//version(LDC)
-//{
-//	import ldc.intrinsics: log = llvm_log, log2 = llvm_log2, fabs = llvm_fabs;
-//}
-//else
-//{
-//	import std.math: log, log2, fabs;
-//}
-
 version (LDC)
 {
 	pragma(LDC_intrinsic, "llvm.fmuladd.f#")
@@ -783,14 +774,26 @@ unittest
 
 T besselKD(T)(in T nu, in T x)
 	if(isFloatingPoint!T)
+out(r) {
+	import std.conv;
+	assert(r.isNaN || r >= 1, text("x = ", x, " nu = ", nu, " r = ", r));
+}
 in {
-
+	assert(x >= 0);
+	assert(x < T.infinity);
 }
 body {
+	version(LDC)
+	{
+		import ldc.intrinsics: log = llvm_log, log2 = llvm_log2, fabs = llvm_fabs;
+	}
 	immutable anu = fabs(nu);
 	int nl = cast(int)floor(anu+0.5);
 	T mu=anu-nl;
-
+	//import std.stdio;
+	////writeln(nu);
+	assert(fabs(mu) <= 0.5f);
+	T ret;
 	if(x >= 2)
 	{
 		T r = modifiedBesselCF2(mu, x);
@@ -805,17 +808,39 @@ body {
 				r = mu / x + 1 / r;
 			}
 			while(--nl);
-			return r / d;
+			ret = r / d;
 		}
 		else
 		{
-			return r * (r - mu / x);
+			ret = r * (r - mu / x);
 		}
 	}
 	else
 	{
 		immutable sums = modifiedBesselTemmeSeriesImpl(mu, x);
 		T r = sums[1] / sums[0];
+		if(nl == 0)
+		{
+			if(mu < 0)
+			{
+				if(r >= mu)
+					r = mu.nextDown;
+			}
+			else if(mu > 0)
+			{
+				if(r <= mu)
+					r = mu.nextUp;
+			}
+			else
+			{
+				if(r == 0)
+					return x ? 1 / (x * log(x))^^2 : T.infinity;
+			}			
+		}
+		//import std.stdio;
+		//writeln("r = ", r);
+		//writeln("sums[1] = ", sums[1]);
+		//writeln("sums[0] = ", sums[0]);
 		if(nl)
 		{
 			immutable x2_4 = x * x / 4;
@@ -827,16 +852,28 @@ body {
 				r = mu + x2_4 / r;
 			}
 			while(--nl);
-			return r / d;
+			ret = r / d;
 		}
 		else
 		{
-			return r / x * (r - mu) / x * 4;
+			//
+			//writeln("r - mu = ", r - mu);
+			ret = r / x * (r - mu) / x * 4;
 		}
 	}
+	//import std.stdio;
+	//writeln("ret = ", ret);
+	//writeln("x = ", x);
+	return fmax(ret, cast(T)1);
 }
 
 unittest {
+	assert(approxEqual(besselKD(0.46, 1.0),  2.006492004938732508413453526510952827555303123690945926246942, 0.0, 1e-14));
+	assert(approxEqual(besselKD(0.46, 1e10),  1.000000000100000000000000000000019199999996160000000869529599, 0.0, 1e-14));
+	assert(approxEqual(besselKD(0.46, 1e5),  1.000010000000000019199616008695062658208936100866055206637995, 0.0, 1e-14));
+	//import std.stdio;
+	//writeln(besselKD(0.23, 5.20964e-116 ));
+	assert(approxEqual(besselKD(0.46, 1e-10), 5.2419685330917511351588283276691731294601340736654433005e+10, 1, 1e-14));
 	assert(approxEqual(besselKD(0.0, 1.0),  2.043828779351212337989476332008573915738881135574432645409779, 0.0, 1e-14));
 	assert(approxEqual(besselKD(0.0, 2.0), 1.508074700999049512999886217349628893603326842760291910336296, 0.0, 1e-14));
 	assert(approxEqual(besselKD(0.0, 0.5), 3.210807086475177172355017867637452321623564307416114645664507, 0.0, 1e-14));
@@ -868,15 +905,24 @@ unittest {
 
 T besselKRM(T)(in T nu, in T x)
 	if(isFloatingPoint!T)
+out(r){
+	//import std.stdio;
+	//writefln("KRM(%s, %s) = %s", nu, x, r);
+}
 in {
 
 }
 body {
+	version(LDC)
+	{
+		import ldc.intrinsics: log = llvm_log, log2 = llvm_log2, fabs = llvm_fabs;
+	}
 	if(nu < 0)
 		return 1 / besselKRM(-nu, x);
 	immutable anu = fabs(nu);
 	int nl = cast(int)floor(anu+0.5f);
 	T mu=anu-nl;
+	assert(fabs(mu) <= 0.5f);
 
 	if(x >= 2)
 	{
@@ -903,6 +949,8 @@ body {
 	{
 		immutable sums = modifiedBesselTemmeSeriesImpl(mu, x);
 		T r = sums[1] / sums[0];
+		//import std.stdio;
+		//writeln(sums, " ", r);
 		if(nl)
 		{
 			immutable x2_4 = x * x / 4;
@@ -914,11 +962,27 @@ body {
 				r = mu + x2_4 / r;
 			}
 			while(--nl);
+			//import std.stdio;
+			//writeln("sqrt(r) = ", sqrt(r), " sqrt(d) = ", sqrt(d));
 			return sqrt(r) * sqrt(d) * 2 / x;
 		}
 		else
 		{
-			return sqrt(r / (r - mu));
+			//writeln("r = ", r, " mu = ", mu);
+			T ret = sums[1] / (sums[1] - mu * sums[0]);
+			if(ret < 0)
+			{
+				ret = T.infinity;
+			}
+			//import std.stdio;
+			//writeln("sums[1] - mu * sums[0] = %s, ", sums[1], sums[1] - mu * sums[0]);
+			if(ret == T.infinity)
+			{
+				//writeln(ret);
+				ret = T.max;
+				//return T.max;
+			}
+			return sqrt(ret);
 		}
 	}
 }
@@ -945,9 +1009,14 @@ in {
 	assert(x >= T.min_normal);
 }
 body {
+	version(LDC)
+	{
+		import ldc.intrinsics: log = llvm_log, log2 = llvm_log2, fabs = llvm_fabs;
+	}
 	immutable anu = fabs(nu);
 	int nl = cast(int)floor(anu+0.5f);
 	T mu = anu - nl;
+	assert(fabs(mu) <= 0.5f);
 	if(x >= 2)
 	{
 		immutable r2 = modifiedBesselCF2Full(mu, x);
@@ -1019,9 +1088,14 @@ in {
 	assert(x >= T.min_normal);
 }
 body {
+	version(LDC)
+	{
+		import ldc.intrinsics: log = llvm_log, log2 = llvm_log2, fabs = llvm_fabs;
+	}
 	immutable anu = fabs(nu);
 	int nl = cast(int)floor(anu+0.5f);
 	T mu = anu - nl;
+	assert(fabs(mu) <= 0.5f);
 	T r = void, ret = void;
 	if(x >= 2)
 	{
@@ -1088,9 +1162,14 @@ in {
 	assert(x >= T.min_normal);
 }
 body {
+	version(LDC)
+	{
+		import ldc.intrinsics: log = llvm_log, log2 = llvm_log2, fabs = llvm_fabs;
+	}
 	immutable anu = fabs(nu);
 	int nl = cast(int)floor(anu+0.5f);
 	T mu=anu-nl;
+	assert(fabs(mu) <= 0.5f);
 	if(x >= 2)
 	{
 		T r = modifiedBesselCF2(mu, x);
@@ -1132,6 +1211,8 @@ body {
 		}
 		else
 		{
+			if(fabs(r) < fabs(mu))
+				r = mu;
 			return r / x_2 + (r - mu) / x_2;
 		}
 	}
@@ -1160,9 +1241,14 @@ in {
 	assert(x >= T.min_normal);
 }
 body {
+	version(LDC)
+	{
+		import ldc.intrinsics: log = llvm_log, log2 = llvm_log2, fabs = llvm_fabs;
+	}
 	immutable anu = fabs(nu);
 	int nl = cast(int)floor(anu+0.5f);
 	T mu = anu - nl;
+	assert(fabs(mu) <= 0.5f);
 	if(x >= 2)
 	{
 		T r = modifiedBesselCF2(mu, x);
@@ -1191,6 +1277,11 @@ body {
 				r = mu + x2_4 / r;
 			}
 			while(--nl);
+		}
+		else
+		{
+			if(fabs(r) < fabs(mu))
+				r = mu;
 		}
 		return r * 2;			
 	}
@@ -1222,6 +1313,10 @@ T besselKR(T)(in T nu, in T x)
 in {
 }
 body {
+	version(LDC)
+	{
+		import ldc.intrinsics: log = llvm_log, log2 = llvm_log2, fabs = llvm_fabs;
+	}
 	if(nu < 0)
 		return 1 / besselKR(-nu-1, x);
 	if(x.isNaN() || nu.isNaN() || x < 0)
@@ -1231,6 +1326,7 @@ body {
 	immutable anu = fabs(nu);
 	int nl = cast(int)floor(anu+0.5f);
 	T mu = anu - nl;
+	assert(fabs(mu) <= 0.5f);
 	if(x >= 2)
 	{
 		T r = modifiedBesselCF2(mu, x);

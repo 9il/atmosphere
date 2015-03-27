@@ -7,10 +7,9 @@ License: MIT
 */
 module atmosphere.likelihood.generalized_inverse_gaussian;
 
-import core.stdc.tgmath;
-
 import std.traits;
 import std.typecons;
+import std.math;
 
 import atmosphere.statistic: GeneralizedInverseGaussinStatistic;
 
@@ -41,10 +40,18 @@ unittest {
 ///ditto
 T properGeneralizedInverseGaussianLikelihood(T)(in T lambda, in T eta, in T omega, in GeneralizedInverseGaussinStatistic!T stat)
 	if(isFloatingPoint!T)
-{
+in {
+	assert(omega >= T.min_normal);
+}
+body {
+	version(LDC)
+	{
+		import ldc.intrinsics: log = llvm_log;
+	}
+	import std.math : LN2;
 	import atmosphere.math: logBesselK;
 	with(stat) return
-		- log(2 * eta) - logBesselK(lambda, omega)
-		+ (lambda - 1) * (stat.meanl - log(eta))
+		- cast(T)LN2 - lambda * log(eta) - logBesselK(lambda, omega)
+		+ (lambda - 1) * stat.meanl
 		- omega * (mean / eta + meani * eta) / 2;
 }
