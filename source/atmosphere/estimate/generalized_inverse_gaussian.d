@@ -398,8 +398,7 @@ body {
 	    }
 
     }
-
-
+    
 	assert(omega >= T.min_normal);
 	immutable eta = sqrt(stat.mean / stat.meani) / besselKRM(lambda, omega);
 	auto ret = typeof(return)(eta, omega);
