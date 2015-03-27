@@ -7,14 +7,11 @@ License: MIT
 */
 module atmosphere.estimate.generalized_inverse_gaussian;
 
-import core.stdc.tgmath;
-
 import std.traits;
 import std.typecons;
-import std.math : isNormal, isFinite;
+import std.math;
 
 import atmosphere.statistic: GeneralizedInverseGaussinStatistic, GeneralizedInverseGaussinFixedLambdaStatistic;
-
 
 /++
 Estimates parameters of the proper generalized inverse Gaussian distribution.
@@ -108,7 +105,7 @@ unittest
 Tuple!(T, "lambda", T, "eta", T, "omega")
 properGeneralizedInverseGaussianEstimate(T)
 	(
-		in GeneralizedInverseGaussinStatistic!T stat, 		
+		in GeneralizedInverseGaussinStatistic!T stat,
 		in T relTolerance = sqrt(T.epsilon),
 		in T absTolerance = sqrt(T.epsilon),
 	)
@@ -123,7 +120,15 @@ body {
 	immutable statFL = cast(GeneralizedInverseGaussinFixedLambdaStatistic!T) stat;
 	T f(T lambda) {
 		immutable params = properGeneralizedInverseGaussianFixedLambdaEstimate!T(lambda, statFL);
-		with(params) return -properGeneralizedInverseGaussianLikelihood!T(lambda, eta, omega, stat);
+		with(params)
+		{
+			import std.conv;
+			//assert(eta >= T.min_normal || eta, eta.to!string);
+			assert(omega >= T.min_normal, omega.to!string);
+			return eta.isNormal ? 
+				-properGeneralizedInverseGaussianLikelihood!T(lambda, eta, omega, stat)
+				: -T.infinity;
+		}
 	}
 	import atmosphere.math: findLocalMin;
 	immutable flm = findLocalMin!T(&f, -u, u, relTolerance, absTolerance);
@@ -258,17 +263,21 @@ body {
 	immutable gammaParams = gammaEstimate!T(gammaStat);
 	immutable inverseGammaParams = inverseGammaEstimate!T(inverseGammaStat);
 	immutable properParams = properGeneralizedInverseGaussianEstimate!T(stat, relTolerance, absTolerance);
+	import std.stdio;
 	
 	T gammaLikelihood = gammaLikelihood!T(gammaParams.shape, gammaParams.scale, gammaStat);
 	T inverseGammaLikelihood = inverseGammaLikelihood!T(inverseGammaParams.shape, inverseGammaParams.scale, inverseGammaStat);
-	T properLikelihood = properGeneralizedInverseGaussianLikelihood!T(properParams.lambda, properParams.eta, properParams.omega,  stat);
+
+	T properLikelihood = properParams.eta >= T.min_normal && properParams.omega >= T.min_normal ? 
+		properGeneralizedInverseGaussianLikelihood!T(properParams.lambda, properParams.eta, properParams.omega,  stat)
+		: 0;
 	
 	if(!(gammaLikelihood > -T.infinity))
-		gammaLikelihood = T.infinity;
+		gammaLikelihood = -T.infinity;
 	if(!(inverseGammaLikelihood > -T.infinity))
-		inverseGammaLikelihood = T.infinity;
+		inverseGammaLikelihood = -T.infinity;
 	if(!(properLikelihood > -T.infinity))
-		properLikelihood = T.infinity;
+		properLikelihood = -T.infinity;
 	if(properLikelihood > gammaLikelihood && properLikelihood > inverseGammaLikelihood)
 		with(GIGEtaOmega!T(properParams.eta, properParams.omega)) return typeof(return)(properParams.lambda, chi, psi);
 	if(gammaLikelihood > inverseGammaLikelihood)
@@ -341,7 +350,7 @@ properGeneralizedInverseGaussianFixedLambdaEstimate(T)
 	(in T lambda, in GeneralizedInverseGaussinFixedLambdaStatistic!T stat)
 	if(isFloatingPoint!T)
 in {
-	assert(isNormal(lambda));
+	assert(isFinite(lambda));
 }
 body {
 	import std.numeric: findRoot;
@@ -353,10 +362,48 @@ body {
 	assert(isFinite(u));
 	immutable alambda = fabs(lambda);
 	if(alambda >= u)
+	{
 		return typeof(return)(alambda > 0 ? 0 : T.infinity, 0);
-	immutable omega = findRoot((T omega) => besselKD(alambda, omega) - prod, T.min_normal, T.max);
+	}
+	
+	T f(T omega) //@safe pure nothrow @nogc 
+	out(r) {
+		assert(isFinite(r));
+	}
+	body {
+		assert(!isNaN(omega));
+		assert(omega >= 0);
+		assert(omega < T.infinity);
+		auto r = besselKD(alambda, omega) - prod;
+		return r == T.infinity ? T.max : r;
+	}
+	immutable a = T.min_normal;
+	immutable b = T.max;
+    T fa = f(a);
+    if(fa == T.infinity)
+    	fa = T.max;
+    T omega = void;
+    if(fa <= 0)
+        omega = a;
+    else
+    {
+	    immutable fb = f(b);
+	    if(fb >= 0)
+	        omega = b;
+	    else
+	    {
+		    immutable r = findRoot(&f, a, b, fa, fb, (T a, T b) => false);
+		    // Return the first value if it is smaller or NaN
+		    omega = !(fabs(r[2]) > fabs(r[3])) ? r[0] : r[1];	    	
+	    }
+
+    }
+
+
+	assert(omega >= T.min_normal, omega.text);
 	immutable eta = sqrt(stat.mean / stat.meani) / besselKRM(lambda, omega);
-	return typeof(return)(eta, omega);
+	auto ret = typeof(return)(eta, omega);
+	return ret;
 }
 
 
