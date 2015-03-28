@@ -283,7 +283,7 @@ body {
 	if(gammaLikelihood > inverseGammaLikelihood)
 		with(       gammaParams) return typeof(return)(shape,         0, 2 / scale);
 	if(gammaLikelihood < inverseGammaLikelihood)
-		with(inverseGammaParams) return typeof(return)(shape, scale / 2,         0);
+		with(inverseGammaParams) return typeof(return)(-shape, scale / 2,         0);
 	return typeof(return).init;
 }
 
