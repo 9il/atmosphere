@@ -58,7 +58,7 @@ and the following imports into your program
 ```D
 import atmosphere;
 ```
-If you want to write library use detailed imports
+If you want to write a library use detailed imports
 ```D
 import atmosphere.pdf;
 import atmosphere.estimate.generalized_inverse_gaussian;
