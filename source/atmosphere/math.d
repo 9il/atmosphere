@@ -835,7 +835,7 @@ body {
 			{
 				if(r == 0)
 					return x ? 1 / (x * log(x))^^2 : T.infinity;
-			}			
+			}
 		}
 		//import std.stdio;
 		//writeln("r = ", r);
@@ -972,7 +972,7 @@ body {
 			T ret = sums[1] / (sums[1] - mu * sums[0]);
 			if(ret < 0)
 			{
-				ret = T.infinity;
+				return T.infinity;
 			}
 			//import std.stdio;
 			//writeln("sums[1] - mu * sums[0] = %s, ", sums[1], sums[1] - mu * sums[0]);
