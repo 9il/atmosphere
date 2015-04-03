@@ -1,6 +1,6 @@
 [![Dub](https://img.shields.io/badge/dub-code.dlang.org-FF4081.svg)](http://code.dlang.org/packages/atmosphere_gm)
 
-Atmosphere GM contains Maximum Likelihood Estimation algorithms, density functions, random observations generators, etc.
+Atmosphere contains Maximum Likelihood Estimation algorithms, density functions, random observations generators, etc.
 
 # Travis-CI Status
 [![Coverage Status](https://coveralls.io/repos/9il/atmosphere_gm/badge.svg?branch=master)](https://coveralls.io/r/9il/atmosphere_gm?branch=master)
@@ -87,7 +87,7 @@ To fine-tune your program for native CPU add the following code into your `dub.j
 ```
 For more options run `ldc2 -help`.
 
-See also [Atmosphere GM Test](https://github.com/9il/atmosphere_gm_test). 
+See also [Atmosphere Test](https://github.com/9il/atmosphere_gm_test). 
 
 # TODO & Contribution
 Contribution is welcome.
