@@ -28,7 +28,7 @@ Atmosphere contains Maximum Likelihood Estimation algorithms, density functions,
 <img src="http://9il.github.io/atmosphere/doc/images/GV-gamma_0120.svg" alt="Generalized variance-gamma distribution" width="280" />
 
 #### What can I use this package for? 
-Atmosphere GM can be used for risk management in economics, finance and thermonuclear reactors ;-)
+Atmosphere can be used for risk management in economics, finance and thermonuclear reactors ;-)
 
 #Documentation
 Documentation (API) can be found [here](http://9il.github.io/atmosphere/doc/atmosphere.html).
@@ -52,7 +52,7 @@ There is no instruction for **Windows**. You are welcome to create it.
 3. Read about [DUB](http://code.dlang.org/about)
 4. Read about [DUB package format](http://code.dlang.org/package-format)
 
-## Atmosphere GM
+## Atmosphere
 To use this package put [the dependency]((http://code.dlang.org/packages/atmosphere)) into your project's
 [dub](http://code.dlang.org/about).json into the dependencies section
 and the following imports into your program
