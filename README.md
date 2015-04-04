@@ -1,11 +1,11 @@
-[![Dub](https://img.shields.io/badge/dub-code.dlang.org-FF4081.svg)](http://code.dlang.org/packages/atmosphere_gm)
+[![Dub](https://img.shields.io/badge/dub-code.dlang.org-FF4081.svg)](http://code.dlang.org/packages/atmosphere)
 
 Atmosphere contains Maximum Likelihood Estimation algorithms, density functions, random observations generators, etc.
 
 # Travis-CI Status
-[![Coverage Status](https://coveralls.io/repos/9il/atmosphere_gm/badge.svg?branch=master)](https://coveralls.io/r/9il/atmosphere_gm?branch=master)
-[![Join the chat at https://gitter.im/9il/atmosphere_gm](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/9il/atmosphere_gm?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-+ [![Build Status](https://travis-ci.org/9il/atmosphere_gm.svg)](https://travis-ci.org/9il/atmosphere_gm) - [Atmosphere GM](https://travis-ci.org/9il/atmosphere_gm)
+[![Coverage Status](https://coveralls.io/repos/9il/atmosphere/badge.svg?branch=master)](https://coveralls.io/r/9il/atmosphere?branch=master)
+[![Join the chat at https://gitter.im/9il/atmosphere](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/9il/atmosphere?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
++ [![Build Status](https://travis-ci.org/9il/atmosphere.svg)](https://travis-ci.org/9il/atmosphere) - [Atmosphere GM](https://travis-ci.org/9il/atmosphere)
 + [![Build Status](https://travis-ci.org/9il/atmosphere_gm_test.svg)](https://travis-ci.org/9il/atmosphere_gm_test) - [Atmosphere GM Test](https://travis-ci.org/9il/atmosphere_gm_test)
 
 #Features
@@ -23,14 +23,14 @@ Atmosphere contains Maximum Likelihood Estimation algorithms, density functions,
   + Random observations generators
   + Maximum Likelihood Estimations (MLE)
 
-<img src="http://9il.github.io/atmosphere_gm/doc/images/GHyp_0148.svg" alt="Generalized hyperbolic distribution" width="280" />
-<img src="http://9il.github.io/atmosphere_gm/doc/images/GV-gamma_0120.svg" alt="Generalized variance-gamma distribution" width="280" />
+<img src="http://9il.github.io/atmosphere/doc/images/GHyp_0148.svg" alt="Generalized hyperbolic distribution" width="280" />
+<img src="http://9il.github.io/atmosphere/doc/images/GV-gamma_0120.svg" alt="Generalized variance-gamma distribution" width="280" />
 
 #### What can I use this package for? 
 Atmosphere GM can be used for risk management in economics, finance and thermonuclear reactors ;-)
 
 #Documentation
-Documentation (API) can be found [here](http://9il.github.io/atmosphere_gm/doc/atmosphere.html).
+Documentation (API) can be found [here](http://9il.github.io/atmosphere/doc/atmosphere.html).
 
 #Installation
 ## BLAS & LAPACK
@@ -52,7 +52,7 @@ There is no instruction for **Windows**. You are welcome to create it.
 4. Read about [DUB package format](http://code.dlang.org/package-format)
 
 ## Atmosphere GM
-To use this package put [the dependency]((http://code.dlang.org/packages/atmosphere_gm)) into your project's
+To use this package put [the dependency]((http://code.dlang.org/packages/atmosphere)) into your project's
 [dub](http://code.dlang.org/about).json into the dependencies section
 and the following imports into your program
 ```D
@@ -87,7 +87,7 @@ To fine-tune your program for native CPU add the following code into your `dub.j
 ```
 For more options run `ldc2 -help`.
 
-See also [Atmosphere Test](https://github.com/9il/atmosphere_gm_test). 
+See also [Atmosphere GM Test](https://github.com/9il/atmosphere_gm_test). 
 
 # TODO & Contribution
 Contribution is welcome.
