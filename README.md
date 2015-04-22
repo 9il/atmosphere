@@ -35,9 +35,9 @@ Documentation (API) can be found [here](http://9il.github.io/atmosphere/doc/atmo
 
 #Installation
 ## BLAS & LAPACK
-You need BLAS and LAPACL libraries installed.
+You need BLAS and LAPACK libraries to be installed.
 
-If you're on **Ubuntu**, you can install default package 
+If you're on **Ubuntu**, you can install default packages
 ```
 sudo apt-get install libblas-dev liblapack-dev 
 ```
@@ -68,7 +68,7 @@ import atmosphere.mixture : MixtureOptimizer, MixtureOptimizerException;
 ```
 
 # Compilers and optimization
-The [DMD](http://dlang.org/download.html) compiler is easy way to start.
+The [DMD](http://dlang.org/download.html) compiler is an easy way to start.
 To compile your program in release mode use the following build options
 ```shell
 dub build --build=release
@@ -94,7 +94,7 @@ See also [Atmosphere GM Test](https://github.com/9il/atmosphere_gm_test).
 Contribution is welcome.
 #### TODO list
 + **Windows** instruction for BLAS & LAPACK installation.
-+ Parameter estimation algorithms for generalized inverse Gaussian and generalized gamma samples.
++ MLEs for generalized gamma distribution.
 + Publication references
 + More `unittest`s
 + Examples
