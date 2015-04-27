@@ -2,10 +2,10 @@
 	"name": "atmosphere",
 	"description": "Statistical package",
 	"targetType": "library",
-	"homepage": "http://9il.github.io/atmosphere_gm",
+	"homepage": "http://9il.github.io/atmosphere",
 	"copyright": "Copyright © 2014-2015 Ilya Yaroshenko",
 	"authors": ["Ilya Yaroshenko"],
-	"license": "Subject to the terms of the MIT license, as written in the included LICENSE.md file.",
+	"license": "MIT",
 	"dependencies": {
 		"simple_matrix": "~>0.3.1",
 		"cblas": "~>0.1.0",
