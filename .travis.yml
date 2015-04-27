@@ -3,7 +3,7 @@ language: d
 d:
   - dmd
   - ldc
-  - gdc-4.9.2
+  # - gdc-4.9.2
 
 before_install:
   - sudo apt-get update
