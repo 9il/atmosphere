@@ -39,6 +39,7 @@ You need BLAS and LAPACK libraries to be installed.
 
 If you're on **Ubuntu**, you can install default packages
 ```
+sudo apt-get update
 sudo apt-get install libblas-dev liblapack-dev 
 ```
 
