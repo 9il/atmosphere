@@ -9,6 +9,6 @@
 	"dependencies": {
 		"simple_matrix": "~>0.3.1",
 		"cblas": "~>0.1.0",
-		"scid": "~>0.2.0",
+		"scid": "~>0.2.0+commit.gcd153e91b263c2e207307e76c6fea95f3230fe15",
 	}
 }

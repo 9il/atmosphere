@@ -50,7 +50,7 @@ struct NormalSPDF(T)
 	///
 	T opCall(T x) const
 	{
-		import core.stdc.tgmath : exp;
+		import std.math : exp;
 		return c * exp((x-mu)^^2 / (-2*sigma2));
 	}
 }
