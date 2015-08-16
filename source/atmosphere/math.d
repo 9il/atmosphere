@@ -405,6 +405,13 @@ body
 ///
 unittest
 {
+	auto ret = findLocalMin((double x) => (x-4)^^2, -1e9, 1e9);
+	assert(ret.x.approxEqual(4.0));
+	assert(ret.y.approxEqual(0.0));
+}
+
+unittest
+{
 	int i;
 	double f(double x)
 	{
