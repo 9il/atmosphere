@@ -3,10 +3,13 @@ sudo: false
 language: d
 
 d:
+  - dmd-2.071.0
   - dmd-2.069.1
   - dmd-2.068.2
   - dmd-2.067.1
   - ldc-0.16.0
+  - ldc-0.17.0
+  - ldc-1.0.0
   # - gdc-4.9.2
 
 addons:
