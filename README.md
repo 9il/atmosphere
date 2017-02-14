@@ -1,3 +1,7 @@
+#### ❗️ Atmosphere was freezed, please open an issue if you have any questions.
+#### ❗️ For random distributions please visit https://github.com/libmir/mir-random.
+
+
 [![Dub](https://img.shields.io/badge/dub-code.dlang.org-FF4081.svg)](http://code.dlang.org/packages/atmosphere)
 
 Atmosphere contains Maximum Likelihood Estimation algorithms, density functions, random observations generators, etc.
